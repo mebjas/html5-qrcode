@@ -1,7 +1,7 @@
 # html5-qrcode
 A cross platform HTML5 QR code reader.
 
-##Description
+##Description - [View Demo](http://www.minhazav.me/samples/html5-qrcode/)
 
 This is a cross platform jQuery library to create a QRcode reader for HTML5 compatible browser.
 It comes with option to `scan QR Code`, `Stop scanning`, `Switch Camera` and `get info on camera`.
@@ -45,6 +45,8 @@ Note: you can also pass `fourth parameter` which is the `camera index` to use. I
 ```js
   var cameraCount = $("#reader").html5_qrcode_cameraCount();
 ```
+##Demo
+Demo is available at: [minhazav.me > samples](http://www.minhazav.me/samples/html5-qrcode/)
 
 ##Credits
 The decoder used for the QRcode reading is from `LazarSoft` https://github.com/LazarSoft/jsqrcode<br>
