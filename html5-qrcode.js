@@ -145,6 +145,9 @@
                     ($(this).data('sourceId') + 1) % cameraIds.length
                 );
             });
+        },
+        html5_qrcode_cameraCount: function() {
+            return cameraIds.length;
         }
     });
 })(jQuery);
