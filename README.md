@@ -6,7 +6,7 @@ A cross platform HTML5 QR code reader.
 This is a cross platform jQuery library to create a QRcode reader for HTML5 compatible browser.
 It comes with option to `scan QR Code`, `Stop scanning`, `Switch Camera` and `get info on camera`.
 
-##How to use?
+## How to use?
  -  Add an element you want to use as placeholder for QR Code scanner
 ```html
 <div id="reader"></div>
@@ -45,15 +45,15 @@ Note: you can also pass `fourth parameter` which is the `camera index` to use. I
 ```js
   var cameraCount = $("#reader").html5_qrcode_cameraCount();
 ```
-##Demo
+## Demo
 Demo is available at: [https://minhazav.xyz > samples](https://www.minhazav.xyz/samples/html5-qrcode/)
 
-##Credits
+## Credits
 The decoder used for the QRcode reading is from `LazarSoft` https://github.com/LazarSoft/jsqrcode<br>
 The jqeury plugin has been adopted from `dwa012` https://github.com/dwa012/html5-qrcode
 
 
-##MIT LICENSE
+## MIT LICENSE
 
 Copyright © 2015 A V Minhaz <minhazav@gmail.com>
 
