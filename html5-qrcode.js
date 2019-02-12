@@ -84,7 +84,7 @@
                 navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
 
                 var successCallback = function(stream) {
-                    video.src = (window.URL && window.URL.createObjectURL(stream)) || stream;
+                    video.srcObject = stream;
                     localMediaStream = stream;
                     $.data(currentElem[0], "stream", stream);
 

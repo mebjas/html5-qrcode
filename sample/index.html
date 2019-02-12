@@ -21,7 +21,9 @@
 		<br><br>
 		<div class="row">
 			<div class="col-md-12">
-				<code>Start Scanning</code> <span class="feedback"></span>
+				<code>Click "Start Scanning" to <b>start scanning QR Code</b></code>
+				<br>
+				<span class="feedback" style="margin: 10px; display: inline-block"></span>
 			</div>
 		</div>
 	</div>
@@ -36,14 +38,14 @@ $(document).ready(function() {
 		$("code").html('scanning');
 		$('#qr').html5_qrcode(function(data){
 		         // do something when code is read
-		         $(".feedback").html('code scanned as: ' +data);
+		         $(".feedback").html('<img src="yes.png" style="height: 20px"> Code scanned as: <strong>' +data +'</strong>');
 		    },
 		    function(error){
 		        //show read errors 
-		        $(".feedback").html('Unable to scan the code! Error: ' +error)
+		        $(".feedback").html('<img src="no.png" style="height: 20px"> Unable to scan the code! Error: ' +error)
 		    }, function(videoError){
 		        //the video stream could be opened
-		        $(".feedback").html('Video error');
+		        $(".feedback").html('<img src="no.png" style="height: 20px"> Video error');
 		    }
 		);
 
@@ -51,13 +53,15 @@ $(document).ready(function() {
 		$("#stop").removeClass('disabled');
 		$("#change").removeClass('disabled');
 	});
+
 	$("#stop").on('click', function() {
 		$("#qr").html5_qrcode_stop();
-		$("code").html('Start Scanning');
+		$("code").html('Click "Start Scanning" to <b>start scanning QR Code</b>');
 
 		$("#scan").removeClass('disabled');
 		$("#stop").addClass('disabled');
 		$("#change").addClass('disabled');
+		$(".feedback").html("");
 	});
 	$("#change").on('click', function() {
 		$("#qr").html5_qrcode_changeCamera();
