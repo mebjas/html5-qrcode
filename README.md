@@ -1,10 +1,10 @@
-# HTML5-QRCode
-A cross platform HTML5 QR code reader.
+# HTML5-QRCode jQuery
+A cross-platform HTML5 QR code reader as a jQuery plugin.
 
 ## Description - [View Demo](https://blog.minhazav.dev/research/html5-qrcode.html)
 
-This is a cross platform jQuery library to create a QRcode reader for HTML5 compatible browser.
-It comes with option to `scan QR Code`, `Stop scanning`, `Switch Camera` and `get info on camera`.
+This is a cross-platform jQuery library to create a QRcode reader for HTML5 compatible browser.
+It comes with the option to `scan QR Code`, `Stop scanning`, `Switch Camera` and `get info on camera`.
 
 ## How to use?
 Add an element you want to use as placeholder for QR Code scanner
@@ -13,42 +13,98 @@ Add an element you want to use as placeholder for QR Code scanner
 ```
 
 Add `jQuery library`, `jsqrcode-combined.js` and `html5-qrcode.js` (or their minified versions).
-```js
-<script scr="./jqeury.js"></script>
-<script scr="./jsqrcode-combined.js"></script>
-<script scr="./html5-qrcode.js"></script>
+```html
+<script src="./jqeury.js"></script>
+<script src="./jsqrcode-combined.js"></script>
+<script src="./html5-qrcode.js"></script>
 ```
 
-To start the camera and start reading QR code
+To get a list of supported cameras, query it using
 ```js
-  $('#reader').html5_qrcode(function(data){
+$(document).html5_qrcode_getSupportedCameras(
+  function (devices) {
+    /**
+     * devices would be an array of objects of type:
+     * { id: "id", label: "label" }
+     */
+    if (devices && devices.length) {
+      var cameraId = devices[0].id;
+      // .. use this to start scanning.
+    }
+  }, function (error) {
+    // handle errors
+  }
+);
+```
+
+Once you have the camera id from `device.id`, start camera using
+```js
+$('#reader').html5_qrcode(
+  cameraId,
+  function (qrCodeMessage) {
     /* do something when code is read */
-  }, function(error){
+  }, function (errorMessage) {
     /* show read errors */
-  }, function(videoError){
+  }, function (errorMessage){
     /* the video stream could be opened */
-  });
+  },
+  { fps: 10 });
 ```
-
-> Note: you can also pass `fourth parameter` which is the `camera index` to use. If the device has 2 cameras and fourth parameter is `1` so 2nd camera will be used. If a wrong number is passed default camera shall be used.
 
 To stop using camera and thus stop scanning, call
 ```js
-  $('#reader').html5_qrcode_stop();
-```
-
-To switch camera, call
-```js
-  $('#reader').html5_qrcode_changeCamera();
-```
-
-To get no of cameras, call
-```js
-  var cameraCount = $("#reader").html5_qrcode_cameraCount();
+$('#reader').html5_qrcode_stop();
 ```
 ## Demo
 [blog.minhazav.dev/research/html5-qrcode.html](https://blog.minhazav.dev/research/html5-qrcode.html)
 
+## Screenshots
+![screenshot](screenshots/1.jpg)
+
+## Documentation
+Following methods are available in this library
+
+```js
+/**
+ * Initializes QR code scanning on given element.
+ *  
+ * @param: cameraId (int) - which camera to use
+ * @param: qrcodeSuccessCallback (function) - callback on success
+ *              type: function (qrCodeMessage) {}
+ * @param: qrcodeErrorCallback (function) - callback on QR parse error
+ *              type: function (errorMessage) {}
+ * @param: videoErrorCallback (function) - callback on video error
+ *              type: function (errorMessage) {}
+ * @param: config extra configurations to tune QR code scanner.
+ *          Supported fields:
+ *           - fps: expected framerate of qr code scanning. example { fps: 2 }
+ *               means the scanning would be done every 500 ms.
+ */
+html5_qrcode: function(
+  cameraId,
+  qrcodeSuccessCallback,
+  qrcodeErrorCallback,
+  videoErrorCallback,
+  config) {}
+
+/**
+ * Stops streaming QR Code video and scanning.
+ */
+html5_qrcode_stop: function() {}
+
+/**
+ * Gets the count of number of available cameras.
+ * 
+ * @param onSuccessCallback (Function) called when camera count is available.
+ *              type: Function (Array [{ id: String, label: String }]) {}
+ *              This argument is required.
+ * @param onErrorCallback (function) called when enumerating cameras fails.
+ *              type: Function (String)
+ */
+html5_qrcode_getSupportedCameras: function(
+  onSuccessCallback, onErrorCallback) {}
+        
+```
+
 ## Credits
 The decoder used for the QRcode reading is from `LazarSoft` https://github.com/LazarSoft/jsqrcode<br>
-The jqeury plugin has been adopted from `dwa012` https://github.com/dwa012/html5-qrcode

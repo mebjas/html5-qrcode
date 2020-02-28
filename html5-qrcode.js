@@ -1,153 +1,196 @@
-(function($) {
-    var cameraIds = [];
+(function($) {  
+    var TIMEOUT_TAG = "TIMEOUT_TAG";
+    var STREAM_TAG = "STREAM_TAG";
+    var DEFAULT_HEIGHT = 250;
+    var DEFAULT_HEIGHT_OFFSET = 2;
+    var DEFAULT_WIDTH = 300;
+    var DEFAULT_WIDTH_OFFSET = 2;
+    var SCAN_DEFAULT_FPS = 2;
 
-    /**
-     * Code to initialise the cameraIds field
-     */
-    function gotSources(sourceInfos) {
-        for (var i = 0; i !== sourceInfos.length; ++i) {
-            var sourceInfo = sourceInfos[i];
-            if (sourceInfo.kind === 'video') {
-                cameraIds.push(sourceInfo.id);
-            }
-        }
+    window.URL = window.URL || window.webkitURL || window.mozURL || window.msURL;
+    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia 
+        || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+
+    function createVideoElement(width, height) {
+        return '<video width="' + width + 'px" height="' + height + 'px"></video>';
     }
 
-    if (typeof MediaStreamTrack === 'undefined' ||
-        typeof MediaStreamTrack.getSources === 'undefined') {
-        console.log('This browser does not support MediaStreamTrack.\n\nTry Chrome.');
-    } else {
-        MediaStreamTrack.getSources(gotSources);
+    function createCanvasElement(width, height) {
+        return '<canvas id="qr-canvas" width="' 
+            + (width - DEFAULT_WIDTH_OFFSET) 
+            + 'px" height="' 
+            + (height - DEFAULT_HEIGHT_OFFSET) 
+            + 'px" style="display:none;"></canvas>';
+    }
+
+    function getTimeoutFromFps(fps) {
+        return 1000 / fps;
     }
 
     jQuery.fn.extend({
         /**
-         * jQuery method, 
-         * @param: qrcodeSuccess (function) - callback on success
-         * @param: qrcodeError (function) - callback on qr error
-         * @param: videoError (function) - callback on video error
-         * @param: camera (int) - which camera to use
+         * Initializes QR code scanning on given element.
+         *  
+         * @param: cameraId (int) - which camera to use
+         * @param: qrcodeSuccessCallback (function) - callback on success
+         *              type: function (qrCodeMessage) {}
+         * @param: qrcodeErrorCallback (function) - callback on QR parse error
+         *              type: function (errorMessage) {}
+         * @param: videoErrorCallback (function) - callback on video error
+         *              type: function (errorMessage) {}
+         * @param: config extra configurations to tune QR code scanner.
+         *          Supported fields:
+         *           - fps: expected framerate of qr code scanning. example { fps: 2 }
+         *               means the scanning would be done every 500 ms.
          */
-        html5_qrcode: function(qrcodeSuccess, qrcodeError, videoError, camera) {
+        html5_qrcode: function(
+            cameraId,
+            qrcodeSuccessCallback,
+            qrcodeErrorCallback,
+            videoErrorCallback,
+            config) {
             return this.each(function() {
+                if (cameraId == undefined) {
+                    throw "cameraId is required"
+                }
+
+                // Initialize the callbacks
+                qrcodeSuccessCallback = typeof qrcodeSuccessCallback === 'function' 
+                    ? qrcodeSuccessCallback
+                    : function (ignore) {
+                        console.log('QR Code Success callback is undefined or not a function.');
+                    }
+                qrcodeErrorCallback = qrcodeErrorCallback ? qrcodeErrorCallback : function (error, stream) {}
+                videoErrorCallback = typeof videoErrorCallback === 'function' ? videoErrorCallback : function (error) {
+                    console.log('Error callback is undefined or not a function.', error);
+                }
+
+                config = config ? config : {};
+                config.fps = config.fps ? config.fps : SCAN_DEFAULT_FPS;
 
                 var currentElem = $(this);
+                // Empty current item explicitly:
+                currentElem.html("");
 
-                $.data(currentElem[0], "qrcodeSuccess", qrcodeSuccess);
-                $.data(currentElem[0], "qrcodeError", qrcodeError);
-                $.data(currentElem[0], "videoError", videoError);
-
-                if (typeof camera != 'undefined' && typeof cameraIds[camera] != 'undefined')
-                    $.data(currentElem[0], "sourceId", camera);
-                else $.data(currentElem[0], "sourceId", 0);
-
-                if (typeof cameraIds[currentElem.data('sourceId')] != 'undefined')
-                    $.data(currentElem[0], "cameraId", cameraIds[currentElem.data('sourceId')] );
-
-                var height = currentElem.height();
-                var width = currentElem.width();
-
-                if (height == null) {
-                    height = 250;
-                }
-
-                if (width == null) {
-                    width = 300;
-                }
-
-                var vidElem = $('<video width="' + width + 'px" height="' + height + 'px"></video>').appendTo(currentElem);
-                var canvasElem = $('<canvas id="qr-canvas" width="' + (width - 2) + 'px" height="' + (height - 2) + 'px" style="display:none;"></canvas>').appendTo(currentElem);
+                var height = currentElem.height() == null ? DEFAULT_HEIGHT : currentElem.height();
+                var width = currentElem.width() == null ? DEFAULT_WIDTH : currentElem.width();
+                var vidElem = $(createVideoElement(width, height)).appendTo(currentElem);
+                var canvasElem = $(createCanvasElement(width, height)).appendTo(currentElem);
 
                 var video = vidElem[0];
                 var canvas = canvasElem[0];
                 var context = canvas.getContext('2d');
                 var localMediaStream;
-
                 var scan = function() {
                     if (localMediaStream) {
-                        context.drawImage(video, 0, 0, 307, 250);
-
+                        context.drawImage(video, 0, 0, width, height);
                         try {
                             qrcode.decode();
-                        } catch (e) {
-                            qrcodeError(e, localMediaStream);
+                        } catch (exception) {
+                            qrcodeErrorCallback(exception, localMediaStream);
                         }
-
-                        $.data(currentElem[0], "timeout", setTimeout(scan, 500));
-
-                    } else {
-                        $.data(currentElem[0], "timeout", setTimeout(scan, 500));
                     }
-                };//end snapshot function
+                    $.data(currentElem[0], TIMEOUT_TAG, setTimeout(scan, getTimeoutFromFps(config.fps)));
+                }; //end snapshot function
 
-                window.URL = window.URL || window.webkitURL || window.mozURL || window.msURL;
-                navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
-
-                var successCallback = function(stream) {
+                var successCallback = function (stream) {
                     video.srcObject = stream;
                     localMediaStream = stream;
-                    $.data(currentElem[0], "stream", stream);
-
+                    $.data(currentElem[0], STREAM_TAG, stream);
+                    $.data(currentElem[0], TIMEOUT_TAG, setTimeout(scan, getTimeoutFromFps(config.fps)));
                     video.play();
-                    $.data(currentElem[0], "timeout", setTimeout(scan, 1000));
                 };
 
                 // Call the getUserMedia method with our callback functions
-                if (navigator.getUserMedia) {
-                    var config = {video: true};
-                    if (typeof currentElem.data("cameraId") != 'undefined') {
-                        config = {
-                            video: {
-                              optional: [{
-                                sourceId: currentElem.data("cameraId")
-                              }]
-                            }
-                          };
-                    }
-
-                    navigator.getUserMedia(config, successCallback, function(error) {
-                        if (typeof videoError == 'function') videoError(error, localMediaStream);
-                        else console.log('Error callback is undefined or not a function.');
-                    });
-                } else {
-                    console.log('Native web camera streaming (getUserMedia) not supported in this browser.');
-                    // Display a friendly "sorry" message to the user
+                if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                    navigator.mediaDevices.getUserMedia(
+                        { audio: false, video: { deviceId: cameraId }})
+                        .then(successCallback)
+                        .catch(successCallback);
+                } else if (navigator.getUserMedia) {
+                    qrcodeConfig = { video: { optional: [{ sourceId: cameraId }]}};
+                    navigator.getUserMedia(
+                        qrcodeConfig, successCallback, videoErrorCallback);
+                }  else {
+                    videoErrorCallback(
+                        "Native web camera streaming (getUserMedia) not supported in this browser.");
                 }
 
-                qrcode.callback = function (result) {
-                    if (typeof qrcodeSuccess == 'function')
-                        qrcodeSuccess(result, localMediaStream);
-                    else console.log('Success callback is undefined or not a function.');
-                };
+                qrcode.callback = qrcodeSuccessCallback;
             }); // end of html5_qrcode
         },
+        /**
+         * Stops streaming QR Code video and scanning.
+         */
         html5_qrcode_stop: function() {
             return this.each(function() {
-                //stop the stream and cancel timeouts
-                $(this).data('stream').getVideoTracks().forEach(function(videoTrack) {
+                // stop the stream and cancel timeouts
+                $(this).data(STREAM_TAG).getVideoTracks().forEach(function (videoTrack) {
                     videoTrack.stop();
                 });
 
                 $(this).children('video').remove();
                 $(this).children('canvas').remove();
+                clearTimeout($(this).data(TIMEOUT_TAG));
+            });
+        },
+        /**
+         * Gets the count of number of available cameras.
+         * 
+         * @param onSuccessCallback (Function) called when camera count is available.
+         *              type: Function (Array [{ id: String, label: String }]) {}
+         *              This argument is required.
+         * @param onErrorCallback (function) called when enumerating cameras fails.
+         *              type: Function (String)
+         */
+        html5_qrcode_getSupportedCameras: function(onSuccessCallback, onErrorCallback) {
+            if (typeof onSuccessCallback != 'function') {
+                throw "onSuccessCallback (1st argument) should be a function."
+            }
 
-                clearTimeout($(this).data('timeout'));
-            });
-        },
-        html5_qrcode_changeCamera: function() {
-            return this.each(function() {
-                //stop the stream and cancel timeouts
-                $(this).html5_qrcode_stop();
-                $(this).html5_qrcode(
-                    $(this).data('qrcodeSuccess'),
-                    $(this).data('qrcodeError'),
-                    $(this).data('videoError'),
-                    ($(this).data('sourceId') + 1) % cameraIds.length
-                );
-            });
-        },
-        html5_qrcode_cameraCount: function() {
-            return cameraIds.length;
+            onErrorCallback = typeof onErrorCallback == 'function'
+                ? onErrorCallback
+                : function (error) {
+                    console.error("Unable to retreive supported cameras. Reason: ", error);
+                }
+            
+            if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
+                navigator.mediaDevices.enumerateDevices()
+                .then(function (devices) {
+                    var results = [];
+                    for (i = 0; i < devices.length; i++) {
+                        var device = devices[i];
+                        if (device.kind == "videoinput") {
+                            results.push({
+                                id: device.deviceId,
+                                label: device.label
+                            });
+                        }
+                    }
+                    onSuccessCallback(results);
+                })
+                .catch(function (err) {
+                    onErrorCallback(err.name + ": " + err.message);
+                });
+            } else if (typeof MediaStreamTrack != 'undefined' 
+                && typeof MediaStreamTrack.getSources != 'undefined') {
+                var callback = function (sourceInfos) {
+                    var results = [];
+                    for (i = 0; i !== sourceInfos.length; ++i) {
+                        var sourceInfo = sourceInfos[i];
+                        if (sourceInfo.kind === 'video') {
+                            results.push({
+                                id: sourceInfo.id,
+                                label: sourceInfo.label
+                            });
+                        }
+                    }
+                    onSuccessCallback(results);
+                }
+                MediaStreamTrack.getSources(callback);
+            } else {
+                onErrorCallback("unable to query supported devices.");
+            } 
         }
     });
 })(jQuery);
