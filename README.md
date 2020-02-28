@@ -58,6 +58,11 @@ $('#reader').html5_qrcode_stop();
 ## Demo
 [blog.minhazav.dev/research/html5-qrcode.html](https://blog.minhazav.dev/research/html5-qrcode.html)
 
+### For more information
+Check this article on how to use this library
+[![](screenshots/3.jpg)](https://blog.minhazav.dev/qr-code-scanner-using-html-and-javascript/)
+[https://blog.minhazav.dev/qr-code-scanner-using-html-and-javascript/](https://blog.minhazav.dev/qr-code-scanner-using-html-and-javascript/)
+
 ## Screenshots
 ![screenshot](screenshots/1.jpg)
 _Figure: Screenshot from Google Chrome running on Macbook Pro_
