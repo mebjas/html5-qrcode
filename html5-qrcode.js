@@ -104,7 +104,7 @@
                 // Call the getUserMedia method with our callback functions
                 if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
                     navigator.mediaDevices.getUserMedia(
-                        { audio: false, video: { deviceId: cameraId }})
+                        { audio: false, video: { deviceId: { exact: cameraId}}})
                         .then(successCallback)
                         .catch(successCallback);
                 } else if (navigator.getUserMedia) {

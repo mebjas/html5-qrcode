@@ -60,6 +60,10 @@ $('#reader').html5_qrcode_stop();
 
 ## Screenshots
 ![screenshot](screenshots/1.jpg)
+_Figure: Screenshot from Google Chrome running on Macbook Pro_
+
+<img src="screenshots/2.jpg" width="300"><br>
+_Figure: Screenshot from Google Chrome running on Android-based Pixel 3_
 
 ## Documentation
 Following methods are available in this library
