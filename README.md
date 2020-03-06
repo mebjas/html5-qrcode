@@ -14,7 +14,7 @@ Add an element you want to use as placeholder for QR Code scanner
 
 Add `jQuery library`, `jsqrcode-combined.js` and `html5-qrcode.js` (or their minified versions).
 ```html
-<script src="./jqeury.js"></script>
+<script src="./jquery.js"></script>
 <script src="./jsqrcode-combined.js"></script>
 <script src="./html5-qrcode.js"></script>
 ```
