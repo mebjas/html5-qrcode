@@ -1,10 +1,41 @@
-# HTML5-QRCode jQuery
-A cross-platform HTML5 QR code reader as a jQuery plugin.
+# Html5-QRCode
+A cross-platform HTML5 QR code reader.
+Use this light-weight Javascript library `(52 Kb)` to add QR Code scanning capability in your web application.
+
+## Supported platforms
+Working on adding support for more and more platforms. If you find a platform or browser where the library is not working please feel free to file an issue. Check the [demo link]((https://blog.minhazav.dev/research/html5-qrcode.html)) to test out.
+
+##### Legends
+ - ![](assets/done.png) Means supported 
+ - ![](assets/progress.png) Means work in progress to add support
+
+### PC / Mac
+
+| <img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" /><br/>Firefox | <img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" /><br/>Chrome | <img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" /><br/>Safari | <img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/opera/opera_48x48.png" alt="Opera" width="24px" height="24px" /><br/>Opera | <img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="Edge" width="24px" height="24px" /><br/> Edge
+| --------- | --------- | --------- | --------- | ------- |
+|![](./assets/done.png)| ![](assets/done.png)| ![](assets/done.png)| ![](assets/progress.png) | ![](assets/done.png)
+
+### Android
+
+| <img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" /><br/>Chrome | <img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" /><br/>Firefox | <img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="Edge" width="24px" height="24px" /><br/> Edge | <img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/opera-mini/opera-mini_48x48.png" alt="Opera-Mini" width="24px" height="24px" /><br/> Opera Mini
+| --------- | --------- | --------- | --------- |
+|![](./assets/done.png)| ![](assets/done.png)| ![](assets/done.png)| ![](assets/progress.png) 
+
+### IOS
+> There is an ongoing issue on fixing the support for iOS - [issue/14](https://github.com/mebjas/html5-qrcode/issues/14)
+
+| <img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari-ios/safari-ios_24x24.png" alt="Safari" width="24px" height="24px" /><br/>Safari | <img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" /><br/>Chrome | <img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" /><br/>Firefox | <img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="Edge" width="24px" height="24px" /><br/> Edge | <img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/opera-touch/opera-touch_24x24.png" alt="Opera-Touch" width="24px" height="24px" /><br/> Opera Touch
+| --------- | --------- | --------- | --------- | ------- |
+|![](assets/progress.png)| ![](assets/progress.png)| ![](assets/progress.png)| ![](assets/progress.png) | ![](assets/progress.png)
+
 
 ## Description - [View Demo](https://blog.minhazav.dev/research/html5-qrcode.html)
 
-This is a cross-platform jQuery library to create a QRcode reader for HTML5 compatible browser.
-It comes with the option to `scan QR Code`, `Stop scanning`, `Switch Camera` and `get info on camera`.
+This is a cross-platform javascript library to create a QRcode reader for HTML5 compatible browser.
+
+Supports:
+ - Querying all camera in the device (With user permissions)
+ - Using any camera for scanning QR Code.
 
 ## How to use?
 Add an element you want to use as placeholder for QR Code scanner
@@ -12,107 +43,125 @@ Add an element you want to use as placeholder for QR Code scanner
 <div id="reader"></div>
 ```
 
-Add `jQuery library`, `jsqrcode-combined.js` and `html5-qrcode.js` (or their minified versions).
+Add `minified/html5-qrcode.min.js` in your web page. 
+> I would recommend using the minified version as it's transformed to standard javascript. The `html5-qrcode.js` is written with ECMAScript and may not be supported in older version of the browsers. I wrote in this as it's easier to maintain!
+
 ```html
-<script src="./jquery.js"></script>
-<script src="./jsqrcode-combined.js"></script>
-<script src="./html5-qrcode.js"></script>
+<script src="./minified/html5-qrcode.js"></script>
+<!--
+  Or use directly from Github
+
+<script src="https://raw.githubusercontent.com/mebjas/html5-qrcode/master/minified/html5-qrcode.min.js"></script>
+-->
 ```
 
-To get a list of supported cameras, query it using
+To get a list of supported cameras, query it using static method `Html5Qrcode.getCameras()`. This method returns a `Promise` with list of devices supported in format `{ id: "id", label: "label" }`.
 ```js
-$(document).html5_qrcode_getSupportedCameras(
-  function (devices) {
-    /**
-     * devices would be an array of objects of type:
-     * { id: "id", label: "label" }
-     */
-    if (devices && devices.length) {
-      var cameraId = devices[0].id;
-      // .. use this to start scanning.
-    }
-  }, function (error) {
-    // handle errors
+// This method will trigger user permissions
+Html5Qrcode.getCameras().then(cameras => {
+  /**
+   * devices would be an array of objects of type:
+   * { id: "id", label: "label" }
+   */
+  if (devices && devices.length) {
+    var cameraId = devices[0].id;
+    // .. use this to start scanning.
   }
-);
+}).catch(err => {
+  // handle err
+});
 ```
 
-Once you have the camera id from `device.id`, start camera using
+Once you have the camera id from `device.id`, start camera using `Html5Qrcode#start(..)`. This method returns a `Promise` with Qr code scanning initiation.
 ```js
-$('#reader').html5_qrcode(
-  cameraId,
-  function (qrCodeMessage) {
-    /* do something when code is read */
-  }, function (errorMessage) {
-    /* show read errors */
-  }, function (errorMessage){
-    /* the video stream could be opened */
+const html5QrCode = new Html5Qrcode(/* element id */ "reader");
+html5QrCode.start(
+  cameraId, 
+  { fps: 10 },
+  qrCodeMessage => {
+    // do something when code is read
   },
-  { fps: 10 });
+  errorMessage => {
+    // parse error, ignore it.
+  })
+.catch(err => {
+  // Start failed, handle it.
+});
 ```
 
-To stop using camera and thus stop scanning, call
+To stop using camera and thus stop scanning, call `Html5Qrcode#stop()` which returns a `Promise` for stopping the video feed and scanning.
 ```js
-$('#reader').html5_qrcode_stop();
+html5QrCode.stop().then(ignore => {
+  // QR Code scanning is stopped.
+}).catch(err => {
+  // Stop failed, handle it.
+});
 ```
 ## Demo
 [blog.minhazav.dev/research/html5-qrcode.html](https://blog.minhazav.dev/research/html5-qrcode.html)
 
 ### For more information
 Check this article on how to use this library
-[![](screenshots/3.jpg)](https://blog.minhazav.dev/qr-code-scanner-using-html-and-javascript/)
+[![](assets/3.jpg)](https://blog.minhazav.dev/qr-code-scanner-using-html-and-javascript/)
 [https://blog.minhazav.dev/qr-code-scanner-using-html-and-javascript/](https://blog.minhazav.dev/qr-code-scanner-using-html-and-javascript/)
 
 ## Screenshots
-![screenshot](screenshots/1.jpg)
+![screenshot](assets/1.jpg)
 _Figure: Screenshot from Google Chrome running on Macbook Pro_
-
-<img src="screenshots/2.jpg" width="300"><br>
-_Figure: Screenshot from Google Chrome running on Android-based Pixel 3_
 
 ## Documentation
 Following methods are available in this library
 
 ```js
-/**
- * Initializes QR code scanning on given element.
- *  
- * @param: cameraId (int) - which camera to use
- * @param: qrcodeSuccessCallback (function) - callback on success
- *              type: function (qrCodeMessage) {}
- * @param: qrcodeErrorCallback (function) - callback on QR parse error
- *              type: function (errorMessage) {}
- * @param: videoErrorCallback (function) - callback on video error
- *              type: function (errorMessage) {}
- * @param: config extra configurations to tune QR code scanner.
- *          Supported fields:
- *           - fps: expected framerate of qr code scanning. example { fps: 2 }
- *               means the scanning would be done every 500 ms.
- */
-html5_qrcode: function(
-  cameraId,
-  qrcodeSuccessCallback,
-  qrcodeErrorCallback,
-  videoErrorCallback,
-  config) {}
+class Html5Qrcode {
+  /**
+   * Returns a Promise with list of all cameras supported by the device.
+   * 
+   * The returned object is a list of result object of type:
+   * [{
+   *      id: String;     // Id of the camera.
+   *      label: String;  // Human readable name of the camera.
+   * }]
+   */
+  static getCameras() // Returns a Promise
 
-/**
- * Stops streaming QR Code video and scanning.
- */
-html5_qrcode_stop: function() {}
+  /**
+   * Initialize QR Code scanner.
+   * 
+   * @param {String} elementId - Id of the HTML element. 
+   */
+  constructor(elementId)
 
-/**
- * Gets the count of number of available cameras.
- * 
- * @param onSuccessCallback (Function) called when camera count is available.
- *              type: Function (Array [{ id: String, label: String }]) {}
- *              This argument is required.
- * @param onErrorCallback (function) called when enumerating cameras fails.
- *              type: Function (String)
- */
-html5_qrcode_getSupportedCameras: function(
-  onSuccessCallback, onErrorCallback) {}
-        
+  /**
+   * Start scanning QR Code for given camera.
+   * 
+   * @param {String} cameraId Id of the camera to use.
+   * @param {Object} config extra configurations to tune QR code scanner.
+   *  Supported Fields:
+   *      - fps: expected framerate of qr code scanning. example { fps: 2 }
+   *          means the scanning would be done every 500 ms.
+   * @param {Function} qrCodeSuccessCallback callback on QR Code found.
+   *  Example:
+   *      function(qrCodeMessage) {}
+   * @param {Function} qrCodeErrorCallback callback on QR Code parse error.
+   *  Example:
+   *      function(errorMessage) {}
+   * 
+   * @returns Promise for starting the scan. The Promise can fail if the user
+   * doesn't grant permission or some API is not supported by the browser.
+   */
+  start(cameraId,
+      configuration,
+      qrCodeSuccessCallback,
+      qrCodeErrorCallback)  // Returns a Promise
+
+  /**
+   * Stops streaming QR Code video and scanning. 
+   * 
+   * @returns Promise for safely closing the video stream.
+   */
+  stop() // Returns a Promise
+}       
 ```
 
 ## Credits
