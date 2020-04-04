@@ -3,7 +3,7 @@ A cross-platform HTML5 QR code reader.
 Use this light-weight Javascript library `(52 Kb)` to add QR Code scanning capability in your web application.
 
 ## Supported platforms
-Working on adding support for more and more platforms. If you find a platform or browser where the library is not working please feel free to file an issue. Check the [demo link]((https://blog.minhazav.dev/research/html5-qrcode.html)) to test out.
+Working on adding support for more and more platforms. If you find a platform or browser where the library is not working please feel free to file an issue. Check the [demo link](https://blog.minhazav.dev/research/html5-qrcode.html) to test out.
 
 ##### Legends
  - ![](assets/done.png) Means supported 
@@ -38,6 +38,8 @@ Supports:
  - Using any camera for scanning QR Code.
 
 ## How to use?
+> For full information [read this article](https://blog.minhazav.dev/HTML5-QR-Code-scanning-launched-v1.0.1/).
+
 Add an element you want to use as placeholder for QR Code scanner
 ```html
 <div id="reader"></div>
@@ -101,12 +103,10 @@ html5QrCode.stop().then(ignore => {
 [blog.minhazav.dev/research/html5-qrcode.html](https://blog.minhazav.dev/research/html5-qrcode.html)
 
 ### For more information
-Check this article on how to use this library
-[![](assets/3.jpg)](https://blog.minhazav.dev/qr-code-scanner-using-html-and-javascript/)
-[https://blog.minhazav.dev/qr-code-scanner-using-html-and-javascript/](https://blog.minhazav.dev/qr-code-scanner-using-html-and-javascript/)
+Check this article on how to use this library [HTML5 QR Code scanning - launched v1.0.1 without jQuery dependency and refactored Promise based APIs](https://blog.minhazav.dev/HTML5-QR-Code-scanning-launched-v1.0.1/).
 
 ## Screenshots
-![screenshot](assets/1.jpg)
+![screenshot](assets/1.jpg)<br>
 _Figure: Screenshot from Google Chrome running on Macbook Pro_
 
 ## Documentation
@@ -130,7 +130,7 @@ class Html5Qrcode {
    * 
    * @param {String} elementId - Id of the HTML element. 
    */
-  constructor(elementId)
+  constructor(elementId) {}
 
   /**
    * Start scanning QR Code for given camera.
@@ -153,14 +153,14 @@ class Html5Qrcode {
   start(cameraId,
       configuration,
       qrCodeSuccessCallback,
-      qrCodeErrorCallback)  // Returns a Promise
+      qrCodeErrorCallback) {}  // Returns a Promise
 
   /**
    * Stops streaming QR Code video and scanning. 
    * 
    * @returns Promise for safely closing the video stream.
    */
-  stop() // Returns a Promise
+  stop() {} // Returns a Promise
 }       
 ```
 
