@@ -79,7 +79,10 @@ Once you have the camera id from `device.id`, start camera using `Html5Qrcode#st
 const html5QrCode = new Html5Qrcode(/* element id */ "reader");
 html5QrCode.start(
   cameraId, 
-  { fps: 10 },
+  {
+    fps: 10,    // Optional frame per seconds for qr code scanning
+    qrbox: 250  // Optional if you want bounded box UI
+  },
   qrCodeMessage => {
     // do something when code is read
   },
@@ -140,6 +143,18 @@ class Html5Qrcode {
    *  Supported Fields:
    *      - fps: expected framerate of qr code scanning. example { fps: 2 }
    *          means the scanning would be done every 500 ms.
+   *      - qrbox: width of QR scanning box, this should be smaller than
+   *          the width and height of the box. This would make the scanner
+   *          look like this:
+   *          ----------------------
+   *          |********************|
+   *          |******,,,,,,,,,*****|      <--- shaded region
+   *          |******|       |*****|      <--- non shaded region would be
+   *          |******|       |*****|          used for QR code scanning.
+   *          |******|_______|*****|
+   *          |********************|
+   *          |********************|
+   *          ----------------------
    * @param {Function} qrCodeSuccessCallback callback on QR Code found.
    *  Example:
    *      function(qrCodeMessage) {}
@@ -163,6 +178,20 @@ class Html5Qrcode {
   stop() {} // Returns a Promise
 }       
 ```
+
+### Extra optional `configuration` in `start()` method
+This is a configuration for the QR code scanning which can effect both scanning behavior and UI. There are two optional properties right now, if you don't want them you can just pass an empty object `{}`.
+
+#### `fps` - Integer, Example = 10
+A.K.A frame per seconds, the default value for this is 2 but it can be increased to get faster scanning. Increasing too high value could affect performance. Value `>1000` will simply fail.
+
+#### `qrbox` - Integer, Example = 250
+Use this property to limit the region of the viewfinder you want to use for scanning. The rest of the viewfinder would be shaded. For example by passing config `{ qrbox : 250 }`, the screen will look like:
+
+<img src="./assets/1.jpg" width="450px">
+
+If you do not pass any value, the whole viewfinder would be used for scanning. 
+**Note**: this value has to be smaller than the width and height of the `QR code HTML element`.
 
 ## Credits
 The decoder used for the QRcode reading is from `LazarSoft` https://github.com/LazarSoft/jsqrcode<br>
