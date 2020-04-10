@@ -98,11 +98,12 @@ class Html5Qrcode {
         if (isShadedBoxEnabled) {
             const qrboxSize = config.qrbox;
             if (qrboxSize < Html5Qrcode.MIN_QR_BOX_SIZE) {
-                throw "minimum size of 'config.qrbox' is 50px.";
+                throw `minimum size of 'config.qrbox' is ${Html5Qrcode.MIN_QR_BOX_SIZE}px.`;
             }
 
             if (qrboxSize > width || qrboxSize > height) {
-                throw "'config.qrbox' should be greater than width and height of the HTML element.";
+                throw "'config.qrbox' should not be greater than the "
+                    + "width and height of the HTML element.";
             }
         }
 
@@ -142,6 +143,7 @@ class Html5Qrcode {
                 return;
             }
             if ($this._localMediaStream) {
+                // Only decode the relevant area, ignore the shaded area.
                 context.drawImage(
                     videoElement,
                     /* sx= */ qrRegion.x, 
@@ -210,9 +212,13 @@ class Html5Qrcode {
             const tracksToClose = $this._localMediaStream.getVideoTracks().length;
             var tracksClosed = 0;
 
+            // Removes the shaded region if exists.
             const removeQrRegion = () => {
-                while ($this._element.getElementsByClassName(Html5Qrcode.SHADED_REGION_CLASSNAME).length) {
-                    $this._element.removeChild($this._element.getElementsByClassName(Html5Qrcode.SHADED_REGION_CLASSNAME)[0]);
+                while ($this._element.getElementsByClassName(
+                    Html5Qrcode.SHADED_REGION_CLASSNAME).length) {
+                    const shadedChild = $this._element.getElementsByClassName(
+                        Html5Qrcode.SHADED_REGION_CLASSNAME)[0];
+                    $this._element.removeChild(shadedChild);
                 }
             }
 
@@ -220,7 +226,6 @@ class Html5Qrcode {
                 $this._localMediaStream = null;
                 $this._element.removeChild($this._videoElement);
                 $this._element.removeChild($this._canvasElement);
-
                 removeQrRegion();
                 resolve(true);
             }
@@ -318,7 +323,8 @@ class Html5Qrcode {
 
     _getShadedRegionBounds(width, height, qrboxSize) {
         if (qrboxSize > width || qrboxSize > height) {
-            throw "'config.qrbox' should be greater than width and height of the HTML element.";
+            throw "'config.qrbox' should not be greater than the "
+             + "width and height of the HTML element.";
         }
 
         return {

@@ -95,11 +95,11 @@ var Html5Qrcode = /*#__PURE__*/function () {
         var qrboxSize = config.qrbox;
 
         if (qrboxSize < Html5Qrcode.MIN_QR_BOX_SIZE) {
-          throw "minimum size of 'config.qrbox' is 50px.";
+          throw "minimum size of 'config.qrbox' is ".concat(Html5Qrcode.MIN_QR_BOX_SIZE, "px.");
         }
 
         if (qrboxSize > width || qrboxSize > height) {
-          throw "'config.qrbox' should be greater than width and height of the HTML element.";
+          throw "'config.qrbox' should not be greater than the " + "width and height of the HTML element.";
         }
       }
 
@@ -140,6 +140,7 @@ var Html5Qrcode = /*#__PURE__*/function () {
         }
 
         if ($this._localMediaStream) {
+          // Only decode the relevant area, ignore the shaded area.
           context.drawImage(videoElement,
           /* sx= */
           qrRegion.x,
@@ -228,11 +229,13 @@ var Html5Qrcode = /*#__PURE__*/function () {
       reject) {
         var tracksToClose = $this._localMediaStream.getVideoTracks().length;
 
-        var tracksClosed = 0;
+        var tracksClosed = 0; // Removes the shaded region if exists.
 
         var removeQrRegion = function removeQrRegion() {
           while ($this._element.getElementsByClassName(Html5Qrcode.SHADED_REGION_CLASSNAME).length) {
-            $this._element.removeChild($this._element.getElementsByClassName(Html5Qrcode.SHADED_REGION_CLASSNAME)[0]);
+            var shadedChild = $this._element.getElementsByClassName(Html5Qrcode.SHADED_REGION_CLASSNAME)[0];
+
+            $this._element.removeChild(shadedChild);
           }
         };
 
@@ -294,7 +297,7 @@ var Html5Qrcode = /*#__PURE__*/function () {
     key: "_getShadedRegionBounds",
     value: function _getShadedRegionBounds(width, height, qrboxSize) {
       if (qrboxSize > width || qrboxSize > height) {
-        throw "'config.qrbox' should be greater than width and height of the HTML element.";
+        throw "'config.qrbox' should not be greater than the " + "width and height of the HTML element.";
       }
 
       return {
