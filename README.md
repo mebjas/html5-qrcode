@@ -109,7 +109,7 @@ html5QrCode.stop().then(ignore => {
 Check this article on how to use this library [HTML5 QR Code scanning - launched v1.0.1 without jQuery dependency and refactored Promise based APIs](https://blog.minhazav.dev/HTML5-QR-Code-scanning-launched-v1.0.1/).
 
 ## Screenshots
-![screenshot](assets/1.jpg)<br>
+![screenshot](assets/screen.jpg)<br>
 _Figure: Screenshot from Google Chrome running on Macbook Pro_
 
 ## Documentation
@@ -188,7 +188,7 @@ A.K.A frame per seconds, the default value for this is 2 but it can be increased
 #### `qrbox` - Integer, Example = 250
 Use this property to limit the region of the viewfinder you want to use for scanning. The rest of the viewfinder would be shaded. For example by passing config `{ qrbox : 250 }`, the screen will look like:
 
-<img src="./assets/1.jpg" width="450px">
+<img src="./assets/screen.jpg" width="450px">
 
 If you do not pass any value, the whole viewfinder would be used for scanning. 
 **Note**: this value has to be smaller than the width and height of the `QR code HTML element`.
