@@ -318,6 +318,8 @@ class Html5Qrcode {
         const videoElement = document.createElement('video');
         videoElement.style.height = `${height}px`;
         videoElement.style.width = `${width}px`;
+        videoElement.muted = true;
+        videoElement.playsInline = true;
         return videoElement;
     }
 

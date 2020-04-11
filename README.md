@@ -22,11 +22,12 @@ Working on adding support for more and more platforms. If you find a platform or
 |![](./assets/done.png)| ![](assets/done.png)| ![](assets/done.png)| ![](assets/progress.png) 
 
 ### IOS
-> There is an ongoing issue on fixing the support for iOS - [issue/14](https://github.com/mebjas/html5-qrcode/issues/14)
 
-| <img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari-ios/safari-ios_24x24.png" alt="Safari" width="24px" height="24px" /><br/>Safari | <img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" /><br/>Chrome | <img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" /><br/>Firefox | <img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="Edge" width="24px" height="24px" /><br/> Edge | <img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/opera-touch/opera-touch_24x24.png" alt="Opera-Touch" width="24px" height="24px" /><br/> Opera Touch
-| --------- | --------- | --------- | --------- | ------- |
-|![](assets/progress.png)| ![](assets/progress.png)| ![](assets/progress.png)| ![](assets/progress.png) | ![](assets/progress.png)
+| <img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari-ios/safari-ios_24x24.png" alt="Safari" width="24px" height="24px" /><br/>Safari | <img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" /><br/>Chrome | <img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" /><br/>Firefox | <img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="Edge" width="24px" height="24px" /><br/> Edge 
+| --------- | --------- | --------- | --------- |
+|![](./assets/done.png)| ![](assets/progress.png)| ![](assets/progress.png)| ![](assets/progress.png) 
+
+> Apparently, Webkit for IOS is used by Chrome, Firefox, and other browsers in IOS and they do not have webcam permissions yet. There is an ongoing issue on fixing the support for iOS - [issue/14](https://github.com/mebjas/html5-qrcode/issues/14)
 
 
 ## Description - [View Demo](https://blog.minhazav.dev/research/html5-qrcode.html)

@@ -291,6 +291,8 @@ var Html5Qrcode = /*#__PURE__*/function () {
       var videoElement = document.createElement('video');
       videoElement.style.height = "".concat(height, "px");
       videoElement.style.width = "".concat(width, "px");
+      videoElement.muted = true;
+      videoElement.playsInline = true;
       return videoElement;
     }
   }, {
