@@ -2,6 +2,8 @@
 A cross-platform HTML5 QR code reader.
 Use this light-weight Javascript library `(52 Kb)` to add QR Code scanning capability in your web application.
 
+[![GitHub issues](https://img.shields.io/github/issues/mebjas/html5-qrcode)](https://github.com/mebjas/html5-qrcode/issues) [![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/mebjas/html5-qrcode)](https://github.com/mebjas/html5-qrcode/releases) ![GitHub](https://img.shields.io/github/license/mebjas/html5-qrcode)
+
 [![npm](https://nodei.co/npm/html5-qrcode.png)](https://www.npmjs.com/package/html5-qrcode)
 
 ## Supported platforms
