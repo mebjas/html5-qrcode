@@ -1,8 +1,6 @@
 "use strict";
 
-function _instanceof(left, right) { if (right != null && typeof Symbol !== "undefined" && right[Symbol.hasInstance]) { return !!right[Symbol.hasInstance](left); } else { return left instanceof right; } }
-
-function _classCallCheck(instance, Constructor) { if (!_instanceof(instance, Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
@@ -189,7 +187,7 @@ var Html5Qrcode = /*#__PURE__*/function () {
           }).then(function (stream) {
             getUserMediaSuccessCallback(stream);
             resolve();
-          }).catch(function (err) {
+          })["catch"](function (err) {
             reject("Error getting userMedia, error = ".concat(err));
           });
         } else if (navigator.getUserMedia) {
@@ -398,10 +396,10 @@ var Html5Qrcode = /*#__PURE__*/function () {
               _this._log("".concat(results.length, " results found"));
 
               resolve(results);
-            }).catch(function (err) {
+            })["catch"](function (err) {
               reject("".concat(err.name, " : ").concat(err.message));
             });
-          }).catch(function (err) {
+          })["catch"](function (err) {
             reject("".concat(err.name, " : ").concat(err.message));
           });
         } else if (MediaStreamTrack && MediaStreamTrack.getSources) {
