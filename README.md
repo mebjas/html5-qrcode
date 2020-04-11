@@ -2,6 +2,8 @@
 A cross-platform HTML5 QR code reader.
 Use this light-weight Javascript library `(52 Kb)` to add QR Code scanning capability in your web application.
 
+[![npm](https://nodei.co/npm/html5-qrcode.png)](https://www.npmjs.com/package/html5-qrcode)
+
 ## Supported platforms
 Working on adding support for more and more platforms. If you find a platform or browser where the library is not working please feel free to file an issue. Check the [demo link](https://blog.minhazav.dev/research/html5-qrcode.html) to test out.
 
@@ -40,6 +42,11 @@ Supports:
 
 ## How to use?
 > For full information [read this article](https://blog.minhazav.dev/HTML5-QR-Code-scanning-launched-v1.0.1/).
+
+Download the script from [release page](https://github.com/mebjas/html5-qrcode/releases) or `npm` with:
+```
+npm i html5-qrcode
+```
 
 Add an element you want to use as placeholder for QR Code scanner
 ```html
