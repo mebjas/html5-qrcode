@@ -9,12 +9,17 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 /**
+ * @fileoverview
  * HTML5 QR code scanning library.
+ * - Decode QR Code using web cam or smartphone camera
  * 
- * Note that ECMA Script is not supported by all browsers. Use minified/html5-qrcode.min.js for better
- * browser support. The code is currently transformed using https://babeljs.io.
+ * @author mebjas <minhazav@gmail.com>
  * 
- * TODO(mebjas): Add support for autmated transpiling using babel.
+ * The word "QR Code" is registered trademark of DENSO WAVE INCORPORATED
+ * http://www.denso-wave.com/qrcode/faqpatent-e.html
+ * 
+ * Note: ECMA Script is not supported by all browsers. Use minified/html5-qrcode.min.js for better
+ * browser support. Alternatively the transpiled code lives in transpiled/html5-qrcode.js
  */
 var Html5Qrcode = /*#__PURE__*/function () {
   /**
@@ -25,12 +30,17 @@ var Html5Qrcode = /*#__PURE__*/function () {
   function Html5Qrcode(elementId) {
     _classCallCheck(this, Html5Qrcode);
 
+    if (!qrcode) {
+      throw 'qrcode is not defined, use the minified/html5-qrcode.min.js for proper support';
+    }
+
     this._elementId = elementId;
     this._foreverScanTimeout = null;
     this._localMediaStream = null;
     this._shouldScan = true;
     this._url = window.URL || window.webkitURL || window.mozURL || window.msURL;
     this._userMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+    this._isScanning = false;
   }
   /**
    * Start scanning QR Code for given camera.
@@ -77,7 +87,10 @@ var Html5Qrcode = /*#__PURE__*/function () {
 
       if (!qrCodeErrorCallback) {
         qrCodeErrorCallback = console.log;
-      }
+      } // Cleanup.
+
+
+      this._clearElement();
 
       var $this = this; // Create configuration by merging default and input settings.
 
@@ -138,7 +151,8 @@ var Html5Qrcode = /*#__PURE__*/function () {
         }
 
         if ($this._localMediaStream) {
-          // Only decode the relevant area, ignore the shaded area.
+          // Only decode the relevant area, ignore the shaded area, More reference:
+          // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
           context.drawImage(videoElement,
           /* sx= */
           qrRegion.x,
@@ -186,6 +200,7 @@ var Html5Qrcode = /*#__PURE__*/function () {
             }
           }).then(function (stream) {
             getUserMediaSuccessCallback(stream);
+            $this._isScanning = true;
             resolve();
           })["catch"](function (err) {
             reject("Error getting userMedia, error = ".concat(err));
@@ -200,6 +215,7 @@ var Html5Qrcode = /*#__PURE__*/function () {
           };
           navigator.getUserMedia(getCameraConfig, function (stream) {
             getUserMediaSuccessCallback(stream);
+            $this._isScanning = true;
             resolve();
           }, function (err) {
             reject("Error getting userMedia, error = ".concat(err));
@@ -225,6 +241,8 @@ var Html5Qrcode = /*#__PURE__*/function () {
       return new Promise(function (resolve,
       /* ignore */
       reject) {
+        qrcode.callback = null;
+
         var tracksToClose = $this._localMediaStream.getVideoTracks().length;
 
         var tracksClosed = 0; // Removes the shaded region if exists.
@@ -245,6 +263,7 @@ var Html5Qrcode = /*#__PURE__*/function () {
           $this._element.removeChild($this._canvasElement);
 
           removeQrRegion();
+          $this._isScanning = false;
           resolve(true);
         };
 
@@ -259,6 +278,171 @@ var Html5Qrcode = /*#__PURE__*/function () {
       });
     }
     /**
+     * Scans an Image File for QR Code.
+     * 
+     * This feature is mutually exclusive to camera based scanning, you should call
+     * stop() if the camera based scanning was ongoing.
+     * 
+     * @param {File} imageFile a local file with Image content.
+     * @param {boolean} showImage if true the Image will be rendered on given element.
+     * 
+     * @returns Promise with decoded QR code string on success and error message on failure.
+     *            Failure could happen due to different reasons:
+     *            1. QR Code decode failed because enough patterns not found in image.
+     *            2. Input file was not image or unable to load the image or other image load
+     *              errors.
+     */
+
+  }, {
+    key: "scanFile",
+    value: function scanFile(imageFile,
+    /* default=true */
+    showImage) {
+      var $this = this;
+
+      if (!imageFile || !(imageFile instanceof File)) {
+        throw "imageFile argument is mandatory and should be instance " + "of File. Use 'event.target.files[0]'";
+      }
+
+      showImage = showImage === undefined ? true : showImage;
+
+      if ($this._isScanning) {
+        throw "Close ongoing scan before scanning a file.";
+      }
+
+      var computeCanvasDrawConfig = function computeCanvasDrawConfig(imageWidth, imageHeight) {
+        var element = document.getElementById($this._elementId);
+        var width = element.clientWidth ? element.clientWidth : Html5Qrcode.DEFAULT_WIDTH;
+        var height = element.clientHeight ? element.clientHeight : Html5Qrcode.DEFAULT_HEIGHT;
+
+        if (imageWidth <= width && imageHeight <= height) {
+          // no downsampling needed.
+          var xoffset = (width - imageWidth) / 2;
+          var yoffset = (height - imageHeight) / 2;
+          return {
+            x: xoffset,
+            y: yoffset,
+            width: imageWidth,
+            height: imageHeight
+          };
+        } else {
+          var formerImageWidth = imageWidth;
+          var formerImageHeight = imageHeight;
+
+          if (imageWidth > width) {
+            imageHeight = width / imageWidth * imageHeight;
+            imageWidth = width;
+          }
+
+          if (imageHeight > height) {
+            imageWidth = height / imageHeight * imageWidth;
+            imageHeight = height;
+          }
+
+          Html5Qrcode._log("Image downsampled from ".concat(formerImageWidth, "X").concat(formerImageHeight) + " to ".concat(imageWidth, "X").concat(imageHeight, "."));
+
+          return computeCanvasDrawConfig(imageWidth, imageHeight);
+        }
+      };
+
+      return new Promise(function (resolve, reject) {
+        $this._possiblyCloseLastScanImageFile();
+
+        $this._clearElement();
+
+        $this._lastScanImageFile = imageFile;
+        var inputImage = new Image();
+
+        inputImage.onload = function () {
+          var element = document.getElementById($this._elementId);
+          var containerWidth = element.clientWidth ? element.clientWidth : Html5Qrcode.DEFAULT_WIDTH;
+          var containerHeight = element.clientHeight ? element.clientHeight : Html5Qrcode.DEFAULT_HEIGHT;
+          var imageWidth = inputImage.width;
+          var imageHeight = inputImage.height;
+          var config = computeCanvasDrawConfig(imageWidth, imageHeight);
+
+          if (showImage) {
+            var visibleCanvas = $this._createCanvasElement(containerWidth, containerHeight, 'qr-canvas-visible');
+
+            visibleCanvas.style.display = "inline-block";
+            element.appendChild(visibleCanvas);
+
+            var _context = visibleCanvas.getContext('2d');
+
+            _context.canvas.width = containerWidth;
+            _context.canvas.height = containerHeight; // More reference
+            // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
+
+            _context.drawImage(inputImage,
+            /* sx= */
+            0,
+            /* sy= */
+            0,
+            /* sWidth= */
+            imageWidth,
+            /* sHeight= */
+            imageHeight,
+            /* dx= */
+            config.x,
+            /* dy= */
+            config.y,
+            /* dWidth= */
+            config.width,
+            /* dHeight= */
+            config.height);
+          }
+
+          var hiddenCanvas = $this._createCanvasElement(config.width, config.height);
+
+          element.appendChild(hiddenCanvas);
+          var context = hiddenCanvas.getContext('2d');
+          context.canvas.width = config.width;
+          context.canvas.height = config.height;
+          context.drawImage(inputImage,
+          /* sx= */
+          0,
+          /* sy= */
+          0,
+          /* sWidth= */
+          imageWidth,
+          /* sHeight= */
+          imageHeight,
+          /* dx= */
+          0,
+          /* dy= */
+          0,
+          /* dWidth= */
+          config.width,
+          /* dHeight= */
+          config.height);
+
+          try {
+            resolve(qrcode.decode());
+          } catch (exception) {
+            reject("QR code parse error, error = ".concat(exception));
+          }
+        };
+
+        inputImage.onerror = reject;
+        inputImage.onabort = reject;
+        inputImage.onstalled = reject;
+        inputImage.onsuspend = reject;
+        inputImage.src = URL.createObjectURL(imageFile);
+      });
+    }
+    /**
+     * Clears the existing canvas.
+     * 
+     * Note: in case of ongoing web cam based scan, it needs to be explicitly
+     * closed before calling this method, else it will throw exception.
+     */
+
+  }, {
+    key: "clear",
+    value: function clear() {
+      this._clearElement();
+    }
+    /**
      * Returns a Promise with list of all cameras supported by the device.
      * 
      * The returned object is a list of result object of type:
@@ -269,8 +453,18 @@ var Html5Qrcode = /*#__PURE__*/function () {
      */
 
   }, {
+    key: "_clearElement",
+    value: function _clearElement() {
+      if (this._isScanning) {
+        throw 'Cannot clear while scan is ongoing, close it first.';
+      }
+
+      var element = document.getElementById(this._elementId);
+      element.innerHTML = "";
+    }
+  }, {
     key: "_createCanvasElement",
-    value: function _createCanvasElement(width, height) {
+    value: function _createCanvasElement(width, height, customId) {
       var canvasWidth = width; // - Html5Qrcode.DEFAULT_WIDTH_OFFSET;
 
       var canvasHeight = height; // - Html5Qrcode.DEFAULT_HEIGHT_OFFSET;
@@ -280,7 +474,7 @@ var Html5Qrcode = /*#__PURE__*/function () {
       canvasElement.style.height = "".concat(canvasHeight, "px");
       canvasElement.style.display = "none"; // This id is set by lazarsoft/jsqrcode
 
-      canvasElement.id = 'qr-canvas';
+      canvasElement.id = customId == undefined ? 'qr-canvas' : customId;
       return canvasElement;
     }
   }, {
@@ -365,6 +559,14 @@ var Html5Qrcode = /*#__PURE__*/function () {
       }
 
       return elem;
+    }
+  }, {
+    key: "_possiblyCloseLastScanImageFile",
+    value: function _possiblyCloseLastScanImageFile() {
+      if (this._lastScanImageFile) {
+        URL.revokeObjectURL(this._lastScanImageFile);
+        this._lastScanImageFile = null;
+      }
     }
   }], [{
     key: "getCameras",
