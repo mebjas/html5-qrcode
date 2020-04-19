@@ -73,7 +73,7 @@ Add `minified/html5-qrcode.min.js` in your web page.
 
 ### For using inline QR Code scanning with Webcam or Smartphone camera
 
-To get a list of supported cameras, query it using static method `Html5Qrcode.getCameras()`. This method returns a `Promise` with list of devices supported in format `{ id: "id", label: "label" }`.
+To get a list of supported cameras, query it using static method `Html5Qrcode.getCameras()`. This method returns a `Promise` with list of devices supported in format `{ id: "id", label: "label" }`. 
 ```js
 // This method will trigger user permissions
 Html5Qrcode.getCameras().then(cameras => {
@@ -89,6 +89,11 @@ Html5Qrcode.getCameras().then(cameras => {
   // handle err
 });
 ```
+
+**Important**: Not that this method will trigger user permission if user has not granted already. 
+> Warning: Direct access to the camera is a powerful feature. It requires consent from the user, and your site MUST be on a secure origin (HTTPS).
+> 
+> Warning: Asking for access to the camera on page load will result in most of your users rejecting access to it. [More info](https://developers.google.com/web/fundamentals/media/capturing-images)
 
 Once you have the camera id from `device.id`, start camera using `Html5Qrcode#start(..)`. This method returns a `Promise` with Qr code scanning initiation.
 ```js
