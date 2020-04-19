@@ -464,8 +464,8 @@ class Html5Qrcode {
     }
 
     _createCanvasElement(width, height, customId) {
-        const canvasWidth = width;// - Html5Qrcode.DEFAULT_WIDTH_OFFSET;
-        const canvasHeight = height;// - Html5Qrcode.DEFAULT_HEIGHT_OFFSET;
+        const canvasWidth = width;
+        const canvasHeight = height;
         const canvasElement = document.createElement('canvas');
         canvasElement.style.width = `${canvasWidth}px`;
         canvasElement.style.height = `${canvasHeight}px`;
