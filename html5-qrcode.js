@@ -22,6 +22,8 @@ class Html5Qrcode {
     static SHADED_BOTTOM = 4;
     static SHADED_REGION_CLASSNAME = "qr-shaded-region";
     static VERBOSE = false;
+    static BORDER_SHADER_DEFAULT_COLOR = "#ffffff";
+    static BORDER_SHADER_MATCH_COLOR = "rgb(90, 193, 56)";
 
     /**
      * Initialize QR Code scanner.
@@ -192,7 +194,9 @@ class Html5Qrcode {
                     /* dHeight= */ $this._qrRegion.height);
                 try {
                     qrcode.decode();
+                    this._possiblyUpdateShaders(/* qrMatch= */ true);
                 } catch (exception) {
+                    this._possiblyUpdateShaders(/* qrMatch= */ false);
                     qrCodeErrorCallback(`QR code parse error, error = ${exception}`);
                 }
             }
@@ -600,10 +604,26 @@ class Html5Qrcode {
             return;
         }
 
-        element.append(this._createShadedElement(height, qrRegion, Html5Qrcode.SHADED_LEFT));
-        element.append(this._createShadedElement(height, qrRegion, Html5Qrcode.SHADED_RIGHT));
-        element.append(this._createShadedElement(height, qrRegion, Html5Qrcode.SHADED_TOP));
-        element.append(this._createShadedElement(height, qrRegion, Html5Qrcode.SHADED_BOTTOM));
+        const shaders = {};
+        shaders[Html5Qrcode.SHADED_LEFT] = this._createShadedElement(
+            height, qrRegion, Html5Qrcode.SHADED_LEFT);
+        shaders[Html5Qrcode.SHADED_RIGHT] = this._createShadedElement(
+            height, qrRegion, Html5Qrcode.SHADED_RIGHT);
+        shaders[Html5Qrcode.SHADED_TOP] = this._createShadedElement(
+            height, qrRegion, Html5Qrcode.SHADED_TOP);
+        shaders[Html5Qrcode.SHADED_BOTTOM] = this._createShadedElement(
+            height, qrRegion, Html5Qrcode.SHADED_BOTTOM);
+
+        Object.keys(shaders).forEach(key => element.append(shaders[key]));
+
+        if (qrRegion.x < 10 || qrRegion.y < 10) {
+            this.hasBorderShaders = false;
+        } else {
+            Object.keys(shaders).forEach(key =>
+                this._insertShaderBorders(shaders[key], qrRegion, key));
+            this.hasBorderShaders = true;
+        }
+
     }
 
     _createShadedElement(height, qrRegion, shadingPosition) {
@@ -645,6 +665,106 @@ class Html5Qrcode {
         }
 
         return elem;
+    }
+
+    _insertShaderBorders(shaderElem, qrRegion, shadingPosition) {
+        shadingPosition = parseInt(shadingPosition);
+        const $this = this;
+        const borderOffset = 5;
+        const smallSize = 5;
+        const largeSize = 40;
+        const createBorder = () => {
+            const elem = document.createElement("div");
+            elem.style.position = "absolute";
+            elem.style.backgroundColor
+                = Html5Qrcode.BORDER_SHADER_DEFAULT_COLOR;
+            switch (shadingPosition) {
+                case Html5Qrcode.SHADED_LEFT:   // intentional
+                case Html5Qrcode.SHADED_RIGHT:
+                    const height = largeSize + borderOffset;
+                    elem.style.width = `${smallSize}px`;
+                    elem.style.height = `${height}px`;
+                    break;
+                case Html5Qrcode.SHADED_TOP:   // intentional
+                case Html5Qrcode.SHADED_BOTTOM:
+                    const width = largeSize + borderOffset;
+                    elem.style.width = `${width}px`;
+                    elem.style.height = `${smallSize}px`;
+                    break;
+                default:
+                    throw "Unsupported shadingPosition";
+            }
+            return elem;
+        }
+
+        const insertBorder = (top, left) => {
+            if (!(top !== null && left !== null)) {
+                throw "Shaders should have defined positions"
+            }
+            const borderElem = createBorder();
+            borderElem.style.top = `${top}px`;
+            borderElem.style.left = `${left}px`;
+            shaderElem.appendChild(borderElem);
+
+            if (!$this.borderShaders) {
+                $this.borderShaders = [];
+            }
+
+            $this.borderShaders.push(borderElem);
+        }
+
+        let firstTop = null;
+        let firstLeft = null;
+        let secondTop = null;
+        let secondLeft = null;
+        switch (shadingPosition) {
+            case Html5Qrcode.SHADED_LEFT:
+                firstTop = qrRegion.y - borderOffset;
+                firstLeft = qrRegion.x - smallSize;
+                secondTop = qrRegion.y + qrRegion.height - largeSize;
+                secondLeft = firstLeft;
+                break;
+            case Html5Qrcode.SHADED_RIGHT:
+                firstTop = qrRegion.y - borderOffset;
+                firstLeft = 0;
+                secondTop = qrRegion.y + qrRegion.height - largeSize;
+                secondLeft = firstLeft;
+                break;
+            case Html5Qrcode.SHADED_TOP:
+                firstTop = qrRegion.y - borderOffset;
+                firstLeft = -smallSize;
+                secondTop = firstTop;
+                secondLeft = qrRegion.width - largeSize;
+                break;
+            case Html5Qrcode.SHADED_BOTTOM:
+                firstTop = 0;
+                firstLeft = -smallSize;
+                secondTop = firstTop;
+                secondLeft = qrRegion.width - largeSize;
+                break;
+            default:
+                throw "Unsupported shadingPosition";
+        }
+
+        insertBorder(firstTop, firstLeft);
+        insertBorder(secondTop, secondLeft);
+    }
+
+    _possiblyUpdateShaders(qrMatch) {
+        if (this.qrMatch === qrMatch) {
+            return;
+        }
+
+        if (this.hasBorderShaders
+            && this.borderShaders
+            && this.borderShaders.length) {
+            this.borderShaders.forEach(shader => {
+                shader.style.backgroundColor = qrMatch
+                    ? Html5Qrcode.BORDER_SHADER_MATCH_COLOR
+                    : Html5Qrcode.BORDER_SHADER_DEFAULT_COLOR;
+            });
+        }
+        this.qrMatch = qrMatch;
     }
 
     _possiblyCloseLastScanImageFile() {

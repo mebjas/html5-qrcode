@@ -198,7 +198,15 @@ var Html5Qrcode = /*#__PURE__*/function () {
 
           try {
             qrcode.decode();
+
+            _this._possiblyUpdateShaders(
+            /* qrMatch= */
+            true);
           } catch (exception) {
+            _this._possiblyUpdateShaders(
+            /* qrMatch= */
+            false);
+
             qrCodeErrorCallback("QR code parse error, error = ".concat(exception));
           }
         }
@@ -573,15 +581,30 @@ var Html5Qrcode = /*#__PURE__*/function () {
   }, {
     key: "_possiblyInsertShadingElement",
     value: function _possiblyInsertShadingElement(element, height, qrRegion) {
+      var _this2 = this;
+
       if (qrRegion.x == 0 && qrRegion.y == 0) {
         // No shading
         return;
       }
 
-      element.append(this._createShadedElement(height, qrRegion, Html5Qrcode.SHADED_LEFT));
-      element.append(this._createShadedElement(height, qrRegion, Html5Qrcode.SHADED_RIGHT));
-      element.append(this._createShadedElement(height, qrRegion, Html5Qrcode.SHADED_TOP));
-      element.append(this._createShadedElement(height, qrRegion, Html5Qrcode.SHADED_BOTTOM));
+      var shaders = {};
+      shaders[Html5Qrcode.SHADED_LEFT] = this._createShadedElement(height, qrRegion, Html5Qrcode.SHADED_LEFT);
+      shaders[Html5Qrcode.SHADED_RIGHT] = this._createShadedElement(height, qrRegion, Html5Qrcode.SHADED_RIGHT);
+      shaders[Html5Qrcode.SHADED_TOP] = this._createShadedElement(height, qrRegion, Html5Qrcode.SHADED_TOP);
+      shaders[Html5Qrcode.SHADED_BOTTOM] = this._createShadedElement(height, qrRegion, Html5Qrcode.SHADED_BOTTOM);
+      Object.keys(shaders).forEach(function (key) {
+        return element.append(shaders[key]);
+      });
+
+      if (qrRegion.x < 10 || qrRegion.y < 10) {
+        this.hasBorderShaders = false;
+      } else {
+        Object.keys(shaders).forEach(function (key) {
+          return _this2._insertShaderBorders(shaders[key], qrRegion, key);
+        });
+        this.hasBorderShaders = true;
+      }
     }
   }, {
     key: "_createShadedElement",
@@ -631,6 +654,117 @@ var Html5Qrcode = /*#__PURE__*/function () {
       return elem;
     }
   }, {
+    key: "_insertShaderBorders",
+    value: function _insertShaderBorders(shaderElem, qrRegion, shadingPosition) {
+      shadingPosition = parseInt(shadingPosition);
+      var $this = this;
+      var borderOffset = 5;
+      var smallSize = 5;
+      var largeSize = 40;
+
+      var createBorder = function createBorder() {
+        var elem = document.createElement("div");
+        elem.style.position = "absolute";
+        elem.style.backgroundColor = Html5Qrcode.BORDER_SHADER_DEFAULT_COLOR;
+
+        switch (shadingPosition) {
+          case Html5Qrcode.SHADED_LEFT: // intentional
+
+          case Html5Qrcode.SHADED_RIGHT:
+            var height = largeSize + borderOffset;
+            elem.style.width = "".concat(smallSize, "px");
+            elem.style.height = "".concat(height, "px");
+            break;
+
+          case Html5Qrcode.SHADED_TOP: // intentional
+
+          case Html5Qrcode.SHADED_BOTTOM:
+            var width = largeSize + borderOffset;
+            elem.style.width = "".concat(width, "px");
+            elem.style.height = "".concat(smallSize, "px");
+            break;
+
+          default:
+            throw "Unsupported shadingPosition";
+        }
+
+        return elem;
+      };
+
+      var insertBorder = function insertBorder(top, left) {
+        if (!(top !== null && left !== null)) {
+          throw "Shaders should have defined positions";
+        }
+
+        var borderElem = createBorder();
+        borderElem.style.top = "".concat(top, "px");
+        borderElem.style.left = "".concat(left, "px");
+        shaderElem.appendChild(borderElem);
+
+        if (!$this.borderShaders) {
+          $this.borderShaders = [];
+        }
+
+        $this.borderShaders.push(borderElem);
+      };
+
+      var firstTop = null;
+      var firstLeft = null;
+      var secondTop = null;
+      var secondLeft = null;
+
+      switch (shadingPosition) {
+        case Html5Qrcode.SHADED_LEFT:
+          firstTop = qrRegion.y - borderOffset;
+          firstLeft = qrRegion.x - smallSize;
+          secondTop = qrRegion.y + qrRegion.height - largeSize;
+          secondLeft = firstLeft;
+          break;
+
+        case Html5Qrcode.SHADED_RIGHT:
+          firstTop = qrRegion.y - borderOffset;
+          firstLeft = 0;
+          secondTop = qrRegion.y + qrRegion.height - largeSize;
+          secondLeft = firstLeft;
+          break;
+
+        case Html5Qrcode.SHADED_TOP:
+          firstTop = qrRegion.y - borderOffset;
+          firstLeft = -smallSize;
+          secondTop = firstTop;
+          secondLeft = qrRegion.width - largeSize;
+          break;
+
+        case Html5Qrcode.SHADED_BOTTOM:
+          firstTop = 0;
+          firstLeft = -smallSize;
+          secondTop = firstTop;
+          secondLeft = qrRegion.width - largeSize;
+          break;
+
+        default:
+          throw "Unsupported shadingPosition";
+      }
+
+      insertBorder(firstTop, firstLeft);
+      insertBorder(secondTop, secondLeft);
+    }
+  }, {
+    key: "_possiblyUpdateShaders",
+    value: function _possiblyUpdateShaders(qrMatch) {
+      if (this.qrMatch === qrMatch) {
+        return;
+      }
+
+      if (this.hasBorderShaders && this.borderShaders && this.borderShaders.length) {
+        this.borderShaders.forEach(function (shader) {
+          shader.style.backgroundColor = qrMatch ? Html5Qrcode.BORDER_SHADER_MATCH_COLOR : Html5Qrcode.BORDER_SHADER_DEFAULT_COLOR;
+        });
+      }
+
+      this.qrMatch = qrMatch;
+    }
+  }, {
     key: "_possiblyCloseLastScanImageFile",
     value: function _possiblyCloseLastScanImageFile() {
       if (this._lastScanImageFile) {
@@ -641,11 +775,11 @@ var Html5Qrcode = /*#__PURE__*/function () {
   }], [{
     key: "getCameras",
     value: function getCameras() {
-      var _this2 = this;
+      var _this3 = this;
 
       return new Promise(function (resolve, reject) {
         if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices && navigator.mediaDevices.getUserMedia) {
-          _this2._log("navigator.mediaDevices used");
+          _this3._log("navigator.mediaDevices used");
 
           navigator.mediaDevices.getUserMedia({
             audio: false,
@@ -665,7 +799,7 @@ var Html5Qrcode = /*#__PURE__*/function () {
                 }
               }
 
-              _this2._log("".concat(results.length, " results found"));
+              _this3._log("".concat(results.length, " results found"));
 
               resolve(results);
             })["catch"](function (err) {
@@ -675,7 +809,7 @@ var Html5Qrcode = /*#__PURE__*/function () {
             reject("".concat(err.name, " : ").concat(err.message));
           });
         } else if (MediaStreamTrack && MediaStreamTrack.getSources) {
-          _this2._log("MediaStreamTrack.getSources used");
+          _this3._log("MediaStreamTrack.getSources used");
 
           var callback = function callback(sourceInfos) {
             var results = [];
@@ -691,14 +825,14 @@ var Html5Qrcode = /*#__PURE__*/function () {
               }
             }
 
-            _this2._log("".concat(results.length, " results found"));
+            _this3._log("".concat(results.length, " results found"));
 
             resolve(results);
           };
 
           MediaStreamTrack.getSources(callback);
         } else {
-          _this2._log("unable to query supported devices.");
+          _this3._log("unable to query supported devices.");
 
           reject("unable to query supported devices.");
         }
@@ -740,3 +874,7 @@ _defineProperty(Html5Qrcode, "SHADED_BOTTOM", 4);
 _defineProperty(Html5Qrcode, "SHADED_REGION_CLASSNAME", "qr-shaded-region");
 
 _defineProperty(Html5Qrcode, "VERBOSE", false);
+
+_defineProperty(Html5Qrcode, "BORDER_SHADER_DEFAULT_COLOR", "#ffffff");
+
+_defineProperty(Html5Qrcode, "BORDER_SHADER_MATCH_COLOR", "rgb(90, 193, 56)");
