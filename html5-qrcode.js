@@ -30,7 +30,7 @@ class Html5Qrcode {
      */
     constructor(elementId) {
         if (!qrcode) {
-          throw 'qrcode is not defined, use the minified/html5-qrcode.min.js for proper support';
+            throw 'qrcode is not defined, use the minified/html5-qrcode.min.js for proper support';
         }
 
         this._elementId = elementId;
@@ -38,7 +38,7 @@ class Html5Qrcode {
         this._localMediaStream = null;
         this._shouldScan = true;
         this._url = window.URL || window.webkitURL || window.mozURL || window.msURL;
-        this._userMedia = navigator.getUserMedia || navigator.webkitGetUserMedia 
+        this._userMedia = navigator.getUserMedia || navigator.webkitGetUserMedia
             || navigator.mozGetUserMedia || navigator.msGetUserMedia;
         this._isScanning = false;
     }
@@ -116,7 +116,7 @@ class Html5Qrcode {
 
             if (qrboxSize > width) {
                 throw "'config.qrbox' should not be greater than the "
-                    + "width of the HTML element.";
+                + "width of the HTML element.";
             }
         }
 
@@ -126,7 +126,7 @@ class Html5Qrcode {
          * 
          * @param width derived width of viewfinder.
          * @param height derived height of viewfinder.
-         */ 
+         */
         const setupUi = (width, height) => {
             const qrboxSize = config.qrbox;
             if (qrboxSize > height) {
@@ -144,24 +144,24 @@ class Html5Qrcode {
             const qrRegion = shouldShadingBeApplied
                 ? this._getShadedRegionBounds(width, height, qrboxSize)
                 : defaultQrRegion;
-  
+
             const canvasElement = this._createCanvasElement(qrRegion.width, qrRegion.height);
             const context = canvasElement.getContext('2d');
             context.canvas.width = qrRegion.width;
             context.canvas.height = qrRegion.height;
-  
+
             // Insert the canvas
             element.append(canvasElement);
             if (shouldShadingBeApplied) {
                 this._possiblyInsertShadingElement(element, height, qrRegion);
             }
-  
+
             // Update local states
             $this._qrRegion = qrRegion;
             $this._context = context;
             $this._canvasElement = canvasElement;
         }
-  
+
         // Method that scans forever.
         const foreverScan = () => {
             if (!$this._shouldScan) {
@@ -169,7 +169,7 @@ class Html5Qrcode {
                 return;
             }
             if ($this._localMediaStream) {
-                
+
                 // There is difference in size of rendered video and one that is
                 // considered by the canvas. We need to account for scaling factor.
                 const videoElement = $this._videoElement;
@@ -177,18 +177,18 @@ class Html5Qrcode {
                 const heightRatio = videoElement.videoHeight / videoElement.clientHeight;
                 const sWidthOffset = $this._qrRegion.width * widthRatio;
                 const sHeightOffset = $this._qrRegion.height * heightRatio;
-  
+
                 // Only decode the relevant area, ignore the shaded area, More reference:
                 // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
                 $this._context.drawImage(
                     $this._videoElement,
-                    /* sx= */ $this._qrRegion.x, 
-                    /* sy= */ $this._qrRegion.y, 
-                    /* sWidth= */ sWidthOffset, 
+                    /* sx= */ $this._qrRegion.x,
+                    /* sy= */ $this._qrRegion.y,
+                    /* sWidth= */ sWidthOffset,
                     /* sHeight= */ sHeightOffset,
                     /* dx= */ 0,
-                    /* dy= */  0, 
-                    /* dWidth= */ $this._qrRegion.width, 
+                    /* dy= */  0,
+                    /* dWidth= */ $this._qrRegion.width,
                     /* dHeight= */ $this._qrRegion.height);
                 try {
                     qrcode.decode();
@@ -247,7 +247,7 @@ class Html5Qrcode {
             });
         }
         //#endregion
-  
+
         return new Promise((resolve, reject) => {
             if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
                 const videoConstraints = {
@@ -257,19 +257,19 @@ class Html5Qrcode {
                     { audio: false, video: videoConstraints })
                     .then(stream => {
                         onMediaStreamReceived(stream)
-                        .then(_ => {
-                            $this._isScanning = true;
-                            resolve();
-                        })
-                        .catch(reject);    
+                            .then(_ => {
+                                $this._isScanning = true;
+                                resolve();
+                            })
+                            .catch(reject);
                     })
                     .catch(err => {
                         reject(`Error getting userMedia, error = ${err}`);
                     });
             } else if (navigator.getUserMedia) {
                 const getCameraConfig = {
-                    video: { 
-                        optional: [{ 
+                    video: {
+                        optional: [{
                             sourceId: cameraId
                         }]
                     }
@@ -277,11 +277,11 @@ class Html5Qrcode {
                 navigator.getUserMedia(getCameraConfig,
                     stream => {
                         onMediaStreamReceived(stream)
-                        .then(_ => {
-                            $this._isScanning = true;
-                            resolve();
-                        })
-                        .catch(reject);
+                            .then(_ => {
+                                $this._isScanning = true;
+                                resolve();
+                            })
+                            .catch(reject);
                     }, err => {
                         reject(`Error getting userMedia, error = ${err}`);
                     });
@@ -359,126 +359,126 @@ class Html5Qrcode {
      *              errors.
      */
     scanFile(imageFile, /* default=true */ showImage) {
-      const $this = this;
-      if (!imageFile || !(imageFile instanceof File)) {
-        throw "imageFile argument is mandatory and should be instance "
-         + "of File. Use 'event.target.files[0]'";
-      }
-  
-      showImage = showImage === undefined ? true : showImage;
-  
-      if ($this._isScanning) {
-        throw "Close ongoing scan before scanning a file.";
-      }
-  
-    const computeCanvasDrawConfig = (
-        imageWidth, 
-        imageHeight, 
-        containerWidth, 
-        containerHeight) => {
-        
-        if (imageWidth <= containerWidth && imageHeight <= containerHeight) {
-            // no downsampling needed.
-            const xoffset = (containerWidth - imageWidth) / 2;
-            const yoffset = (containerHeight - imageHeight) / 2;
-            return {
-                x: xoffset,
-                y: yoffset,
-                width: imageWidth,
-                height: imageHeight
-            };
-        } else {
-            const formerImageWidth = imageWidth;
-            const formerImageHeight = imageHeight;
-            if (imageWidth > containerWidth) {
-                imageHeight = (containerWidth / imageWidth) * imageHeight;
-                imageWidth = containerWidth;
-            }
-
-            if (imageHeight > containerHeight) {
-                imageWidth = (containerHeight / imageHeight) * imageWidth;
-                imageHeight = containerHeight;
-            }
-
-            Html5Qrcode._log(
-                `Image downsampled from ${formerImageWidth}X${formerImageHeight}`
-                + ` to ${imageWidth}X${imageHeight}.`);
-
-            return computeCanvasDrawConfig(
-                imageWidth, imageHeight, containerWidth, containerHeight);
+        const $this = this;
+        if (!imageFile || !(imageFile instanceof File)) {
+            throw "imageFile argument is mandatory and should be instance "
+            + "of File. Use 'event.target.files[0]'";
         }
-      }
-  
-      return new Promise((resolve, reject) => {
-        $this._possiblyCloseLastScanImageFile();
-        $this._clearElement();
-        $this._lastScanImageFile = imageFile;
-  
-        const inputImage = new Image;
-        inputImage.onload = () => {
-            const imageWidth = inputImage.width;
-            const imageHeight = inputImage.height;
-            const element = document.getElementById($this._elementId);
-            const containerWidth = element.clientWidth 
-                ? element.clientWidth : Html5Qrcode.DEFAULT_WIDTH;
-            // No default height anymore.
-            const containerHeight = element.clientHeight 
-                ? element.clientHeight : imageHeight ;
-  
-            const config = computeCanvasDrawConfig(
-                imageWidth, imageHeight, containerWidth, containerHeight);
-            if (showImage) {
-                const visibleCanvas = $this._createCanvasElement(
-                    containerWidth, containerHeight, 'qr-canvas-visible');
-                visibleCanvas.style.display = "inline-block";
-                element.appendChild(visibleCanvas);
-                const context = visibleCanvas.getContext('2d');
-                context.canvas.width = containerWidth;
-                context.canvas.height = containerHeight;
+
+        showImage = showImage === undefined ? true : showImage;
+
+        if ($this._isScanning) {
+            throw "Close ongoing scan before scanning a file.";
+        }
+
+        const computeCanvasDrawConfig = (
+            imageWidth,
+            imageHeight,
+            containerWidth,
+            containerHeight) => {
+
+            if (imageWidth <= containerWidth && imageHeight <= containerHeight) {
+                // no downsampling needed.
+                const xoffset = (containerWidth - imageWidth) / 2;
+                const yoffset = (containerHeight - imageHeight) / 2;
+                return {
+                    x: xoffset,
+                    y: yoffset,
+                    width: imageWidth,
+                    height: imageHeight
+                };
+            } else {
+                const formerImageWidth = imageWidth;
+                const formerImageHeight = imageHeight;
+                if (imageWidth > containerWidth) {
+                    imageHeight = (containerWidth / imageWidth) * imageHeight;
+                    imageWidth = containerWidth;
+                }
+
+                if (imageHeight > containerHeight) {
+                    imageWidth = (containerHeight / imageHeight) * imageWidth;
+                    imageHeight = containerHeight;
+                }
+
+                Html5Qrcode._log(
+                    `Image downsampled from ${formerImageWidth}X${formerImageHeight}`
+                    + ` to ${imageWidth}X${imageHeight}.`);
+
+                return computeCanvasDrawConfig(
+                    imageWidth, imageHeight, containerWidth, containerHeight);
+            }
+        }
+
+        return new Promise((resolve, reject) => {
+            $this._possiblyCloseLastScanImageFile();
+            $this._clearElement();
+            $this._lastScanImageFile = imageFile;
+
+            const inputImage = new Image;
+            inputImage.onload = () => {
+                const imageWidth = inputImage.width;
+                const imageHeight = inputImage.height;
+                const element = document.getElementById($this._elementId);
+                const containerWidth = element.clientWidth
+                    ? element.clientWidth : Html5Qrcode.DEFAULT_WIDTH;
+                // No default height anymore.
+                const containerHeight = element.clientHeight
+                    ? element.clientHeight : imageHeight;
+
+                const config = computeCanvasDrawConfig(
+                    imageWidth, imageHeight, containerWidth, containerHeight);
+                if (showImage) {
+                    const visibleCanvas = $this._createCanvasElement(
+                        containerWidth, containerHeight, 'qr-canvas-visible');
+                    visibleCanvas.style.display = "inline-block";
+                    element.appendChild(visibleCanvas);
+                    const context = visibleCanvas.getContext('2d');
+                    context.canvas.width = containerWidth;
+                    context.canvas.height = containerHeight;
                     // More reference
                     // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
                     context.drawImage(
                         inputImage,
-                        /* sx= */ 0, 
-                        /* sy= */ 0, 
-                        /* sWidth= */ imageWidth, 
+                        /* sx= */ 0,
+                        /* sy= */ 0,
+                        /* sWidth= */ imageWidth,
                         /* sHeight= */ imageHeight,
                         /* dx= */ config.x,
-                        /* dy= */  config.y, 
-                        /* dWidth= */ config.width, 
+                        /* dy= */  config.y,
+                        /* dWidth= */ config.width,
                         /* dHeight= */ config.height);
+                }
+
+                const hiddenCanvas = $this._createCanvasElement(config.width, config.height);
+                element.appendChild(hiddenCanvas);
+                const context = hiddenCanvas.getContext('2d');
+                context.canvas.width = config.width;
+                context.canvas.height = config.height;
+                context.drawImage(
+                    inputImage,
+                    /* sx= */ 0,
+                    /* sy= */ 0,
+                    /* sWidth= */ imageWidth,
+                    /* sHeight= */ imageHeight,
+                    /* dx= */ 0,
+                    /* dy= */  0,
+                    /* dWidth= */ config.width,
+                    /* dHeight= */ config.height);
+                try {
+                    resolve(qrcode.decode());
+                } catch (exception) {
+                    reject(`QR code parse error, error = ${exception}`);
+                }
             }
-    
-            const hiddenCanvas = $this._createCanvasElement(config.width, config.height);
-            element.appendChild(hiddenCanvas);
-            const context = hiddenCanvas.getContext('2d');
-            context.canvas.width = config.width;
-            context.canvas.height = config.height;
-            context.drawImage(
-                inputImage,
-                /* sx= */ 0, 
-                /* sy= */ 0, 
-                /* sWidth= */ imageWidth, 
-                /* sHeight= */ imageHeight,
-                /* dx= */ 0,
-                /* dy= */  0, 
-                /* dWidth= */ config.width, 
-                /* dHeight= */ config.height);
-            try {
-                resolve(qrcode.decode());
-            } catch (exception) {
-                reject(`QR code parse error, error = ${exception}`);
-            }
-        }
-  
-        inputImage.onerror = reject;
-        inputImage.onabort = reject;
-        inputImage.onstalled = reject;
-        inputImage.onsuspend = reject;
-        inputImage.src = URL.createObjectURL(imageFile);
-      });
+
+            inputImage.onerror = reject;
+            inputImage.onabort = reject;
+            inputImage.onstalled = reject;
+            inputImage.onsuspend = reject;
+            inputImage.src = URL.createObjectURL(imageFile);
+        });
     }
-  
+
     /**
      * Clears the existing canvas.
      * 
@@ -488,7 +488,7 @@ class Html5Qrcode {
     clear() {
         this._clearElement();
     }
-  
+
     /**
      * Returns a Promise with list of all cameras supported by the device.
      * 
@@ -500,34 +500,34 @@ class Html5Qrcode {
      */
     static getCameras() {
         return new Promise((resolve, reject) => {
-            if (navigator.mediaDevices 
+            if (navigator.mediaDevices
                 && navigator.mediaDevices.enumerateDevices
                 && navigator.mediaDevices.getUserMedia) {
                 this._log("navigator.mediaDevices used");
                 navigator.mediaDevices.getUserMedia({ audio: false, video: true })
-                .then(_ => {
-                    navigator.mediaDevices.enumerateDevices()
-                    .then(devices => {
-                        const results = [];
-                        for (var i = 0; i < devices.length; i++) {
-                            const device = devices[i];
-                            if (device.kind == "videoinput") {
-                                results.push({
-                                    id: device.deviceId,
-                                    label: device.label
-                                });
-                            }
-                        }
-                        this._log(`${results.length} results found`);
-                        resolve(results);
+                    .then(_ => {
+                        navigator.mediaDevices.enumerateDevices()
+                            .then(devices => {
+                                const results = [];
+                                for (var i = 0; i < devices.length; i++) {
+                                    const device = devices[i];
+                                    if (device.kind == "videoinput") {
+                                        results.push({
+                                            id: device.deviceId,
+                                            label: device.label
+                                        });
+                                    }
+                                }
+                                this._log(`${results.length} results found`);
+                                resolve(results);
+                            })
+                            .catch(err => {
+                                reject(`${err.name} : ${err.message}`);
+                            });
                     })
                     .catch(err => {
                         reject(`${err.name} : ${err.message}`);
-                    });
-                })
-                .catch(err => {
-                    reject(`${err.name} : ${err.message}`);
-                })
+                    })
             } else if (MediaStreamTrack && MediaStreamTrack.getSources) {
                 this._log("MediaStreamTrack.getSources used");
                 const callback = sourceInfos => {
@@ -548,16 +548,16 @@ class Html5Qrcode {
             } else {
                 this._log("unable to query supported devices.");
                 reject("unable to query supported devices.");
-            } 
+            }
         });
     }
 
     _clearElement() {
-      if (this._isScanning) {
-        throw 'Cannot clear while scan is ongoing, close it first.';
-      }
-      const element = document.getElementById(this._elementId);
-      element.innerHTML = "";
+        if (this._isScanning) {
+            throw 'Cannot clear while scan is ongoing, close it first.';
+        }
+        const element = document.getElementById(this._elementId);
+        element.innerHTML = "";
     }
 
     _createCanvasElement(width, height, customId) {
@@ -583,7 +583,7 @@ class Html5Qrcode {
     _getShadedRegionBounds(width, height, qrboxSize) {
         if (qrboxSize > width || qrboxSize > height) {
             throw "'config.qrbox' should not be greater than the "
-             + "width and height of the HTML element.";
+            + "width and height of the HTML element.";
         }
 
         return {
@@ -648,10 +648,10 @@ class Html5Qrcode {
     }
 
     _possiblyCloseLastScanImageFile() {
-      if (this._lastScanImageFile) {
-        URL.revokeObjectURL(this._lastScanImageFile);
-        this._lastScanImageFile = null;
-      }
+        if (this._lastScanImageFile) {
+            URL.revokeObjectURL(this._lastScanImageFile);
+            this._lastScanImageFile = null;
+        }
     }
 
     static _getTimeoutFps(fps) {
