@@ -456,14 +456,14 @@ class Html5Qrcode {
                 context.canvas.height = config.height;
                 context.drawImage(
                     inputImage,
-                /* sx= */ 0,
-                /* sy= */ 0,
-                /* sWidth= */ imageWidth,
-                /* sHeight= */ imageHeight,
-                /* dx= */ 0,
-                /* dy= */  0,
-                /* dWidth= */ config.width,
-                /* dHeight= */ config.height);
+                    /* sx= */ 0,
+                    /* sy= */ 0,
+                    /* sWidth= */ imageWidth,
+                    /* sHeight= */ imageHeight,
+                    /* dx= */ 0,
+                    /* dy= */  0,
+                    /* dWidth= */ config.width,
+                    /* dHeight= */ config.height);
                 try {
                     resolve(qrcode.decode());
                 } catch (exception) {
