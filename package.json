@@ -1,7 +1,7 @@
 {
   "name": "html5-qrcode",
-  "version": "1.0.6",
-  "description": "a cross platform HTML5 QR Code reader",
+  "version": "1.0.7",
+  "description": "a cross platform HTML5 QR Code scanner",
   "main": "html5-qrcode.js",
   "scripts": {
     "build": "babel html5-qrcode.js -d transpiled",
