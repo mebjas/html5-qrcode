@@ -10,6 +10,9 @@ Use this light-weight Javascript library `(56 Kb)` to add QR Code scanning capab
 
 [![npm](https://nodei.co/npm/html5-qrcode.png)](https://www.npmjs.com/package/html5-qrcode)
 
+<img src="./assets/pixel3.gif" width="300px"><br>
+_Figure: Running on Android, Pixel 3_
+
 ## Supported platforms
 Working on adding support for more and more platforms. If you find a platform or browser where the library is not working please feel free to file an issue. Check the [demo link](https://blog.minhazav.dev/research/html5-qrcode.html) to test out.
 
@@ -54,11 +57,11 @@ Download the script from [release page](https://github.com/mebjas/html5-qrcode/r
 npm i html5-qrcode
 ```
 
-Add an element you want to use as placeholder for QR Code scanner
+Add an element you want to use as a placeholder for QR Code scanner
 ```html
 <div id="reader" width="600px"></div>
 ```
-> Ideally do not set the height of this container as the height should depend on the height of the video feed from the camera. The library would honor existing width otherwise apply the default width. The height is derived from the aspect ratio of the video feed.
+> Ideally do not set the height of this container as the height should depend on the height of the video feed from the camera. The library would honor the existing width otherwise apply the default width. The height is derived from the aspect ratio of the video feed.
 
 Add `minified/html5-qrcode.min.js` in your web page. 
 > I would recommend using the minified version as it's transformed to standard javascript. The `html5-qrcode.js` is written with ECMAScript and may not be supported in the older version of the browsers. I wrote in this as it's easier to maintain!
@@ -91,7 +94,7 @@ Html5Qrcode.getCameras().then(cameras => {
 });
 ```
 
-**Important**: Not that this method will trigger user permission if user has not granted already. 
+**Important**: Not that this method will trigger user permission if the user has not granted already. 
 > Warning: Direct access to the camera is a powerful feature. It requires consent from the user, and your site MUST be on a secure origin (HTTPS).
 > 
 > Warning: Asking for access to the camera on page load will result in most of your users rejecting access to it. [More info](https://developers.google.com/web/fundamentals/media/capturing-images)
@@ -182,12 +185,12 @@ fileinput.addEventListener('change', e => {
 [blog.minhazav.dev/research/html5-qrcode.html](https://blog.minhazav.dev/research/html5-qrcode.html)
 
 ### For more information
-Check this article on how to use this library, check following articles:
+Check this article on how to use this library, check the following articles:
  - [HTML5 QR Code scanning - launched v1.0.1 without jQuery dependency and refactored Promise based APIs](https://blog.minhazav.dev/HTML5-QR-Code-scanning-launched-v1.0.1/).
  - [HTML5 QR Code scanning with javascript - Support for scanning the local file and using default camera added (v1.0.5)](https://blog.minhazav.dev/HTML5-QR-Code-scanning-support-for-local-file-and-default-camera/)
 
 ## Screenshots
-![screenshot](assets/screen.png)<br>
+![screenshot](assets/screen.gif)<br>
 _Figure: Screenshot from Google Chrome running on Macbook Pro_
 
 ## Documentation
@@ -283,7 +286,7 @@ class Html5Qrcode {
 ```
 
 ### Extra optional `configuration` in `start()` method
-This is a configuration for the QR code scanning which can effect both scanning behavior and UI. There are two optional properties right now, if you don't want them you can just pass an empty object `{}`.
+This is a configuration for the QR code scanning which can effect both scanning behavior and UI. There are two optional properties right now if you don't want them you can just pass an empty object `{}`.
 
 #### `fps` - Integer, Example = 10
 A.K.A frame per second, the default value for this is 2 but it can be increased to get faster scanning. Increasing too high value could affect performance. Value `>1000` will simply fail.
@@ -291,7 +294,7 @@ A.K.A frame per second, the default value for this is 2 but it can be increased 
 #### `qrbox` - Integer, Example = 250
 Use this property to limit the region of the viewfinder you want to use for scanning. The rest of the viewfinder would be shaded. For example by passing config `{ qrbox : 250 }`, the screen will look like:
 
-<img src="./assets/screen.png" width="450px">
+<img src="./assets/screen.gif">
 
 If you do not pass any value, the whole viewfinder would be used for scanning. 
 **Note**: this value has to be smaller than the width and height of the `QR code HTML element`.
