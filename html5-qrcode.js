@@ -103,8 +103,8 @@ class Html5Qrcode {
         const width = element.clientWidth ? element.clientWidth : Html5Qrcode.DEFAULT_WIDTH;
         element.style.position = "relative";
 
-        // Setup QR code.
         this._shouldScan = true;
+        this._element = element;
         qrcode.callback = qrCodeSuccessCallback;
 
         // Validate before insertion
@@ -130,7 +130,7 @@ class Html5Qrcode {
         const setupUi = (width, height) => {
             const qrboxSize = config.qrbox;
             if (qrboxSize > height) {
-                console.log("[Warning] [Html5Qrcode] config.qrboxsize is greater "
+                console.warn("[Html5Qrcode] config.qrboxsize is greater "
                     + "than video height. Shading will be ignored");
             }
 
@@ -159,7 +159,6 @@ class Html5Qrcode {
             // Update local states
             $this._qrRegion = qrRegion;
             $this._context = context;
-            $this._element = element;
             $this._canvasElement = canvasElement;
         }
   
@@ -171,8 +170,8 @@ class Html5Qrcode {
             }
             if ($this._localMediaStream) {
                 
-                // difference in held video dimensions and rendered video dimensions
-                // require scaling
+                // There is difference in size of rendered video and one that is
+                // considered by the canvas. We need to account for scaling factor.
                 const videoElement = $this._videoElement;
                 const widthRatio = videoElement.videoWidth / videoElement.clientWidth;
                 const heightRatio = videoElement.videoHeight / videoElement.clientHeight;
@@ -202,17 +201,17 @@ class Html5Qrcode {
         }
 
         // success callback when user media (Camera) is attached.
-        const getUserMediaSuccessCallback = mediaStream => {
+        const onMediaStreamReceived = mediaStream => {
             return new Promise((resolve, reject) => {
                 const setupVideo = () => {
-                    $this._videoElement = this._createVideoElement(width);
-                    element.append($this._videoElement);
+                    const videoElement = this._createVideoElement(width);
+                    $this._element.append(videoElement);
                     // Attach listeners to video.
-                    $this._videoElement.onabort = reject;
-                    $this._videoElement.onerror = reject;
-                    $this._videoElement.onplaying = () => {
-                        const videoWidth = $this._videoElement.clientWidth;
-                        const videoHeight = $this._videoElement.clientHeight;
+                    videoElement.onabort = reject;
+                    videoElement.onerror = reject;
+                    videoElement.onplaying = () => {
+                        const videoWidth = videoElement.clientWidth;
+                        const videoHeight = videoElement.clientHeight;
                         setupUi(videoWidth, videoHeight);
 
                         // start scanning after video feed has started
@@ -220,8 +219,11 @@ class Html5Qrcode {
                         resolve();
                     }
 
-                    $this._videoElement.srcObject = mediaStream;
-                    $this._videoElement.play();
+                    videoElement.srcObject = mediaStream;
+                    videoElement.play();
+
+                    // Set state
+                    $this._videoElement = videoElement;
                 }
 
                 $this._localMediaStream = mediaStream;
@@ -254,8 +256,8 @@ class Html5Qrcode {
                 navigator.mediaDevices.getUserMedia(
                     { audio: false, video: videoConstraints })
                     .then(stream => {
-                        getUserMediaSuccessCallback(stream)
-                        .then(ignore => {
+                        onMediaStreamReceived(stream)
+                        .then(_ => {
                             $this._isScanning = true;
                             resolve();
                         })
@@ -265,11 +267,17 @@ class Html5Qrcode {
                         reject(`Error getting userMedia, error = ${err}`);
                     });
             } else if (navigator.getUserMedia) {
-                const getCameraConfig = { video: { optional: [ { sourceId: cameraId } ]}};
+                const getCameraConfig = {
+                    video: { 
+                        optional: [{ 
+                            sourceId: cameraId
+                        }]
+                    }
+                };
                 navigator.getUserMedia(getCameraConfig,
                     stream => {
-                        getUserMediaSuccessCallback(stream)
-                        .then(ignore => {
+                        onMediaStreamReceived(stream)
+                        .then(_ => {
                             $this._isScanning = true;
                             resolve();
                         })
@@ -496,8 +504,8 @@ class Html5Qrcode {
                 && navigator.mediaDevices.enumerateDevices
                 && navigator.mediaDevices.getUserMedia) {
                 this._log("navigator.mediaDevices used");
-                navigator.mediaDevices.getUserMedia({audio: false, video: true})
-                .then(ignore => {
+                navigator.mediaDevices.getUserMedia({ audio: false, video: true })
+                .then(_ => {
                     navigator.mediaDevices.enumerateDevices()
                     .then(devices => {
                         const results = [];

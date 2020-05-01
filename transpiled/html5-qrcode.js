@@ -102,9 +102,9 @@ var Html5Qrcode = /*#__PURE__*/function () {
       var isShadedBoxEnabled = config.qrbox != undefined;
       var element = document.getElementById(this._elementId);
       var width = element.clientWidth ? element.clientWidth : Html5Qrcode.DEFAULT_WIDTH;
-      element.style.position = "relative"; // Setup QR code.
-
+      element.style.position = "relative";
       this._shouldScan = true;
+      this._element = element;
       qrcode.callback = qrCodeSuccessCallback; // Validate before insertion
 
       if (isShadedBoxEnabled) {
@@ -131,7 +131,7 @@ var Html5Qrcode = /*#__PURE__*/function () {
         var qrboxSize = config.qrbox;
 
         if (qrboxSize > height) {
-          console.log("[Warning] [Html5Qrcode] config.qrboxsize is greater " + "than video height. Shading will be ignored");
+          console.warn("[Html5Qrcode] config.qrboxsize is greater " + "than video height. Shading will be ignored");
         }
 
         var shouldShadingBeApplied = isShadedBoxEnabled && qrboxSize <= height;
@@ -158,7 +158,6 @@ var Html5Qrcode = /*#__PURE__*/function () {
 
         $this._qrRegion = qrRegion;
         $this._context = context;
-        $this._element = element;
         $this._canvasElement = canvasElement;
       }; // Method that scans forever.
 
@@ -170,8 +169,8 @@ var Html5Qrcode = /*#__PURE__*/function () {
         }
 
         if ($this._localMediaStream) {
-          // difference in held video dimensions and rendered video dimensions
-          // require scaling
+          // There is difference in size of rendered video and one that is
+          // considered by the canvas. We need to account for scaling factor.
           var videoElement = $this._videoElement;
           var widthRatio = videoElement.videoWidth / videoElement.clientWidth;
           var heightRatio = videoElement.videoHeight / videoElement.clientHeight;
@@ -208,27 +207,30 @@ var Html5Qrcode = /*#__PURE__*/function () {
       }; // success callback when user media (Camera) is attached.
 
 
-      var getUserMediaSuccessCallback = function getUserMediaSuccessCallback(mediaStream) {
+      var onMediaStreamReceived = function onMediaStreamReceived(mediaStream) {
         return new Promise(function (resolve, reject) {
           var setupVideo = function setupVideo() {
-            $this._videoElement = _this._createVideoElement(width);
-            element.append($this._videoElement); // Attach listeners to video.
+            var videoElement = _this._createVideoElement(width);
 
-            $this._videoElement.onabort = reject;
-            $this._videoElement.onerror = reject;
+            $this._element.append(videoElement); // Attach listeners to video.
 
-            $this._videoElement.onplaying = function () {
-              var videoWidth = $this._videoElement.clientWidth;
-              var videoHeight = $this._videoElement.clientHeight;
+
+            videoElement.onabort = reject;
+            videoElement.onerror = reject;
+
+            videoElement.onplaying = function () {
+              var videoWidth = videoElement.clientWidth;
+              var videoHeight = videoElement.clientHeight;
               setupUi(videoWidth, videoHeight); // start scanning after video feed has started
 
               foreverScan();
               resolve();
             };
 
-            $this._videoElement.srcObject = mediaStream;
+            videoElement.srcObject = mediaStream;
+            videoElement.play(); // Set state
 
-            $this._videoElement.play();
+            $this._videoElement = videoElement;
           };
 
           $this._localMediaStream = mediaStream;
@@ -261,7 +263,7 @@ var Html5Qrcode = /*#__PURE__*/function () {
             audio: false,
             video: videoConstraints
           }).then(function (stream) {
-            getUserMediaSuccessCallback(stream).then(function (ignore) {
+            onMediaStreamReceived(stream).then(function (_) {
               $this._isScanning = true;
               resolve();
             })["catch"](reject);
@@ -277,7 +279,7 @@ var Html5Qrcode = /*#__PURE__*/function () {
             }
           };
           navigator.getUserMedia(getCameraConfig, function (stream) {
-            getUserMediaSuccessCallback(stream).then(function (ignore) {
+            onMediaStreamReceived(stream).then(function (_) {
               $this._isScanning = true;
               resolve();
             })["catch"](reject);
@@ -648,7 +650,7 @@ var Html5Qrcode = /*#__PURE__*/function () {
           navigator.mediaDevices.getUserMedia({
             audio: false,
             video: true
-          }).then(function (ignore) {
+          }).then(function (_) {
             navigator.mediaDevices.enumerateDevices().then(function (devices) {
               var results = [];
 
