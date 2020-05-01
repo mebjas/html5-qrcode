@@ -10,7 +10,7 @@ Use this light-weight Javascript library `(56 Kb)` to add QR Code scanning capab
 
 [![npm](https://nodei.co/npm/html5-qrcode.png)](https://www.npmjs.com/package/html5-qrcode)
 
-<img src="./assets/pixel3.gif" width="300px"><br>
+<img src="./assets/pixel3.gif" width="200px"><br>
 _Figure: Running on Android, Pixel 3_
 
 ## Supported platforms

@@ -1,6 +1,9 @@
 ### Version 1.0.8
  + Added support for realtime feedbacks on viewfinder for inline scanning
-    ![](./assets/screen.gif)
+    |Platform|Screenshot|
+    |------|-----------|
+    |On PC | ![](./assets/screen.gif)|
+    |On Android|![](./assets/pixel3.gif)|
 
 ### Version 1.0.7
  + Fixed the video size issue in [issues/21](https://github.com/mebjas/html5-qrcode/issues/21)
