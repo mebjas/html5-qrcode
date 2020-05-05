@@ -80,7 +80,7 @@ Add `minified/html5-qrcode.min.js` in your web page.
 To get a list of supported cameras, query it using static method `Html5Qrcode.getCameras()`. This method returns a `Promise` with list of devices supported in format `{ id: "id", label: "label" }`. 
 ```js
 // This method will trigger user permissions
-Html5Qrcode.getCameras().then(cameras => {
+Html5Qrcode.getCameras().then(devices => {
   /**
    * devices would be an array of objects of type:
    * { id: "id", label: "label" }
