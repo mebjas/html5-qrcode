@@ -787,7 +787,23 @@ var Html5Qrcode = /*#__PURE__*/function () {
           navigator.mediaDevices.getUserMedia({
             audio: false,
             video: true
-          }).then(function (_) {
+          }).then(function (stream) {
+            // hacky approach to close any active stream if they are active.
+            stream.oninactive = function (_) {
+              return _this3._log("All streams closed");
+            };
+
+            var closeActiveStreams = function closeActiveStreams(stream) {
+              var tracks = stream.getVideoTracks();
+
+              for (var i = 0; i < tracks.length; i++) {
+                var track = tracks[i];
+                track.enabled = false;
+                track.stop();
+                stream.removeTrack(track);
+              }
+            };
+
             navigator.mediaDevices.enumerateDevices().then(function (devices) {
               var results = [];
 
@@ -804,6 +820,7 @@ var Html5Qrcode = /*#__PURE__*/function () {
 
               _this3._log("".concat(results.length, " results found"));
 
+              closeActiveStreams(stream);
               resolve(results);
             })["catch"](function (err) {
               reject("".concat(err.name, " : ").concat(err.message));
