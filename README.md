@@ -119,6 +119,13 @@ html5QrCode.start(
 });
 ```
 
+> You can optionally set another argument in constructor called `verbose`
+> to print all logs to console
+>
+> ```js
+> const html5QrCode = new Html5Qrcode("reader", /* verbose= */ true);
+> ```
+
 To stop using camera and thus stop scanning, call `Html5Qrcode#stop()` which returns a `Promise` for stopping the video feed and scanning.
 ```js
 html5QrCode.stop().then(ignore => {
@@ -212,9 +219,11 @@ class Html5Qrcode {
   /**
    * Initialize QR Code scanner.
    * 
-   * @param {String} elementId - Id of the HTML element. 
+   * @param {String} elementId - Id of the HTML element.
+   * @param {Boolean} verbose - Optional argument, if true, all logs
+   *                  would be printed to console. 
    */
-  constructor(elementId) {}
+  constructor(elementId, verbose /* Optional */) {}
 
   /**
    * Start scanning QR Code for given camera.

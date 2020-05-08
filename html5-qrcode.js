@@ -29,8 +29,10 @@ class Html5Qrcode {
      * Initialize QR Code scanner.
      * 
      * @param {String} elementId - Id of the HTML element. 
+     * @param {Boolean} verbose - Optional argument, if true, all logs
+     *                  would be printed to console. 
      */
-    constructor(elementId) {
+    constructor(elementId, verbose) {
         if (!qrcode) {
             throw 'qrcode is not defined, use the minified/html5-qrcode.min.js for proper support';
         }
@@ -43,6 +45,8 @@ class Html5Qrcode {
         this._userMedia = navigator.getUserMedia || navigator.webkitGetUserMedia
             || navigator.mozGetUserMedia || navigator.msGetUserMedia;
         this._isScanning = false;
+
+        Html5Qrcode.VERBOSE = verbose === true;
     }
 
     /**
