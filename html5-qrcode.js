@@ -513,7 +513,19 @@ class Html5Qrcode {
                 && navigator.mediaDevices.getUserMedia) {
                 this._log("navigator.mediaDevices used");
                 navigator.mediaDevices.getUserMedia({ audio: false, video: true })
-                    .then(_ => {
+                    .then(stream => {
+                        // hacky approach to close any active stream if they are active.
+                        stream.oninactive = _ => this._log("All streams closed");
+                        const closeActiveStreams = stream => {
+                            const tracks = stream.getVideoTracks();
+                            for (var i = 0; i < tracks.length; i++) {
+                                const track = tracks[i];
+                                track.enabled = false;
+                                track.stop();
+                                stream.removeTrack(track);
+                            }
+                        }
+
                         navigator.mediaDevices.enumerateDevices()
                             .then(devices => {
                                 const results = [];
@@ -527,6 +539,7 @@ class Html5Qrcode {
                                     }
                                 }
                                 this._log(`${results.length} results found`);
+                                closeActiveStreams(stream);
                                 resolve(results);
                             })
                             .catch(err => {
