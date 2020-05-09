@@ -1,0 +1,5 @@
+test/
+node_modules/
+transpiled/
+html5-qrcode.js
+assets/
