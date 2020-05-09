@@ -6,7 +6,7 @@ Use this light-weight Javascript library `(56 Kb)` to add QR Code scanning capab
 
 > Support for scanning local files on the device is a new addition and helpful for the web browser which does not support inline web-camera access in smartphones. **Note:** This doesn't upload files to any server - everything is done locally.
 
-[![GitHub issues](https://img.shields.io/github/issues/mebjas/html5-qrcode)](https://github.com/mebjas/html5-qrcode/issues) [![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/mebjas/html5-qrcode)](https://github.com/mebjas/html5-qrcode/releases) ![GitHub](https://img.shields.io/github/license/mebjas/html5-qrcode)
+[![Build Status](https://travis-ci.org/mebjas/html5-qrcode.svg?branch=master)](https://travis-ci.org/mebjas/html5-qrcode) [![GitHub issues](https://img.shields.io/github/issues/mebjas/html5-qrcode)](https://github.com/mebjas/html5-qrcode/issues) [![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/mebjas/html5-qrcode)](https://github.com/mebjas/html5-qrcode/releases) ![GitHub](https://img.shields.io/github/license/mebjas/html5-qrcode)
 
 [![npm](https://nodei.co/npm/html5-qrcode.png)](https://www.npmjs.com/package/html5-qrcode)
 
@@ -94,7 +94,7 @@ Html5Qrcode.getCameras().then(devices => {
 });
 ```
 
-**Important**: Not that this method will trigger user permission if the user has not granted already. 
+**Important**: Not that this method will trigger user permission if the user has not granted it already. 
 > Warning: Direct access to the camera is a powerful feature. It requires consent from the user, and your site MUST be on a secure origin (HTTPS).
 > 
 > Warning: Asking for access to the camera on page load will result in most of your users rejecting access to it. [More info](https://developers.google.com/web/fundamentals/media/capturing-images)

@@ -1,0 +1,19 @@
+language: node_js
+node_js:
+  - "0.10"
+os: 
+  - linux
+dist: xenial
+
+install:
+  - npm install mocha -g
+  - npm install phantomjs -g
+  - npm install -g mocha-phantomjs
+  - npm install
+
+before_script:
+  -  phantomjs —-version
+  -  mocha-phantomjs -—version
+
+script:
+  - npm test

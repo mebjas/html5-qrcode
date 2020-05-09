@@ -7,7 +7,7 @@
     "prebuild": "echo > minified/html5-qrcode.min.js && echo 'html5-qrcode.min.js truncated!'",
     "build": "babel html5-qrcode.js -d transpiled && echo 'code transpiled' && minify transpiled/html5-qrcode.js --out-file minified/tmp.js",
     "postbuild": "cp third_party/qrcode.min.js minified/html5-qrcode.min.js && cat minified/tmp.js >> minified/html5-qrcode.min.js && rm minified/tmp.js && echo 'minifed and combined'",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha-phantomjs -p node_modules/phantomjs/bin/phantomjs -R dot test/test.html5-qrcode.html"
   },
   "repository": {
     "type": "git",
@@ -30,7 +30,11 @@
     "@babel/cli": "^7.8.4",
     "@babel/core": "^7.9.0",
     "@babel/preset-env": "^7.9.5",
-    "babel-minify": "^0.5.1"
+    "babel-minify": "^0.5.1",
+    "mocha": "^7.1.2",
+    "mocha-phantomjs": "^4.1.0",
+    "phantomjs": "^2.1.7",
+    "rewire": "^5.0.0"
   },
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.8.3"
