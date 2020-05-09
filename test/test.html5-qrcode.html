@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Mocha Tests</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://unpkg.com/mocha/mocha.css" />
+  </head>
+  <body>
+    <div id="mocha"></div>
+
+    <!-- placeholder needed by the library -->
+    <!-- TODO(mebjas): Can this be hidden? -->
+    <div id="qr"></div>
+
+    <!-- actual library code -->
+    <script src="../third_party/qrcode.min.js"></script>
+    <script src="../transpiled/html5-qrcode.js"></script>
+
+    <!-- test dependencies -->
+    <script src="https://unpkg.com/chai/chai.js"></script>
+    <script src="https://unpkg.com/mocha/mocha.js"></script>
+    <script class="mocha-init">
+      mocha.setup('bdd');
+      mocha.checkLeaks();
+      const assert = chai.assert;
+    </script>
+
+    <!-- test code -->
+    <script src="test.html5-qrcode.js"></script>
+    <script class="mocha-exec">
+        if (window.mochaPhantomJS) {
+            mochaPhantomJS.run(); 
+        } else {
+            mocha.run();
+        }
+    </script>
+  </body>
+</html>
