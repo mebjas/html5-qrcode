@@ -4,7 +4,7 @@ Use this light-weight Javascript library `(56 Kb)` to add QR Code scanning capab
  - Supports easy scanning using web-cam or camera in the smartphones (Android / IOS).
  - **Recently Added** Scanning QR Code from files or default camera on smartphones. 
 
-> Support for scanning local files on the device is a new addition and helpful for the web browser which do not support inline web-camera access in smartphones. **Note:** This doesn't upload files to any server - everything is done locally.
+> Support for scanning local files on the device is a new addition and helpful for the web browser which does not support inline web-camera access in smartphones. **Note:** This doesn't upload files to any server - everything is done locally.
 
 [![GitHub issues](https://img.shields.io/github/issues/mebjas/html5-qrcode)](https://github.com/mebjas/html5-qrcode/issues) [![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/mebjas/html5-qrcode)](https://github.com/mebjas/html5-qrcode/releases) ![GitHub](https://img.shields.io/github/license/mebjas/html5-qrcode)
 
@@ -188,8 +188,10 @@ fileinput.addEventListener('change', e => {
 ```
 
 > Note that inline scanning and file-based scanning are mutually exclusive at the moment. This means, you can only use one of them at a time. I'll soon be adding support for the option to have both if the requirement comes in. If you want to use both, use `html5QrCode#clear()` method to clear the canvas.
+
 ## Demo
-[blog.minhazav.dev/research/html5-qrcode.html](https://blog.minhazav.dev/research/html5-qrcode.html)
+<img src="./assets/qr-code.png" width="200px"><br>
+_Scan this image or visit [blog.minhazav.dev/research/html5-qrcode.html](https://blog.minhazav.dev/research/html5-qrcode.html)_
 
 ### For more information
 Check this article on how to use this library, check the following articles:
