@@ -1,3 +1,7 @@
+### Version 1.0.9
+ + Fixed issue https://github.com/mebjas/html5-qrcode/issues/41
+ + Added support for verbose logging in library as constructor argument.
+
 ### Version 1.0.8
  + Added support for realtime feedbacks on viewfinder for inline scanning
     |Platform|Screenshot|
