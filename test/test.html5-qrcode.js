@@ -14,16 +14,16 @@ describe('Constructor', function()  {
         assert.notEqual(html5Qrcode, undefined);
     });
 
-    it('Constructor fails if qrcode not defined', function(done) {
+    it('Constructor fails if qrcode not defined', function() {
         const expectedErrorMessage = "qrcode is not defined, use the minified"
             + "/html5-qrcode.min.js for proper support";
         const qrCodeDeepCopy = JSON.parse(JSON.stringify(qrcode));
         qrcode = undefined;
         try {
             new Html5Qrcode("qr");
+            assert.fail("exception should be thrown");
         } catch (exception) {
             assert.equal(exception, expectedErrorMessage);
-            done();
         }
 
         qrcode = qrCodeDeepCopy;
