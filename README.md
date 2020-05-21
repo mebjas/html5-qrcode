@@ -94,7 +94,7 @@ Html5Qrcode.getCameras().then(devices => {
 });
 ```
 
-**Important**: Not that this method will trigger user permission if the user has not granted it already. 
+**Important**: Note that this method will trigger user permission if the user has not granted it already. 
 > Warning: Direct access to the camera is a powerful feature. It requires consent from the user, and your site MUST be on a secure origin (HTTPS).
 > 
 > Warning: Asking for access to the camera on page load will result in most of your users rejecting access to it. [More info](https://developers.google.com/web/fundamentals/media/capturing-images)
