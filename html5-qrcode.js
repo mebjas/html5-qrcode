@@ -201,14 +201,14 @@ class Html5Qrcode {
 				// https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
 				$this._context.drawImage(
 					$this._videoElement,
-                    /* sx= */ $this._qrRegion.x,
-                    /* sy= */ $this._qrRegion.y,
-                    /* sWidth= */ sWidthOffset,
-                    /* sHeight= */ sHeightOffset,
-                    /* dx= */ 0,
-                    /* dy= */  0,
-                    /* dWidth= */ $this._qrRegion.width,
-                    /* dHeight= */ $this._qrRegion.height);
+					/* sx= */ $this._qrRegion.x,
+					/* sy= */ $this._qrRegion.y,
+					/* sWidth= */ sWidthOffset,
+					/* sHeight= */ sHeightOffset,
+					/* dx= */ 0,
+					/* dy= */  0,
+					/* dWidth= */ $this._qrRegion.width,
+					/* dHeight= */ $this._qrRegion.height);
 				try {
 					qrcode.decode();
 					this._possiblyUpdateShaders(/* qrMatch= */ true);
@@ -370,18 +370,18 @@ class Html5Qrcode {
 	 * Scans an Image File for QR Code.
 	 * 
 	 * This feature is mutually exclusive to camera based scanning, you should
- * call stop() if the camera based scanning was ongoing.
+	 * call stop() if the camera based scanning was ongoing.
 	 * 
 	 * @param {File} imageFile a local file with Image content.
 	 * @param {boolean} showImage if true the Image will be rendered on given
- * element.
+	 * element.
 	 * 
 	 * @returns Promise with decoded QR code string on success and error message
- * 			on failure. Failure could happen due to different reasons:
+ 	 * 			on failure. Failure could happen due to different reasons:
 	 *            1. QR Code decode failed because enough patterns not found in
- * 				image.
+ 	 * 				image.
 	 *            2. Input file was not image or unable to load the image or
- * 				other image load errors.
+ 	 * 				other image load errors.
 	 */
 	scanFile(imageFile, /* default=true */ showImage) {
 		const $this = this;
@@ -885,7 +885,7 @@ class Html5QrcodeScanner {
 	 * Renders the User Interface
 	 * 
 	 * @param {Function} qrCodeSuccessCallback - callback on QR Code found.
-     *  Example:
+	 *  Example:
      *      function(qrCodeMessage) {}
      * @param {Function} qrCodeErrorCallback - callback on QR Code parse error.
      *  Example:
