@@ -939,14 +939,12 @@ var Html5QrcodeScanner = /*#__PURE__*/function () {
 
     this.elementId = elementId;
     this.config = config;
-    this.verbose = verbose | false;
-    var container = document.getElementById(elementId);
+    this.verbose = verbose === true;
 
-    if (!container) {
-      throw "Element with id=".concat(elementId, " not found");
+    if (!document.getElementById(elementId)) {
+      throw "HTML Element with id=".concat(elementId, " not found");
     }
 
-    this.cameraPermissionsReceieved = false;
     this.currentScanType = Html5QrcodeScanner.SCAN_TYPE_CAMERA;
     this.sectionSwapAllowed = true;
     this.section = undefined;
@@ -1014,24 +1012,30 @@ var Html5QrcodeScanner = /*#__PURE__*/function () {
     value: function clear() {
       var _this4 = this;
 
+      var $this = this;
+
+      var emptyHtmlContainer = function emptyHtmlContainer() {
+        var mainContainer = document.getElementById(_this4.elementId);
+
+        if (mainContainer) {
+          mainContainer.innerHTML = "";
+        }
+      };
+
       if (this.html5Qrcode) {
         if (this.html5Qrcode._isScanning()) {
           this.html5Qrcode.stop().then(function (_) {
-            _this4.html5Qrcode.clear();
+            $this.html5Qrcode.clear();
+            emptyHtmlContainer();
           })["catch"](function (error) {
-            if (_this4.verbose) {
+            if ($this.verbose) {
               console.error("Unable to stop qrcode scanner", error);
             }
 
-            _this4.html5Qrcode.clear();
+            $this.html5Qrcode.clear();
+            emptyHtmlContainer();
           });
         }
-      }
-
-      var mainContainer = document.getElementById(this.elementId);
-
-      if (mainContainer) {
-        mainContainer.innerHTML = "";
       }
     }
   }, {
@@ -1141,8 +1145,6 @@ var Html5QrcodeScanner = /*#__PURE__*/function () {
         $this.__setHeaderMessage("Requesting camera permissions...");
 
         Html5Qrcode.getCameras().then(function (cameras) {
-          $this.cameraPermissionsReceieved = true;
-
           $this.__setStatus("IDLE");
 
           $this.__resetHeaderMessage();

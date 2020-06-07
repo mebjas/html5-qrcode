@@ -864,14 +864,12 @@ class Html5QrcodeScanner {
     constructor(elementId, config, verbose) {
         this.elementId = elementId;
         this.config = config;
-        this.verbose = verbose | false;
+        this.verbose = verbose === true;
 
-        const container = document.getElementById(elementId);
-        if (!container) {
-            throw `Element with id=${elementId} not found`;
+        if (!document.getElementById(elementId)) {
+            throw `HTML Element with id=${elementId} not found`;
         }
 
-        this.cameraPermissionsReceieved = false;
         this.currentScanType = Html5QrcodeScanner.SCAN_TYPE_CAMERA;
         this.sectionSwapAllowed = true;
 
@@ -931,22 +929,27 @@ class Html5QrcodeScanner {
      * Removes the QR Code scanner.
      */
     clear() {
+		const $this = this;
+		const emptyHtmlContainer = () => {
+			const mainContainer = document.getElementById(this.elementId);
+			if (mainContainer) {
+				mainContainer.innerHTML = "";
+			}
+		}
+
         if (this.html5Qrcode) {
             if (this.html5Qrcode._isScanning()) {
                 this.html5Qrcode.stop().then(_ => {
-                    this.html5Qrcode.clear();
+					$this.html5Qrcode.clear();
+					emptyHtmlContainer();
                 }).catch(error => {
-                    if (this.verbose) {
+                    if ($this.verbose) {
                         console.error("Unable to stop qrcode scanner", error);
                     }
-                    this.html5Qrcode.clear();
+					$this.html5Qrcode.clear();
+					emptyHtmlContainer();
                 })
             }
-        }
-
-        const mainContainer = document.getElementById(this.elementId);
-        if (mainContainer) {
-            mainContainer.innerHTML = "";
         }
     }
 
@@ -1046,7 +1049,6 @@ class Html5QrcodeScanner {
             $this.__setHeaderMessage("Requesting camera permissions...");
 
             Html5Qrcode.getCameras().then(cameras => {
-                $this.cameraPermissionsReceieved = true;
                 $this.__setStatus("IDLE");
                 $this.__resetHeaderMessage();
                 if (!cameras || cameras.length == 0) {
