@@ -27,17 +27,17 @@ class Html5Qrcode {
 	static BORDER_SHADER_MATCH_COLOR = "rgb(90, 193, 56)";
 	//#endregion
 
-    /**
-     * Initialize QR Code scanner.
-     * 
-     * @param {String} elementId - Id of the HTML element. 
-     * @param {Boolean} verbose - Optional argument, if true, all logs
-     *                  would be printed to console. 
-     */
+	/**
+	 * Initialize QR Code scanner.
+	 * 
+	 * @param {String} elementId - Id of the HTML element. 
+	 * @param {Boolean} verbose - Optional argument, if true, all logs
+	 *                  would be printed to console. 
+	 */
 	constructor(elementId, verbose) {
 		if (!qrcode) {
 			throw 'qrcode is not defined, use the minified/html5-qrcode.min.js'
-			 + ' for proper support';
+			+ ' for proper support';
 		}
 
 		this._elementId = elementId;
@@ -54,36 +54,36 @@ class Html5Qrcode {
 		Html5Qrcode.VERBOSE = verbose === true;
 	}
 
-    /**
-     * Start scanning QR Code for given camera.
-     * 
-     * @param {String} cameraId Id of the camera to use.
-     * @param {Object} config extra configurations to tune QR code scanner.
-     *  Supported Fields:
-     *      - fps: expected framerate of qr code scanning. example { fps: 2 }
-     *          means the scanning would be done every 500 ms.
-     *      - qrbox: width of QR scanning box, this should be smaller than
-     *          the width and height of the box. This would make the scanner
-     *          look like this:
-     *          ----------------------
-     *          |********************|
-     *          |******,,,,,,,,,*****|      <--- shaded region
-     *          |******|       |*****|      <--- non shaded region would be
-     *          |******|       |*****|          used for QR code scanning.
-     *          |******|_______|*****|
-     *          |********************|
-     *          |********************|
-     *          ----------------------
-     * @param {Function} qrCodeSuccessCallback callback on QR Code found.
-     *  Example:
-     *      function(qrCodeMessage) {}
-     * @param {Function} qrCodeErrorCallback callback on QR Code parse error.
-     *  Example:
-     *      function(errorMessage) {}
-     * 
-     * @returns Promise for starting the scan. The Promise can fail if the user
-     * doesn't grant permission or some API is not supported by the browser.
-     */
+	/**
+	 * Start scanning QR Code for given camera.
+	 * 
+	 * @param {String} cameraId Id of the camera to use.
+	 * @param {Object} config extra configurations to tune QR code scanner.
+	 *  Supported Fields:
+	 *      - fps: expected framerate of qr code scanning. example { fps: 2 }
+	 *          means the scanning would be done every 500 ms.
+	 *      - qrbox: width of QR scanning box, this should be smaller than
+	 *          the width and height of the box. This would make the scanner
+	 *          look like this:
+	 *          ----------------------
+	 *          |********************|
+	 *          |******,,,,,,,,,*****|      <--- shaded region
+	 *          |******|       |*****|      <--- non shaded region would be
+	 *          |******|       |*****|          used for QR code scanning.
+	 *          |******|_______|*****|
+	 *          |********************|
+	 *          |********************|
+	 *          ----------------------
+	 * @param {Function} qrCodeSuccessCallback callback on QR Code found.
+	 *  Example:
+	 *      function(qrCodeMessage) {}
+	 * @param {Function} qrCodeErrorCallback callback on QR Code parse error.
+	 *  Example:
+	 *      function(errorMessage) {}
+	 * 
+	 * @returns Promise for starting the scan. The Promise can fail if the user
+	 * doesn't grant permission or some API is not supported by the browser.
+	 */
 	start(cameraId,
 		configuration,
 		qrCodeSuccessCallback,
@@ -92,7 +92,7 @@ class Html5Qrcode {
 			throw "cameraId is required";
 		}
 
-		if (!qrCodeSuccessCallback 
+		if (!qrCodeSuccessCallback
 			|| typeof qrCodeSuccessCallback != "function") {
 			throw "qrCodeSuccessCallback is required and should be a function."
 		}
@@ -112,7 +112,7 @@ class Html5Qrcode {
 		// qr shaded box
 		const isShadedBoxEnabled = config.qrbox != undefined;
 		const element = document.getElementById(this._elementId);
-		const width = element.clientWidth 
+		const width = element.clientWidth
 			? element.clientWidth : Html5Qrcode.DEFAULT_WIDTH;
 		element.style.position = "relative";
 
@@ -125,7 +125,7 @@ class Html5Qrcode {
 			const qrboxSize = config.qrbox;
 			if (qrboxSize < Html5Qrcode.MIN_QR_BOX_SIZE) {
 				throw "minimum size of 'config.qrbox' is"
-					+ ` ${Html5Qrcode.MIN_QR_BOX_SIZE}px.`;
+				+ ` ${Html5Qrcode.MIN_QR_BOX_SIZE}px.`;
 			}
 
 			if (qrboxSize > width) {
@@ -135,12 +135,12 @@ class Html5Qrcode {
 		}
 
 		//#region local methods
-        /**
-         * Setups the UI elements, changes the state of this class.
-         * 
-         * @param width derived width of viewfinder.
-         * @param height derived height of viewfinder.
-         */
+		/**
+		 * Setups the UI elements, changes the state of this class.
+		 * 
+		 * @param width derived width of viewfinder.
+		 * @param height derived height of viewfinder.
+		 */
 		const setupUi = (width, height) => {
 			const qrboxSize = config.qrbox;
 			if (qrboxSize > height) {
@@ -313,11 +313,11 @@ class Html5Qrcode {
 		});
 	}
 
-    /**
-     * Stops streaming QR Code video and scanning. 
-     * 
-     * @returns Promise for safely closing the video stream.
-     */
+	/**
+	 * Stops streaming QR Code video and scanning. 
+	 * 
+	 * @returns Promise for safely closing the video stream.
+	 */
 	stop() {
 		// TODO(mebjas): fail fast if the start() wasn't called.
 		this._shouldScan = false;
@@ -366,23 +366,23 @@ class Html5Qrcode {
 		});
 	}
 
-    /**
-     * Scans an Image File for QR Code.
-     * 
-     * This feature is mutually exclusive to camera based scanning, you should
-	 * call stop() if the camera based scanning was ongoing.
-     * 
-     * @param {File} imageFile a local file with Image content.
-     * @param {boolean} showImage if true the Image will be rendered on given
-	 * element.
-     * 
-     * @returns Promise with decoded QR code string on success and error message
-	 * 			on failure. Failure could happen due to different reasons:
-     *            1. QR Code decode failed because enough patterns not found in
-	 * 				image.
-     *            2. Input file was not image or unable to load the image or
-	 * 				other image load errors.
-     */
+	/**
+	 * Scans an Image File for QR Code.
+	 * 
+	 * This feature is mutually exclusive to camera based scanning, you should
+ * call stop() if the camera based scanning was ongoing.
+	 * 
+	 * @param {File} imageFile a local file with Image content.
+	 * @param {boolean} showImage if true the Image will be rendered on given
+ * element.
+	 * 
+	 * @returns Promise with decoded QR code string on success and error message
+ * 			on failure. Failure could happen due to different reasons:
+	 *            1. QR Code decode failed because enough patterns not found in
+ * 				image.
+	 *            2. Input file was not image or unable to load the image or
+ * 				other image load errors.
+	 */
 	scanFile(imageFile, /* default=true */ showImage) {
 		const $this = this;
 		if (!imageFile || !(imageFile instanceof File)) {
@@ -402,7 +402,7 @@ class Html5Qrcode {
 			containerWidth,
 			containerHeight) => {
 
-			if (imageWidth <= containerWidth 
+			if (imageWidth <= containerWidth
 				&& imageHeight <= containerHeight) {
 				// no downsampling needed.
 				const xoffset = (containerWidth - imageWidth) / 2;
@@ -506,25 +506,25 @@ class Html5Qrcode {
 		});
 	}
 
-    /**
-     * Clears the existing canvas.
-     * 
-     * Note: in case of ongoing web cam based scan, it needs to be explicitly
-     * closed before calling this method, else it will throw exception.
-     */
+	/**
+	 * Clears the existing canvas.
+	 * 
+	 * Note: in case of ongoing web cam based scan, it needs to be explicitly
+	 * closed before calling this method, else it will throw exception.
+	 */
 	clear() {
 		this._clearElement();
 	}
 
-    /**
-     * Returns a Promise with list of all cameras supported by the device.
-     * 
-     * The returned object is a list of result object of type:
-     * [{
-     *      id: String;     // Id of the camera.
-     *      label: String;  // Human readable name of the camera.
-     * }]
-     */
+	/**
+	 * Returns a Promise with list of all cameras supported by the device.
+	 * 
+	 * The returned object is a list of result object of type:
+	 * [{
+	 *      id: String;     // Id of the camera.
+	 *      label: String;  // Human readable name of the camera.
+	 * }]
+	 */
 	static getCameras() {
 		return new Promise((resolve, reject) => {
 			if (navigator.mediaDevices
