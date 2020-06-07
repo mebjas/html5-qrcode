@@ -1,6 +1,6 @@
 # Html5-QRCode
 A cross-platform HTML5 QR code reader.
-Use this light-weight Javascript library `(56 Kb)` to add QR Code scanning capability in your web application. 
+Use this light-weight Javascript library `(~68 Kb)` to add QR Code scanning capability in your web application. 
  - Supports easy scanning using web-cam or camera in the smartphones (Android / IOS).
  - **Recently Added** Scanning QR Code from files or default camera on smartphones. 
 
