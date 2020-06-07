@@ -929,25 +929,25 @@ class Html5QrcodeScanner {
      * Removes the QR Code scanner.
      */
     clear() {
-		const $this = this;
-		const emptyHtmlContainer = () => {
-			const mainContainer = document.getElementById(this.elementId);
-			if (mainContainer) {
-				mainContainer.innerHTML = "";
-			}
-		}
+        const $this = this;
+        const emptyHtmlContainer = () => {
+            const mainContainer = document.getElementById(this.elementId);
+            if (mainContainer) {
+                mainContainer.innerHTML = "";
+            }
+        }
 
         if (this.html5Qrcode) {
             if (this.html5Qrcode._isScanning()) {
                 this.html5Qrcode.stop().then(_ => {
-					$this.html5Qrcode.clear();
-					emptyHtmlContainer();
+                    $this.html5Qrcode.clear();
+                    emptyHtmlContainer();
                 }).catch(error => {
                     if ($this.verbose) {
                         console.error("Unable to stop qrcode scanner", error);
                     }
-					$this.html5Qrcode.clear();
-					emptyHtmlContainer();
+                    $this.html5Qrcode.clear();
+                    emptyHtmlContainer();
                 })
             }
         }
