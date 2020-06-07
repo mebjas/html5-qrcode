@@ -75,9 +75,36 @@ Add `minified/html5-qrcode.min.js` in your web page.
 -->
 ```
 
-### For using inline QR Code scanning with Webcam or Smartphone camera
+### Easy Mode - With end to end scanner user interface
+`Html5QrcodeScanner` lets you implement end to end scanner with few lines of
+code with the default user interface which allows scanning using the camera or 
+selecting an image from the file system.
 
-To get a list of supported cameras, query it using static method `Html5Qrcode.getCameras()`. This method returns a `Promise` with list of devices supported in format `{ id: "id", label: "label" }`. 
+You can setup the scanner as follows:
+```js
+function onScanSuccess(qrMessage) {
+	// handle the scanned code as you like
+	console.log(`QR matched = ${qrMessage}`);
+}
+
+function onScanFailure(error) {
+	// handle scan failure, usually better to ignore and keep scanning
+	console.warn(`QR error = ${error}`);
+}
+
+let html5QrCodePro = new Html5QrcodePro(
+	"reader", { fps: 10, qrbox: 250 } /* verbose= */ true);
+html5QrCodePro.render(onScanSuccess, onScanFailure);
+```
+
+### Pro Mode - if you want to implement your own user interface
+You can use `Html5Qrcode` class to set up your QR code scanner (with your own user interface) and allow users to scan QR codes using the camera or by choosing an image file in the file system or native cameras in smartphones.
+
+You can use the following APIs to `fetch camera`, `start` scanning and `stop` scanning.
+
+#### For using inline QR Code scanning with Webcam or Smartphone camera
+
+To get a list of supported cameras, query it using static method `Html5Qrcode.getCameras()`. This method returns a `Promise` with a list of devices supported in format `{ id: "id", label: "label" }`. 
 ```js
 // This method will trigger user permissions
 Html5Qrcode.getCameras().then(devices => {
@@ -137,7 +164,7 @@ html5QrCode.stop().then(ignore => {
 
 > Note that the class is stateful and `stop()` should be called to properly tear down the video and camera objects safely after calling `start()` when the scan is over or user intend to move on. `stop()` will stop the video feed on the viewfinder.
 
-### For QR Code scanning using local files or inbuild camera on Smartphones
+#### For QR Code scanning using local files or inbuild camera on Smartphones
 | Selector in Android | Selector in IOS|
 |------|-------|
 | Taken on Pixel 3, Google Chrome<br><img src="./assets/selector_android.png" width="300px"> |  Taken on iPhone 7, Google Chrome<br><img src="./assets/selector_iphone.jpg" width="300px"> |
@@ -293,7 +320,52 @@ class Html5Qrcode {
    * closed before calling this method, else it will throw exception.
    */
   clear() {}  // Returns void
-}       
+}
+
+class Html5QrcodeScanner {
+	/**
+	 * Creates instance of this class.
+	 *
+	 * @param {String} elementId - Id of the HTML element.
+	 * @param {Object} config extra configurations to tune QR code scanner.
+     *  Supported Fields:
+     *      - fps: expected framerate of qr scanning. example { fps: 2 }
+     *          means the scanning would be done every 500 ms.
+     *      - qrbox: width of QR scanning box, this should be smaller than
+     *          the width and height of the box. This would make the scanner
+     *          look like this:
+     *          ----------------------
+     *          |********************|
+     *          |******,,,,,,,,,*****|      <--- shaded region
+     *          |******|       |*****|      <--- non shaded region would be
+     *          |******|       |*****|          used for QR code scanning.
+     *          |******|_______|*****|
+     *          |********************|
+     *          |********************|
+     *          ----------------------
+	 * @param {Boolean} verbose - Optional argument, if true, all logs
+     *                  would be printed to console. 
+	 */
+	constructor(elementId, config, verbose) {}
+
+	/**
+	 * Renders the User Interface
+	 * 
+	 * @param {Function} qrCodeSuccessCallback - callback on QR Code found.
+     *  Example:
+     *      function(qrCodeMessage) {}
+     * @param {Function} qrCodeErrorCallback - callback on QR Code parse error.
+     *  Example:
+     *      function(errorMessage) {}
+	 * 
+	 */
+	render(qrCodeSuccessCallback, qrCodeErrorCallback) {}
+
+	/**
+	 * Removes the QR Code scanner.
+	 */
+	clear() {}
+}
 ```
 
 ### Extra optional `configuration` in `start()` method

@@ -1,3 +1,6 @@
+### Version 1.1.0
+ + Added support for full scanner with end to end UI - `Html5QrcodeScanner`
+
 ### Version 1.0.9
  + Fixed issue https://github.com/mebjas/html5-qrcode/issues/41
  + Added support for verbose logging in library as constructor argument.
