@@ -98,9 +98,9 @@ html5QrCodePro.render(onScanSuccess, onScanFailure);
 ```
 
 ### Pro Mode - if you want to implement your own user interface
-You can use `Html5Qrcode` class to setup your own QR code scanner and allow users
-to scan using the camera or by choosing an image file in the file system or native
-cameras in smartphones.
+You can use `Html5Qrcode` class to set up your QR code scanner (with your own user interface) and allow users to scan QR codes using the camera or by choosing an image file in the file system or native cameras in smartphones.
+
+You can use the following APIs to `fetch camera`, `start` scanning and `stop` scanning.
 
 #### For using inline QR Code scanning with Webcam or Smartphone camera
 

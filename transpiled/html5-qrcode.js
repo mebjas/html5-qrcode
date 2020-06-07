@@ -36,7 +36,7 @@ var Html5Qrcode = /*#__PURE__*/function () {
     _classCallCheck(this, Html5Qrcode);
 
     if (!qrcode) {
-      throw 'qrcode is not defined, use the minified/html5-qrcode.min.js for proper support';
+      throw 'qrcode is not defined, use the minified/html5-qrcode.min.js' + ' for proper support';
     }
 
     this._elementId = elementId;
@@ -117,7 +117,7 @@ var Html5Qrcode = /*#__PURE__*/function () {
         var qrboxSize = config.qrbox;
 
         if (qrboxSize < Html5Qrcode.MIN_QR_BOX_SIZE) {
-          throw "minimum size of 'config.qrbox' is ".concat(Html5Qrcode.MIN_QR_BOX_SIZE, "px.");
+          throw "minimum size of 'config.qrbox' is" + " ".concat(Html5Qrcode.MIN_QR_BOX_SIZE, "px.");
         }
 
         if (qrboxSize > width) {
@@ -176,12 +176,13 @@ var Html5Qrcode = /*#__PURE__*/function () {
 
         if ($this._localMediaStream) {
           // There is difference in size of rendered video and one that is
-          // considered by the canvas. We need to account for scaling factor.
+          // considered by the canvas. Need to account for scaling factor.
           var videoElement = $this._videoElement;
           var widthRatio = videoElement.videoWidth / videoElement.clientWidth;
           var heightRatio = videoElement.videoHeight / videoElement.clientHeight;
           var sWidthOffset = $this._qrRegion.width * widthRatio;
-          var sHeightOffset = $this._qrRegion.height * heightRatio; // Only decode the relevant area, ignore the shaded area, More reference:
+          var sHeightOffset = $this._qrRegion.height * heightRatio; // Only decode the relevant area, ignore the shaded area,
+          // More reference:
           // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
 
           $this._context.drawImage($this._videoElement,
@@ -369,17 +370,19 @@ var Html5Qrcode = /*#__PURE__*/function () {
     /**
      * Scans an Image File for QR Code.
      * 
-     * This feature is mutually exclusive to camera based scanning, you should call
-     * stop() if the camera based scanning was ongoing.
+     * This feature is mutually exclusive to camera based scanning, you should
+    * call stop() if the camera based scanning was ongoing.
      * 
      * @param {File} imageFile a local file with Image content.
-     * @param {boolean} showImage if true the Image will be rendered on given element.
+     * @param {boolean} showImage if true the Image will be rendered on given
+    * element.
      * 
-     * @returns Promise with decoded QR code string on success and error message on failure.
-     *            Failure could happen due to different reasons:
-     *            1. QR Code decode failed because enough patterns not found in image.
-     *            2. Input file was not image or unable to load the image or other image load
-     *              errors.
+     * @returns Promise with decoded QR code string on success and error message
+    * 			on failure. Failure could happen due to different reasons:
+     *            1. QR Code decode failed because enough patterns not found in
+    * 				image.
+     *            2. Input file was not image or unable to load the image or
+    * 				other image load errors.
      */
 
   }, {
@@ -424,7 +427,7 @@ var Html5Qrcode = /*#__PURE__*/function () {
             imageHeight = containerHeight;
           }
 
-          Html5Qrcode._log("Image downsampled from ".concat(formerImageWidth, "X").concat(formerImageHeight) + " to ".concat(imageWidth, "X").concat(imageHeight, "."));
+          Html5Qrcode._log("Image downsampled from " + "".concat(formerImageWidth, "X").concat(formerImageHeight) + " to ".concat(imageWidth, "X").concat(imageHeight, "."));
 
           return computeCanvasDrawConfig(imageWidth, imageHeight, containerWidth, containerHeight);
         }
@@ -791,7 +794,8 @@ var Html5Qrcode = /*#__PURE__*/function () {
             audio: false,
             video: true
           }).then(function (stream) {
-            // hacky approach to close any active stream if they are active.
+            // hacky approach to close any active stream if they are
+            // active.
             stream.oninactive = function (_) {
               return _this3._log("All streams closed");
             };
