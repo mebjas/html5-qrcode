@@ -371,18 +371,18 @@ var Html5Qrcode = /*#__PURE__*/function () {
      * Scans an Image File for QR Code.
      * 
      * This feature is mutually exclusive to camera based scanning, you should
-    * call stop() if the camera based scanning was ongoing.
+     * call stop() if the camera based scanning was ongoing.
      * 
      * @param {File} imageFile a local file with Image content.
      * @param {boolean} showImage if true the Image will be rendered on given
-    * element.
+     * element.
      * 
      * @returns Promise with decoded QR code string on success and error message
-    * 			on failure. Failure could happen due to different reasons:
+      *             on failure. Failure could happen due to different reasons:
      *            1. QR Code decode failed because enough patterns not found in
-    * 				image.
+      *                 image.
      *            2. Input file was not image or unable to load the image or
-    * 				other image load errors.
+      *                 other image load errors.
      */
 
   }, {
@@ -916,23 +916,23 @@ var Html5QrcodeScanner = /*#__PURE__*/function () {
    *
    * @param {String} elementId - Id of the HTML element.
    * @param {Object} config extra configurations to tune QR code scanner.
-      *  Supported Fields:
-      *      - fps: expected framerate of qr code scanning. example { fps: 2 }
-      *          means the scanning would be done every 500 ms.
-      *      - qrbox: width of QR scanning box, this should be smaller than
-      *          the width and height of the box. This would make the scanner
-      *          look like this:
-      *          ----------------------
-      *          |********************|
-      *          |******,,,,,,,,,*****|      <--- shaded region
-      *          |******|       |*****|      <--- non shaded region would be
-      *          |******|       |*****|          used for QR code scanning.
-      *          |******|_______|*****|
-      *          |********************|
-      *          |********************|
-      *          ----------------------
+   *  Supported Fields:
+   *      - fps: expected framerate of qr code scanning. example { fps: 2 }
+   *          means the scanning would be done every 500 ms.
+   *      - qrbox: width of QR scanning box, this should be smaller than
+   *          the width and height of the box. This would make the scanner
+   *          look like this:
+   *          ----------------------
+   *          |********************|
+   *          |******,,,,,,,,,*****|      <--- shaded region
+   *          |******|       |*****|      <--- non shaded region would be
+   *          |******|       |*****|          used for QR code scanning.
+   *          |******|_______|*****|
+   *          |********************|
+   *          |********************|
+   *          ----------------------
    * @param {Boolean} verbose - Optional argument, if true, all logs
-      *                  would be printed to console. 
+   *                  would be printed to console. 
    */
   function Html5QrcodeScanner(elementId, config, verbose) {
     _classCallCheck(this, Html5QrcodeScanner);
@@ -958,11 +958,11 @@ var Html5QrcodeScanner = /*#__PURE__*/function () {
    * Renders the User Interface
    * 
    * @param {Function} qrCodeSuccessCallback - callback on QR Code found.
-      *  Example:
-      *      function(qrCodeMessage) {}
-      * @param {Function} qrCodeErrorCallback - callback on QR Code parse error.
-      *  Example:
-      *      function(errorMessage) {}
+   *  Example:
+   *      function(qrCodeMessage) {}
+   * @param {Function} qrCodeErrorCallback - callback on QR Code parse error.
+   *  Example:
+   *      function(errorMessage) {}
    * 
    */
 
