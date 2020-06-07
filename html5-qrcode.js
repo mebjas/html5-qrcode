@@ -964,6 +964,7 @@ class Html5QrcodeScanner {
         qrCodeScanRegion.id = scanRegionId;
         qrCodeScanRegion.style.width = "100%";
         qrCodeScanRegion.style.minHeight = "100px";
+        qrCodeScanRegion.style.textAlign = "center";
         parent.appendChild(qrCodeScanRegion);
         this.__insertCameraScanImageToScanRegion();
 
