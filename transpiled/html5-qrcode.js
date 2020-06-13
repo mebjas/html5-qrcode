@@ -35,7 +35,13 @@ var Html5Qrcode = /*#__PURE__*/function () {
   function Html5Qrcode(elementId, verbose) {
     _classCallCheck(this, Html5Qrcode);
 
-    if (!qrcode) {
+    if (!getLazarSoftScanner) {
+      throw 'Use html5qrcode.min.js without edit, getLazarSoftScanner' + 'not found.';
+    }
+
+    this.qrcode = getLazarSoftScanner();
+
+    if (!this.qrcode) {
       throw 'qrcode is not defined, use the minified/html5-qrcode.min.js' + ' for proper support';
     }
 
@@ -111,7 +117,7 @@ var Html5Qrcode = /*#__PURE__*/function () {
       element.style.position = "relative";
       this._shouldScan = true;
       this._element = element;
-      qrcode.callback = qrCodeSuccessCallback; // Validate before insertion
+      this.qrcode.callback = qrCodeSuccessCallback; // Validate before insertion
 
       if (isShadedBoxEnabled) {
         var qrboxSize = config.qrbox;
@@ -204,7 +210,7 @@ var Html5Qrcode = /*#__PURE__*/function () {
           $this._qrRegion.height);
 
           try {
-            qrcode.decode();
+            $this.qrcode.decode();
 
             _this._possiblyUpdateShaders(
             /* qrMatch= */
@@ -322,7 +328,7 @@ var Html5Qrcode = /*#__PURE__*/function () {
       return new Promise(function (resolve,
       /* ignore */
       reject) {
-        qrcode.callback = null;
+        $this.qrcode.callback = null;
 
         var tracksToClose = $this._localMediaStream.getVideoTracks().length;
 
@@ -506,7 +512,7 @@ var Html5Qrcode = /*#__PURE__*/function () {
           config.height);
 
           try {
-            resolve(qrcode.decode());
+            resolve($this.qrcode.decode());
           } catch (exception) {
             reject("QR code parse error, error = ".concat(exception));
           }
