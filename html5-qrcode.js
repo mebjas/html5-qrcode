@@ -36,10 +36,10 @@ class Html5Qrcode {
      *                  would be printed to console. 
      */
     constructor(elementId, verbose) {
-		if (!getLazarSoftScanner) {
-			throw 'Use html5qrcode.min.js without edit, getLazarSoftScanner'
-			+ 'not found.';
-		}
+        if (!getLazarSoftScanner) {
+            throw 'Use html5qrcode.min.js without edit, getLazarSoftScanner'
+            + 'not found.';
+        }
 
 		this.qrcode = getLazarSoftScanner();
         if (!this.qrcode) {
