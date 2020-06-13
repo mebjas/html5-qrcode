@@ -41,7 +41,7 @@ class Html5Qrcode {
             + 'not found.';
         }
 
-		this.qrcode = getLazarSoftScanner();
+        this.qrcode = getLazarSoftScanner();
         if (!this.qrcode) {
             throw 'qrcode is not defined, use the minified/html5-qrcode.min.js'
             + ' for proper support';
