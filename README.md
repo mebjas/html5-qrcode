@@ -92,9 +92,9 @@ function onScanFailure(error) {
 	console.warn(`QR error = ${error}`);
 }
 
-let html5QrCodePro = new Html5QrcodePro(
+let html5QrcodeScanner = new Html5QrcodeScanner(
 	"reader", { fps: 10, qrbox: 250 } /* verbose= */ true);
-html5QrCodePro.render(onScanSuccess, onScanFailure);
+html5QrcodeScanner.render(onScanSuccess, onScanFailure);
 ```
 
 ### Pro Mode - if you want to implement your own user interface
@@ -328,23 +328,23 @@ class Html5QrcodeScanner {
 	 *
 	 * @param {String} elementId - Id of the HTML element.
 	 * @param {Object} config extra configurations to tune QR code scanner.
-     *  Supported Fields:
-     *      - fps: expected framerate of qr scanning. example { fps: 2 }
-     *          means the scanning would be done every 500 ms.
-     *      - qrbox: width of QR scanning box, this should be smaller than
-     *          the width and height of the box. This would make the scanner
-     *          look like this:
-     *          ----------------------
-     *          |********************|
-     *          |******,,,,,,,,,*****|      <--- shaded region
-     *          |******|       |*****|      <--- non shaded region would be
-     *          |******|       |*****|          used for QR code scanning.
-     *          |******|_______|*****|
-     *          |********************|
-     *          |********************|
-     *          ----------------------
+	 *  Supported Fields:
+	 *      - fps: expected framerate of qr scanning. example { fps: 2 }
+	 *          means the scanning would be done every 500 ms.
+	 *      - qrbox: width of QR scanning box, this should be smaller than
+	 *          the width and height of the box. This would make the scanner
+	 *          look like this:
+	 *          ----------------------
+	 *          |********************|
+	 *          |******,,,,,,,,,*****|      <--- shaded region
+	 *          |******|       |*****|      <--- non shaded region would be
+	 *          |******|       |*****|          used for QR code scanning.
+	 *          |******|_______|*****|
+	 *          |********************|
+	 *          |********************|
+	 *          ----------------------
 	 * @param {Boolean} verbose - Optional argument, if true, all logs
-     *                  would be printed to console. 
+	 *                  would be printed to console. 
 	 */
 	constructor(elementId, config, verbose) {}
 
@@ -352,11 +352,11 @@ class Html5QrcodeScanner {
 	 * Renders the User Interface
 	 * 
 	 * @param {Function} qrCodeSuccessCallback - callback on QR Code found.
-     *  Example:
-     *      function(qrCodeMessage) {}
-     * @param {Function} qrCodeErrorCallback - callback on QR Code parse error.
-     *  Example:
-     *      function(errorMessage) {}
+	 *  Example:
+	 *      function(qrCodeMessage) {}
+	 * @param {Function} qrCodeErrorCallback - callback on QR Code parse error.
+	 *  Example:
+	 *      function(errorMessage) {}
 	 * 
 	 */
 	render(qrCodeSuccessCallback, qrCodeErrorCallback) {}
