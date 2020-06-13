@@ -447,7 +447,7 @@ var Html5Qrcode = /*#__PURE__*/function () {
           var element = document.getElementById($this._elementId);
           var containerWidth = element.clientWidth ? element.clientWidth : Html5Qrcode.DEFAULT_WIDTH; // No default height anymore.
 
-          var containerHeight = element.clientHeight ? element.clientHeight : imageHeight;
+          var containerHeight = Math.max(element.clientHeight ? element.clientHeight : imageHeight, Html5Qrcode.FILE_SCAN_MIN_HEIGHT);
           var config = computeCanvasDrawConfig(imageWidth, imageHeight, containerWidth, containerHeight);
 
           if (showImage) {
@@ -889,6 +889,8 @@ var Html5Qrcode = /*#__PURE__*/function () {
 _defineProperty(Html5Qrcode, "DEFAULT_WIDTH", 300);
 
 _defineProperty(Html5Qrcode, "DEFAULT_WIDTH_OFFSET", 2);
+
+_defineProperty(Html5Qrcode, "FILE_SCAN_MIN_HEIGHT", 300);
 
 _defineProperty(Html5Qrcode, "SCAN_DEFAULT_FPS", 2);
 

@@ -15,6 +15,7 @@ class Html5Qrcode {
     //#region static constants
     static DEFAULT_WIDTH = 300;
     static DEFAULT_WIDTH_OFFSET = 2;
+    static FILE_SCAN_MIN_HEIGHT = 300;
     static SCAN_DEFAULT_FPS = 2;
     static MIN_QR_BOX_SIZE = 50;
     static SHADED_LEFT = 1;
@@ -449,8 +450,9 @@ class Html5Qrcode {
                 const containerWidth = element.clientWidth
                     ? element.clientWidth : Html5Qrcode.DEFAULT_WIDTH;
                 // No default height anymore.
-                const containerHeight = element.clientHeight
-                    ? element.clientHeight : imageHeight;
+                const containerHeight =  Math.max(
+                    element.clientHeight ? element.clientHeight : imageHeight,
+                    Html5Qrcode.FILE_SCAN_MIN_HEIGHT);
 
                 const config = computeCanvasDrawConfig(
                     imageWidth, imageHeight, containerWidth, containerHeight);
