@@ -93,7 +93,7 @@ function onScanFailure(error) {
 }
 
 let html5QrcodeScanner = new Html5QrcodeScanner(
-	"reader", { fps: 10, qrbox: 250 } /* verbose= */ true);
+	"reader", { fps: 10, qrbox: 250 }, /* verbose= */ true);
 html5QrcodeScanner.render(onScanSuccess, onScanFailure);
 ```
 
