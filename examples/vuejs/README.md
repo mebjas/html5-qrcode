@@ -2,13 +2,14 @@
 <img src="https://vuejs.org/images/logo.png" width="200px"><br>
 [vuejs.org](https://vuejs.org/) | `Support Level` = `Strong`
 
-### How to build a `vue.js` component using `html5-qrcode`
-Include the js library in your project
+## How to build a `vue.js` component using `html5-qrcode`
+
+### Include the js library in your project
 ```html
-<script src="https://unpkg.com/html5-qrcode@1.1.3/minified/html5-qrcode.min.js"></script>
+<script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
 ```
 
-## Use a `qrcode-scanner` component
+### Use a `qrcode-scanner` component
 ```js
 Vue.component('qrcode-scanner', {
     props: {
@@ -34,7 +35,7 @@ Vue.component('qrcode-scanner', {
 });
 ```
 
-And place it in the DOM as component
+### And place it in the DOM as component
 ```html
 <qrcode-scanner
     v-bind:qrbox="250" 
@@ -43,4 +44,5 @@ And place it in the DOM as component
 </qrcode-scanner>
 ```
 
+### Add listener to listen to scanned code
 You can consume the scanned code by listening to `decodedQrCode` event
