@@ -1,3 +1,6 @@
+### Version 1.1.7
+ + `Html5QrcodeScanner#clear()` returns a `Promise`.
+
 ### Version 1.1.6
  + Bug fixes
    + [#74](https://github.com/mebjas/html5-qrcode/issues/74) - state errors on file based scanning.

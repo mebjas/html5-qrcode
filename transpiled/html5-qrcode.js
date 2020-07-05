@@ -1013,6 +1013,9 @@ var Html5QrcodeScanner = /*#__PURE__*/function () {
     }
     /**
      * Removes the QR Code scanner.
+     * 
+     * @returns Promise which succeeds if the cleanup is complete successfully,
+     *  fails otherwise.
      */
 
   }, {
@@ -1031,21 +1034,24 @@ var Html5QrcodeScanner = /*#__PURE__*/function () {
       };
 
       if (this.html5Qrcode) {
-        if (this.html5Qrcode._isScanning()) {
-          this.html5Qrcode.stop().then(function (_) {
-            $this.html5Qrcode.clear();
-            emptyHtmlContainer();
-          })["catch"](function (error) {
-            if ($this.verbose) {
-              console.error("Unable to stop qrcode scanner", error);
-            }
+        return new Promise(function (resolve, reject) {
+          if (_this4.html5Qrcode._isScanning()) {
+            _this4.html5Qrcode.stop().then(function (_) {
+              $this.html5Qrcode.clear();
+              emptyHtmlContainer();
+              resolve();
+            })["catch"](function (error) {
+              if ($this.verbose) {
+                console.error("Unable to stop qrcode scanner", error);
+              }
 
-            $this.html5Qrcode.clear();
-            emptyHtmlContainer();
-          });
-        }
+              reject(error);
+            });
+          }
+        });
       }
-    }
+    } //#region private control methods
+
   }, {
     key: "__createBasicLayout",
     value: function __createBasicLayout(parent) {
@@ -1479,7 +1485,8 @@ var Html5QrcodeScanner = /*#__PURE__*/function () {
     value: function __clearScanRegion() {
       var qrCodeScanRegion = document.getElementById(this.__getScanRegionId());
       qrCodeScanRegion.innerHTML = "";
-    } //#region state getters
+    } //#endregion
+    //#region state getters
 
   }, {
     key: "__getDashboardSectionId",

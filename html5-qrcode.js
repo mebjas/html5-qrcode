@@ -935,6 +935,9 @@ class Html5QrcodeScanner {
 
     /**
      * Removes the QR Code scanner.
+     * 
+     * @returns Promise which succeeds if the cleanup is complete successfully,
+     *  fails otherwise.
      */
     clear() {
         const $this = this;
@@ -946,21 +949,24 @@ class Html5QrcodeScanner {
         }
 
         if (this.html5Qrcode) {
-            if (this.html5Qrcode._isScanning()) {
-                this.html5Qrcode.stop().then(_ => {
-                    $this.html5Qrcode.clear();
-                    emptyHtmlContainer();
-                }).catch(error => {
-                    if ($this.verbose) {
-                        console.error("Unable to stop qrcode scanner", error);
-                    }
-                    $this.html5Qrcode.clear();
-                    emptyHtmlContainer();
-                })
-            }
+            return new Promise((resolve, reject) => {
+                if (this.html5Qrcode._isScanning()) {
+                    this.html5Qrcode.stop().then(_ => {
+                        $this.html5Qrcode.clear();
+                        emptyHtmlContainer();
+                        resolve();
+                    }).catch(error => {
+                        if ($this.verbose) {
+                            console.error("Unable to stop qrcode scanner", error);
+                        }
+                        reject(error);
+                    })
+                }
+            });
         }
     }
 
+    //#region private control methods
     __createBasicLayout(parent) {
         parent.style.position = "relative";
         parent.style.padding = "0px";
@@ -1373,6 +1379,7 @@ class Html5QrcodeScanner {
             this.__getScanRegionId());
         qrCodeScanRegion.innerHTML = "";
     }
+    //#endregion
 
     //#region state getters
     __getDashboardSectionId() {
