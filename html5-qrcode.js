@@ -1104,7 +1104,10 @@ class Html5QrcodeScanner {
             }
             const file = e.target.files[0];
             $this.html5Qrcode.scanFile(file, true)
-                .then($this.qrCodeSuccessCallback)
+                .then(qrCode => {
+                    $this.__resetHeaderMessage();
+                    $this.qrCodeSuccessCallback(qrCode);
+                })
                 .catch(error => {
                     $this.__setStatus("ERROR", Html5QrcodeScanner.STATUS_WARNING);
                     $this.__setHeaderMessage(error, Html5QrcodeScanner.STATUS_WARNING);
@@ -1224,6 +1227,11 @@ class Html5QrcodeScanner {
                 }
                 return;
             }
+
+            // Cleanup states
+            $this.__setStatus("IDLE");
+            $this.__resetHeaderMessage();
+            $this.__getFileScanInput().value = "";
 
             $this.sectionSwapAllowed = false;
             if ($this.currentScanType == Html5QrcodeScanner.SCAN_TYPE_CAMERA) {

@@ -1200,7 +1200,11 @@ var Html5QrcodeScanner = /*#__PURE__*/function () {
         }
 
         var file = e.target.files[0];
-        $this.html5Qrcode.scanFile(file, true).then($this.qrCodeSuccessCallback)["catch"](function (error) {
+        $this.html5Qrcode.scanFile(file, true).then(function (qrCode) {
+          $this.__resetHeaderMessage();
+
+          $this.qrCodeSuccessCallback(qrCode);
+        })["catch"](function (error) {
           $this.__setStatus("ERROR", Html5QrcodeScanner.STATUS_WARNING);
 
           $this.__setHeaderMessage(error, Html5QrcodeScanner.STATUS_WARNING);
@@ -1312,8 +1316,14 @@ var Html5QrcodeScanner = /*#__PURE__*/function () {
           }
 
           return;
-        }
+        } // Cleanup states
 
+
+        $this.__setStatus("IDLE");
+
+        $this.__resetHeaderMessage();
+
+        $this.__getFileScanInput().value = "";
         $this.sectionSwapAllowed = false;
 
         if ($this.currentScanType == Html5QrcodeScanner.SCAN_TYPE_CAMERA) {
