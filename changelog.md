@@ -1,9 +1,13 @@
+### Version 1.1.6
+ + Bug fixes
+   + [#74](https://github.com/mebjas/html5-qrcode/issues/74) - state errors on file based scanning.
+
 ### Version 1.1.0
- + Added support for full scanner with end to end UI - `Html5QrcodeScanner`
+ + Added support for a full scanner with end to end UI - `Html5QrcodeScanner`
 
 ### Version 1.0.9
- + Fixed issue https://github.com/mebjas/html5-qrcode/issues/41
- + Added support for verbose logging in library as constructor argument.
+ + Fixed issue [#41](https://github.com/mebjas/html5-qrcode/issues/41)
+ + Added support for verbose logging in the library as a constructor argument.
 
 ### Version 1.0.8
  + Added support for realtime feedbacks on viewfinder for inline scanning
@@ -13,7 +17,7 @@
     |On Android|![](./assets/pixel3.gif)|
 
 ### Version 1.0.7
- + Fixed the video size issue in [issues/21](https://github.com/mebjas/html5-qrcode/issues/21)
+ + Fixed the video size issue in [#21](https://github.com/mebjas/html5-qrcode/issues/21)
  + Removed fixed height of viewfinder, now the height is based on the video stream. The width is honored if the input element has a default width. Otherwise default width is applied.
  + If `config.qrbox` is greater than derived height, the config is ignored & no shading is applied.
  + The sequence of steps have changed
