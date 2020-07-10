@@ -173,6 +173,11 @@ class Html5Qrcode {
             context.canvas.width = qrRegion.width;
             context.canvas.height = qrRegion.height;
 
+            if (config.flipH) {
+                context.translate(context.canvas.width, 0);
+                context.scale(-1, 1);
+            }
+
             // Insert the canvas
             element.append(canvasElement);
             if (shouldShadingBeApplied) {
