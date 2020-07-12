@@ -40,6 +40,14 @@ Working on adding support for more and more platforms. If you find a platform or
 
 > Apparently, Webkit for IOS is used by Chrome, Firefox, and other browsers in IOS and they do not have webcam permissions yet. There is an ongoing issue on fixing the support for iOS - [issue/14](https://github.com/mebjas/html5-qrcode/issues/14)
 
+### Framework support
+The library can be easily used with several other frameworks, I have been adding examples for a few of them and would continue to add more.
+
+|<img src="./assets/html5.png" width="30px">| <img src="./assets/vuejs.png" width="30px">|<img src="./assets/electron.png" width="30px"> |
+|--|--|--|--|
+|[Html5](./examples/html5) | [VueJs](./examples/vuejs) | [ElectronJs](./examples/electron) |
+
+
 
 ## Description - [View Demo](https://blog.minhazav.dev/research/html5-qrcode.html)
 
