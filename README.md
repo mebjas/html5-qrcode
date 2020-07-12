@@ -43,11 +43,9 @@ Working on adding support for more and more platforms. If you find a platform or
 ### Framework support
 The library can be easily used with several other frameworks, I have been adding examples for a few of them and would continue to add more.
 
-|<img src="./assets/html5.png" width="30px">| <img src="./assets/vuejs.png" width="30px">|<img src="./assets/electron.png" width="30px"> |
-|--|--|--|--|
-|[Html5](./examples/html5) | [VueJs](./examples/vuejs) | [ElectronJs](./examples/electron) |
-
-
+|<img src="./assets/html5.png" width="30px">| <img src="./assets/vuejs.png" width="30px">|<img src="./assets/electron.png" width="30px">
+| -------- | -------- | -------- |
+| [Html5](./examples/html5) | [VueJs](./examples/vuejs) | [ElectronJs](./examples/electron)
 
 ## Description - [View Demo](https://blog.minhazav.dev/research/html5-qrcode.html)
 
