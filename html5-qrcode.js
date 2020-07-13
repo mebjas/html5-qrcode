@@ -173,7 +173,7 @@ class Html5Qrcode {
             context.canvas.width = qrRegion.width;
             context.canvas.height = qrRegion.height;
 
-            if (config.flipH) {
+            if (config.flipHorizontally) {
                 context.translate(context.canvas.width, 0);
                 context.scale(-1, 1);
             }
