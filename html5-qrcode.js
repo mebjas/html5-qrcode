@@ -945,13 +945,14 @@ class Html5QrcodeScanner {
             const mainContainer = document.getElementById(this.elementId);
             if (mainContainer) {
                 mainContainer.innerHTML = "";
+                this.__resetBasicLayout(mainContainer);
             }
         }
 
         if (this.html5Qrcode) {
             return new Promise((resolve, reject) => {
-                if (this.html5Qrcode._isScanning()) {
-                    this.html5Qrcode.stop().then(_ => {
+                if ($this.html5Qrcode._isScanning) {
+                    $this.html5Qrcode.stop().then(_ => {
                         $this.html5Qrcode.clear();
                         emptyHtmlContainer();
                         resolve();
@@ -989,7 +990,11 @@ class Html5QrcodeScanner {
         parent.appendChild(qrCodeDashboard);
 
         this.__setupInitialDashboard(qrCodeDashboard);
-    }
+	}
+	
+	__resetBasicLayout(parent) {
+        parent.style.border = "none";
+	}
 
     __setupInitialDashboard(dashboard) {
         this.__createSection(dashboard);

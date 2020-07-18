@@ -1030,13 +1030,15 @@ var Html5QrcodeScanner = /*#__PURE__*/function () {
 
         if (mainContainer) {
           mainContainer.innerHTML = "";
+
+          _this4.__resetBasicLayout(mainContainer);
         }
       };
 
       if (this.html5Qrcode) {
         return new Promise(function (resolve, reject) {
-          if (_this4.html5Qrcode._isScanning()) {
-            _this4.html5Qrcode.stop().then(function (_) {
+          if ($this.html5Qrcode._isScanning) {
+            $this.html5Qrcode.stop().then(function (_) {
               $this.html5Qrcode.clear();
               emptyHtmlContainer();
               resolve();
@@ -1082,6 +1084,11 @@ var Html5QrcodeScanner = /*#__PURE__*/function () {
       parent.appendChild(qrCodeDashboard);
 
       this.__setupInitialDashboard(qrCodeDashboard);
+    }
+  }, {
+    key: "__resetBasicLayout",
+    value: function __resetBasicLayout(parent) {
+      parent.style.border = "none";
     }
   }, {
     key: "__setupInitialDashboard",
