@@ -81,6 +81,7 @@ class Html5Qrcode {
      *          |********************|
      *          |********************|
      *          ----------------------
+     *      - flipHorizontally: if {@code true} flips the frames along y axis
      * @param {Function} qrCodeSuccessCallback callback on QR Code found.
      *  Example:
      *      function(qrCodeMessage) {}
@@ -173,9 +174,9 @@ class Html5Qrcode {
             context.canvas.width = qrRegion.width;
             context.canvas.height = qrRegion.height;
 
-            if (config.flipHorizontally) {
-                context.translate(context.canvas.width, 0);
-                context.scale(-1, 1);
+            if (config.flipHorizontally === true) {
+                context.translate(/* x= */ context.canvas.width, /* y= */ 0);
+                context.scale(/* scalewidth= */ -1, /* scaleheight= */ 1);
             }
 
             // Insert the canvas
@@ -871,6 +872,7 @@ class Html5QrcodeScanner {
      *          |********************|
      *          |********************|
      *          ----------------------
+     *      - flipHorizontally: if {@code true} flips the frames along y axis
      * @param {Boolean} verbose - Optional argument, if true, all logs
      *                  would be printed to console. 
      */

@@ -1,3 +1,6 @@
+### Version 1.1.8
+ + Added support for `config.flipHorizontally` parameter
+
 ### Version 1.1.7
  + `Html5QrcodeScanner#clear()` returns a `Promise`.
 

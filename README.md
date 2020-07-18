@@ -274,6 +274,7 @@ class Html5Qrcode {
    *          |********************|
    *          |********************|
    *          ----------------------
+   *       - flipHorizontally: if {@code true} flips the frames along y axis
    * @param {Function} qrCodeSuccessCallback callback on QR Code found.
    *  Example:
    *      function(qrCodeMessage) {}
@@ -343,6 +344,7 @@ class Html5QrcodeScanner {
      *          |********************|
      *          |********************|
      *          ----------------------
+     *       - flipHorizontally: if {@code true} flips the frames along y axis
      * @param {Boolean} verbose - Optional argument, if true, all logs
      *                  would be printed to console. 
      */
