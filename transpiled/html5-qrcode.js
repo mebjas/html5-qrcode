@@ -159,7 +159,13 @@ var Html5Qrcode = /*#__PURE__*/function () {
 
         var context = canvasElement.getContext('2d');
         context.canvas.width = qrRegion.width;
-        context.canvas.height = qrRegion.height; // Insert the canvas
+        context.canvas.height = qrRegion.height;
+
+        if (config.flipHorizontally) {
+          context.translate(context.canvas.width, 0);
+          context.scale(-1, 1);
+        } // Insert the canvas
+
 
         element.append(canvasElement);
 
