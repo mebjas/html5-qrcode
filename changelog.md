@@ -1,3 +1,6 @@
+### Version 1.1.8
+ + Bug fix on `Html5QrcodeScanner#clear()`
+
 ### Version 1.1.7
  + `Html5QrcodeScanner#clear()` returns a `Promise`.
 
