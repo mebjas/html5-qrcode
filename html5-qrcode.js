@@ -81,6 +81,9 @@ class Html5Qrcode {
      *          |********************|
      *          |********************|
      *          ----------------------
+     *      - aspectRatio: Optional, desired aspect ratio for the video feed.
+     *          Ideal aspect ratios are 4:3 or 16:9. Passing very wrong aspect
+     *          ratio could lead to video feed not showing up. 
      * @param {Function} qrCodeSuccessCallback callback on QR Code found.
      *  Example:
      *      function(qrCodeMessage) {}
@@ -256,23 +259,23 @@ class Html5Qrcode {
                 }
 
                 $this._localMediaStream = mediaStream;
-                setupVideo();
-
-                // TODO(mebjas): see if constaints can be applied on camera
-                // for better results or performance.
-
-                // const constraints = {
-                //   width: { min: width , ideal: width, max: width },
-                //   frameRate: { ideal: 30, max: 30 }
-                // }
-                // const track = mediaStream.getVideoTracks()[0];
-                // track.applyConstraints(constraints)
-                // .then(() => setupVideo())
-                // .catch(error => {
-                //   console.log("[Warning] [Html5Qrcode] Constriants could not be "
-                //     + "satisfied, ignoring constraints", error);
-                //   setupVideo();
-                // });
+                if (!config.aspectRatio) {
+                    setupVideo();
+                } else {
+                    const constraints = {
+                        aspectRatio : 1.33334
+                    }
+                    const track = mediaStream.getVideoTracks()[0];
+                    track.applyConstraints(constraints)
+                        .then(_ => setupVideo())
+                        .catch(error => {
+                            console.log(
+                                "[Warning] [Html5Qrcode] Constriants could not be satisfied,"
+                                + " ignoring constraints",
+                                error);
+                            setupVideo();
+                        });
+                }
             });
         }
         //#endregion
@@ -283,7 +286,7 @@ class Html5Qrcode {
                     deviceId: { exact: cameraId }
                 };
                 navigator.mediaDevices.getUserMedia(
-                    { audio: false, video: videoConstraints })
+                    { audio: false, video: videoConstraints, aspectRatio: 1.77777778 })
                     .then(stream => {
                         onMediaStreamReceived(stream)
                             .then(_ => {
@@ -866,6 +869,9 @@ class Html5QrcodeScanner {
      *          |********************|
      *          |********************|
      *          ----------------------
+     *      - aspectRatio: Optional, desired aspect ratio for the video feed.
+     *          Ideal aspect ratios are 4:3 or 16:9. Passing very wrong aspect
+     *          ratio could lead to video feed not showing up. 
      * @param {Boolean} verbose - Optional argument, if true, all logs
      *                  would be printed to console. 
      */
