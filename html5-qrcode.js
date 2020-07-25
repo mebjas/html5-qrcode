@@ -843,8 +843,8 @@ class Html5QrcodeScanner {
     static STATUS_WARNING = "STATUS_WARNING";
     static STATUS_DEFAULT = "STATUS_DEFAULT";
 
-    static ASSET_FILE_SCAN = "https://raw.githubusercontent.com/mebjas/html5-qrcode/master/assets/file-scan.gif";
-    static ASSET_CAMERA_SCAN = "https://raw.githubusercontent.com/mebjas/html5-qrcode/master/assets/camera-scan.gif";
+    static ASSET_FILE_SCAN = "assets/file-scan.gif";
+    static ASSET_CAMERA_SCAN = "assets/camera-scan.gif";
 
     /**
      * Creates instance of this class.
