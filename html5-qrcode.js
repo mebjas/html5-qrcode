@@ -263,16 +263,13 @@ class Html5Qrcode {
                     setupVideo();
                 } else {
                     const constraints = {
-                        aspectRatio : 1.33334
+                        aspectRatio : config.aspectRatio
                     }
                     const track = mediaStream.getVideoTracks()[0];
                     track.applyConstraints(constraints)
                         .then(_ => setupVideo())
                         .catch(error => {
-                            console.log(
-                                "[Warning] [Html5Qrcode] Constriants could not be satisfied,"
-                                + " ignoring constraints",
-                                error);
+                            console.log("[Warning] [Html5Qrcode] Constriants could not be satisfied, ignoring constraints", error);
                             setupVideo();
                         });
                 }
@@ -286,7 +283,7 @@ class Html5Qrcode {
                     deviceId: { exact: cameraId }
                 };
                 navigator.mediaDevices.getUserMedia(
-                    { audio: false, video: videoConstraints, aspectRatio: 1.77777778 })
+                    { audio: false, video: videoConstraints })
                     .then(stream => {
                         onMediaStreamReceived(stream)
                             .then(_ => {

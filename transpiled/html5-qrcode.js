@@ -263,13 +263,13 @@ var Html5Qrcode = /*#__PURE__*/function () {
             setupVideo();
           } else {
             var constraints = {
-              aspectRatio: 1.33334
+              aspectRatio: config.aspectRatio
             };
             var track = mediaStream.getVideoTracks()[0];
             track.applyConstraints(constraints).then(function (_) {
               return setupVideo();
             })["catch"](function (error) {
-              console.log("[Warning] [Html5Qrcode] Constriants could not be satisfied," + " ignoring constraints", error);
+              console.log("[Warning] [Html5Qrcode] Constriants could not be satisfied, ignoring constraints", error);
               setupVideo();
             });
           }
@@ -286,8 +286,7 @@ var Html5Qrcode = /*#__PURE__*/function () {
           };
           navigator.mediaDevices.getUserMedia({
             audio: false,
-            video: videoConstraints,
-            aspectRatio: 1.77777778
+            video: videoConstraints
           }).then(function (stream) {
             onMediaStreamReceived(stream).then(function (_) {
               $this._isScanning = true;
