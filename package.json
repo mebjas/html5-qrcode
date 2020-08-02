@@ -1,13 +1,13 @@
 {
   "name": "html5-qrcode",
-  "version": "1.1.8",
+  "version": "1.1.9",
   "description": "a cross platform HTML5 QR Code scanner",
   "main": "html5-qrcode.js",
   "scripts": {
-    "prebuild": "echo > minified/html5-qrcode.min.js && echo 'html5-qrcode.min.js truncated!'",
-    "build": "find assets/*.* -print0| xargs -0  -i{} bash -c 'echo  s%{}%data\\:\\;base64\\,$(base64 -w0 {})%g'|sed -i -f - html5-qrcode.js && babel html5-qrcode.js -d transpiled && echo 'code transpiled' && minify transpiled/html5-qrcode.js --out-file minified/tmp.js",
-    "postbuild": "cp third_party/qrcode.min.js minified/html5-qrcode.min.js && cat minified/tmp.js >> minified/html5-qrcode.min.js && rm minified/tmp.js && echo 'minifed and combined'",
-    "test": "mocha-phantomjs -p node_modules/phantomjs/bin/phantomjs -R dot test/test.html5-qrcode.html"
+    "prebuild": "./scripts/prebuild.sh",
+    "build": "./scripts/build.sh",
+    "postbuild": "./scripts/postbuild.sh",
+    "test": "./scripts/test.sh "
   },
   "repository": {
     "type": "git",
