@@ -1,3 +1,14 @@
+### Version 1.1.9
+ + Added support for `config.aspectRatio` in both `Html5Qrcode` and `Html5QrcodeScanner`
+
+    Use this property to render the video feed in a certain aspect ratio. Passing a nonstandard aspect ratio like `100000:1` could lead to the video feed not even showing up. Ideal values can be:
+    | Value | Aspect Ratio | Use Case |
+    | ----- | ------------ | -------- |
+    |1.333334 | 4:3 | Standard camera aspect ratio |
+    |1.777778 | 16:9 | Fullscreen, cinematic |
+    |1.0 | 1:1 | Square view |
+
+
 ### Version 1.1.8
  + Bug fix on `Html5QrcodeScanner#clear()`
 

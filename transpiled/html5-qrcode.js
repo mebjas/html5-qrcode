@@ -74,6 +74,9 @@ var Html5Qrcode = /*#__PURE__*/function () {
    *          |********************|
    *          |********************|
    *          ----------------------
+   *      - aspectRatio: Optional, desired aspect ratio for the video feed.
+   *          Ideal aspect ratios are 4:3 or 16:9. Passing very wrong aspect
+   *          ratio could lead to video feed not showing up. 
    * @param {Function} qrCodeSuccessCallback callback on QR Code found.
    *  Example:
    *      function(qrCodeMessage) {}
@@ -255,20 +258,21 @@ var Html5Qrcode = /*#__PURE__*/function () {
           };
 
           $this._localMediaStream = mediaStream;
-          setupVideo(); // TODO(mebjas): see if constaints can be applied on camera
-          // for better results or performance.
-          // const constraints = {
-          //   width: { min: width , ideal: width, max: width },
-          //   frameRate: { ideal: 30, max: 30 }
-          // }
-          // const track = mediaStream.getVideoTracks()[0];
-          // track.applyConstraints(constraints)
-          // .then(() => setupVideo())
-          // .catch(error => {
-          //   console.log("[Warning] [Html5Qrcode] Constriants could not be "
-          //     + "satisfied, ignoring constraints", error);
-          //   setupVideo();
-          // });
+
+          if (!config.aspectRatio) {
+            setupVideo();
+          } else {
+            var constraints = {
+              aspectRatio: config.aspectRatio
+            };
+            var track = mediaStream.getVideoTracks()[0];
+            track.applyConstraints(constraints).then(function (_) {
+              return setupVideo();
+            })["catch"](function (error) {
+              console.log("[Warning] [Html5Qrcode] Constriants could not be satisfied, ignoring constraints", error);
+              setupVideo();
+            });
+          }
         });
       }; //#endregion
 
@@ -939,6 +943,9 @@ var Html5QrcodeScanner = /*#__PURE__*/function () {
    *          |********************|
    *          |********************|
    *          ----------------------
+   *      - aspectRatio: Optional, desired aspect ratio for the video feed.
+   *          Ideal aspect ratios are 4:3 or 16:9. Passing very wrong aspect
+   *          ratio could lead to video feed not showing up. 
    * @param {Boolean} verbose - Optional argument, if true, all logs
    *                  would be printed to console. 
    */

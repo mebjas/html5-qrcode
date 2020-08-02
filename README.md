@@ -280,6 +280,9 @@ class Html5Qrcode {
    *          |********************|
    *          |********************|
    *          ----------------------
+   *      - aspectRatio: Optional, desired aspect ratio for the video feed.
+   *          Ideal aspect ratios are 4:3 or 16:9. Passing very wrong aspect
+   *          ratio could lead to video feed not showing up. 
    * @param {Function} qrCodeSuccessCallback callback on QR Code found.
    *  Example:
    *      function(qrCodeMessage) {}
@@ -349,6 +352,9 @@ class Html5QrcodeScanner {
      *          |********************|
      *          |********************|
      *          ----------------------
+     *      - aspectRatio: Optional, desired aspect ratio for the video feed.
+     *          Ideal aspect ratios are 4:3 or 16:9. Passing very wrong aspect
+     *          ratio could lead to video feed not showing up. 
      * @param {Boolean} verbose - Optional argument, if true, all logs
      *                  would be printed to console. 
      */
@@ -387,6 +393,14 @@ A.K.A frame per second, the default value for this is 2 but it can be increased 
 Use this property to limit the region of the viewfinder you want to use for scanning. The rest of the viewfinder would be shaded. For example by passing config `{ qrbox : 250 }`, the screen will look like:
 
 <img src="./assets/screen.gif">
+
+#### `aspectRatio` - Float, Example 1.777778 for 16:9 aspect ratio
+Use this property to render the video feed in a certain aspect ratio. Passing a nonstandard aspect ratio like `100000:1` could lead to the video feed not even showing up. Ideal values can be:
+| Value | Aspect Ratio | Use Case |
+| ----- | ------------ | -------- |
+|1.333334 | 4:3 | Standard camera aspect ratio |
+|1.777778 | 16:9 | Fullscreen, cinematic |
+|1.0 | 1:1 | Square view |
 
 If you do not pass any value, the whole viewfinder would be used for scanning. 
 **Note**: this value has to be smaller than the width and height of the `QR code HTML element`.
