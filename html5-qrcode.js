@@ -205,14 +205,16 @@ class Html5Qrcode {
                     = videoElement.videoHeight / videoElement.clientHeight;
                 const sWidthOffset = $this._qrRegion.width * widthRatio;
                 const sHeightOffset = $this._qrRegion.height * heightRatio;
+                const sxOffset = $this._qrRegion.x * widthRatio;
+                const syOffset = $this._qrRegion.y * heightRatio;
 
                 // Only decode the relevant area, ignore the shaded area,
                 // More reference:
                 // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
                 $this._context.drawImage(
                     $this._videoElement,
-                    /* sx= */ $this._qrRegion.x,
-                    /* sy= */ $this._qrRegion.y,
+                    /* sx= */ sxOffset,
+                    /* sy= */ syOffset,
                     /* sWidth= */ sWidthOffset,
                     /* sHeight= */ sHeightOffset,
                     /* dx= */ 0,
