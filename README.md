@@ -282,7 +282,10 @@ class Html5Qrcode {
    *          ----------------------
    *      - aspectRatio: Optional, desired aspect ratio for the video feed.
    *          Ideal aspect ratios are 4:3 or 16:9. Passing very wrong aspect
-   *          ratio could lead to video feed not showing up. 
+   *          ratio could lead to video feed not showing up.
+   *      - disableFlip: Optional, if {@code true} flipped QR Code won't be
+   *          scanned. Only use this if you are sure the camera cannot give
+   *          mirrored feed if you are facing performance constraints.
    * @param {Function} qrCodeSuccessCallback callback on QR Code found.
    *  Example:
    *      function(qrCodeMessage) {}
@@ -354,7 +357,10 @@ class Html5QrcodeScanner {
      *          ----------------------
      *      - aspectRatio: Optional, desired aspect ratio for the video feed.
      *          Ideal aspect ratios are 4:3 or 16:9. Passing very wrong aspect
-     *          ratio could lead to video feed not showing up. 
+     *          ratio could lead to video feed not showing up.
+     *      - disableFlip: Optional, if {@code true} flipped QR Code won't be
+     *          scanned. Only use this if you are sure the camera cannot give
+     *          mirrored feed if you are facing performance constraints.
      * @param {Boolean} verbose - Optional argument, if true, all logs
      *                  would be printed to console. 
      */
@@ -404,6 +410,17 @@ Use this property to render the video feed in a certain aspect ratio. Passing a 
 
 If you do not pass any value, the whole viewfinder would be used for scanning. 
 **Note**: this value has to be smaller than the width and height of the `QR code HTML element`.
+
+#### `disableFlip` - Boolean (Optional), default = false.
+By default, the scanner can scan for horizontally flipped QR Codes. This also enables scanning QR code using the front camera
+on mobile devices which are sometimes mirrored. This is `false` by default and I recommend changing this only if:
+    - You are sure that the camera feed cannot be mirrored (Horizontally flipped)
+    - You are facing performance issues with this enabled.
+
+Here's an example of normal and mirrored QR Code
+| Normal QR Code | Mirrored QR Code |
+| ----- | ---- |
+| <img src="./assets/qr-code.png" width="200px"> | <img src="./assets/qr-code-flipped.png" width="200px"><br> |
 
 ## How to modify and build
 1. Code changes should only be made to 

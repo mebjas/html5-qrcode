@@ -1,3 +1,6 @@
+### Version 1.2.0
+ + Added support for scanning mirrored QR code, or scanning in case camera feed is mirrored (horizontally flipped).
+
 ### Version 1.1.9
  + Added support for `config.aspectRatio` in both `Html5Qrcode` and `Html5QrcodeScanner`
 
