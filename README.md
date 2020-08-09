@@ -406,9 +406,12 @@ If you do not pass any value, the whole viewfinder would be used for scanning.
 **Note**: this value has to be smaller than the width and height of the `QR code HTML element`.
 
 ## How to modify and build
-1. Code changes should only be made to [html5-qrcode.js](./html5-qrcode.js) or 
-[third_party/qrcode.js](./third_party/qrcode.js).
-2. Run `npm run-script build`. This should do `transpiling` --> `minification` --> `merging` different js code.
+1. Code changes should only be made to 
+    - [html5-qrcode.js](./html5-qrcode.js)
+    - [html5-qrcode-scanner.js](./html5-qrcode-scanner.js)
+    - [third_party/qrcode.js](./third_party/qrcode.js)
+2. Run `npm run-script build`. 
+    > This should do `transpiling` --> `minification` --> `merging` different js code.
 
 > Before sending a pull request with changes to [html5-qrcode.js](./html5-qrcode.js) please run instruction (2).
 
