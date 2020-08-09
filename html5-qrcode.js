@@ -83,7 +83,10 @@ class Html5Qrcode {
      *          ----------------------
      *      - aspectRatio: Optional, desired aspect ratio for the video feed.
      *          Ideal aspect ratios are 4:3 or 16:9. Passing very wrong aspect
-     *          ratio could lead to video feed not showing up. 
+     *          ratio could lead to video feed not showing up.
+     *      - disableFlip: Optional, if {@code true} flipped QR Code won't be
+     *          scanned. Only use this if you are sure the camera cannot give
+     *          mirrored feed if you are facing performance constraints.
      * @param {Function} qrCodeSuccessCallback callback on QR Code found.
      *  Example:
      *      function(qrCodeMessage) {}
@@ -188,6 +191,27 @@ class Html5Qrcode {
             $this._canvasElement = canvasElement;
         }
 
+        /**
+         * Scans current context using the qrcode library.
+         * 
+         * <p>This method call would result in callback being triggered by the
+         * qrcode library. This method also handles the border coloring.
+         * 
+         * @returns true if scan match is found, false otherwise.
+         */
+        const scanContext = () => {
+            try {
+                $this.qrcode.decode();
+                this._possiblyUpdateShaders(/* qrMatch= */ true);
+                return true;
+            } catch (exception) {
+                this._possiblyUpdateShaders(/* qrMatch= */ false);
+                qrCodeErrorCallback(
+                    `QR code parse error, error = ${exception}`);
+                return false;
+            }
+        }
+
         // Method that scans forever.
         const foreverScan = () => {
             if (!$this._shouldScan) {
@@ -221,14 +245,16 @@ class Html5Qrcode {
                     /* dy= */  0,
                     /* dWidth= */ $this._qrRegion.width,
                     /* dHeight= */ $this._qrRegion.height);
-                try {
-                    $this.qrcode.decode();
-                    this._possiblyUpdateShaders(/* qrMatch= */ true);
-                } catch (exception) {
-                    this._possiblyUpdateShaders(/* qrMatch= */ false);
-                    qrCodeErrorCallback(
-                        `QR code parse error, error = ${exception}`);
-                }
+
+                    // Try scanning normal frame and in case of failure, scan
+                    // the inverted context if not explictly disabled.
+                    // TODO(mebjas): Move this logic to qrcode.js
+                    if (!scanContext() && config.disableFlip !== true) {
+                        // scan inverted context.
+                        this._context.translate(this._context.canvas.width, 0);
+                        this._context.scale(-1, 1);
+                        scanContext();
+                    }
             }
             $this._foreverScanTimeout = setTimeout(
                 foreverScan, Html5Qrcode._getTimeoutFps(config.fps));

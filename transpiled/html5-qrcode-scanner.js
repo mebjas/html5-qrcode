@@ -44,7 +44,10 @@ var Html5QrcodeScanner = /*#__PURE__*/function () {
    *          ----------------------
    *      - aspectRatio: Optional, desired aspect ratio for the video feed.
    *          Ideal aspect ratios are 4:3 or 16:9. Passing very wrong aspect
-   *          ratio could lead to video feed not showing up. 
+   *          ratio could lead to video feed not showing up.
+   *      - disableFlip: Optional, if {@code true} flipped QR Code won't be
+   *          scanned. Only use this if you are sure the camera cannot give
+   *          mirrored feed if you are facing performance constraints.
    * @param {Boolean} verbose - Optional argument, if true, all logs
    *                  would be printed to console. 
    */
