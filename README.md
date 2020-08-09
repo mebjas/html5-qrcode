@@ -412,10 +412,10 @@ If you do not pass any value, the whole viewfinder would be used for scanning.
 **Note**: this value has to be smaller than the width and height of the `QR code HTML element`.
 
 #### `disableFlip` - Boolean (Optional), default = false.
-By default, the scanner can scan for horizontally flipped QR Codes. This also enables scanning QR code using the front camera
-on mobile devices which are sometimes mirrored. This is `false` by default and I recommend changing this only if:
-    - You are sure that the camera feed cannot be mirrored (Horizontally flipped)
-    - You are facing performance issues with this enabled.
+By default, the scanner can scan for horizontally flipped QR Codes. This also enables scanning QR code using the front camera on mobile devices which are sometimes mirrored. 
+This is `false` by default and I recommend changing this only if:
+ - You are sure that the camera feed cannot be mirrored (Horizontally flipped)
+ - You are facing performance issues with this enabled.
 
 Here's an example of normal and mirrored QR Code
 | Normal QR Code | Mirrored QR Code |
@@ -424,9 +424,9 @@ Here's an example of normal and mirrored QR Code
 
 ## How to modify and build
 1. Code changes should only be made to 
-    - [html5-qrcode.js](./html5-qrcode.js)
-    - [html5-qrcode-scanner.js](./html5-qrcode-scanner.js)
-    - [third_party/qrcode.js](./third_party/qrcode.js)
+   - [html5-qrcode.js](./html5-qrcode.js)
+   - [html5-qrcode-scanner.js](./html5-qrcode-scanner.js)
+   - [third_party/qrcode.js](./third_party/qrcode.js)
 2. Run `npm run-script build`. 
     > This should do `transpiling` --> `minification` --> `merging` different js code.
 
