@@ -190,15 +190,17 @@ var Html5Qrcode = /*#__PURE__*/function () {
           var widthRatio = videoElement.videoWidth / videoElement.clientWidth;
           var heightRatio = videoElement.videoHeight / videoElement.clientHeight;
           var sWidthOffset = $this._qrRegion.width * widthRatio;
-          var sHeightOffset = $this._qrRegion.height * heightRatio; // Only decode the relevant area, ignore the shaded area,
+          var sHeightOffset = $this._qrRegion.height * heightRatio;
+          var sxOffset = $this._qrRegion.x * widthRatio;
+          var syOffset = $this._qrRegion.y * heightRatio; // Only decode the relevant area, ignore the shaded area,
           // More reference:
           // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
 
           $this._context.drawImage($this._videoElement,
           /* sx= */
-          $this._qrRegion.x,
+          sxOffset,
           /* sy= */
-          $this._qrRegion.y,
+          syOffset,
           /* sWidth= */
           sWidthOffset,
           /* sHeight= */
