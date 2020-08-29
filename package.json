@@ -27,15 +27,15 @@
   },
   "homepage": "https://github.com/mebjas/html5-qrcode#readme",
   "devDependencies": {
-    "@babel/cli": "^7.8.4",
-    "@babel/core": "^7.9.0",
-    "@babel/preset-env": "^7.9.5",
+    "@babel/cli": "^7.10.5",
+    "@babel/core": "^7.11.4",
+    "@babel/plugin-proposal-class-properties": "^7.10.4",
+    "@babel/preset-env": "^7.11.0",
     "babel-minify": "^0.5.1",
-    "mocha": "^7.1.2",
+    "mocha": "^7.2.0",
     "mocha-phantomjs": "^4.1.0",
     "phantomjs": "^2.1.7",
-    "rewire": "^5.0.0",
-    "@babel/plugin-proposal-class-properties": "^7.8.3"
+    "rewire": "^5.0.0"
   },
   "files": [
     "minified/*"

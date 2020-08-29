@@ -470,6 +470,10 @@ Here's an example of normal and mirrored QR Code
    - [third_party/qrcode.js](./third_party/qrcode.js)
 2. Run `npm run-script build`. 
     > This should do `transpiling` --> `minification` --> `merging` different js code.
+3. Testing
+    - Run `npm test`
+    - Run the tests before sending PR, all tests should run.
+    - Please add tests for new behaviors sent in PR.
 
 > Before sending a pull request with changes to [html5-qrcode.js](./html5-qrcode.js) please run instruction (2).
 

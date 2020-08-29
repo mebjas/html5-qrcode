@@ -1,5 +1,5 @@
-This file is created by transpiling `html5-qrcode.js` using [babeljs.io](https://babeljs.io).
-This file can run in most of the browser which doesn't support ECMA Script.
-> html5-qrcode.js is writting in ECMA Script supported JS.
+# Generated code, do not modify manually.
 
-**Note** Do not modify this code directly, when sending a pull request.
+ - All files in this directory are transpiled from their source files in the project root.
+ - The files are created using [babeljs.io](https://babeljs.io).
+ - Generated files should be supported in all major browsers.
