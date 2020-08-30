@@ -153,12 +153,11 @@ html5QrCode.start(
 });
 ```
 
-> You can optionally set another argument in constructor called `verbose`
-> to print all logs to console
->
-> ```js
-> const html5QrCode = new Html5Qrcode("reader", /* verbose= */ true);
-> ```
+> You can optionally set another argument in constructor called `verbose` to print all logs to console
+
+```js
+const html5QrCode = new Html5Qrcode("reader", /* verbose= */ true);
+```
 
 In mobile devices you may want users to directly scan the QR code using the back camera or the front camera for some use cases. For such cases you can avoid using the exact camera device id that you get from `Html5Qrcode.getCameras()`. The `start()` method allows passing constraints in place of camera device id similar to [html5 web API syntax](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia#Syntax). You can start scanning like mentioned in these examples:
 
@@ -465,8 +464,8 @@ Here's an example of normal and mirrored QR Code
 
 ## How to modify and build
 1. Code changes should only be made to 
-   - [html5-qrcode.js](./html5-qrcode.js)
-   - [html5-qrcode-scanner.js](./html5-qrcode-scanner.js)
+   - [src/html5-qrcode.js](./src/html5-qrcode.js)
+   - [src/html5-qrcode-scanner.js](./src/html5-qrcode-scanner.js)
    - [third_party/qrcode.js](./third_party/qrcode.js)
 2. Run `npm run-script build`. 
     > This should do `transpiling` --> `minification` --> `merging` different js code.
@@ -475,7 +474,7 @@ Here's an example of normal and mirrored QR Code
     - Run the tests before sending PR, all tests should run.
     - Please add tests for new behaviors sent in PR.
 
-> Before sending a pull request with changes to [html5-qrcode.js](./html5-qrcode.js) please run instruction (2).
+> Before sending a pull request with changes to [src](./src) please run instruction (2).
 
 ## Credits
 The decoder used for the QRcode reading is from `LazarSoft` https://github.com/LazarSoft/jsqrcode<br>
