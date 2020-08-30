@@ -1,5 +1,8 @@
 # Compatibility list for tested device
 
+**THIS IS WORK IN PROGRESS**: If you have tested the library to work with a different device please
+send a pull request.
+
 ## Android 
 | Device | Android OS | Browser | Inline scanning | File Scanning | Known issues |
 | --- | --- | --- | --- | --- | --- | 

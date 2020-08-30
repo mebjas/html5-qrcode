@@ -7,10 +7,10 @@ echo 'Initiating build sequence'
 ## find assets/*.* -print0| xargs -0  -i{} bash -c 'echo  s%{}%data\\:\\;base64\\,$(base64 -w0 {})%g'|sed -i -f - html5-qrcode.js
 
 ## Transpile the Main Js Code
-babel html5-qrcode.js -d transpiled
+babel src/html5-qrcode.js -d transpiled
 echo 'html5-qrcode.js transpiled'
 
-babel html5-qrcode-scanner.js -d transpiled
+babel src/html5-qrcode-scanner.js -d transpiled
 echo 'html5-qrcode-scanner.js transpiled'
 
 ## Minify the code
