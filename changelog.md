@@ -1,3 +1,27 @@
+### Version 1.2.1
+ + Added support for `facingMode` constraing in `Html5Qrcode#start`
+ 
+**Update**:
+In mobile devices you may want users to directly scan the QR code using the back camera or the front camera for some use cases. For such cases you can avoid using the exact camera device id that you get from `Html5Qrcode.getCameras()`. The `start()` method allows passing constraints in place of camera device id similar to [html5 web API syntax](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia#Syntax). You can start scanning like mentioned in these examples:
+
+```js
+const html5QrCode = new Html5Qrcode("#reader");
+const qrCodeSuccessCallback = message => { /* handle success */ }
+const config = { fps: 10, qrbox: 250 };
+
+// If you want to prefer front camera
+html5QrCode.start({ facingMode: "user" }, config, qrCodeSuccessCallback);
+
+// If you want to prefer back camera
+html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback);
+
+// Select front camera or fail with `OverconstrainedError`.
+html5QrCode.start({ facingMode: { exact: "user"} }, config, qrCodeSuccessCallback);
+
+// Select back camera or fail with `OverconstrainedError`.
+html5QrCode.start({ facingMode: { exact: "environment"} }, config, qrCodeSuccessCallback);
+```
+
 ### Version 1.2.0
  + Added support for scanning mirrored QR code, or scanning in case camera feed is mirrored (horizontally flipped).
 

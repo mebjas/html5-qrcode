@@ -110,6 +110,7 @@ You can use the following APIs to `fetch camera`, `start` scanning and `stop` sc
 
 #### For using inline QR Code scanning with Webcam or Smartphone camera
 
+##### Start Scanning
 To get a list of supported cameras, query it using static method `Html5Qrcode.getCameras()`. This method returns a `Promise` with a list of devices supported in format `{ id: "id", label: "label" }`. 
 ```js
 // This method will trigger user permissions
@@ -158,6 +159,33 @@ html5QrCode.start(
 > ```js
 > const html5QrCode = new Html5Qrcode("reader", /* verbose= */ true);
 > ```
+
+In mobile devices you may want users to directly scan the QR code using the back camera or the front camera for some use cases. For such cases you can avoid using the exact camera device id that you get from `Html5Qrcode.getCameras()`. The `start()` method allows passing constraints in place of camera device id similar to [html5 web API syntax](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia#Syntax). You can start scanning like mentioned in these examples:
+
+```js
+const html5QrCode = new Html5Qrcode("#reader");
+const qrCodeSuccessCallback = message => { /* handle success */ }
+const config = { fps: 10, qrbox: 250 };
+
+// If you want to prefer front camera
+html5QrCode.start({ facingMode: "user" }, config, qrCodeSuccessCallback);
+
+// If you want to prefer back camera
+html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback);
+
+// Select front camera or fail with `OverconstrainedError`.
+html5QrCode.start({ facingMode: { exact: "user"} }, config, qrCodeSuccessCallback);
+
+// Select back camera or fail with `OverconstrainedError`.
+html5QrCode.start({ facingMode: { exact: "environment"} }, config, qrCodeSuccessCallback);
+```
+
+Passing the `cameraId` (recommended appraoch) is similar to
+```js
+html5QrCode.start({ deviceId: { exact: cameraId} }, config, qrCodeSuccessCallback);
+```
+
+##### Stop Scanning
 
 To stop using camera and thus stop scanning, call `Html5Qrcode#stop()` which returns a `Promise` for stopping the video feed and scanning.
 ```js
@@ -263,7 +291,20 @@ class Html5Qrcode {
   /**
    * Start scanning QR Code for given camera.
    * 
-   * @param {String} cameraId Id of the camera to use.
+   * @param {String or Object} identifier of the camera, it can either be the
+   *  cameraId retrieved from {@code Html5Qrcode#getCameras()} method or
+   *  object with facingMode constraint.
+   *  Example values:
+   *      - "a76afe74e951cde2d3e29aa73065c9cd89438627b3bde"
+   *          ^ This is 'deviceId' from camera retrieved from 
+   *          {@code Html5Qrcode#getCameras()}
+   *      - { facingMode: "user" }
+   *      - { facingMode: "environment" }
+   *      - { facingMode: { exact: "environment" } }
+   *      - { facingMode: { exact: "user" } }
+   *      - { deviceId: { exact: "a76afe74e95e3....73065c9cd89438627b3bde" }
+   *      - { deviceId: "a76afe74e95e3....73065c9cd89438627b3bde" }
+   *  Reference: https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia#Syntax
    * @param {Object} config extra configurations to tune QR code scanner.
    *  Supported Fields:
    *      - fps: expected framerate of qr code scanning. example { fps: 2 }
@@ -429,6 +470,10 @@ Here's an example of normal and mirrored QR Code
    - [third_party/qrcode.js](./third_party/qrcode.js)
 2. Run `npm run-script build`. 
     > This should do `transpiling` --> `minification` --> `merging` different js code.
+3. Testing
+    - Run `npm test`
+    - Run the tests before sending PR, all tests should run.
+    - Please add tests for new behaviors sent in PR.
 
 > Before sending a pull request with changes to [html5-qrcode.js](./html5-qrcode.js) please run instruction (2).
 

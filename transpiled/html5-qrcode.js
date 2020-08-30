@@ -1,5 +1,7 @@
 "use strict";
 
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -57,7 +59,20 @@ var Html5Qrcode = /*#__PURE__*/function () {
   /**
    * Start scanning QR Code for given camera.
    * 
-   * @param {String} cameraId Id of the camera to use.
+   * @param {String or Object} identifier of the camera, it can either be the
+   *  cameraId retrieved from {@code Html5Qrcode#getCameras()} method or
+   *  object with facingMode constraint.
+   *  Example values:
+   *      - "a76afe74e95e3aba9fc1b69c39b8701cde2d3e29aa73065c9cd89438627b3bde"
+   *          ^ This is 'deviceId' from camera retrieved from 
+   *          {@code Html5Qrcode#getCameras()}
+   *      - { facingMode: "user" }
+   *      - { facingMode: "environment" }
+   *      - { facingMode: { exact: "environment" } }
+   *      - { facingMode: { exact: "user" } }
+   *      - { deviceId: { exact: "a76afe74e95e3....73065c9cd89438627b3bde" }
+   *      - { deviceId: "a76afe74e95e3....73065c9cd89438627b3bde" }
+   *  Reference: https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia#Syntax
    * @param {Object} config extra configurations to tune QR code scanner.
    *  Supported Fields:
    *      - fps: expected framerate of qr code scanning. example { fps: 2 }
@@ -94,11 +109,11 @@ var Html5Qrcode = /*#__PURE__*/function () {
 
   _createClass(Html5Qrcode, [{
     key: "start",
-    value: function start(cameraId, configuration, qrCodeSuccessCallback, qrCodeErrorCallback) {
+    value: function start(cameraIdOrConfig, configuration, qrCodeSuccessCallback, qrCodeErrorCallback) {
       var _this = this;
 
-      if (!cameraId) {
-        throw "cameraId is required";
+      if (!cameraIdOrConfig) {
+        throw "cameraIdOrConfig is required";
       }
 
       if (!qrCodeSuccessCallback || typeof qrCodeSuccessCallback != "function") {
@@ -310,11 +325,8 @@ var Html5Qrcode = /*#__PURE__*/function () {
 
       return new Promise(function (resolve, reject) {
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-          var videoConstraints = {
-            deviceId: {
-              exact: cameraId
-            }
-          };
+          var videoConstraints = $this._createVideoConstraints(cameraIdOrConfig);
+
           navigator.mediaDevices.getUserMedia({
             audio: false,
             video: videoConstraints
@@ -327,10 +339,14 @@ var Html5Qrcode = /*#__PURE__*/function () {
             reject("Error getting userMedia, error = ".concat(err));
           });
         } else if (navigator.getUserMedia) {
+          if (typeof cameraIdOrConfig != "string") {
+            throw "The device doesn't support navigator.mediaDevices" + ", only supported cameraIdOrConfig in this case is" + " deviceId parameter (string).";
+          }
+
           var getCameraConfig = {
             video: {
               optional: [{
-                sourceId: cameraId
+                sourceId: cameraIdOrConfig
               }]
             }
           };
@@ -821,7 +837,118 @@ var Html5Qrcode = /*#__PURE__*/function () {
         URL.revokeObjectURL(this._lastScanImageFile);
         this._lastScanImageFile = null;
       }
-    }
+    } //#region private method to create correct camera selection filter.
+
+  }, {
+    key: "_createVideoConstraints",
+    value: function _createVideoConstraints(cameraIdOrConfig) {
+      if (typeof cameraIdOrConfig == "string") {
+        // If it's a string it should be camera device Id.
+        return {
+          deviceId: {
+            exact: cameraIdOrConfig
+          }
+        };
+      } else if (_typeof(cameraIdOrConfig) == "object") {
+        var facingModeKey = "facingMode";
+        var deviceIdKey = "deviceId";
+        var allowedFacingModeValues = {
+          "user": true,
+          "environment": true
+        };
+        var exactKey = "exact";
+
+        var isValidFacingModeValue = function isValidFacingModeValue(value) {
+          if (value in allowedFacingModeValues) {
+            // Valid config
+            return true;
+          } else {
+            // Invalid config
+            throw "config has invalid 'facingMode' value = " + "'".concat(value, "'");
+          }
+        };
+
+        var keys = Object.keys(cameraIdOrConfig);
+
+        if (keys.length != 1) {
+          throw "'cameraIdOrConfig' object should have exactly 1 key," + " if passed as an object, found ".concat(keys.length, " keys");
+        }
+
+        var key = Object.keys(cameraIdOrConfig)[0];
+
+        if (key != facingModeKey && key != deviceIdKey) {
+          throw "Only '".concat(facingModeKey, "' and '").concat(deviceIdKey, "' ") + " are supported for 'cameraIdOrConfig'";
+        }
+
+        if (key == facingModeKey) {
+          /**
+           * Supported scenarios:
+           * - { facingMode: "user" }
+           * - { facingMode: "environment" }
+           * - { facingMode: { exact: "environment" } }
+           * - { facingMode: { exact: "user" } }
+           */
+          var facingMode = cameraIdOrConfig[key];
+
+          if (typeof facingMode == "string") {
+            if (isValidFacingModeValue(facingMode)) {
+              return {
+                facingMode: facingMode
+              };
+            }
+          } else if (_typeof(facingMode) == "object") {
+            if (exactKey in facingMode) {
+              if (isValidFacingModeValue(facingMode[exactKey])) {
+                return {
+                  facingMode: {
+                    exact: facingMode[exactKey]
+                  }
+                };
+              }
+            } else {
+              throw "'facingMode' should be string or object with" + " ".concat(exactKey, " as key.");
+            }
+          } else {
+            var type = _typeof(facingMode);
+
+            throw "Invalid type of 'facingMode' = ".concat(type);
+          }
+        } else {
+          /**
+           * key == deviceIdKey; Supported scenarios:
+           * - { deviceId: { exact: "a76afe74e95e3.....38627b3bde" }
+           * - { deviceId: "a76afe74e95e3....065c9cd89438627b3bde" }
+           */
+          var deviceId = cameraIdOrConfig[key];
+
+          if (typeof deviceId == "string") {
+            return {
+              deviceId: deviceId
+            };
+          } else if (_typeof(deviceId) == "object") {
+            if (exactKey in deviceId) {
+              return {
+                deviceId: {
+                  exact: deviceId[exactKey]
+                }
+              };
+            } else {
+              throw "'deviceId' should be string or object with" + " ".concat(exactKey, " as key.");
+            }
+          } else {
+            var _type = _typeof(deviceId);
+
+            throw "Invalid type of 'deviceId' = ".concat(_type);
+          }
+        }
+      } else {
+        // invalid type
+        var _type2 = _typeof(cameraIdOrConfig);
+
+        throw "Invalid type of 'cameraIdOrConfig' = ".concat(_type2);
+      }
+    } //#endregion
+
   }], [{
     key: "getCameras",
     value: function getCameras() {
