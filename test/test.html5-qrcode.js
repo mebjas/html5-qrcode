@@ -1,6 +1,10 @@
+if (!assert) {
+    assert = require("chai");
+}
+
 describe('Html5Qrcode is defined', function()  {
-    it('qrcode is defined', function()  {
-          assert.notEqual(qrcode, undefined);
+    it('getLazarSoftScanner() is not null', function()  {
+          assert.notEqual(getLazarSoftScanner(), undefined);
     });
 
     it('Html5Qrcode is defined', function()  {
@@ -17,8 +21,8 @@ describe('Constructor', function()  {
     it('Constructor fails if qrcode not defined', function() {
         const expectedErrorMessage = "qrcode is not defined, use the minified"
             + "/html5-qrcode.min.js for proper support";
-        const qrCodeDeepCopy = JSON.parse(JSON.stringify(qrcode));
-        qrcode = undefined;
+        const __getLazarSoftScanner = getLazarSoftScanner;
+        getLazarSoftScanner = function() { return undefined; };
         try {
             new Html5Qrcode("qr");
             assert.fail("exception should be thrown");
@@ -26,7 +30,7 @@ describe('Constructor', function()  {
             assert.equal(exception, expectedErrorMessage);
         }
 
-        qrcode = qrCodeDeepCopy;
+        getLazarSoftScanner = __getLazarSoftScanner;
     });
 
     describe('Verbosity is set', function()  {
@@ -74,4 +78,135 @@ describe('Constructor', function()  {
             assert.isFalse(html5Qrcode._isScanning);
         });
     });    
+});
+
+describe('_createVideoConstraints', function() {
+    it('direct deviceId', function() {
+        const id = "deviceId";
+        const html5Qrcode = new Html5Qrcode("qr");
+        const config = html5Qrcode._createVideoConstraints(id);
+        assert.deepEqual(config, { deviceId: { exact: id } });
+    });
+
+    it('deviceId as object', function() {
+        const id = "deviceId";
+        const html5Qrcode = new Html5Qrcode("qr");
+        const config = html5Qrcode._createVideoConstraints({deviceId: id});
+        assert.deepEqual(config, { deviceId: id });
+    });
+
+    it('deviceId as an exact object', function() {
+        const inputConfig = {deviceId: {exact: "deviceId"}};
+        const html5Qrcode = new Html5Qrcode("qr");
+        const outputConfig = html5Qrcode._createVideoConstraints(inputConfig);
+        assert.deepEqual(inputConfig, outputConfig);
+    });
+
+    it('deviceId as an incorrect object', function() {
+        const inputConfig = {deviceId: {something: "deviceId"}};
+        const html5Qrcode = new Html5Qrcode("qr");
+        try {
+            html5Qrcode._createVideoConstraints(inputConfig);
+            assert.fail();
+        } catch (exception) {
+            assert.equal(
+                exception,
+                "'deviceId' should be string or object with exact as key.");
+        }
+    });
+
+    it('facingMode:user as string', function() {
+        const inputConfig = {facingMode: "user"};
+        const html5Qrcode = new Html5Qrcode("qr");
+        const outputConfig = html5Qrcode._createVideoConstraints(inputConfig);
+        assert.deepEqual(inputConfig, outputConfig);
+    });
+
+    it('facingMode:environment as string', function() {
+        const inputConfig = {facingMode: "environment"};
+        const html5Qrcode = new Html5Qrcode("qr");
+        const outputConfig = html5Qrcode._createVideoConstraints(inputConfig);
+        assert.deepEqual(inputConfig, outputConfig);
+    });
+
+    it('facingMode:random as string fails', function() {
+        const inputConfig = { facingMode: "random" };
+        const html5Qrcode = new Html5Qrcode("qr");
+        try {
+            html5Qrcode._createVideoConstraints(inputConfig);
+            assert.fail();
+        } catch (exception) {
+            assert.equal(
+                exception,
+                "config has invalid 'facingMode' value = 'random'");
+        }
+    });
+
+    it('facingMode:user as object', function() {
+        const inputConfig = {facingMode: {exact: "user"}};
+        const html5Qrcode = new Html5Qrcode("qr");
+        const outputConfig = html5Qrcode._createVideoConstraints(inputConfig);
+        assert.deepEqual(inputConfig, outputConfig);
+    });
+
+    it('facingMode:environment as object', function() {
+        const inputConfig = {facingMode: {exact: "environment"}};
+        const html5Qrcode = new Html5Qrcode("qr");
+        const outputConfig = html5Qrcode._createVideoConstraints(inputConfig);
+        assert.deepEqual(inputConfig, outputConfig);
+    });
+
+    it('facingMode:random as object fails', function() {
+        const inputConfig = {facingMode: {exact: "random"}};
+        const html5Qrcode = new Html5Qrcode("qr");
+        try {
+            html5Qrcode._createVideoConstraints(inputConfig);
+            assert.fail();
+        } catch (exception) {
+            assert.equal(
+                exception,
+                "config has invalid 'facingMode' value = 'random'");
+        }
+    });
+
+    it('facingMode non exact as object fails', function() {
+        const inputConfig = {facingMode: {random: "random"}};
+        const html5Qrcode = new Html5Qrcode("qr");
+        try {
+            html5Qrcode._createVideoConstraints(inputConfig);
+            assert.fail();
+        } catch (exception) {
+            assert.equal(
+                exception,
+                "'facingMode' should be string or object with exact as key.");
+        }
+    });
+
+    it('empty config fails', function() {
+        const inputConfig = {};
+        const html5Qrcode = new Html5Qrcode("qr");
+        try {
+            html5Qrcode._createVideoConstraints(inputConfig);
+            assert.fail();
+        } catch (exception) {
+            assert.equal(
+                exception,
+                "'cameraIdOrConfig' object should have exactly 1 key, "
+                + "if passed as an object, found 0 keys");
+        }
+    });
+
+    it('too many config fails', function() {
+        const inputConfig = {facingMode: "user", random: "random"};
+        const html5Qrcode = new Html5Qrcode("qr");
+        try {
+            html5Qrcode._createVideoConstraints(inputConfig);
+            assert.fail();
+        } catch (exception) {
+            assert.equal(
+                exception,
+                "'cameraIdOrConfig' object should have exactly 1 key, "
+                + "if passed as an object, found 2 keys");
+        }
+    });
 });
