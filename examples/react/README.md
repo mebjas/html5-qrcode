@@ -85,5 +85,10 @@ ReactDOM.render(
 ### Example implementation
 You can find an example impelementation at [example.html](./example.html).
 
+### Contributors
+| Name | Profile|
+| ----- | ------ |
+| Andy Tenholder| [@AndyTenholder](https://github.com/AndyTenholder) |
+
 ### TODO(mebjas): Create and publish `Html5QrcodeScanner` as proper react plugin
 It'd be great to publish this as a proper React plugin so every developer doesn't have to write custom React plugin to use this library.
