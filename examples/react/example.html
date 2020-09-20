@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Hello World</title>
+  <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+  
+  <!-- Don't use this in production: -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="../../minified/html5-qrcode.min.js"></script>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    class Html5QrcodeScannerPlugin extends React.Component {
+      componentDidMount() {
+        var $this = this;
+
+        // Creates the configuration object for Html5QrcodeScanner.
+        function createConfig(props) {
+          var config = {};
+          if (props.fps) {
+            config.fps = props.fps;
+          }
+          if (props.qrBox) {
+            config.qrBox = props.qrBox;
+          }
+          if (props.aspectRatio) {
+            config.aspectRatio = props.aspectRatio;
+          }
+          if (props.disableFlip !== undefined) {
+            config.disableFlip = props.disableFlip;
+          }
+          return config;
+        }
+
+        var config = createConfig(this.props);
+        var verbose = this.props.verbose === true;
+
+        // Suceess callback is required.
+        if (!(this.props.qrCodeSuccessCallback )) {
+          throw 'qrCodeSuccessCallback is required callback.';
+        }
+
+        this.html5QrcodeScanner = new Html5QrcodeScanner(
+          'qr-code-full-region', config, verbose);
+        this.html5QrcodeScanner.render(
+          this.props.qrCodeSuccessCallback, this.props.qrCodeErrorCallback);
+      }
+
+      componentWillUnmount() {
+        // TODO(mebjas): See if there is a better way to handle promise in `componentWillUnmount`.
+        this.html5QrcodeScanner.clear().catch(err => {
+          console.error('Failed to clear html5QrcodeScanner. '. err);
+        });
+      }
+
+      render() {
+        return <div id={'qr-code-full-region'} />;
+      }
+    }
+
+    ReactDOM.render(
+      <div>
+          <h1>Html5Qrcode React example!</h1>
+          <Html5QrcodeScannerPlugin
+            fps={10}
+            qrBox={250}
+            disableFlip={false}
+            qrCodeSuccessCallback={mesg => {console.log(mesg);}}
+            qrCodeErrorCallback={error => {console.error(error);}} />
+      </div>,
+      document.getElementById('root')
+    );
+  </script>
+</body>
+</html>
