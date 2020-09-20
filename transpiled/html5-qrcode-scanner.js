@@ -330,6 +330,8 @@ var Html5QrcodeScanner = /*#__PURE__*/function () {
           $this.__setStatus("ERROR", Html5QrcodeScanner.STATUS_WARNING);
 
           $this.__setHeaderMessage(error, Html5QrcodeScanner.STATUS_WARNING);
+
+          $this.qrCodeErrorCallback(error);
         });
       });
     }

@@ -1,3 +1,6 @@
+### Version 1.2.2
+ - Bug fix in `Html5QrcodeScanner` - file scanning.
+
 ### Version 1.2.1
  + Added support for `facingMode` constraing in `Html5Qrcode#start`
  
