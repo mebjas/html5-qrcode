@@ -473,8 +473,13 @@ Here's an example of normal and mirrored QR Code
     - Run `npm test`
     - Run the tests before sending PR, all tests should run.
     - Please add tests for new behaviors sent in PR.
-
-> Before sending a pull request with changes to [src](./src) please run instruction (2).
+4. Send a pull request
+    - Include all the changes to `./src`, `./transpiled`, `./minified`. **Do not change `./transpiled` or `./minified` manually.**
+    - In the PR add a comment like
+      ```
+      @all-contributors please add @mebjas for this new feature or tests
+      ```
+      For calling out your contributions - the bot will update the contributions file.
 
 ## Credits
 The decoder used for the QRcode reading is from `LazarSoft` https://github.com/LazarSoft/jsqrcode<br>
