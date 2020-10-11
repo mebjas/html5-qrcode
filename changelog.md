@@ -1,3 +1,53 @@
+### Version 1.2.3
+ - Added support for `videoConstraints` in config as an experimental config.
+    ```js
+        /* videoConstraints: {MediaTrackConstraints}, Optional
+         *  @beta(this config is not well supported yet).
+         *
+         *  Important: When passed this will override other configurations
+         *  like 'cameraIdOrConfig' or configurations like 'aspectRatio'.
+         *
+         *  videoConstraints should be of type {@code MediaTrackConstraints}
+         *  as defined in
+         *  https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints
+         *  and is used to specify a variety of video or camera controls
+         *  like: aspect ratio, facing mode, video frame rate.
+         */
+    ```
+    If passed this will override `cameraIdOrConfig` and `aspectRatio`.
+
+ - Added two new experimental APIs in `Html5Qrcode` class
+    - `getRunningTrackCapabilities()` - New
+        ```js
+        /**
+         * Returns the capabilities of the running video track.
+         * 
+         * @beta This is an experimental API
+         * @returns the capabilities of a running video track.
+         * @throws error if the scanning is not in running state.
+         */
+        getRunningTrackCapabilities()
+        ```
+    - `applyVideoConstraints(videoConstaints)` - New
+        ```js
+        /**
+         * Apply a video constraints on running video track.
+         * 
+         * Important:
+         *  1. Must be called only if the camera based scanning is in progress.
+         *  2. Changing aspectRatio while scanner is running is not yet supported.
+         * 
+         * @beta This is an experimental API
+         * @param {MediaTrackConstraints} specifies a variety of video or camera
+         *  controls as defined in 
+         *  https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints
+         * @returns a Promise which succeeds if the passed constraints are applied,
+         *  fails otherwise.
+         * @throws error if the scanning is not in running state.
+         */
+        applyVideoConstraints(videoConstaints) {}
+        ```
+
 ### Version 1.2.2
  - Bug fix in `Html5QrcodeScanner` - file scanning.
 

@@ -100,13 +100,24 @@ class Html5Qrcode {
      *      - disableFlip: Optional, if {@code true} flipped QR Code won't be
      *          scanned. Only use this if you are sure the camera cannot give
      *          mirrored feed if you are facing performance constraints.
+     *      - videoConstraints: {MediaTrackConstraints}, Optional
+     *          @beta(this config is not well supported yet).
+     *
+     *          Important: When passed this will override other parameters
+     *          like 'cameraIdOrConfig' or configurations like 'aspectRatio'.
+     *
+     *          videoConstraints should be of type {@code MediaTrackConstraints}
+     *          as defined in
+     *          https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints
+     *          and is used to specify a variety of video or camera controls
+     *          like: aspectRatio, facingMode, frameRate, etc.
      * @param {Function} qrCodeSuccessCallback callback on QR Code found.
      *  Example:
      *      function(qrCodeMessage) {}
      * @param {Function} qrCodeErrorCallback callback on QR Code parse error.
      *  Example:
      *      function(errorMessage) {}
-     * 
+     *
      * @returns Promise for starting the scan. The Promise can fail if the user
      * doesn't grant permission or some API is not supported by the browser.
      */
@@ -134,6 +145,20 @@ class Html5Qrcode {
         // Create configuration by merging default and input settings.
         const config = configuration ? configuration : {};
         config.fps = config.fps ? config.fps : Html5Qrcode.SCAN_DEFAULT_FPS;
+
+        // Check if videoConstraints is passed and valid
+        let videoConstraintsAvailableAndValid = false;
+        if (config.videoConstraints) {
+            if (!this._isMediaStreamConstraintsValid(config.videoConstraints)) {
+                Html5Qrcode._logError(
+                    "'videoConstraints' is not valid 'MediaStreamConstraints, "
+                        + "it will be ignored.'",
+                    /* experimental= */ true);
+            } else {
+                videoConstraintsAvailableAndValid = true;
+            }
+        }
+        const videoConstraintsEnabled = videoConstraintsAvailableAndValid;
 
         // qr shaded box
         const isShadedBoxEnabled = config.qrbox != undefined;
@@ -170,6 +195,7 @@ class Html5Qrcode {
         const setupUi = (width, height) => {
             const qrboxSize = config.qrbox;
             if (qrboxSize > height) {
+                // TODO(mebjas): Migrate to common logging.
                 console.warn("[Html5Qrcode] config.qrboxsize is greater "
                     + "than video height. Shading will be ignored");
             }
@@ -300,7 +326,8 @@ class Html5Qrcode {
                 }
 
                 $this._localMediaStream = mediaStream;
-                if (!config.aspectRatio) {
+                // If videoConstraints is passed, ignore all other configs.
+                if (videoConstraintsEnabled || !config.aspectRatio) {
                     setupVideo();
                 } else {
                     const constraints = {
@@ -310,7 +337,11 @@ class Html5Qrcode {
                     track.applyConstraints(constraints)
                         .then(_ => setupVideo())
                         .catch(error => {
-                            console.log("[Warning] [Html5Qrcode] Constriants could not be satisfied, ignoring constraints", error);
+                            // TODO(mebjas): Migrate to common logging.
+                            console.log(
+                                "[Warning] [Html5Qrcode] Constriants could not "
+                                    + "be satisfied, ignoring constraints",
+                                error);
                             setupVideo();
                         });
                 }
@@ -320,8 +351,11 @@ class Html5Qrcode {
 
         return new Promise((resolve, reject) => {
             if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                const videoConstraints = $this._createVideoConstraints(
-                    cameraIdOrConfig);
+                // Ignore all other video constraints if the videoConstraints
+                // is passed.
+                const videoConstraints = videoConstraintsEnabled
+                    ? config.videoConstraints
+                    : $this._createVideoConstraints(cameraIdOrConfig);
                 navigator.mediaDevices.getUserMedia(
                     {
                         audio: false,
@@ -650,6 +684,77 @@ class Html5Qrcode {
         });
     }
 
+    /**
+     * Returns the capabilities of the running video track.
+     *
+     * @beta This is an experimental API
+     * @returns the capabilities of a running video track.
+     * @throws error if the scanning is not in running state.
+     */
+    getRunningTrackCapabilities() {
+        if (this._localMediaStream == null) {
+            throw "Scanning is not in running state, call this API only when"
+                + " QR code scanning using camera is in running state.";
+        }
+    
+        if (this._localMediaStream.getVideoTracks().length == 0) {
+            throw "No video tracks found";
+        }
+
+        const videoTrack = this._localMediaStream.getVideoTracks()[0];
+        return videoTrack.getCapabilities();        
+    }
+
+    /**
+     * Apply a video constraints on running video track from camera.
+     *
+     * Important:
+     *  1. Must be called only if the camera based scanning is in progress.
+     *  2. Changing aspectRatio while scanner is running is not yet supported.
+     *
+     * @beta This is an experimental API
+     * @param {MediaTrackConstraints} specifies a variety of video or camera
+     *  controls as defined in 
+     *  https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints
+     * @returns a Promise which succeeds if the passed constraints are applied,
+     *  fails otherwise.
+     * @throws error if the scanning is not in running state.
+     */
+    applyVideoConstraints(videoConstaints) {
+        if (!videoConstaints) {
+            throw "videoConstaints is required argument.";
+        } else if (!this._isMediaStreamConstraintsValid(videoConstaints)) {
+            throw "invalid videoConstaints passed, check logs for more details";
+        }
+
+        if (this._localMediaStream == null) {
+            throw "Scanning is not in running state, call this API only when"
+                + " QR code scanning using camera is in running state.";
+        }
+    
+        if (this._localMediaStream.getVideoTracks().length == 0) {
+            throw "No video tracks found";
+        }
+
+        return new Promise((resolve, reject) => {
+            if ("aspectRatio" in videoConstaints) {
+                reject("Chaning 'aspectRatio' in run-time is not yet "
+                    + "supported.");
+                return;
+            }
+            const videoTrack = this._localMediaStream.getVideoTracks()[0];
+            // TODO(mebjas): This can be simplified to just return the promise
+            // directly.
+            videoTrack.applyConstraints(videoConstaints)
+                .then(_ => {
+                    resolve(_);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
+
     _clearElement() {
         if (this._isScanning) {
             throw 'Cannot clear while scan is ongoing, close it first.';
@@ -963,6 +1068,50 @@ class Html5Qrcode {
     }
     //#endregion
 
+    //#region private method to check for valid videoConstraints
+    _isMediaStreamConstraintsValid(videoConstraints) {
+        if (!videoConstraints) {
+            Html5Qrcode._logError(
+                "Empty videoConstraints", /* experimental= */ true);
+            return false;
+        }
+
+        if (typeof videoConstraints !== "object") {
+            const typeofVideoConstraints = typeof videoConstraints;
+            Html5Qrcode._logError(
+                "videoConstraints should be of type object, the "
+                    + `object passed is of type ${typeofVideoConstraints}.`,
+                /* experimental= */ true);
+            return false;
+        }
+        // TODO(mebjas): Make this validity check more sophisticuated
+        // Following keys are audio controls, audio controls are not supported.
+        const bannedKeys = [
+            "autoGainControl",
+            "channelCount",
+            "echoCancellation",
+            "latency",
+            "noiseSuppression",
+            "sampleRate",
+            "sampleSize",
+            "volume"
+        ];
+        const bannedkeysSet = new Set(bannedKeys);
+        const keysInVideoConstraints = Object.keys(videoConstraints);
+        for (let i = 0; i < keysInVideoConstraints.length; i++) {
+            const key = keysInVideoConstraints[i];
+            if (bannedkeysSet.has(key)) {
+                Html5Qrcode._logError(
+                    `${key} is not supported videoConstaints.`,
+                    /* experimental= */ true);
+                return false;
+            }
+        }
+
+        return true;
+    }
+    //#endregion
+
     static _getTimeoutFps(fps) {
         return 1000 / fps;
     }
@@ -970,6 +1119,12 @@ class Html5Qrcode {
     static _log(message) {
         if (Html5Qrcode.VERBOSE) {
             console.log(message);
+        }
+    }
+
+    static _logError(message, experimental) {
+        if (Html5Qrcode.VERBOSE || experimental === true) {
+            console.error(message);
         }
     }
 }
