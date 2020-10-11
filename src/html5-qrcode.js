@@ -102,10 +102,10 @@ class Html5Qrcode {
      *          mirrored feed if you are facing performance constraints.
      *      - videoConstraints: {MediaTrackConstraints}, Optional
      *          @beta(this config is not well supported yet).
-     *          
+     *
      *          Important: When passed this will override other parameters
      *          like 'cameraIdOrConfig' or configurations like 'aspectRatio'.
-     *          
+     *
      *          videoConstraints should be of type {@code MediaTrackConstraints}
      *          as defined in
      *          https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints
@@ -117,7 +117,7 @@ class Html5Qrcode {
      * @param {Function} qrCodeErrorCallback callback on QR Code parse error.
      *  Example:
      *      function(errorMessage) {}
-     * 
+     *
      * @returns Promise for starting the scan. The Promise can fail if the user
      * doesn't grant permission or some API is not supported by the browser.
      */
@@ -686,7 +686,7 @@ class Html5Qrcode {
 
     /**
      * Returns the capabilities of the running video track.
-     * 
+     *
      * @beta This is an experimental API
      * @returns the capabilities of a running video track.
      * @throws error if the scanning is not in running state.
@@ -707,11 +707,11 @@ class Html5Qrcode {
 
     /**
      * Apply a video constraints on running video track from camera.
-     * 
+     *
      * Important:
      *  1. Must be called only if the camera based scanning is in progress.
      *  2. Changing aspectRatio while scanner is running is not yet supported.
-     * 
+     *
      * @beta This is an experimental API
      * @param {MediaTrackConstraints} specifies a variety of video or camera
      *  controls as defined in 
