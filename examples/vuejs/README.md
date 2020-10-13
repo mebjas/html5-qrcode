@@ -25,7 +25,7 @@ Vue.component('qrcode-scanner', {
     },
   },
   template: `<div id="qr-code-full-region"></div>`,
-  mounted: () {
+  mounted () {
     const $this = this;
     const config = {
       fps: this.fps,
