@@ -2,12 +2,12 @@
  * @fileoverview
  * HTML5 QR code scanning library.
  * - Decode QR Code using web cam or smartphone camera
- * 
+ *
  * @author mebjas <minhazav@gmail.com>
- * 
+ *
  * The word "QR Code" is registered trademark of DENSO WAVE INCORPORATED
  * http://www.denso-wave.com/qrcode/faqpatent-e.html
- * 
+ *
  * Note: ECMA Script is not supported by all browsers. Use minified/html5-qrcode.min.js for better
  * browser support. Alternatively the transpiled code lives in transpiled/html5-qrcode.js
  */
@@ -30,10 +30,10 @@ class Html5Qrcode {
 
     /**
      * Initialize QR Code scanner.
-     * 
-     * @param {String} elementId - Id of the HTML element. 
+     *
+     * @param {String} elementId - Id of the HTML element.
      * @param {Boolean} verbose - Optional argument, if true, all logs
-     *                  would be printed to console. 
+     *                  would be printed to console.
      */
     constructor(elementId, verbose) {
         if (!getLazarSoftScanner) {
@@ -63,13 +63,13 @@ class Html5Qrcode {
 
     /**
      * Start scanning QR Code for given camera.
-     * 
+     *
      * @param {String or Object} identifier of the camera, it can either be the
      *  cameraId retrieved from {@code Html5Qrcode#getCameras()} method or
      *  object with facingMode constraint.
      *  Example values:
      *      - "a76afe74e95e3aba9fc1b69c39b8701cde2d3e29aa73065c9cd89438627b3bde"
-     *          ^ This is 'deviceId' from camera retrieved from 
+     *          ^ This is 'deviceId' from camera retrieved from
      *          {@code Html5Qrcode#getCameras()}
      *      - { facingMode: "user" }
      *      - { facingMode: "environment" }
@@ -188,7 +188,7 @@ class Html5Qrcode {
         //#region local methods
         /**
          * Setups the UI elements, changes the state of this class.
-         * 
+         *
          * @param width derived width of viewfinder.
          * @param height derived height of viewfinder.
          */
@@ -221,7 +221,7 @@ class Html5Qrcode {
             // Insert the canvas
             element.append(canvasElement);
             if (shouldShadingBeApplied) {
-                this._possiblyInsertShadingElement(element, height, qrRegion);
+                this._possiblyInsertShadingElement(element, width, height, qrboxSize);
             }
 
             // Update local states
@@ -232,10 +232,10 @@ class Html5Qrcode {
 
         /**
          * Scans current context using the qrcode library.
-         * 
+         *
          * <p>This method call would result in callback being triggered by the
          * qrcode library. This method also handles the border coloring.
-         * 
+         *
          * @returns true if scan match is found, false otherwise.
          */
         const scanContext = () => {
@@ -402,8 +402,8 @@ class Html5Qrcode {
     }
 
     /**
-     * Stops streaming QR Code video and scanning. 
-     * 
+     * Stops streaming QR Code video and scanning.
+     *
      * @returns Promise for safely closing the video stream.
      */
     stop() {
@@ -456,14 +456,14 @@ class Html5Qrcode {
 
     /**
      * Scans an Image File for QR Code.
-     * 
+     *
      * This feature is mutually exclusive to camera based scanning, you should
      * call stop() if the camera based scanning was ongoing.
-     * 
+     *
      * @param {File} imageFile a local file with Image content.
      * @param {boolean} showImage if true the Image will be rendered on given
      * element.
-     * 
+     *
      * @returns Promise with decoded QR code string on success and error message
       *             on failure. Failure could happen due to different reasons:
      *            1. QR Code decode failed because enough patterns not found in
@@ -597,7 +597,7 @@ class Html5Qrcode {
 
     /**
      * Clears the existing canvas.
-     * 
+     *
      * Note: in case of ongoing web cam based scan, it needs to be explicitly
      * closed before calling this method, else it will throw exception.
      */
@@ -607,7 +607,7 @@ class Html5Qrcode {
 
     /**
      * Returns a Promise with list of all cameras supported by the device.
-     * 
+     *
      * The returned object is a list of result object of type:
      * [{
      *      id: String;     // Id of the camera.
@@ -696,13 +696,13 @@ class Html5Qrcode {
             throw "Scanning is not in running state, call this API only when"
                 + " QR code scanning using camera is in running state.";
         }
-    
+
         if (this._localMediaStream.getVideoTracks().length == 0) {
             throw "No video tracks found";
         }
 
         const videoTrack = this._localMediaStream.getVideoTracks()[0];
-        return videoTrack.getCapabilities();        
+        return videoTrack.getCapabilities();
     }
 
     /**
@@ -714,7 +714,7 @@ class Html5Qrcode {
      *
      * @beta This is an experimental API
      * @param {MediaTrackConstraints} specifies a variety of video or camera
-     *  controls as defined in 
+     *  controls as defined in
      *  https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints
      * @returns a Promise which succeeds if the passed constraints are applied,
      *  fails otherwise.
@@ -731,7 +731,7 @@ class Html5Qrcode {
             throw "Scanning is not in running state, call this API only when"
                 + " QR code scanning using camera is in running state.";
         }
-    
+
         if (this._localMediaStream.getVideoTracks().length == 0) {
             throw "No video tracks found";
         }
@@ -797,156 +797,60 @@ class Html5Qrcode {
         };
     }
 
-    _possiblyInsertShadingElement(element, height, qrRegion) {
-        if (qrRegion.x == 0 && qrRegion.y == 0) {
-            // No shading
-            return;
-        }
+    _possiblyInsertShadingElement(element, width, height, qrboxSize) {
+      if((width - qrboxSize) < 1 || (height - qrboxSize) < 1){
+        return;
+      }
+      const elem = document.createElement('div');
+      elem.style.position = "absolute";
+      elem.style.borderLeft = `${(width-qrboxSize)/2}px solid #0000007a`;
+      elem.style.borderRight = `${(width-qrboxSize)/2}px solid #0000007a`;
+      elem.style.borderTop = `${(height-qrboxSize)/2}px solid #0000007a`;
+      elem.style.borderBottom = `${(height-qrboxSize)/2}px solid #0000007a`;
+      elem.style.boxSizing = "border-box";
+      elem.style.top = "0px";
+      elem.style.bottom = "0px";
+      elem.style.left = "0px";
+      elem.style.right = "0px";
+      elem.id = `${Html5Qrcode.SHADED_REGION_CLASSNAME}`;
 
-        const shaders = {};
-        shaders[Html5Qrcode.SHADED_LEFT] = this._createShadedElement(
-            height, qrRegion, Html5Qrcode.SHADED_LEFT);
-        shaders[Html5Qrcode.SHADED_RIGHT] = this._createShadedElement(
-            height, qrRegion, Html5Qrcode.SHADED_RIGHT);
-        shaders[Html5Qrcode.SHADED_TOP] = this._createShadedElement(
-            height, qrRegion, Html5Qrcode.SHADED_TOP);
-        shaders[Html5Qrcode.SHADED_BOTTOM] = this._createShadedElement(
-            height, qrRegion, Html5Qrcode.SHADED_BOTTOM);
 
-        Object.keys(shaders).forEach(key => element.append(shaders[key]));
-
-        if (qrRegion.x < 10 || qrRegion.y < 10) {
-            this.hasBorderShaders = false;
-        } else {
-            Object.keys(shaders).forEach(key =>
-                this._insertShaderBorders(shaders[key], qrRegion, key));
-            this.hasBorderShaders = true;
-        }
-
-    }
-
-    _createShadedElement(height, qrRegion, shadingPosition) {
-        const elem = document.createElement('div');
-        elem.style.position = "absolute";
-        elem.style.height = `${height}px`;
-        elem.className = Html5Qrcode.SHADED_REGION_CLASSNAME;
-        elem.id = `${Html5Qrcode.SHADED_REGION_CLASSNAME}_${shadingPosition}`
-        // TODO(mebjas): maken this configurable
-        elem.style.background = `#0000007a`;
-        switch (shadingPosition) {
-            case Html5Qrcode.SHADED_LEFT:
-                elem.style.top = "0px";
-                elem.style.left = "0px";
-                elem.style.width = `${qrRegion.x}px`;
-                elem.style.height = `${height}px`;
-                break;
-            case Html5Qrcode.SHADED_RIGHT:
-                elem.style.top = "0px";
-                elem.style.right = "0px";
-                elem.style.width = `${qrRegion.x}px`;
-                elem.style.height = `${height}px`;
-                break;
-            case Html5Qrcode.SHADED_TOP:
-                elem.style.top = "0px";
-                elem.style.left = `${qrRegion.x}px`;
-                elem.style.width = `${qrRegion.width}px`;
-                elem.style.height = `${qrRegion.y}px`;
-                break;
-            case Html5Qrcode.SHADED_BOTTOM:
-                const top = qrRegion.y + qrRegion.height;
-                elem.style.top = `${top}px`;
-                elem.style.left = `${qrRegion.x}px`;
-                elem.style.width = `${qrRegion.width}px`;
-                elem.style.height = `${qrRegion.y}px`;
-                break;
-            default:
-                throw "Unsupported shadingPosition";
-        }
-
-        return elem;
-    }
-
-    _insertShaderBorders(shaderElem, qrRegion, shadingPosition) {
-        shadingPosition = parseInt(shadingPosition);
-        const $this = this;
-        const borderOffset = 5;
+      if((width - qrboxSize) < 11 || (height - qrboxSize) < 11){
+        this.hasBorderShaders = false;
+      } else {
         const smallSize = 5;
         const largeSize = 40;
-        const createBorder = () => {
-            const elem = document.createElement("div");
-            elem.style.position = "absolute";
-            elem.style.backgroundColor
-                = Html5Qrcode.BORDER_SHADER_DEFAULT_COLOR;
-            switch (shadingPosition) {
-                case Html5Qrcode.SHADED_LEFT:   // intentional
-                case Html5Qrcode.SHADED_RIGHT:
-                    const height = largeSize + borderOffset;
-                    elem.style.width = `${smallSize}px`;
-                    elem.style.height = `${height}px`;
-                    break;
-                case Html5Qrcode.SHADED_TOP:   // intentional
-                case Html5Qrcode.SHADED_BOTTOM:
-                    const width = largeSize + borderOffset;
-                    elem.style.width = `${width}px`;
-                    elem.style.height = `${smallSize}px`;
-                    break;
-                default:
-                    throw "Unsupported shadingPosition";
-            }
-            return elem;
+        this._insertShaderBorders(elem, largeSize, smallSize, -smallSize, 0, true);
+        this._insertShaderBorders(elem, largeSize, smallSize, -smallSize, 0, false);
+        this._insertShaderBorders(elem, largeSize, smallSize, qrboxSize+smallSize, 0, true);
+        this._insertShaderBorders(elem, largeSize, smallSize, qrboxSize+smallSize, 0, false);
+        this._insertShaderBorders(elem, smallSize, largeSize+smallSize, -smallSize, -smallSize, true);
+        this._insertShaderBorders(elem, smallSize, largeSize+smallSize, qrboxSize+smallSize-largeSize, -smallSize, true);
+        this._insertShaderBorders(elem, smallSize, largeSize+smallSize, -smallSize, -smallSize, false);
+        this._insertShaderBorders(elem, smallSize, largeSize+smallSize, qrboxSize+smallSize-largeSize, -smallSize, false);
+        this.hasBorderShaders = true;
+      }
+      element.append(elem);
+
+    }
+
+    _insertShaderBorders(shaderElem, width, height, top, side, isLeft) {
+        const elem = document.createElement("div");
+        elem.style.position = "absolute";
+        elem.style.backgroundColor = Html5Qrcode.BORDER_SHADER_DEFAULT_COLOR;
+        elem.style.width = `${width}px`;
+        elem.style.height = `${height}px`;
+        elem.style.top = `${top}px`;
+        if(isLeft){
+          elem.style.left = `${side}px`;
+        }else{
+          elem.style.right = `${side}px`;
         }
-
-        const insertBorder = (top, left) => {
-            if (!(top !== null && left !== null)) {
-                throw "Shaders should have defined positions"
-            }
-            const borderElem = createBorder();
-            borderElem.style.top = `${top}px`;
-            borderElem.style.left = `${left}px`;
-            shaderElem.appendChild(borderElem);
-
-            if (!$this.borderShaders) {
-                $this.borderShaders = [];
-            }
-
-            $this.borderShaders.push(borderElem);
+        if (!this.borderShaders) {
+          this.borderShaders = [];
         }
-
-        let firstTop = null;
-        let firstLeft = null;
-        let secondTop = null;
-        let secondLeft = null;
-        switch (shadingPosition) {
-            case Html5Qrcode.SHADED_LEFT:
-                firstTop = qrRegion.y - borderOffset;
-                firstLeft = qrRegion.x - smallSize;
-                secondTop = qrRegion.y + qrRegion.height - largeSize;
-                secondLeft = firstLeft;
-                break;
-            case Html5Qrcode.SHADED_RIGHT:
-                firstTop = qrRegion.y - borderOffset;
-                firstLeft = 0;
-                secondTop = qrRegion.y + qrRegion.height - largeSize;
-                secondLeft = firstLeft;
-                break;
-            case Html5Qrcode.SHADED_TOP:
-                firstTop = qrRegion.y - borderOffset;
-                firstLeft = -smallSize;
-                secondTop = firstTop;
-                secondLeft = qrRegion.width - largeSize;
-                break;
-            case Html5Qrcode.SHADED_BOTTOM:
-                firstTop = 0;
-                firstLeft = -smallSize;
-                secondTop = firstTop;
-                secondLeft = qrRegion.width - largeSize;
-                break;
-            default:
-                throw "Unsupported shadingPosition";
-        }
-
-        insertBorder(firstTop, firstLeft);
-        insertBorder(secondTop, secondLeft);
+        this.borderShaders.push(elem);
+        shaderElem.appendChild(elem);
     }
 
     _possiblyUpdateShaders(qrMatch) {
