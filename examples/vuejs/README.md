@@ -49,7 +49,7 @@ Vue.component('qrcode-scanner', {
     :qrbox="250" 
     :fps="10" 
     style="width: 500px;"
-    @decodedQrCode="onScan"
+    @result="onScan"
   />
 </template>
 
