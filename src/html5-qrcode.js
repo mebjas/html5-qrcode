@@ -798,39 +798,39 @@ class Html5Qrcode {
     }
 
     _possiblyInsertShadingElement(element, width, height, qrboxSize) {
-      if((width - qrboxSize) < 1 || (height - qrboxSize) < 1){
+      if ((width - qrboxSize) < 1 || (height - qrboxSize) < 1) {
         return;
       }
-      const elem = document.createElement('div');
-      elem.style.position = "absolute";
-      elem.style.borderLeft = `${(width-qrboxSize)/2}px solid #0000007a`;
-      elem.style.borderRight = `${(width-qrboxSize)/2}px solid #0000007a`;
-      elem.style.borderTop = `${(height-qrboxSize)/2}px solid #0000007a`;
-      elem.style.borderBottom = `${(height-qrboxSize)/2}px solid #0000007a`;
-      elem.style.boxSizing = "border-box";
-      elem.style.top = "0px";
-      elem.style.bottom = "0px";
-      elem.style.left = "0px";
-      elem.style.right = "0px";
-      elem.id = `${Html5Qrcode.SHADED_REGION_CLASSNAME}`;
+      const shadingElement = document.createElement('div');
+      shadingElement.style.position = "absolute";
+      shadingElement.style.borderLeft = `${(width-qrboxSize)/2}px solid #0000007a`;
+      shadingElement.style.borderRight = `${(width-qrboxSize)/2}px solid #0000007a`;
+      shadingElement.style.borderTop = `${(height-qrboxSize)/2}px solid #0000007a`;
+      shadingElement.style.borderBottom = `${(height-qrboxSize)/2}px solid #0000007a`;
+      shadingElement.style.boxSizing = "border-box";
+      shadingElement.style.top = "0px";
+      shadingElement.style.bottom = "0px";
+      shadingElement.style.left = "0px";
+      shadingElement.style.right = "0px";
+      shadingElement.id = `${Html5Qrcode.SHADED_REGION_CLASSNAME}`;
 
-
-      if((width - qrboxSize) < 11 || (height - qrboxSize) < 11){
+      // Check if div is too small for shadows. As there are two 5px width borders the needs to have a size above 10px.
+      if ((width - qrboxSize) < 11 || (height - qrboxSize) < 11) {
         this.hasBorderShaders = false;
       } else {
         const smallSize = 5;
         const largeSize = 40;
-        this._insertShaderBorders(elem, largeSize, smallSize, -smallSize, 0, true);
-        this._insertShaderBorders(elem, largeSize, smallSize, -smallSize, 0, false);
-        this._insertShaderBorders(elem, largeSize, smallSize, qrboxSize+smallSize, 0, true);
-        this._insertShaderBorders(elem, largeSize, smallSize, qrboxSize+smallSize, 0, false);
-        this._insertShaderBorders(elem, smallSize, largeSize+smallSize, -smallSize, -smallSize, true);
-        this._insertShaderBorders(elem, smallSize, largeSize+smallSize, qrboxSize+smallSize-largeSize, -smallSize, true);
-        this._insertShaderBorders(elem, smallSize, largeSize+smallSize, -smallSize, -smallSize, false);
-        this._insertShaderBorders(elem, smallSize, largeSize+smallSize, qrboxSize+smallSize-largeSize, -smallSize, false);
+        this._insertShaderBorders(shadingElement, largeSize, smallSize, -smallSize, 0, true);
+        this._insertShaderBorders(shadingElement, largeSize, smallSize, -smallSize, 0, false);
+        this._insertShaderBorders(shadingElement, largeSize, smallSize, qrboxSize+smallSize, 0, true);
+        this._insertShaderBorders(shadingElement, largeSize, smallSize, qrboxSize+smallSize, 0, false);
+        this._insertShaderBorders(shadingElement, smallSize, largeSize+smallSize, -smallSize, -smallSize, true);
+        this._insertShaderBorders(shadingElement, smallSize, largeSize+smallSize, qrboxSize+smallSize-largeSize, -smallSize, true);
+        this._insertShaderBorders(shadingElement, smallSize, largeSize+smallSize, -smallSize, -smallSize, false);
+        this._insertShaderBorders(shadingElement, smallSize, largeSize+smallSize, qrboxSize+smallSize-largeSize, -smallSize, false);
         this.hasBorderShaders = true;
       }
-      element.append(elem);
+      element.append(shadingElement);
 
     }
 
@@ -841,9 +841,9 @@ class Html5Qrcode {
         elem.style.width = `${width}px`;
         elem.style.height = `${height}px`;
         elem.style.top = `${top}px`;
-        if(isLeft){
+        if (isLeft) {
           elem.style.left = `${side}px`;
-        }else{
+        } else {
           elem.style.right = `${side}px`;
         }
         if (!this.borderShaders) {
