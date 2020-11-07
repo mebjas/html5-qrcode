@@ -63,3 +63,8 @@ export default {
 }
 </script>
 ```
+
+### Contributors
+| Name | Profile|
+| ----- | ------ |
+| Jofferson Ramirez Tiquez | [@jofftiquez](https://github.com/jofftiquez) |
