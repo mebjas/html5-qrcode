@@ -50,10 +50,10 @@ var Html5QrcodeScanner = /*#__PURE__*/function () {
    *          mirrored feed if you are facing performance constraints.
    *      - videoConstraints: {MediaTrackConstraints}, Optional
    *          @beta(this config is not well supported yet).
-   *          
+   *
    *          Important: When passed this will override other parameters
    *          like 'cameraIdOrConfig' or configurations like 'aspectRatio'.
-   *          
+   *
    *          videoConstraints should be of type {@code MediaTrackConstraints}
    *          as defined in
    *          https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints

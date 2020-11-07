@@ -1,3 +1,5 @@
+### Version 1.2.4
+
 ### Version 1.2.3
  - Added support for `videoConstraints` in config as an experimental config.
     ```js
@@ -18,6 +20,7 @@
 
  - Added two new experimental APIs in `Html5Qrcode` class
     - `getRunningTrackCapabilities()` - New
+
         ```js
         /**
          * Returns the capabilities of the running video track.
@@ -26,9 +29,10 @@
          * @returns the capabilities of a running video track.
          * @throws error if the scanning is not in running state.
          */
-        getRunningTrackCapabilities()
+        getRunningTrackCapabilities() {}
         ```
     - `applyVideoConstraints(videoConstaints)` - New
+
         ```js
         /**
          * Apply a video constraints on running video track.
