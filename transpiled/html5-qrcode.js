@@ -37,16 +37,20 @@ var Html5Qrcode = /*#__PURE__*/function () {
   function Html5Qrcode(elementId, verbose) {
     _classCallCheck(this, Html5Qrcode);
 
-    if (!getLazarSoftScanner) {
+    if (!ZXing) {
       throw 'Use html5qrcode.min.js without edit, getLazarSoftScanner' + 'not found.';
-    }
+    } // this.qrcode = getLazarSoftScanner();
+    // if (!this.qrcode) {
+    //     throw 'qrcode is not defined, use the minified/html5-qrcode.min.js'
+    //     + ' for proper support';
+    // }
 
-    this.qrcode = getLazarSoftScanner();
 
-    if (!this.qrcode) {
-      throw 'qrcode is not defined, use the minified/html5-qrcode.min.js' + ' for proper support';
-    }
-
+    var hints = new Map();
+    var formats = [ZXing.BarcodeFormat.QR_CODE, ZXing.BarcodeFormat.AZTEC, ZXing.BarcodeFormat.CODABAR, ZXing.BarcodeFormat.CODE_39, ZXing.BarcodeFormat.CODE_93, ZXing.BarcodeFormat.CODE_128, ZXing.BarcodeFormat.DATA_MATRIX, ZXing.BarcodeFormat.MAXICODE, ZXing.BarcodeFormat.ITF, ZXing.BarcodeFormat.EAN_13, ZXing.BarcodeFormat.EAN_8, ZXing.BarcodeFormat.PDF_417, ZXing.BarcodeFormat.RSS_14, ZXing.BarcodeFormat.RSS_EXPANDED, ZXing.BarcodeFormat.UPC_A, ZXing.BarcodeFormat.UPC_E, ZXing.BarcodeFormat.UPC_EAN_EXTENSION];
+    hints.set(ZXing.DecodeHintType.POSSIBLE_FORMATS, formats);
+    this.qrcode = new ZXing.MultiFormatReader();
+    this.qrcode.setHints(hints);
     this._elementId = elementId;
     this._foreverScanTimeout = null;
     this._localMediaStream = null;
@@ -162,8 +166,8 @@ var Html5Qrcode = /*#__PURE__*/function () {
       var width = element.clientWidth ? element.clientWidth : Html5Qrcode.DEFAULT_WIDTH;
       element.style.position = "relative";
       this._shouldScan = true;
-      this._element = element;
-      this.qrcode.callback = qrCodeSuccessCallback; // Validate before insertion
+      this._element = element; // this.qrcode.callback = qrCodeSuccessCallback;
+      // Validate before insertion
 
       if (isShadedBoxEnabled) {
         var qrboxSize = config.qrbox;
@@ -231,7 +235,10 @@ var Html5Qrcode = /*#__PURE__*/function () {
 
       var scanContext = function scanContext() {
         try {
-          $this.qrcode.decode();
+          var luminanceSource = new ZXing.HTMLCanvasElementLuminanceSource($this._canvasElement);
+          var binaryBitmap = new ZXing.BinaryBitmap(new ZXing.HybridBinarizer(luminanceSource));
+          var result = $this.qrcode.decode(binaryBitmap);
+          qrCodeSuccessCallback(result.text);
 
           _this._possiblyUpdateShaders(
           /* qrMatch= */
@@ -407,8 +414,7 @@ var Html5Qrcode = /*#__PURE__*/function () {
       return new Promise(function (resolve,
       /* ignore */
       reject) {
-        $this.qrcode.callback = null;
-
+        // $this.qrcode.callback = null;
         var tracksToClose = $this._localMediaStream.getVideoTracks().length;
 
         var tracksClosed = 0; // Removes the shaded region if exists.
@@ -591,7 +597,10 @@ var Html5Qrcode = /*#__PURE__*/function () {
           config.height);
 
           try {
-            resolve($this.qrcode.decode());
+            var luminanceSource = new ZXing.HTMLCanvasElementLuminanceSource(hiddenCanvas);
+            var binaryBitmap = new ZXing.BinaryBitmap(new ZXing.HybridBinarizer(luminanceSource));
+            var result = $this.qrcode.decode(binaryBitmap);
+            resolve(result.text);
           } catch (exception) {
             reject("QR code parse error, error = ".concat(exception));
           }
