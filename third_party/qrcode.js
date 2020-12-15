@@ -22,7 +22,7 @@
 * limitations under the License.
 */
 
-function getLazarSoftScanner() {
+export function getLazarSoftScanner() {
 
 	var GridSampler = {};
 

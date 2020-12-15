@@ -11,7 +11,9 @@
  * Note: ECMA Script is not supported by all browsers. Use minified/html5-qrcode.min.js for better
  * browser support. Alternatively the transpiled code lives in transpiled/html5-qrcode.js
  */
-class Html5QrcodeScanner {
+import { Html5Qrcode } from './html5-qrcode'
+
+export class Html5QrcodeScanner {
 
     static SCAN_TYPE_CAMERA = "SCAN_TYPE_CAMERA";
     static SCAN_TYPE_FILE = "SCAN_TYPE_FILE";

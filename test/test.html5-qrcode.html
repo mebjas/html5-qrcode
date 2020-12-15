@@ -17,8 +17,8 @@
     <script src="../node_modules/promise-polyfill/dist/polyfill.min.js"></script>
 
     <!-- actual library code -->
-    <script src="../third_party/qrcode.min.js"></script>
-    <script src="../transpiled/html5-qrcode.js"></script>
+    <script src="../third_party/qrcode.js" type="module"></script>
+    <script src="../transpiled/html5-qrcode.js" type="module"></script>
 
     <!-- test dependencies -->
     <script src="../node_modules/mocha/mocha.js"></script>
@@ -32,7 +32,7 @@
     </script>
 
     <!-- test code -->
-    <script src="test.html5-qrcode.js"></script>
+    <script src="test.html5-qrcode.js" type="module"></script>
     <script class="mocha-exec">
         if (window.mochaPhantomJS) {
             mochaPhantomJS.run(); 
