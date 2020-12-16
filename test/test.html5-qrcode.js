@@ -1,6 +1,3 @@
-import { getLazarSoftScanner } from "../third_party/qrcode"
-import { Html5Qrcode } from "../src/html5-qrcode";
-
 if (!assert) {
     assert = require("chai");
 }
