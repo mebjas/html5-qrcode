@@ -443,6 +443,8 @@ var Html5Qrcode = /*#__PURE__*/function () {
         };
 
         $this._localMediaStream.getVideoTracks().forEach(function (videoTrack) {
+          $this._localMediaStream.removeTrack(videoTrack);
+
           videoTrack.stop();
           ++tracksClosed;
 
@@ -628,7 +630,7 @@ var Html5Qrcode = /*#__PURE__*/function () {
 
   }, {
     key: "getRunningTrackCapabilities",
-
+    value:
     /**
      * Returns the capabilities of the running video track.
      *
@@ -636,7 +638,7 @@ var Html5Qrcode = /*#__PURE__*/function () {
      * @returns the capabilities of a running video track.
      * @throws error if the scanning is not in running state.
      */
-    value: function getRunningTrackCapabilities() {
+    function getRunningTrackCapabilities() {
       if (this._localMediaStream == null) {
         throw "Scanning is not in running state, call this API only when" + " QR code scanning using camera is in running state.";
       }
