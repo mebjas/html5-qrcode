@@ -36,16 +36,33 @@ class Html5Qrcode {
      *                  would be printed to console.
      */
     constructor(elementId, verbose) {
-        if (!getLazarSoftScanner) {
-            throw 'Use html5qrcode.min.js without edit, getLazarSoftScanner'
-            + 'not found.';
+        if (!ZXing) {
+            throw 'Use html5qrcode.min.js without edit, ZXing not found.';
         }
 
-        this.qrcode = getLazarSoftScanner();
-        if (!this.qrcode) {
-            throw 'qrcode is not defined, use the minified/html5-qrcode.min.js'
-            + ' for proper support';
-        }
+        const hints = new Map();
+        const formats = [
+            ZXing.BarcodeFormat.QR_CODE,
+            ZXing.BarcodeFormat.AZTEC,
+            ZXing.BarcodeFormat.CODABAR,
+            ZXing.BarcodeFormat.CODE_39,
+            ZXing.BarcodeFormat.CODE_93,
+            ZXing.BarcodeFormat.CODE_128,
+            ZXing.BarcodeFormat.DATA_MATRIX,
+            ZXing.BarcodeFormat.MAXICODE,
+            ZXing.BarcodeFormat.ITF,
+            ZXing.BarcodeFormat.EAN_13,
+            ZXing.BarcodeFormat.EAN_8,
+            ZXing.BarcodeFormat.PDF_417,
+            ZXing.BarcodeFormat.RSS_14,
+            ZXing.BarcodeFormat.RSS_EXPANDED,
+            ZXing.BarcodeFormat.UPC_A,
+            ZXing.BarcodeFormat.UPC_E,
+            ZXing.BarcodeFormat.UPC_EAN_EXTENSION,
+        ];
+        hints.set(ZXing.DecodeHintType.POSSIBLE_FORMATS, formats);
+        this.qrcode = new ZXing.MultiFormatReader();
+        this.qrcode.setHints(hints);
 
         this._elementId = elementId;
         this._foreverScanTimeout = null;
@@ -169,7 +186,6 @@ class Html5Qrcode {
 
         this._shouldScan = true;
         this._element = element;
-        this.qrcode.callback = qrCodeSuccessCallback;
 
         // Validate before insertion
         if (isShadedBoxEnabled) {
@@ -240,7 +256,10 @@ class Html5Qrcode {
          */
         const scanContext = () => {
             try {
-                $this.qrcode.decode();
+                const luminanceSource = new ZXing.HTMLCanvasElementLuminanceSource($this._canvasElement);
+                const binaryBitmap = new ZXing.BinaryBitmap(new ZXing.HybridBinarizer(luminanceSource));
+                let result = $this.qrcode.decode(binaryBitmap);
+                qrCodeSuccessCallback(result.text);
                 this._possiblyUpdateShaders(/* qrMatch= */ true);
                 return true;
             } catch (exception) {
@@ -413,7 +432,6 @@ class Html5Qrcode {
 
         const $this = this;
         return new Promise((resolve, /* ignore */ reject) => {
-            $this.qrcode.callback = null;
             const tracksToClose
                 = $this._localMediaStream.getVideoTracks().length;
             var tracksClosed = 0;
@@ -581,7 +599,10 @@ class Html5Qrcode {
                     /* dWidth= */ config.width,
                     /* dHeight= */ config.height);
                 try {
-                    resolve($this.qrcode.decode());
+                    const luminanceSource = new ZXing.HTMLCanvasElementLuminanceSource(hiddenCanvas);
+                    const binaryBitmap = new ZXing.BinaryBitmap(new ZXing.HybridBinarizer(luminanceSource));
+                    let result = $this.qrcode.decode(binaryBitmap);
+                    resolve(result.text);
                 } catch (exception) {
                     reject(`QR code parse error, error = ${exception}`);
                 }

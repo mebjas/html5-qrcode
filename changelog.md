@@ -1,4 +1,27 @@
-### Version 1.2.4
+### Version 2.0.0
+ - **Major Change** Migrated from Lazarsoft QR Code scanning to `ZXing-js`.
+   - More robust support for QR Code scanning
+   - Support for barcode scanning in following formats
+     ```
+      ZXing.BarcodeFormat.QR_CODE,
+      ZXing.BarcodeFormat.AZTEC,
+      ZXing.BarcodeFormat.CODABAR,
+      ZXing.BarcodeFormat.CODE_39,
+      ZXing.BarcodeFormat.CODE_93,
+      ZXing.BarcodeFormat.CODE_128,
+      ZXing.BarcodeFormat.DATA_MATRIX,
+      ZXing.BarcodeFormat.MAXICODE,
+      ZXing.BarcodeFormat.ITF,
+      ZXing.BarcodeFormat.EAN_13,
+      ZXing.BarcodeFormat.EAN_8,
+      ZXing.BarcodeFormat.PDF_417,
+      ZXing.BarcodeFormat.RSS_14,
+      ZXing.BarcodeFormat.RSS_EXPANDED,
+      ZXing.BarcodeFormat.UPC_A,
+      ZXing.BarcodeFormat.UPC_E,
+      ZXing.BarcodeFormat.UPC_EAN_EXTENSION
+      ```
+   - Library size increased to `319Kb`.
 
 ### Version 1.2.3
  - Added support for `videoConstraints` in config as an experimental config.
