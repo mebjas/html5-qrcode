@@ -73,7 +73,7 @@ The library can be easily used with several other frameworks, I have been adding
 This is a cross-platform javascript library to create a QR code or bar code reader for HTML5 compatible browser.
 
 Supports:
- - Querying camera on the device
+ - Querying camera on the device (with user permissions)
  - Scans camera feed for QR Code or different kind of bar codes
  - Supports selecting image files from the device for scanning codes
 
