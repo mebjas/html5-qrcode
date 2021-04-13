@@ -20,5 +20,6 @@ echo 'html5-qrcode minified to minified/html5-qrcode.tmp.js'
 minify transpiled/html5-qrcode-scanner.js --out-file minified/html5-qrcode-scanner.tmp.js
 echo 'html5-qrcode-scanner minified to minified/html5-qrcode-scanner.tmp.js'
 
+# TODO(mebjas): Include the non minified zxing-js library and minify in runtime.
 # minify third_party/zxing-js.umd.js --out-file third_party/zxing-js.umd.min.js
 # echo 'third_party/zxing-js.umd.js minified'

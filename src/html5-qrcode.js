@@ -37,15 +37,9 @@ class Html5Qrcode {
      */
     constructor(elementId, verbose) {
         if (!ZXing) {
-            throw 'Use html5qrcode.min.js without edit, getLazarSoftScanner'
-            + 'not found.';
+            throw 'Use html5qrcode.min.js without edit, ZXing not found.';
         }
 
-        // this.qrcode = getLazarSoftScanner();
-        // if (!this.qrcode) {
-        //     throw 'qrcode is not defined, use the minified/html5-qrcode.min.js'
-        //     + ' for proper support';
-        // }
         const hints = new Map();
         const formats = [
             ZXing.BarcodeFormat.QR_CODE,
@@ -192,7 +186,6 @@ class Html5Qrcode {
 
         this._shouldScan = true;
         this._element = element;
-        // this.qrcode.callback = qrCodeSuccessCallback;
 
         // Validate before insertion
         if (isShadedBoxEnabled) {
@@ -439,7 +432,6 @@ class Html5Qrcode {
 
         const $this = this;
         return new Promise((resolve, /* ignore */ reject) => {
-            // $this.qrcode.callback = null;
             const tracksToClose
                 = $this._localMediaStream.getVideoTracks().length;
             var tracksClosed = 0;

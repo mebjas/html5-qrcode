@@ -1,8 +1,10 @@
-# Html5-QRCode
-A cross-platform HTML5 QR code reader.
-Use this light-weight Javascript library `(~68 Kb)` to add QR Code scanning capability in your web application. 
- - Supports easy scanning using web-cam or camera in the smartphones (Android / IOS).
- - **Recently Added** Scanning QR Code from files or default camera on smartphones. 
+# Html5-QRCode 
+## (supports barcodes now :))
+A cross-platform HTML5 QR code & barcode reader.
+Use this light-weight Javascript library to add QR Code scanning and bar code scanning capability in your web application. 
+ - Supports easy scanning using webcam or camera in smartphones (Android / IOS).
+ - Scanning QR Code from files or default camera on smartphones. 
+ - **Recently Added**  Supports bar code scanning in various formats.
 
 > Support for scanning local files on the device is a new addition and helpful for the web browser which does not support inline web-camera access in smartphones. **Note:** This doesn't upload files to any server - everything is done locally.
 
@@ -47,13 +49,33 @@ The library can be easily used with several other frameworks, I have been adding
 | -------- | -------- | -------- | -------- |
 | [Html5](./examples/html5) | [VueJs](./examples/vuejs) | [ElectronJs](./examples/electron) | [React](./examples/react)
 
+### Supported Code formats
+| Code | Example |
+| ---- | ----- |
+| QR Code | <img src="./assets/qr-code.png" width="200px"> |
+| AZTEC | <img src="./assets/aztec.png" > |
+| CODE_39|  <img src="./assets/code_39.gif" > |
+| CODE_93| <img src="./assets/code_93.gif" >|
+| CODE_128| <img src="./assets/code_128.gif" >|
+| MAXICODE| <img src="./assets/maxicode.gif" > |
+| ITF| <img src="./assets/itf.png" >|
+| EAN_13|<img src="./assets/ean13.jpeg" > |
+| EAN_8| <img src="./assets/ean8.jpeg" >|
+| PDF_417| <img src="./assets/pdf417.png" >|
+| RSS_14| <img src="./assets/rss14.gif" >|
+| RSS_EXPANDED|<img src="./assets/rssexpanded.gif" > |
+| UPC_A| <img src="./assets/upca.jpeg" >|
+| UPC_E| <img src="./assets/upce.jpeg" >|
+| DATA_MATRIX|<img src="./assets/datamatrix.png" > |
+
 ## Description - [View Demo](https://blog.minhazav.dev/research/html5-qrcode.html)
 
-This is a cross-platform javascript library to create a QRcode reader for HTML5 compatible browser.
+This is a cross-platform javascript library to create a QR code or bar code reader for HTML5 compatible browser.
 
 Supports:
- - Querying all camera in the device (With user permissions)
- - Using any camera for scanning the QR Code.
+ - Querying camera on the device
+ - Scans camera feed for QR Code or different kind of bar codes
+ - Supports selecting image files from the device for scanning codes
 
 ## How to use?
 > For full information [read this article](https://blog.minhazav.dev/HTML5-QR-Code-scanning-launched-v1.0.1/).
@@ -67,7 +89,7 @@ Add an element you want to use as a placeholder for QR Code scanner
 ```html
 <div id="reader" width="600px"></div>
 ```
-> Ideally do not set the height of this container as the height should depend on the height of the video feed from the camera. The library would honor the existing width otherwise apply the default width. The height is derived from the aspect ratio of the video feed.
+> Ideally do not set the height of this container as the height should depend on the height of the video feed from the camera. The library would honor the existing width, otherwise apply the default width. The height is derived from the aspect ratio of the video feed.
 
 Add `minified/html5-qrcode.min.js` in your web page. 
 > I would recommend using the minified version as it's transformed to standard javascript. The `html5-qrcode.js` is written with ECMAScript and may not be supported in the older version of the browsers. I wrote in this as it's easier to maintain!
@@ -82,9 +104,7 @@ Add `minified/html5-qrcode.min.js` in your web page.
 ```
 
 ### Easy Mode - With end to end scanner user interface
-`Html5QrcodeScanner` lets you implement end to end scanner with few lines of
-code with the default user interface which allows scanning using the camera or 
-selecting an image from the file system.
+`Html5QrcodeScanner` lets you implement an end to end scanner with few lines of code with the default user interface which allows scanning using the camera or selecting an image from the file system.
 
 You can setup the scanner as follows:
 ```js
