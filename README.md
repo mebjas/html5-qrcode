@@ -503,4 +503,4 @@ Here's an example of normal and mirrored QR Code
       For calling out your contributions - the bot will update the contributions file.
 
 ## Credits
-The decoder used for the QRcode reading is from `LazarSoft` https://github.com/LazarSoft/jsqrcode<br>
+The decoder used for the QRcode reading is from `Zxing-js` https://github.com/zxing-js/library<br>
