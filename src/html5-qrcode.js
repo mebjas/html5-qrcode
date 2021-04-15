@@ -61,7 +61,7 @@ class Html5Qrcode {
             ZXing.BarcodeFormat.UPC_EAN_EXTENSION,
         ];
         hints.set(ZXing.DecodeHintType.POSSIBLE_FORMATS, formats);
-        this.qrcode = new ZXing.MultiFormatReader();
+        this.qrcode = new ZXing.MultiFormatReader(verbose);
         this.qrcode.setHints(hints);
 
         this._elementId = elementId;
