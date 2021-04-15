@@ -44,7 +44,7 @@ var Html5Qrcode = /*#__PURE__*/function () {
     var hints = new Map();
     var formats = [ZXing.BarcodeFormat.QR_CODE, ZXing.BarcodeFormat.AZTEC, ZXing.BarcodeFormat.CODABAR, ZXing.BarcodeFormat.CODE_39, ZXing.BarcodeFormat.CODE_93, ZXing.BarcodeFormat.CODE_128, ZXing.BarcodeFormat.DATA_MATRIX, ZXing.BarcodeFormat.MAXICODE, ZXing.BarcodeFormat.ITF, ZXing.BarcodeFormat.EAN_13, ZXing.BarcodeFormat.EAN_8, ZXing.BarcodeFormat.PDF_417, ZXing.BarcodeFormat.RSS_14, ZXing.BarcodeFormat.RSS_EXPANDED, ZXing.BarcodeFormat.UPC_A, ZXing.BarcodeFormat.UPC_E, ZXing.BarcodeFormat.UPC_EAN_EXTENSION];
     hints.set(ZXing.DecodeHintType.POSSIBLE_FORMATS, formats);
-    this.qrcode = new ZXing.MultiFormatReader();
+    this.qrcode = new ZXing.MultiFormatReader(verbose);
     this.qrcode.setHints(hints);
     this._elementId = elementId;
     this._foreverScanTimeout = null;

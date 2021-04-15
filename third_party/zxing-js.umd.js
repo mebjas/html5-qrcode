@@ -10228,11 +10228,12 @@
     // import java.util.Map;
     // import java.util.Collections;
     class RSSExpandedReader extends AbstractRSSReader {
-        constructor() {
+        constructor(verbose) {
             super(...arguments);
             this.pairs = new Array(RSSExpandedReader.MAX_PAIRS);
             this.rows = new Array();
             this.startEnd = [2];
+            this.verbose = (verbose === true);
         }
         decodeRow(rowNumber, row, hints) {
             // Rows can start with even pattern in case in prev rows there where odd number of patters.
@@ -10245,7 +10246,9 @@
             }
             catch (e) {
                 // OK
-                console.log(e);
+                if (this.verbose) {
+                    console.log(e);
+                }
             }
             this.pairs.length = 0;
             this.startFromEven = true;
@@ -10319,7 +10322,9 @@
             }
             catch (e) {
                 // OK
-                console.log(e);
+                if (this.verbose) {
+                    console.log(e);
+                }
             }
             if (reverse) {
                 this.rows = this.rows.reverse();
@@ -10351,7 +10356,9 @@
                 }
                 catch (e) {
                     // We failed, try the next candidate
-                    console.log(e);
+                    if (this.verbose) {
+                        console.log(e);
+                    }
                 }
             }
             throw new NotFoundException();
@@ -10546,7 +10553,9 @@
             }
             catch (e) {
                 rightChar = null;
-                console.log(e);
+                if (this.verbose) {
+                    console.log(e);
+                }
             }
             return new ExpandedPair(leftChar, rightChar, pattern, true);
         }
@@ -11326,9 +11335,10 @@
      * @author Sean Owen
      */
     class MultiFormatOneDReader extends OneDReader {
-        constructor(hints) {
+        constructor(hints, verbose) {
             super();
             this.readers = [];
+            this.verbose = (verbose === true);
             const possibleFormats = !hints ? null : hints.get(DecodeHintType$1.POSSIBLE_FORMATS);
             const useCode39CheckDigit = hints && hints.get(DecodeHintType$1.ASSUME_CODE_39_CHECK_DIGIT) !== undefined;
             if (possibleFormats) {
@@ -11357,7 +11367,7 @@
                     this.readers.push(new RSS14Reader());
                 }
                 if (possibleFormats.includes(BarcodeFormat$1.RSS_EXPANDED)) {
-                    this.readers.push(new RSSExpandedReader());
+                    this.readers.push(new RSSExpandedReader(this.verbose));
                 }
             }
             if (this.readers.length === 0) {
@@ -11369,7 +11379,7 @@
                 this.readers.push(new Code128Reader());
                 this.readers.push(new ITFReader());
                 this.readers.push(new RSS14Reader());
-                this.readers.push(new RSSExpandedReader());
+                this.readers.push(new RSSExpandedReader(this.verbose));
             }
         }
         // @Override
@@ -20689,6 +20699,14 @@
      */
     class MultiFormatReader {
         /**
+         * Creates an instance of this class
+         * 
+         * @param {Boolean} verbose if 'true' logs will be dumped to console, otherwise hidden.
+         */
+        constructor(verbose) {
+            this.verbose = (verbose === true);
+        }
+        /**
          * This version of decode honors the intent of Reader.decode(BinaryBitmap) in that it
          * passes null as a hint to the decoders. However, that makes it inefficient to call repeatedly.
          * Use setHints() followed by decodeWithState() for continuous scan applications.
@@ -20761,7 +20779,7 @@
                 // Put 1D readers upfront in "normal" mode
                 // TYPESCRIPTPORT: TODO: uncomment below as they are ported
                 if (addOneDReader && !tryHarder) {
-                    readers.push(new MultiFormatOneDReader(hints));
+                    readers.push(new MultiFormatOneDReader(hints, this.verbose));
                 }
                 if (formats.includes(BarcodeFormat$1.QR_CODE)) {
                     readers.push(new QRCodeReader());
@@ -20780,12 +20798,12 @@
                 // }
                 // At end in "try harder" mode
                 if (addOneDReader && tryHarder) {
-                    readers.push(new MultiFormatOneDReader(hints));
+                    readers.push(new MultiFormatOneDReader(hints, this.verbose));
                 }
             }
             if (readers.length === 0) {
                 if (!tryHarder) {
-                    readers.push(new MultiFormatOneDReader(hints));
+                    readers.push(new MultiFormatOneDReader(hints, this.verbose));
                 }
                 readers.push(new QRCodeReader());
                 readers.push(new DataMatrixReader());
@@ -20793,7 +20811,7 @@
                 readers.push(new PDF417Reader());
                 // readers.push(new MaxiCodeReader())
                 if (tryHarder) {
-                    readers.push(new MultiFormatOneDReader(hints));
+                    readers.push(new MultiFormatOneDReader(hints, this.verbose));
                 }
             }
             this.readers = readers; // .toArray(new Reader[readers.size()])

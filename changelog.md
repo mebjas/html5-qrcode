@@ -1,3 +1,6 @@
+### Version 2.0.1
+ - **Bug fix**: Zxing-js library was logging to console even if `verbose` is false - https://github.com/mebjas/html5-qrcode/issues/175
+
 ### Version 2.0.0
  - **Major Change** Migrated from Lazarsoft QR Code scanning to `ZXing-js`.
    - More robust support for QR Code scanning
