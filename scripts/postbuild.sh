@@ -1,9 +1,8 @@
 ## Post build script
 echo 'Initiating post-build sequence'
 
-## Copy qrcode.min.js to the min script
-cp third_party/qrcode.min.js minified/html5-qrcode.min.js
-echo 'Copied qrcode.min.js to minified/html5-qrcode.min.js'
+cp third_party/zxing-js.umd.min.js minified/html5-qrcode.min.js
+echo 'Copied third_party/zxing-js.umd.min.js to minified/html5-qrcode.min.js'
 
 ## Copy all other temp files to final minified script
 cat minified/html5-qrcode.tmp.js >> minified/html5-qrcode.min.js

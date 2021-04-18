@@ -3,10 +3,6 @@ if (!assert) {
 }
 
 describe('Html5Qrcode is defined', function()  {
-    it('getLazarSoftScanner() is not null', function()  {
-          assert.notEqual(getLazarSoftScanner(), undefined);
-    });
-
     it('Html5Qrcode is defined', function()  {
         assert.notEqual(Html5Qrcode, undefined);
     });
