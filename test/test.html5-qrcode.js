@@ -14,11 +14,10 @@ describe('Constructor', function()  {
         assert.notEqual(html5Qrcode, undefined);
     });
 
-    it('Constructor fails if qrcode not defined', function() {
-        const expectedErrorMessage = "qrcode is not defined, use the minified"
-            + "/html5-qrcode.min.js for proper support";
-        const __getLazarSoftScanner = getLazarSoftScanner;
-        getLazarSoftScanner = function() { return undefined; };
+    it('Constructor fails if ZXing not defined', function() {
+        const expectedErrorMessage = "Use html5qrcode.min.js without edit, ZXing not found.";
+        const __ZXing = ZXing;
+        ZXing = undefined;
         try {
             new Html5Qrcode("qr");
             assert.fail("exception should be thrown");
@@ -26,7 +25,7 @@ describe('Constructor', function()  {
             assert.equal(exception, expectedErrorMessage);
         }
 
-        getLazarSoftScanner = __getLazarSoftScanner;
+        ZXing = __ZXing;
     });
 
     describe('Verbosity is set', function()  {
