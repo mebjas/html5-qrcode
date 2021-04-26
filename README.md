@@ -192,7 +192,7 @@ const html5QrCode = new Html5Qrcode("reader", /* verbose= */ true);
 In mobile devices you may want users to directly scan the QR code using the back camera or the front camera for some use cases. For such cases you can avoid using the exact camera device id that you get from `Html5Qrcode.getCameras()`. The `start()` method allows passing constraints in place of camera device id similar to [html5 web API syntax](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia#Syntax). You can start scanning like mentioned in these examples:
 
 ```js
-const html5QrCode = new Html5Qrcode("#reader");
+const html5QrCode = new Html5Qrcode("reader");
 const qrCodeSuccessCallback = message => { /* handle success */ }
 const config = { fps: 10, qrbox: 250 };
 
