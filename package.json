@@ -1,6 +1,6 @@
 {
   "name": "html5-qrcode",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "A cross platform HTML5 QR Code & bar code scanner",
   "main": "minified/html5-qrcode.min.js",
   "scripts": {

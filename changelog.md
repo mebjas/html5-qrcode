@@ -1,3 +1,6 @@
+### Version 2.0.2
+ - Bug fix: [Compatibility - [Android 11] [Chrome 88.0 ] - [Call stopScan will cause crash]](https://github.com/mebjas/html5-qrcode/issues/159) with PR from [MrGussio](https://github.com/MrGussio) - https://github.com/mebjas/html5-qrcode/pull/169
+
 ### Version 2.0.1
  - **Bug fix**: Zxing-js library was logging to console even if `verbose` is false - https://github.com/mebjas/html5-qrcode/issues/175
 
