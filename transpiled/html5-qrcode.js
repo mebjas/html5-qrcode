@@ -1076,9 +1076,25 @@ var Html5Qrcode = /*#__PURE__*/function () {
 
           MediaStreamTrack.getSources(callback);
         } else {
-          _this3._log("unable to query supported devices.");
+          // This can potentially happen if the page is loaded without SSL.
+          var isHttpsOrLocalhost = function isHttpsOrLocalhost(_) {
+            if (location.protocol === "https:") {
+              return true;
+            }
 
-          reject("unable to query supported devices.");
+            var host = location.host.split(":")[0];
+            return host === "127.0.0.1" || host === "localhost";
+          };
+
+          var errorMessage = "Unable to query supported devices, unknown error.";
+
+          if (!isHttpsOrLocalhost()) {
+            errorMessage = "Camera access is only supported in secure context like https " + "or localhost.";
+          }
+
+          _this3._log(errorMessage);
+
+          reject(errorMessage);
         }
       });
     }

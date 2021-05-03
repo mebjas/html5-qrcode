@@ -230,7 +230,10 @@ var Html5QrcodeScanner = /*#__PURE__*/function () {
       header.style.borderBottom = "1px solid rgba(192, 192, 192, 0.18)";
       dashboard.appendChild(header);
       var titleSpan = document.createElement("span");
-      titleSpan.innerHTML = "QR Code Scanner";
+      var titleLink = document.createElement("a");
+      titleLink.innerHTML = "Code Scanner";
+      titleLink.href = "https://github.com/mebjas/html5-qrcode";
+      titleSpan.appendChild(titleLink);
       header.appendChild(titleSpan);
       var statusSpan = document.createElement("span");
       statusSpan.id = this.__getStatusSpanId();

@@ -1,3 +1,6 @@
+### Version 2.0.3
+ - Show specific error message if web-cam access fails due to insecure context like web page being neither `https` or `localhost`.
+
 ### Version 2.0.2
  - Bug fix: [Compatibility - [Android 11] [Chrome 88.0 ] - [Call stopScan will cause crash]](https://github.com/mebjas/html5-qrcode/issues/159) with PR from [MrGussio](https://github.com/MrGussio) - https://github.com/mebjas/html5-qrcode/pull/169
 

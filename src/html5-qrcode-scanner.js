@@ -205,7 +205,10 @@ class Html5QrcodeScanner {
         dashboard.appendChild(header);
 
         const titleSpan = document.createElement("span");
-        titleSpan.innerHTML = "QR Code Scanner";
+        const titleLink = document.createElement("a");
+        titleLink.innerHTML = "Code Scanner";
+        titleLink.href="https://github.com/mebjas/html5-qrcode";
+        titleSpan.appendChild(titleLink);
         header.appendChild(titleSpan);
 
         const statusSpan = document.createElement("span");
