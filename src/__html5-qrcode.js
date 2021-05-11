@@ -484,11 +484,11 @@ class Html5Qrcode {
      * element.
      *
      * @returns Promise with decoded QR code string on success and error message
-      *             on failure. Failure could happen due to different reasons:
+     *             on failure. Failure could happen due to different reasons:
      *            1. QR Code decode failed because enough patterns not found in
-      *                 image.
+     *                 image.
      *            2. Input file was not image or unable to load the image or
-      *                 other image load errors.
+     *                 other image load errors.
      */
     scanFile(imageFile, /* default=true */ showImage) {
         const $this = this;
