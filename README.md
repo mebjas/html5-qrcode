@@ -117,14 +117,14 @@ Add `minified/html5-qrcode.min.js` in your web page.
 You can setup the scanner as follows:
 ```js
 function onScanSuccess(qrMessage) {
-	// handle the scanned code as you like, for example:
-	console.log(`QR matched = ${qrMessage}`);
+  // handle the scanned code as you like, for example:
+  console.log(`QR matched = ${qrMessage}`);
 }
 
 function onScanFailure(error) {
-	// handle scan failure, usually better to ignore and keep scanning.
+  // handle scan failure, usually better to ignore and keep scanning.
   // for example:
-	console.warn(`QR error = ${error}`);
+  console.warn(`QR error = ${error}`);
 }
 
 let html5QrcodeScanner = new Html5QrcodeScanner(
@@ -492,17 +492,14 @@ Here's an example of normal and mirrored QR Code
 | <img src="./assets/qr-code.png" width="200px"> | <img src="./assets/qr-code-flipped.png" width="200px"><br> |
 
 ## How to modify and build
-1. Code changes should only be made to 
-   - [src/html5-qrcode.js](./src/html5-qrcode.js)
-   - [src/html5-qrcode-scanner.js](./src/html5-qrcode-scanner.js)
-   - [third_party/qrcode.js](./third_party/qrcode.js)
-2. Run `npm run-script build`. 
-    > This should do `transpiling` --> `minification` --> `merging` different js code.
-3. Testing
+1. Code changes should only be made to [/src](./src) only.
+2. Run `npm install` to install all dependencies.
+3. Run `npm run-script build` to build javascript output. The output javascript distribution is built to [/dist/html5-qrcode.min.js](./dist/html5-qrcode.min.js). If you are developing on Windows OS, run `npm run-script build-windows`.
+4. Testing
     - Run `npm test`
-    - Run the tests before sending PR, all tests should run.
+    - Run the tests before sending a pull request, all tests should run.
     - Please add tests for new behaviors sent in PR.
-4. Send a pull request
+5. Send a pull request
     - Include all the changes to `./src`, `./transpiled`, `./minified`. **Do not change `./transpiled` or `./minified` manually.**
     - In the PR add a comment like
       ```

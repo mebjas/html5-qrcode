@@ -384,7 +384,9 @@ export class Html5Qrcode {
     public stop(): Promise<void> {
         // TODO(mebjas): fail fast if the start() wasn't called.
         this.shouldScan = false;
-        clearTimeout(this.foreverScanTimeout);
+        if (this.foreverScanTimeout) {
+            clearTimeout(this.foreverScanTimeout);
+        }
 
         return new Promise((resolve, _) => {
             const onAllTracksClosed = () => {
@@ -1080,7 +1082,7 @@ export class Html5Qrcode {
         const videoElement = document.createElement('video');
         videoElement.style.width = `${width}px`;
         videoElement.muted = true;
-        videoElement.playsInline = true;
+        (<any>videoElement).playsInline = true;
         return videoElement;
     }
 
