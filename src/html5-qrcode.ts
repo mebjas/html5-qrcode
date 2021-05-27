@@ -10,11 +10,6 @@
  *
  * The word "QR Code" is registered trademark of DENSO WAVE INCORPORATED
  * http://www.denso-wave.com/qrcode/faqpatent-e.html
- *
- * Notes:
- *  - ECMA Script is not supported by all browsers.
- *  - Use minified/html5-qrcode.min.js for better browser support.
- *  - Alternatively the transpiled code lives in transpiled/html5-qrcode.js
  */
 
 import {
@@ -1163,7 +1158,8 @@ export class Html5Qrcode {
         shadingElement.style.right = "0px";
         shadingElement.id = `${Constants.SHADED_REGION_CLASSNAME}`;
   
-        // Check if div is too small for shadows. As there are two 5px width borders the needs to have a size above 10px.
+        // Check if div is too small for shadows. As there are two 5px width
+        // borders the needs to have a size above 10px.
         if ((width - qrboxSize) < 11 || (height - qrboxSize) < 11) {
           this.hasBorderShaders = false;
         } else {
@@ -1174,17 +1170,47 @@ export class Html5Qrcode {
           this.insertShaderBorders(
               shadingElement, largeSize, smallSize, -smallSize, 0, false);
           this.insertShaderBorders(
-              shadingElement, largeSize, smallSize, qrboxSize+smallSize, 0, true);
+              shadingElement,
+              largeSize,
+              smallSize,
+              qrboxSize + smallSize,
+              0,
+              true);
           this.insertShaderBorders(
-              shadingElement, largeSize, smallSize, qrboxSize+smallSize, 0, false);
+              shadingElement,
+              largeSize,
+              smallSize,
+              qrboxSize + smallSize,
+              0,
+              false);
           this.insertShaderBorders(
-              shadingElement, smallSize, largeSize+smallSize, -smallSize, -smallSize, true);
+              shadingElement,
+              smallSize,
+              largeSize + smallSize,
+              -smallSize,
+              -smallSize,
+              true);
           this.insertShaderBorders(
-              shadingElement, smallSize, largeSize+smallSize, qrboxSize+smallSize-largeSize, -smallSize, true);
+              shadingElement,
+              smallSize,
+              largeSize + smallSize,
+              qrboxSize + smallSize - largeSize,
+              -smallSize,
+              true);
           this.insertShaderBorders(
-              shadingElement, smallSize, largeSize+smallSize, -smallSize, -smallSize, false);
+              shadingElement,
+              smallSize,
+              largeSize + smallSize,
+              -smallSize,
+              -smallSize,
+              false);
           this.insertShaderBorders(
-              shadingElement, smallSize, largeSize+smallSize, qrboxSize+smallSize-largeSize, -smallSize, false);
+              shadingElement,
+              smallSize,
+              largeSize + smallSize,
+              qrboxSize + smallSize - largeSize,
+              -smallSize,
+              false);
           this.hasBorderShaders = true;
         }
         element.append(shadingElement);

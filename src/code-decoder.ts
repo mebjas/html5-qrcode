@@ -6,11 +6,6 @@
  * 
  * The word "QR Code" is registered trademark of DENSO WAVE INCORPORATED
  * http://www.denso-wave.com/qrcode/faqpatent-e.html
- * 
- * Notes:
- *  - ECMA Script is not supported by all browsers.
- *  - Use minified/html5-qrcode.min.js for better browser support.
- *  - Alternatively the transpiled code lives in transpiled/html5-qrcode.js
  */
 
 import {

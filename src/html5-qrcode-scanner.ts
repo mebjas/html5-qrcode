@@ -7,11 +7,6 @@
  * 
  * The word "QR Code" is registered trademark of DENSO WAVE INCORPORATED
  * http://www.denso-wave.com/qrcode/faqpatent-e.html
- * 
- * Notes:
- *  - ECMA Script is not supported by all browsers.
- *  - Use minified/html5-qrcode.min.js for better browser support.
- *  - Alternatively the transpiled code lives in transpiled/html5-qrcode.js
  */
 import {
     Html5QrcodeConstants,
@@ -153,9 +148,18 @@ export class Html5QrcodeScanner {
 
         if (this.html5Qrcode) {
             return new Promise((resolve, reject) => {
-                if (this.html5Qrcode!.isScanning) {
-                    this.html5Qrcode!.stop().then(_ => {
-                        this.html5Qrcode!.clear();
+                if (!this.html5Qrcode) {
+                    resolve();
+                    return;
+                }
+                if (this.html5Qrcode.isScanning) {
+                    this.html5Qrcode.stop().then(_ => {
+                        if (!this.html5Qrcode) {
+                            resolve();
+                            return;
+                        }
+
+                        this.html5Qrcode.clear();
                         emptyHtmlContainer();
                         resolve();
                     }).catch(error => {
@@ -254,6 +258,10 @@ export class Html5QrcodeScanner {
     }
 
     private createSectionControlPanel() {
+        if (!this.html5Qrcode) {
+            throw "html5Qrcode not defined";
+        }
+
         const section = document.getElementById(this.getDashboardSectionId())!;
         const sectionControlPanel = document.createElement("div");
         section.appendChild(sectionControlPanel);
@@ -320,6 +328,10 @@ export class Html5QrcodeScanner {
         fileBasedScanRegion.appendChild(fileScanInput);
         fileBasedScanRegion.appendChild(fileScanLabel);
         fileScanInput.addEventListener('change', (e: any) => {
+            if (!$this.html5Qrcode) {
+                throw "html5Qrcode not defined";
+            }
+
             if (e == null || e.target == null) {
                 return;
             }
@@ -330,7 +342,7 @@ export class Html5QrcodeScanner {
                 return;
             }
             const file = e.target.files[0];
-            $this.html5Qrcode!.scanFile(file, /* showImage= */ true)
+            $this.html5Qrcode.scanFile(file, /* showImage= */ true)
                 .then((decodedText: string) => {
                     $this.resetHeaderMessage();
                     $this.qrCodeSuccessCallback!(
@@ -420,8 +432,11 @@ export class Html5QrcodeScanner {
         });
 
         cameraActionStopButton.addEventListener('click', _ => {
+            if (!$this.html5Qrcode) {
+                throw "html5Qrcode not defined";
+            }
             cameraActionStopButton.disabled = true;
-            $this.html5Qrcode!.stop()
+            $this.html5Qrcode.stop()
                 .then(_ => {
                     $this.showHideScanTypeSwapLink(true);
                     cameraSelectionSelect.disabled = false;
