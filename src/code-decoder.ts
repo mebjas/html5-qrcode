@@ -29,7 +29,7 @@ export interface QrcodeDecoder {
     decode(canvas: HTMLCanvasElement): QrcodeResult;
 }
 
-// Ambient tag to refer to library.
+// Ambient tag to refer to ZXing library.
 declare const ZXing: any;
 
 /**
@@ -103,7 +103,7 @@ export class ZXingHtml5QrcodeShim implements QrcodeDecoder {
         Array<any> {
             let zxingFormats = [];
             for (let i = 0; i < requestedFormats.length; ++i) {
-                if (requestedFormats[i] in ZXingHtml5QrcodeShim.formatMap) {
+                if (ZXingHtml5QrcodeShim.formatMap.has(requestedFormats[i])) {
                     zxingFormats.push(
                         ZXingHtml5QrcodeShim.formatMap.get(
                             requestedFormats[i]));

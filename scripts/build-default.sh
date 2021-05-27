@@ -30,10 +30,19 @@ echo '/** Html5Qrcode **/' >> dist/html5-qrcode.min.js
 cat dist/html5-qrcode.library.min.js >> dist/html5-qrcode.min.js
 echo 'Copied dist/html5-qrcode.library.min.js to dist/html5-qrcode.min.js'
 
+## This is super hack to make the library global.
+## TODO(mebjas) Address this normally.
+REFERENCE_1=';var Html5Qrcode = window._.Html5Qrcode;'
+REFERENCE_2=';var Html5QrcodeScanner = window._.Html5QrcodeScanner;'
+
+echo '' >> dist/html5-qrcode.min.js
+echo '/**ref**/' >> dist/html5-qrcode.min.js
+echo $REFERENCE_1 >> dist/html5-qrcode.min.js
+echo $REFERENCE_2 >> dist/html5-qrcode.min.js
+
 ## Remove the temp files
 rm dist/html5-qrcode.library.min.js
 echo 'Removed dist/html5-qrcode.library.min.js'
 
 ## All done - success
 echo 'minifed and combined, Success!'
-

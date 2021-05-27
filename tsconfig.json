@@ -1,9 +1,9 @@
 {
     "compilerOptions": {
-        "target": "ES5",
+        "target": "es5",
         "module": "ES2015",
         "sourceMap": true,
-        "moduleResolution": "node",
+        "moduleResolution": "classic",
         "lib": [
             "es7",
             "dom"
@@ -17,9 +17,9 @@
         "experimentalDecorators": true,
         "removeComments": true,
         "preserveConstEnums": true,
-        "noImplicitAny": true,
+        "noImplicitAny": true
     },
     "files": [
-        "src/html5-qrcode-scanner.ts",
+        "src/index.ts",
     ]
 }

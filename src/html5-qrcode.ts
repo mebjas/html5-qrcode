@@ -180,7 +180,7 @@ export class Html5Qrcode {
     private borderShaders?: Array<HTMLElement>;
     private qrMatch?: boolean;
     private videoElement?: HTMLVideoElement;
-    private foreverScanTimeout?: number;
+    private foreverScanTimeout?: any;
     private localMediaStream?: MediaStream;
     private qrRegion?: QrcodeRegionBounds;
     private context?: CanvasRenderingContext2D;

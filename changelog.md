@@ -1,3 +1,6 @@
+### Version 2.0.4
+ - **Source code migrated from javascript to typescript.**
+
 ### Version 2.0.3
  - Show specific error message if web-cam access fails due to insecure context like web page being neither `https` or `localhost`.
 
@@ -10,7 +13,7 @@
 ### Version 2.0.0
  - **Major Change** Migrated from Lazarsoft QR Code scanning to `ZXing-js`.
    - More robust support for QR Code scanning
-   - Support for barcode scanning in following formats
+   - Support for barcode scanning in the following formats
      ```
       ZXing.BarcodeFormat.QR_CODE,
       ZXing.BarcodeFormat.AZTEC,
