@@ -500,12 +500,13 @@ Here's an example of normal and mirrored QR Code
     - Run the tests before sending a pull request, all tests should run.
     - Please add tests for new behaviors sent in PR.
 5. Send a pull request
-    - Include all the changes to `./src`, `./transpiled`, `./minified`. **Do not change `./transpiled` or `./minified` manually.**
+    - Include code changes only to `./src`. **Do not change `./dist` manually.**
     - In the PR add a comment like
       ```
       @all-contributors please add @mebjas for this new feature or tests
       ```
       For calling out your contributions - the bot will update the contributions file.
+    - Code will be built & published by the author in batches.
 
 ## Credits
 The decoder used for the QRcode reading is from `Zxing-js` https://github.com/zxing-js/library<br>
