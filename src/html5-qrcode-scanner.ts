@@ -258,10 +258,6 @@ export class Html5QrcodeScanner {
     }
 
     private createSectionControlPanel() {
-        if (!this.html5Qrcode) {
-            throw "html5Qrcode not defined";
-        }
-
         const section = document.getElementById(this.getDashboardSectionId())!;
         const sectionControlPanel = document.createElement("div");
         section.appendChild(sectionControlPanel);
