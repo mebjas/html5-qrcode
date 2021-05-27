@@ -1,0 +1,25 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "module": "ES2015",
+        "sourceMap": true,
+        "moduleResolution": "classic",
+        "lib": [
+            "es7",
+            "dom"
+        ],
+
+        // ^ Build the transpiled javascript to transpiled/ dir.
+        // Flags to ensure code quality.
+        "strict": true,
+        "noImplicitReturns": true,
+        "noUnusedParameters": true,
+        "experimentalDecorators": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "noImplicitAny": true
+    },
+    "files": [
+        "src/index.ts",
+    ]
+}
