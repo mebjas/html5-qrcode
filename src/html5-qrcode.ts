@@ -20,12 +20,13 @@ import {
     BaseLoggger,
     Html5QrcodeResultFactory,
     Html5QrcodeErrorFactory,
-    Html5QrcodeSupportedFormats
+    Html5QrcodeSupportedFormats,
+    QrcodeDecoder
 } from "./core";
 
 import { Html5QrcodeStrings } from "./strings";
 import { VideoConstraintsUtil } from "./utils";
-import { QrcodeDecoder, ZXingHtml5QrcodeShim } from "./code-decoder";
+import { Html5QrcodeShim } from "./code-decoder";
 
 /**
  * Data class for creating {@class Html5QrcodeScanner}
@@ -217,7 +218,7 @@ export class Html5Qrcode {
             Html5QrcodeSupportedFormats.UPC_E,
             Html5QrcodeSupportedFormats.UPC_EAN_EXTENSION,
         ];
-        this.qrcode = new ZXingHtml5QrcodeShim(requestedFormats, this.verbose);
+        this.qrcode = new Html5QrcodeShim(requestedFormats, this.verbose);
 
         this.foreverScanTimeout;
         this.localMediaStream;
