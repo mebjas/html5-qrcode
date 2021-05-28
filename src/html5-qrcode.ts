@@ -1077,6 +1077,7 @@ export class Html5Qrcode {
         const videoElement = document.createElement('video');
         videoElement.style.width = `${width}px`;
         videoElement.muted = true;
+        videoElement.setAttribute("muted", "true");
         (<any>videoElement).playsInline = true;
         return videoElement;
     }
