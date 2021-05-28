@@ -1,3 +1,6 @@
+### Version 2.0.6
+ - [Issue#211](https://github.com/mebjas/html5-qrcode/issues/211) fixed - swapped text for file based scanning and camera scanning during typescript migration.
+
 ### Version 2.0.5
  - [Issue#202](https://github.com/mebjas/html5-qrcode/issues/202) fixed - error logs dumped to console even if verbose flag is not set in `Html5Qrcode`.
 

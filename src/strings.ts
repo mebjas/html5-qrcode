@@ -94,12 +94,21 @@ export class Html5QrcodeScannerStrings {
         return "Start Scanning";
     }
 
+    /**
+     * Text to show when camera scan is selected.
+     * 
+     * This will be used to switch to file based scanning.
+     */
     public static textIfCameraScanSelected(): string {
-        return "Scan using camera directly";
+        return "Scan an Image File";
     }
 
-    // TODO(mebjas): be mindful of where this text occurs, verify this.
+    /**
+     * Text to show when file based scan is selected.
+     * 
+     * This will be used to switch to camera based scanning.
+     */
     public static textIfFileScanSelected(): string {
-        return "Scan an Image File";
+        return "Scan using camera directly";
     }
 }
