@@ -1,0 +1,9 @@
+---
+exclude_paths:
+  - ".github/**"
+  - "assets/**"
+  - "dist/**"
+  - "node_modules/**"
+  - "third_party/**"
+  - "changelog.md"
+  - "CODE_OF_CONDUCT.md"
