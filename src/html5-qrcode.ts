@@ -259,7 +259,7 @@ export class Html5Qrcode {
         }
 
         if (!qrCodeErrorCallback) {
-            qrCodeErrorCallback = console.log;
+            qrCodeErrorCallback = this.verbose ? console.log : () => {};
         }
 
         const internalConfig = InternalHtml5QrcodeConfig.create(

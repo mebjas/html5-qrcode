@@ -1,3 +1,6 @@
+### Versio 2.0.5
+ - [Issue#202](https://github.com/mebjas/html5-qrcode/issues/202) fixed - error logs dumped to console even if verbose flag is not set in `Html5Qrcode`.
+
 ### Version 2.0.4
  - **Source code migrated from javascript to typescript.**
  - [Issue#198](https://github.com/mebjas/html5-qrcode/issues/198) fixed - Fixing autoplay in Cordova Android apps
