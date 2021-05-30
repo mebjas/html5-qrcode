@@ -20,6 +20,9 @@ Use this lightweight library to easily / quickly integrate QR code, bar code, an
 | -- | -- |
 | _Figure: Running on Android, Pixel 3_ | _Figure: Running on Android, Pixel 4, **Scanning different types of codes**_  |
 
+## Notice
+**UX/UXD/UXR help wanted**: We are looking to improve user experience of this code scanning library - if you are interested in making this experience better for both developers and end users, please share your ideas, thoughts, inputs in [this discussion](https://github.com/mebjas/html5-qrcode/discussions/213)
+
 ## Supported platforms
 We are working continuously on adding support for more and more platforms. If you find a platform or a browser where the library is not working, please feel free to file an issue. Check the [demo link](https://blog.minhazav.dev/research/html5-qrcode.html) to test it out.
 
