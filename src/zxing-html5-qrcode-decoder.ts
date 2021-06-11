@@ -64,12 +64,11 @@ export class ZXingHtml5QrcodeDecoder implements QrcodeDecoder {
             throw 'Use html5qrcode.min.js without edit, ZXing not found.';
         }
 
-        const hints = new Map();
         const formats = this.createZXingFormats(requestedFormats);
+        const hints = new Map();
         hints.set(ZXing.DecodeHintType.POSSIBLE_FORMATS, formats);
 
-        this.zxingDecoder = new ZXing.MultiFormatReader(verbose);
-        this.zxingDecoder.setHints(hints);
+        this.zxingDecoder = new ZXing.MultiFormatReader(verbose, hints);
     }
 
     decode(canvas: HTMLCanvasElement): QrcodeResult {

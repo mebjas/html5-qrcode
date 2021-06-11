@@ -34,11 +34,13 @@ echo 'Copied dist/html5-qrcode.library.min.js to dist/html5-qrcode.min.js'
 ## TODO(mebjas) Address this normally.
 REFERENCE_1=';var Html5Qrcode = window._.Html5Qrcode;'
 REFERENCE_2=';var Html5QrcodeScanner = window._.Html5QrcodeScanner;'
+REFERENCE_3=';var Html5QrcodeSupportedFormats = window._.Html5QrcodeSupportedFormats;'
 
 echo '' >> dist/html5-qrcode.min.js
 echo '/**ref**/' >> dist/html5-qrcode.min.js
 echo $REFERENCE_1 >> dist/html5-qrcode.min.js
 echo $REFERENCE_2 >> dist/html5-qrcode.min.js
+echo $REFERENCE_3 >> dist/html5-qrcode.min.js
 
 ## Remove the temp files
 rm dist/html5-qrcode.library.min.js

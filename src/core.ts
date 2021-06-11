@@ -31,6 +31,11 @@ export enum Html5QrcodeSupportedFormats {
     UPC_EAN_EXTENSION,
 }
 
+/** Returns true if the passed object instance is a valid format. */
+export function IsValidHtml5QrcodeSupportedFormats(format: any): boolean {
+    return Object.values(Html5QrcodeSupportedFormats).includes(format);
+}
+
 /**
  * Types of scans supported by the library
  */
@@ -52,6 +57,9 @@ export class Html5QrcodeConstants {
 
     static GITHUB_PROJECT_URL: string
         = "https://github.com/mebjas/html5-qrcode";
+
+    static SCAN_DEFAULT_FPS = 2;
+    static DEFAULT_DISABLE_FLIP = false;
 }
 
 /**

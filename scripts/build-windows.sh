@@ -36,7 +36,7 @@ echo '' >> dist/html5-qrcode.min.js
 echo '/**ref**/' >> dist/html5-qrcode.min.js
 echo ';var Html5Qrcode = window._.Html5Qrcode;' >> dist/html5-qrcode.min.js
 echo ';var Html5QrcodeScanner = window._.Html5QrcodeScanner;' >> dist/html5-qrcode.min.js
-
+echo ';var Html5QrcodeSupportedFormats = window._.Html5QrcodeSupportedFormats;' >> dist/html5-qrcode.min.js
 ## Remove the temp files
 rm dist\\html5-qrcode.library.min.js
 echo 'Removed dist/html5-qrcode.library.min.js'

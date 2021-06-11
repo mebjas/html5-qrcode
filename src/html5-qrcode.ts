@@ -21,7 +21,9 @@ import {
     Html5QrcodeResultFactory,
     Html5QrcodeErrorFactory,
     Html5QrcodeSupportedFormats,
-    QrcodeDecoder
+    QrcodeDecoder,
+    IsValidHtml5QrcodeSupportedFormats,
+    Html5QrcodeConstants
 } from "./core";
 
 import { Html5QrcodeStrings } from "./strings";
@@ -29,14 +31,40 @@ import { VideoConstraintsUtil } from "./utils";
 import { Html5QrcodeShim } from "./code-decoder";
 
 /**
- * Data class for creating {@class Html5QrcodeScanner}
+ * Interface for configuration to control different aspects of {@class
+ *  Html5Qrcode} class instance.
  */
-export interface Html5QrcodeConfig {
+export interface Html5QrcodeConfigs {
+    /**
+     * Array of formats to support of type {@type Html5QrcodeSupportedFormats}.
+     * 
+     * All invalid values would be ignored. If null or underfined all supported
+     * formats will be used for scanning. Unless you want to limit the scan to
+     * only certain formats or want to improve performance, you should not set
+     * this value.
+     */
+    formatsToSupport: Array<Html5QrcodeSupportedFormats> | undefined;
+}
+
+/**
+ * Interface for configuration to create {@class Html5Qrcode} instance.
+ */
+export interface Html5QrcodeFullConfig extends Html5QrcodeConfigs {
+    /**
+     * If true, all logs would be printed to console. False by default.
+     */
+    verbose: boolean | undefined;
+}
+
+/**
+ * Configuration type for scanning QR code with camera.
+ */
+export interface Html5QrcodeCameraScanConfig {
     /**
      * Optional, Expected framerate of qr code scanning. example { fps: 2 } means the
      * scanning would be done every 500 ms.
      */
-    fps?: number;
+    fps: number | undefined;
 
     /**
      * Optional, width of QR scanning box, this should be smaller than the width
@@ -51,21 +79,21 @@ export interface Html5QrcodeConfig {
      *          |********************|
      *          ----------------------
      */
-    qrbox?: number;
+    qrbox: number | undefined;
 
     /**
      * Optional, Desired aspect ratio for the video feed. Ideal aspect ratios
      * are 4:3 or 16:9. Passing very wrong aspect ratio could lead to video feed
      * not showing up.
      */
-    aspectRatio?: number;
+    aspectRatio: number | undefined;
 
     /**
      * Optional, if {@code true} flipped QR Code won't be scanned. Only use this
      * if you are sure the camera cannot give mirrored feed if you are facing
      * performance constraints.
      */
-    disableFlip?: boolean;
+    disableFlip: boolean | undefined;
 
     /**
      * Optional, @beta(this config is not well supported yet).
@@ -78,7 +106,7 @@ export interface Html5QrcodeConfig {
      * and is used to specify a variety of video or camera controls like:
      * aspectRatio, facingMode, frameRate, etc.
      */
-    videoConstraints?: MediaTrackConstraints;
+    videoConstraints: MediaTrackConstraints | undefined;
 }
 
 /**
@@ -90,22 +118,28 @@ class InternalHtml5QrcodeConfig implements InternalHtml5QrcodeConfig {
     // TODO(mebjas) Make items that doesn't need to be public private.
     public fps: number;
     public disableFlip: boolean;
-    public qrbox?: number;
-    public aspectRatio?: number;
-    public videoConstraints?: MediaTrackConstraints;
+    public qrbox: number | undefined;
+    public aspectRatio: number | undefined;
+    public videoConstraints: MediaTrackConstraints | undefined;
 
     private logger: Logger;
 
-    private constructor(config: Html5QrcodeConfig, logger: Logger) {
-        this.fps = config.fps == undefined
-            ? Constants.SCAN_DEFAULT_FPS : config.fps!;
-        this.disableFlip = config.disableFlip === true;
-
-        this.qrbox = config.qrbox;
-        this.aspectRatio = config.aspectRatio;
-        this.videoConstraints = config.videoConstraints;
-
+    private constructor(
+        config: Html5QrcodeCameraScanConfig | undefined,
+        logger: Logger) {
         this.logger = logger;
+
+        if (!config) {
+            this.fps = Constants.SCAN_DEFAULT_FPS;
+            this.disableFlip = Constants.DEFAULT_DISABLE_FLIP;
+        } else {
+            this.fps = config.fps == undefined
+                ? Constants.SCAN_DEFAULT_FPS : config.fps!;
+            this.disableFlip = config.disableFlip === true;
+            this.qrbox = config.qrbox;
+            this.aspectRatio = config.aspectRatio;
+            this.videoConstraints = config.videoConstraints;
+        }
     }
 
     public isMediaStreamConstraintsValid(): boolean {
@@ -124,11 +158,11 @@ class InternalHtml5QrcodeConfig implements InternalHtml5QrcodeConfig {
     }
 
     /**
-     * Create instance of {@interface Html5QrcodeConfig}.
+     * Create instance of {@interface Html5QrcodeCameraScanConfig}.
      * 
      * Create configuration by merging default and input settings.
      */
-    static create(config: Html5QrcodeConfig, logger: Logger)
+    static create(config: Html5QrcodeCameraScanConfig | undefined, logger: Logger)
         : InternalHtml5QrcodeConfig {
         return new InternalHtml5QrcodeConfig(config, logger);
     }
@@ -143,12 +177,11 @@ interface QrcodeRegionBounds {
 
 type Html5QrcodeIdentifier = string | MediaTrackConstraints;
 
-class Constants {
+class Constants extends Html5QrcodeConstants {
     //#region static constants
     static DEFAULT_WIDTH = 300;
     static DEFAULT_WIDTH_OFFSET = 2;
     static FILE_SCAN_MIN_HEIGHT = 300;
-    static SCAN_DEFAULT_FPS = 2;
     static MIN_QR_BOX_SIZE = 50;
     static SHADED_LEFT = 1;
     static SHADED_RIGHT = 2;
@@ -170,6 +203,7 @@ export class Html5Qrcode {
     private shouldScan: boolean;
     private logger: Logger;
 
+    // Nullable elements
     private element?: HTMLElement;
     private canvasElement?: HTMLCanvasElement;
     private hasBorderShaders?: boolean;
@@ -177,48 +211,46 @@ export class Html5Qrcode {
     private qrMatch?: boolean;
     private videoElement?: HTMLVideoElement;
     private foreverScanTimeout?: any;
-    private localMediaStream?: MediaStream;
-    private qrRegion?: QrcodeRegionBounds;
-    private context?: CanvasRenderingContext2D;
-    private lastScanImageFile?: string;
+    private localMediaStream: MediaStream | undefined;
+    private qrRegion: QrcodeRegionBounds | undefined;
+    private context?: CanvasRenderingContext2D | undefined;
+    private lastScanImageFile: string | undefined;
     //#endregion
 
     public isScanning: boolean;
 
     /**
      * Initialize the code scanner.
+     *
      * @param elementId Id of the HTML element.
-     * @param verbose If true, all logs would be printed to console.
+     * @param configOrVerbosityFlag optional config object of type {@interface
+     *  Html5QrcodeFullConfig} or a boolean verbosity flag (to maintain backward
+     * compatibility). If nothing is passed, default values would be used.
+     * If a boolean values is used, it'll be used to set verbosity. Pass a
+     * config value to configure the Html5Qrcode scanner as per needs.
+     * 
+     * Use of {@code configOrVerbosityFlag} as a boolean value is being
+     * deprecated since version 2.0.7.
+     * 
+     * TODO(mebjas): Deprecate the verbosity boolean flag completely.
      */
-    public constructor(elementId: string, verbose?: boolean) {
+    public constructor(elementId: string, 
+        configOrVerbosityFlag: boolean | Html5QrcodeFullConfig | undefined) {
         if (!document.getElementById(elementId)) {
             throw `HTML Element with id=${elementId} not found`;
         }
 
         this.elementId = elementId;
-        this.verbose = verbose === true;
+        this.verbose = false;
+        if (typeof configOrVerbosityFlag == "boolean") {
+            this.verbose = configOrVerbosityFlag === true;
+        } else if (configOrVerbosityFlag) {
+            this.verbose = configOrVerbosityFlag.verbose === true;
+        }
+        
         this.logger = new BaseLoggger(this.verbose);
-
-        const requestedFormats: Array<Html5QrcodeSupportedFormats> = [
-            Html5QrcodeSupportedFormats.QR_CODE,
-            Html5QrcodeSupportedFormats.AZTEC,
-            Html5QrcodeSupportedFormats.CODABAR,
-            Html5QrcodeSupportedFormats.CODE_39,
-            Html5QrcodeSupportedFormats.CODE_93,
-            Html5QrcodeSupportedFormats.CODE_128,
-            Html5QrcodeSupportedFormats.DATA_MATRIX,
-            Html5QrcodeSupportedFormats.MAXICODE,
-            Html5QrcodeSupportedFormats.ITF,
-            Html5QrcodeSupportedFormats.EAN_13,
-            Html5QrcodeSupportedFormats.EAN_8,
-            Html5QrcodeSupportedFormats.PDF_417,
-            Html5QrcodeSupportedFormats.RSS_14,
-            Html5QrcodeSupportedFormats.RSS_EXPANDED,
-            Html5QrcodeSupportedFormats.UPC_A,
-            Html5QrcodeSupportedFormats.UPC_E,
-            Html5QrcodeSupportedFormats.UPC_EAN_EXTENSION,
-        ];
-        this.qrcode = new Html5QrcodeShim(requestedFormats, this.verbose);
+        this.qrcode = new Html5QrcodeShim(
+            this.getSupportedFormats(configOrVerbosityFlag), this.verbose);
 
         this.foreverScanTimeout;
         this.localMediaStream;
@@ -227,12 +259,13 @@ export class Html5Qrcode {
 
     }
 
+    //#region start()
     /**
-     * Start scanning QR Code for given camera.
+     * Start scanning QR codes or barcodes for a given camera.
      * 
      * @param cameraIdOrConfig Identifier of the camera, it can either be the
-     *  cameraId retrieved from {@code Html5Qrcode#getCameras()} method or
-     *  object with facingMode constraint.
+     *  camera id retrieved from {@code Html5Qrcode#getCameras()} method or
+     *  object with facing mode constraint.
      * @param configuration Extra configurations to tune the code scanner.
      * @param qrCodeSuccessCallback Callback called when an instance of a QR
      * code or any other supported bar code is found.
@@ -244,9 +277,9 @@ export class Html5Qrcode {
      */
     public start(
         cameraIdOrConfig: Html5QrcodeIdentifier,
-        configuration?: Html5QrcodeConfig,
-        qrCodeSuccessCallback?: QrcodeSuccessCallback,
-        qrCodeErrorCallback?: QrcodeErrorCallback,
+        configuration: Html5QrcodeCameraScanConfig | undefined,
+        qrCodeSuccessCallback: QrcodeSuccessCallback | undefined,
+        qrCodeErrorCallback: QrcodeErrorCallback | undefined,
     ): Promise<null> {
 
         // Code will be consumed as javascript.
@@ -264,8 +297,7 @@ export class Html5Qrcode {
         }
 
         const internalConfig = InternalHtml5QrcodeConfig.create(
-            configuration == undefined ? {} : configuration, this.logger);
-
+            configuration, this.logger);
         this.clearElement();
 
         // Check if videoConstraints is passed and valid
@@ -311,6 +343,10 @@ export class Html5Qrcode {
             const videoConstraints = areVideoConstraintsEnabled
                     ? internalConfig.videoConstraints
                     : $this.createVideoConstraints(cameraIdOrConfig);
+            if (!videoConstraints) {
+                reject("videoConstraints should be defined");
+                return;
+            }
             if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
                 // Ignore all other video constraints if the videoConstraints
                 // is passed.
@@ -371,6 +407,7 @@ export class Html5Qrcode {
             }
         });
     }
+    //#endregion
 
     /**
      * Stops streaming QR Code video and scanning.
@@ -439,8 +476,8 @@ export class Html5Qrcode {
     /**
      * Scans an Image File for QR Code.
      *
-     * This feature is mutually exclusive to camera based scanning, you should
-     * call stop() if the camera based scanning was ongoing.
+     * This feature is mutually exclusive to camera-based scanning, you should
+     * call stop() if the camera-based scanning was ongoing.
      *
      * @param imageFile a local file with Image content.
      * @param showImage if true the Image will be rendered on given
@@ -728,6 +765,80 @@ export class Html5Qrcode {
     //#endregion
 
     //#region Private methods.
+
+    /**
+     * Construct list of supported formats and returns based on input args.
+     * @param configOrVerbosityFlag optional config object of type {@interface
+     *  Html5QrcodeFullConfig} or a boolean verbosity flag (to maintain backward
+     * compatibility). If nothing is passed, default values would be used.
+     * If a boolean values is used, it'll be used to set verbosity. Pass a
+     * config value to configure the Html5Qrcode scanner as per needs.
+     * 
+     * Use of {@code configOrVerbosityFlag} as a boolean value is being
+     * deprecated since version 2.0.7.
+     * 
+     * TODO(mebjas): Deprecate the verbosity boolean flag completely.
+     */
+    private getSupportedFormats(
+        configOrVerbosityFlag: boolean | Html5QrcodeFullConfig | undefined)
+        : Array<Html5QrcodeSupportedFormats> {
+        const allFormats: Array<Html5QrcodeSupportedFormats> = [
+            Html5QrcodeSupportedFormats.QR_CODE,
+            Html5QrcodeSupportedFormats.AZTEC,
+            Html5QrcodeSupportedFormats.CODABAR,
+            Html5QrcodeSupportedFormats.CODE_39,
+            Html5QrcodeSupportedFormats.CODE_93,
+            Html5QrcodeSupportedFormats.CODE_128,
+            Html5QrcodeSupportedFormats.DATA_MATRIX,
+            Html5QrcodeSupportedFormats.MAXICODE,
+            Html5QrcodeSupportedFormats.ITF,
+            Html5QrcodeSupportedFormats.EAN_13,
+            Html5QrcodeSupportedFormats.EAN_8,
+            Html5QrcodeSupportedFormats.PDF_417,
+            Html5QrcodeSupportedFormats.RSS_14,
+            Html5QrcodeSupportedFormats.RSS_EXPANDED,
+            Html5QrcodeSupportedFormats.UPC_A,
+            Html5QrcodeSupportedFormats.UPC_E,
+            Html5QrcodeSupportedFormats.UPC_EAN_EXTENSION,
+        ];
+
+        if (!configOrVerbosityFlag 
+            || typeof configOrVerbosityFlag == "boolean") {
+            return allFormats;
+        }
+
+        if (!configOrVerbosityFlag.formatsToSupport) {
+            return allFormats;
+        }
+
+        if (!Array.isArray(configOrVerbosityFlag.formatsToSupport)) {
+            throw "configOrVerbosityFlag.formatsToSupport should be undefined "
+                + "or an array.";
+        }
+
+        if (configOrVerbosityFlag.formatsToSupport.length == 0) {
+            throw "Atleast 1 formatsToSupport is needed.";
+        }
+
+        const supportedFormats: Array<Html5QrcodeSupportedFormats> = [];
+        for (let i = 0; i < configOrVerbosityFlag.formatsToSupport!.length; ++i) {
+            let format:Html5QrcodeSupportedFormats
+                = configOrVerbosityFlag.formatsToSupport![i];
+            if (IsValidHtml5QrcodeSupportedFormats(format)) {
+                supportedFormats.push(format);
+            } else {
+                console.warn(
+                    `Invalid format: ${format} passed in config, ignoring.`);
+            }
+        }
+
+        if (supportedFormats.length == 0) {
+            throw "None of formatsToSupport match supported values.";
+        }
+        return supportedFormats;
+
+    }
+
     //#region Documented private methods for camera based scanner.
     /**
     * Setups the UI elements, changes the state of this class.
@@ -846,18 +957,17 @@ export class Html5Qrcode {
                 /* dWidth= */ this.qrRegion.width,
                 /* dHeight= */ this.qrRegion.height);
 
-                // Try scanning normal frame and in case of failure, scan
-                // the inverted context if not explictly disabled.
-                // TODO(mebjas): Move this logic to decoding library.
-                if (!this.scanContext(
-                    qrCodeSuccessCallback, qrCodeErrorCallback)
-                    && internalConfig.disableFlip !== true) {
-                    // scan inverted context.
-                    this.context!.translate(this.context!.canvas.width, 0);
-                    this.context!.scale(-1, 1);
-                    this.scanContext(
-                        qrCodeSuccessCallback, qrCodeErrorCallback);
-                }
+            // Try scanning normal frame and in case of failure, scan
+            // the inverted context if not explictly disabled.
+            // TODO(mebjas): Move this logic to decoding library.
+            if (!this.scanContext(qrCodeSuccessCallback, qrCodeErrorCallback)
+                && internalConfig.disableFlip !== true) {
+                // scan inverted context.
+                this.context!.translate(this.context!.canvas.width, 0);
+                this.context!.scale(-1, 1);
+                this.scanContext(
+                    qrCodeSuccessCallback, qrCodeErrorCallback);
+            }
         }
         this.foreverScanTimeout = setTimeout(() => {
             this.foreverScan(
