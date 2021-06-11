@@ -44,7 +44,7 @@ enum Html5QrcodeScannerStatus {
  * Interface for controlling different aspects of {@class Html5QrcodeScanner}.
  */
 interface Html5QrcodeScannerConfig
-    extends Html5QrcodeCameraScanConfig, Html5QrcodeConfigs {};
+    extends Html5QrcodeCameraScanConfig, Html5QrcodeConfigs {}
 
 function toHtml5QrcodeCameraScanConfig(config: Html5QrcodeScannerConfig)
     : Html5QrcodeCameraScanConfig {
@@ -212,14 +212,7 @@ export class Html5QrcodeScanner {
             return config;
         }
 
-        return {
-            fps: Html5QrcodeConstants.SCAN_DEFAULT_FPS,
-            qrbox: undefined,
-            aspectRatio: undefined,
-            disableFlip: undefined,
-            videoConstraints: undefined,
-            formatsToSupport: undefined
-        };
+        return { fps: Html5QrcodeConstants.SCAN_DEFAULT_FPS };
     }
 
     private createBasicLayout(parent: HTMLElement) {

@@ -38,9 +38,9 @@ REFERENCE_3=';var Html5QrcodeSupportedFormats = window._.Html5QrcodeSupportedFor
 
 echo '' >> dist/html5-qrcode.min.js
 echo '/**ref**/' >> dist/html5-qrcode.min.js
-echo $REFERENCE_1 >> dist/html5-qrcode.min.js
-echo $REFERENCE_2 >> dist/html5-qrcode.min.js
-echo $REFERENCE_3 >> dist/html5-qrcode.min.js
+echo "$REFERENCE_1" >> dist/html5-qrcode.min.js
+echo "$REFERENCE_2" >> dist/html5-qrcode.min.js
+echo "$REFERENCE_3" >> dist/html5-qrcode.min.js
 
 ## Remove the temp files
 rm dist/html5-qrcode.library.min.js

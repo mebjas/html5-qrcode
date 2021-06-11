@@ -42,7 +42,7 @@ export interface Html5QrcodeConfigs {
      * only certain formats or want to improve performance, you should not set
      * this value.
      */
-    formatsToSupport: Array<Html5QrcodeSupportedFormats> | undefined;
+    formatsToSupport?: Array<Html5QrcodeSupportedFormats> | undefined;
 }
 
 /**
@@ -84,21 +84,21 @@ export interface Html5QrcodeCameraScanConfig {
      *          |********************|
      *          ----------------------
      */
-    qrbox: number | undefined;
+    qrbox?: number | undefined;
 
     /**
      * Optional, Desired aspect ratio for the video feed. Ideal aspect ratios
      * are 4:3 or 16:9. Passing very wrong aspect ratio could lead to video feed
      * not showing up.
      */
-    aspectRatio: number | undefined;
+    aspectRatio?: number | undefined;
 
     /**
      * Optional, if {@code true} flipped QR Code won't be scanned. Only use this
      * if you are sure the camera cannot give mirrored feed if you are facing
      * performance constraints.
      */
-    disableFlip: boolean | undefined;
+    disableFlip?: boolean | undefined;
 
     /**
      * Optional, @beta(this config is not well supported yet).
@@ -111,7 +111,7 @@ export interface Html5QrcodeCameraScanConfig {
      * and is used to specify a variety of video or camera controls like:
      * aspectRatio, facingMode, frameRate, etc.
      */
-    videoConstraints: MediaTrackConstraints | undefined;
+    videoConstraints?: MediaTrackConstraints | undefined;
 }
 
 /**

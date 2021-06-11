@@ -595,17 +595,17 @@ html5QrcodeScanner.render(onScanSuccess);
 2. Run `npm install` to install all dependencies.
 3. Run `npm run-script build` to build javascript output. The output javascript distribution is built to [/dist/html5-qrcode.min.js](./dist/html5-qrcode.min.js). If you are developing on Windows OS, run `npm run-script build-windows`.
 4. Testing
-    - Run `npm test`
-    - Run the tests before sending a pull request, all tests should run.
-    - Please add tests for new behaviors sent in PR.
+  - Run `npm test`
+  - Run the tests before sending a pull request, all tests should run.
+  - Please add tests for new behaviors sent in PR.
 5. Send a pull request
-    - Include code changes only to `./src`. **Do not change `./dist` manually.**
-    - In the pull request add a comment like
-      ```
-      @all-contributors please add @mebjas for this new feature or tests
-      ```
-      For calling out your contributions - the bot will update the contributions file.
-    - Code will be built & published by the author in batches.
+  - Include code changes only to `./src`. **Do not change `./dist` manually.**
+  - In the pull request add a comment like
+    ```
+    @all-contributors please add @mebjas for this new feature or tests
+    ```
+    For calling out your contributions - the bot will update the contributions file.
+  - Code will be built & published by the author in batches.
 
 ## Credits
 The decoder used for the QRcode reading is from `Zxing-js` https://github.com/zxing-js/library<br>
