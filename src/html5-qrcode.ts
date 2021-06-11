@@ -31,8 +31,7 @@ import { VideoConstraintsUtil } from "./utils";
 import { Html5QrcodeShim } from "./code-decoder";
 
 /**
- * Interface for configuration to control different aspects of {@class
- *  Html5Qrcode} class instance.
+ * Interface for configuring {@class Html5Qrcode} class instance.
  */
 export interface Html5QrcodeConfigs {
     /**
@@ -47,7 +46,13 @@ export interface Html5QrcodeConfigs {
 }
 
 /**
- * Interface for configuration to create {@class Html5Qrcode} instance.
+ * Interface for full configuration of {@class Html5Qrcode}.
+ * 
+ * Notes: Ideally we don't need to have two interfaces for this purpose, but
+ * since the public APIs before version 2.0.8 allowed passing a boolean verbose
+ * flag to constructor we need to allow users to pass Html5QrcodeFullConfig or
+ * boolean flag to be backward compatible.
+ * In future versions these two interfaces can be merged.
  */
 export interface Html5QrcodeFullConfig extends Html5QrcodeConfigs {
     /**
@@ -129,12 +134,13 @@ class InternalHtml5QrcodeConfig implements InternalHtml5QrcodeConfig {
         logger: Logger) {
         this.logger = logger;
 
+        this.fps = Constants.SCAN_DEFAULT_FPS;
         if (!config) {
-            this.fps = Constants.SCAN_DEFAULT_FPS;
             this.disableFlip = Constants.DEFAULT_DISABLE_FLIP;
         } else {
-            this.fps = config.fps == undefined
-                ? Constants.SCAN_DEFAULT_FPS : config.fps!;
+            if (config.fps) {
+                this.fps = config.fps;
+            }
             this.disableFlip = config.disableFlip === true;
             this.qrbox = config.qrbox;
             this.aspectRatio = config.aspectRatio;
@@ -204,16 +210,19 @@ export class Html5Qrcode {
     private logger: Logger;
 
     // Nullable elements
-    private element?: HTMLElement;
-    private canvasElement?: HTMLCanvasElement;
-    private hasBorderShaders?: boolean;
-    private borderShaders?: Array<HTMLElement>;
-    private qrMatch?: boolean;
-    private videoElement?: HTMLVideoElement;
-    private foreverScanTimeout?: any;
+    // TODO(mebjas): Reduce the statefulness of this mammoth class, by splitting
+    // into independent classes for better separation of concerns and reducing
+    // error prone nature of a large stateful class.
+    private element: HTMLElement | undefined;
+    private canvasElement: HTMLCanvasElement | undefined;
+    private hasBorderShaders: boolean | undefined;
+    private borderShaders: Array<HTMLElement> | undefined;
+    private qrMatch: boolean | undefined;
+    private videoElement: HTMLVideoElement | undefined;
+    private foreverScanTimeout: any;
     private localMediaStream: MediaStream | undefined;
     private qrRegion: QrcodeRegionBounds | undefined;
-    private context?: CanvasRenderingContext2D | undefined;
+    private context: CanvasRenderingContext2D | undefined;
     private lastScanImageFile: string | undefined;
     //#endregion
 
@@ -223,10 +232,10 @@ export class Html5Qrcode {
      * Initialize the code scanner.
      *
      * @param elementId Id of the HTML element.
-     * @param configOrVerbosityFlag optional config object of type {@interface
-     *  Html5QrcodeFullConfig} or a boolean verbosity flag (to maintain backward
+     * @param configOrVerbosityFlag optional, config object of type {@interface
+     * Html5QrcodeFullConfig} or a boolean verbosity flag (to maintain backward
      * compatibility). If nothing is passed, default values would be used.
-     * If a boolean values is used, it'll be used to set verbosity. Pass a
+     * If a boolean value is used, it'll be used to set verbosity. Pass a
      * config value to configure the Html5Qrcode scanner as per needs.
      * 
      * Use of {@code configOrVerbosityFlag} as a boolean value is being
@@ -768,10 +777,10 @@ export class Html5Qrcode {
 
     /**
      * Construct list of supported formats and returns based on input args.
-     * @param configOrVerbosityFlag optional config object of type {@interface
-     *  Html5QrcodeFullConfig} or a boolean verbosity flag (to maintain backward
+     * @param configOrVerbosityFlag optional, config object of type {@interface
+     * Html5QrcodeFullConfig} or a boolean verbosity flag (to maintain backward
      * compatibility). If nothing is passed, default values would be used.
-     * If a boolean values is used, it'll be used to set verbosity. Pass a
+     * If a boolean value is used, it'll be used to set verbosity. Pass a
      * config value to configure the Html5Qrcode scanner as per needs.
      * 
      * Use of {@code configOrVerbosityFlag} as a boolean value is being

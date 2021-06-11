@@ -301,36 +301,35 @@ Following methods are available in this library (typescript definition)
 ```ts
 /** Camera Device interface. */
 interface CameraDevice {
-    id: string;
-    label: string;
+  id: string;
+  label: string;
 }
 
 /**
  * Code formats supported by this library.
  */
 enum Html5QrcodeSupportedFormats {
-    QR_CODE = 0,
-    AZTEC,
-    CODABAR,
-    CODE_39,
-    CODE_93,
-    CODE_128,
-    DATA_MATRIX,
-    MAXICODE,
-    ITF,
-    EAN_13,
-    EAN_8,
-    PDF_417,
-    RSS_14,
-    RSS_EXPANDED,
-    UPC_A,
-    UPC_E,
-    UPC_EAN_EXTENSION,
+  QR_CODE = 0,
+  AZTEC,
+  CODABAR,
+  CODE_39,
+  CODE_93,
+  CODE_128,
+  DATA_MATRIX,
+  MAXICODE,
+  ITF,
+  EAN_13,
+  EAN_8,
+  PDF_417,
+  RSS_14,
+  RSS_EXPANDED,
+  UPC_A,
+  UPC_E,
+  UPC_EAN_EXTENSION,
 }
 
 /**
- * Interface for configuration to control different aspects of {@class
- *  Html5Qrcode} class instance.
+ * Interface for configuring {@class Html5Qrcode} class instance.
  */
 interface Html5QrcodeConfigs {
   /**
@@ -349,7 +348,7 @@ interface Html5QrcodeFullConfig extends Html5QrcodeConfigs {
 
 interface Html5QrcodeCameraScanConfig {
   /**
-   * Optional, Expected framerate of qr code scanning. example { fps: 2 } means the
+   * Optional, Expected framerate of QR code scanning. example { fps: 2 } means the
    * scanning would be done every 500 ms.
    */
   fps: number | undefined;
@@ -401,7 +400,7 @@ interface Html5QrcodeCameraScanConfig {
  * Interface for controlling different aspects of {@class Html5QrcodeScanner}.
  */
 interface Html5QrcodeScannerConfig
-    extends Html5QrcodeCameraScanConfig, Html5QrcodeConfigs {};
+  extends Html5QrcodeCameraScanConfig, Html5QrcodeConfigs {};
 
 class Html5Qrcode {
   /**
@@ -430,10 +429,10 @@ class Html5Qrcode {
    * QR code or any other supported bar code is found.
    */
   start(
-      cameraIdOrConfig: Html5QrcodeIdentifier,
-      configuration: Html5QrcodeCameraScanConfig | undefined,
-      qrCodeSuccessCallback: QrcodeSuccessCallback | undefined,
-      qrCodeErrorCallback: QrcodeErrorCallback | undefined,
+    cameraIdOrConfig: Html5QrcodeIdentifier,
+    configuration: Html5QrcodeCameraScanConfig | undefined,
+    qrCodeSuccessCallback: QrcodeSuccessCallback | undefined,
+    qrCodeErrorCallback: QrcodeErrorCallback | undefined,
   ): Promise<null> {}ass
 
   /**
@@ -448,51 +447,50 @@ class Html5Qrcode {
    * call stop() if the camera-based scanning was ongoing.
    *
    * @param imageFile a local file with Image content.
-   * @param showImage if true the Image will be rendered on given
-   * element.
+   * @param showImage if true, the Image will be rendered on given element.
    *
    * @returns Promise with decoded QR code string on success.
    */
   scanFile(
-      imageFile: File,
-      /* default=true */ showImage: boolean | undefined): Promise<string> {}
+    imageFile: File,
+    /* default=true */ showImage: boolean | undefined): Promise<string> {}
 
   /**
    * Clears the existing canvas.
    * 
-   * Note: in case of ongoing web cam based scan, it needs to be explicitly
-   * closed before calling this method, else it will throw exception.
+   * Note: in case of ongoing web-cam based scan, it needs to be explicitly
+   * closed before calling this method, else it will throw an exception.
    */
   clear(): void {}  // Returns void
 }
 
 class Html5QrcodeScanner {
-    /**
-     * Creates instance of this class.
-     *
-     * @param elementId Id of the HTML element.
-     * @param config Extra configurations to tune the code scanner.
-     * @param verbose - If true, all logs would be printed to console. 
-     */
-    constructor(
-      elementId: string,
-      config: Html5QrcodeScannerConfig | undefined,
-      verbose: boolean | undefined) {}
+  /**
+   * Creates an instance of this class.
+   *
+   * @param elementId Id of the HTML element.
+   * @param config Extra configurations to tune the code scanner.
+   * @param verbose - If true, all logs would be printed to console. 
+   */
+  constructor(
+    elementId: string,
+    config: Html5QrcodeScannerConfig | undefined,
+    verbose: boolean | undefined) {}
 
-    /**
-     * Renders the User Interface.
-     * 
-     * @param qrCodeSuccessCallback Callback called when an instance of a QR
-     * code or any other supported bar code is found.
-     * @param qrCodeErrorCallback optional callback called in cases where no
-     * instance of QR code or any other supported bar code is found.
-     */
-    render(
-      qrCodeSuccessCallback: QrcodeSuccessCallback,
-      qrCodeErrorCallback: QrcodeErrorCallback | undefined) {}
+  /**
+   * Renders the User Interface.
+   * 
+   * @param qrCodeSuccessCallback Callback called when an instance of a QR
+   * code or any other supported bar code is found.
+   * @param qrCodeErrorCallback optional callback called in cases where no
+   * instance of QR code or any other supported bar code is found.
+   */
+  render(
+    qrCodeSuccessCallback: QrcodeSuccessCallback,
+    qrCodeErrorCallback: QrcodeErrorCallback | undefined) {}
 
-    /** Removes the QR Code scanner. */
-    clear(): Promise<void>  {}
+  /** Removes the QR Code scanner. */
+  clear(): Promise<void>  {}
 }
 ```
 
@@ -528,11 +526,11 @@ Here's an example of a normal and mirrored QR Code
 | ----- | ---- |
 | <img src="./assets/qr-code.png" width="200px"> | <img src="./assets/qr-code-flipped.png" width="200px"><br> |
 
-### Scannig only speciic formats
-By default both camera stream and image files are scanned against all supported 
-code formats.  Both `Html5QrcodeScanner` and `Html5Qrcode` classes can be
-configured to only support a subset of supported formats. Supported formats
-belong to
+### Scanning only specific formats
+By default, both camera stream and image files are scanned against all the
+supported code formats.  Both `Html5QrcodeScanner` and `Html5Qrcode` classes can
+ be configured to only support a subset of supported formats. Supported formats
+are defined in
 [enum Html5QrcodeSupportedFormats](https://github.com/mebjas/html5-qrcode/blob/master/src/core.ts#L14).
 
 ```ts
@@ -558,7 +556,7 @@ enum Html5QrcodeSupportedFormats {
 ```
 
 I recommend using this only if you need to explicitly omit support for certain
-formats or want to reduce amount of scans done per second for performance
+formats or want to reduce the number of scans done per second for performance
 reasons.
 
 #### Scanning only QR code with `Html5Qrcode`
@@ -586,7 +584,7 @@ const formatsToSupport = [
   Html5QrcodeSupportedFormats.UPC_EAN_EXTENSION,
 ];
 const html5QrcodeScanner = new Html5QrcodeScanner(
-	"reader",
+  "reader",
   { fps: 10, qrbox: 250, formatsToSupport: formatsToSupport },
   /* verbose= */ false);
 html5QrcodeScanner.render(onScanSuccess);
@@ -602,7 +600,7 @@ html5QrcodeScanner.render(onScanSuccess);
     - Please add tests for new behaviors sent in PR.
 5. Send a pull request
     - Include code changes only to `./src`. **Do not change `./dist` manually.**
-    - In the PR add a comment like
+    - In the pull request add a comment like
       ```
       @all-contributors please add @mebjas for this new feature or tests
       ```

@@ -76,12 +76,12 @@ export class Html5QrcodeScanner {
     private sectionSwapAllowed: boolean;
 
     // Initally null fields.
-    private html5Qrcode?: Html5Qrcode;
-    private qrCodeSuccessCallback?: QrcodeSuccessCallback;
-    private qrCodeErrorCallback?: QrcodeErrorCallback;
+    private html5Qrcode: Html5Qrcode | undefined;
+    private qrCodeSuccessCallback: QrcodeSuccessCallback | undefined;
+    private qrCodeErrorCallback: QrcodeErrorCallback | undefined;
     private lastMatchFound: string | undefined;
-    private cameraScanImage?: HTMLImageElement;
-    private fileScanImage?: HTMLImageElement;
+    private cameraScanImage: HTMLImageElement | undefined;
+    private fileScanImage: HTMLImageElement | undefined;
     //#endregion
 
     /**
@@ -112,7 +112,7 @@ export class Html5QrcodeScanner {
      * 
      * @param qrCodeSuccessCallback Callback called when an instance of a QR
      * code or any other supported bar code is found.
-     * @param qrCodeErrorCallback optional callback called in cases where no
+     * @param qrCodeErrorCallback optional, callback called in cases where no
      * instance of QR code or any other supported bar code is found.
      */
     public render(
@@ -129,7 +129,7 @@ export class Html5QrcodeScanner {
                 if (this.lastMatchFound === decodedText) {
                     return;
                 }
-    
+
                 this.lastMatchFound = decodedText;
                 this.setHeaderMessage(
                     Html5QrcodeScannerStrings.lastMatch(decodedText),
