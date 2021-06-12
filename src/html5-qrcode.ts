@@ -30,6 +30,25 @@ import { Html5QrcodeStrings } from "./strings";
 import { VideoConstraintsUtil } from "./utils";
 import { Html5QrcodeShim } from "./code-decoder";
 
+type Html5QrcodeIdentifier = string | MediaTrackConstraints;
+
+class Constants extends Html5QrcodeConstants {
+    //#region static constants
+    static DEFAULT_WIDTH = 300;
+    static DEFAULT_WIDTH_OFFSET = 2;
+    static FILE_SCAN_MIN_HEIGHT = 300;
+    static MIN_QR_BOX_SIZE = 50;
+    static SHADED_LEFT = 1;
+    static SHADED_RIGHT = 2;
+    static SHADED_TOP = 3;
+    static SHADED_BOTTOM = 4;
+    static SHADED_REGION_CLASSNAME = "qr-shaded-region";
+    static VERBOSE = false;
+    static BORDER_SHADER_DEFAULT_COLOR = "#ffffff";
+    static BORDER_SHADER_MATCH_COLOR = "rgb(90, 193, 56)";
+    //#endregion
+}
+
 /**
  * Interface for configuring {@class Html5Qrcode} class instance.
  */
@@ -179,25 +198,6 @@ interface QrcodeRegionBounds {
     y: number,
     width: number,
     height: number
-}
-
-type Html5QrcodeIdentifier = string | MediaTrackConstraints;
-
-class Constants extends Html5QrcodeConstants {
-    //#region static constants
-    static DEFAULT_WIDTH = 300;
-    static DEFAULT_WIDTH_OFFSET = 2;
-    static FILE_SCAN_MIN_HEIGHT = 300;
-    static MIN_QR_BOX_SIZE = 50;
-    static SHADED_LEFT = 1;
-    static SHADED_RIGHT = 2;
-    static SHADED_TOP = 3;
-    static SHADED_BOTTOM = 4;
-    static SHADED_REGION_CLASSNAME = "qr-shaded-region";
-    static VERBOSE = false;
-    static BORDER_SHADER_DEFAULT_COLOR = "#ffffff";
-    static BORDER_SHADER_MATCH_COLOR = "rgb(90, 193, 56)";
-    //#endregion
 }
 
 export class Html5Qrcode {
@@ -825,14 +825,14 @@ export class Html5Qrcode {
                 + "or an array.";
         }
 
-        if (configOrVerbosityFlag.formatsToSupport.length == 0) {
+        if (configOrVerbosityFlag.formatsToSupport.length === 0) {
             throw "Atleast 1 formatsToSupport is needed.";
         }
 
         const supportedFormats: Array<Html5QrcodeSupportedFormats> = [];
-        for (let i = 0; i < configOrVerbosityFlag.formatsToSupport!.length; ++i) {
+        for (let i = 0; i < configOrVerbosityFlag.formatsToSupport.length; ++i) {
             let format:Html5QrcodeSupportedFormats
-                = configOrVerbosityFlag.formatsToSupport![i];
+                = configOrVerbosityFlag.formatsToSupport[i];
             if (IsValidHtml5QrcodeSupportedFormats(format)) {
                 supportedFormats.push(format);
             } else {
