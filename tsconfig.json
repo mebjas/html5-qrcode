@@ -20,6 +20,6 @@
         "noImplicitAny": true
     },
     "files": [
-        "src/index.ts",
-    ],
+        "src/index.ts"
+    ]
 }
