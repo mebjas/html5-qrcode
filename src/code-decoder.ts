@@ -11,7 +11,8 @@
 import {
     QrcodeResult,
     Html5QrcodeSupportedFormats,
-    QrcodeDecoder
+    QrcodeDecoder,
+    Logger
 } from "./core";
 
 import { ZXingHtml5QrcodeDecoder } from "./zxing-html5-qrcode-decoder"
@@ -32,9 +33,11 @@ export class Html5QrcodeShim implements QrcodeDecoder {
 
     public constructor(
         requestedFormats: Array<Html5QrcodeSupportedFormats>,
-        verbose: boolean) {
+        verbose: boolean,
+        logger: Logger) {
         this.verbose = verbose;
-        this.zxingDecorderDelegate = new ZXingHtml5QrcodeDecoder(requestedFormats, verbose);
+        this.zxingDecorderDelegate = new ZXingHtml5QrcodeDecoder(
+            requestedFormats, verbose, logger);
     }
 
     decode(canvas: HTMLCanvasElement): QrcodeResult {

@@ -13,7 +13,8 @@
 import {
     QrcodeResult,
     Html5QrcodeSupportedFormats,
-    QrcodeDecoder
+    QrcodeDecoder,
+    Logger
 } from "./core";
 
 // Ambient tag to refer to ZXing library.
@@ -57,14 +58,17 @@ export class ZXingHtml5QrcodeDecoder implements QrcodeDecoder {
 
     private hints: Map<any, any>;
     private verbose: boolean;
+    private logger: Logger;
 
     public constructor(
         requestedFormats: Array<Html5QrcodeSupportedFormats>,
-        verbose: boolean) {
+        verbose: boolean,
+        logger: Logger) {
         if (!ZXing) {
             throw 'Use html5qrcode.min.js without edit, ZXing not found.';
         }
         this.verbose = verbose;
+        this.logger = logger;
 
         const formats = this.createZXingFormats(requestedFormats);
         const hints = new Map();
@@ -103,7 +107,7 @@ export class ZXingHtml5QrcodeDecoder implements QrcodeDecoder {
                         ZXingHtml5QrcodeDecoder.formatMap.get(
                             requestedFormat));
                 } else {
-                    console.error(`${requestedFormat} is not supported by`
+                    this.logger.logError(`${requestedFormat} is not supported by`
                         + "ZXingHtml5QrcodeShim");
                 }
             }

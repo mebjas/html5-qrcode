@@ -259,7 +259,8 @@ export class Html5Qrcode {
         
         this.logger = new BaseLoggger(this.verbose);
         this.qrcode = new Html5QrcodeShim(
-            this.getSupportedFormats(configOrVerbosityFlag), this.verbose);
+            this.getSupportedFormats(
+                configOrVerbosityFlag), this.verbose, this.logger);
 
         this.foreverScanTimeout;
         this.localMediaStream;
@@ -1068,7 +1069,7 @@ export class Html5Qrcode {
                     + ` if passed as an object, found ${keys.length} keys`;
             }
 
-            const key = Object.keys(cameraIdOrConfig)[0];
+            const key:string = Object.keys(cameraIdOrConfig)[0];
             if (key != facingModeKey && key != deviceIdKey) {
                 throw `Only '${facingModeKey}' and '${deviceIdKey}' `
                     + " are supported for 'cameraIdOrConfig'";
@@ -1089,10 +1090,10 @@ export class Html5Qrcode {
                     }
                 } else if (typeof facingMode == "object") {
                     if (exactKey in facingMode) {
-                        if (isValidFacingModeValue(facingMode[exactKey])) {
+                        if (isValidFacingModeValue(facingMode[`${exactKey}`])) {
                                 return {
                                     facingMode: {
-                                        exact: facingMode[exactKey]
+                                        exact: facingMode[`${exactKey}`]
                                     }
                                 };
                         }
@@ -1110,13 +1111,13 @@ export class Html5Qrcode {
                  * - { deviceId: { exact: "a76afe74e95e3.....38627b3bde" }
                  * - { deviceId: "a76afe74e95e3....065c9cd89438627b3bde" }
                  */
-                const deviceId: any = cameraIdOrConfig[key];
+                const deviceId: any = cameraIdOrConfig.deviceId;
                 if (typeof deviceId == "string") {
                     return { deviceId: deviceId };
                 } else if (typeof deviceId == "object") {
                     if (exactKey in deviceId) {
                         return {
-                            deviceId : { exact: deviceId[exactKey] }
+                            deviceId : { exact: deviceId[`${exactKey}`] }
                         };
                     } else {
                         throw "'deviceId' should be string or object with"
