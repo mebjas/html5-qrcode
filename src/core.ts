@@ -167,7 +167,7 @@ export interface QrcodeDecoder {
 export interface Logger {
     log(message: string): void;
     warn(message: string): void;
-    logError(message: string, isExperimental: boolean): void;
+    logError(message: string, isExperimental?: boolean): void;
     logErrors(errors: Array<any>): void;
 }
 
@@ -187,18 +187,22 @@ export class BaseLoggger implements Logger {
 
     public log(message: string): void {
         if (this.verbose) {
+            // eslint-disable-next-line no-console
             console.log(message);
         }
     }
 
     public warn(message: string): void {
         if (this.verbose) {
+            // eslint-disable-next-line no-console
             console.warn(message);
         }
     }
 
-    public logError(message: string, isExperimental: boolean): void {
+    public logError(message: string, isExperimental?: boolean)
+        : void {
         if (this.verbose || isExperimental === true) {
+            // eslint-disable-next-line no-console
             console.error(message);
         }
     }
@@ -208,6 +212,7 @@ export class BaseLoggger implements Logger {
             throw "Logger#logError called without arguments";
         }
         if (this.verbose) {
+            // eslint-disable-next-line no-console
             console.error(errors);
         }
     }

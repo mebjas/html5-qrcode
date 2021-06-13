@@ -67,6 +67,7 @@ export class Html5QrcodeShim implements QrcodeDecoder {
             sum += executionTime;
         }
         let mean = sum / this.executionResults.length;
+        // eslint-disable-next-line no-console
         console.log(`${mean} ms for ${this.executionResults.length} last runs.`);
         this.executions = 0;
         this.executionResults = [];

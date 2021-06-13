@@ -97,13 +97,13 @@ export class ZXingHtml5QrcodeDecoder implements QrcodeDecoder {
         requestedFormats: Array<Html5QrcodeSupportedFormats>):
         Array<any> {
             let zxingFormats = [];
-            for (let i = 0; i < requestedFormats.length; ++i) {
-                if (ZXingHtml5QrcodeDecoder.formatMap.has(requestedFormats[i])) {
+            for (const requestedFormat of requestedFormats) {
+                if (ZXingHtml5QrcodeDecoder.formatMap.has(requestedFormat)) {
                     zxingFormats.push(
                         ZXingHtml5QrcodeDecoder.formatMap.get(
-                            requestedFormats[i]));
+                            requestedFormat));
                 } else {
-                    console.error(`${requestedFormats[i]} is not supported by`
+                    console.error(`${requestedFormat} is not supported by`
                         + "ZXingHtml5QrcodeShim");
                 }
             }

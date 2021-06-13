@@ -1,3 +1,4 @@
+#!/bin/bash
 ## Test script
 
 echo 'Initiating test sequence'
