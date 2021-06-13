@@ -1,14 +1,14 @@
 body {
-	margin: 0px;
-	padding: 0px;
+    margin: 0px; /* no unit */
+    padding: 0px; /* no unit */
 }
 
 .header {
-	padding: 10px;
-	background: black;
-	color: white;
+    padding: 10px;
+    background: black;
+    color: white;
 }
 
 .section {
-	padding: auto;
+    padding: auto;
 }

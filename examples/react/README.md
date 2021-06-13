@@ -5,7 +5,6 @@
 ## How to build a `React Plugin / Component` using `html5-qrcode`
 We shall be using React's recommendation on [Integrating with Other Libraries](https://reactjs.org/docs/integrating-with-other-libraries.html) to create a plugin for `React`.
 
-
 ### Download the latest library
 You can download this from [Github release page](https://github.com/mebjas/html5-qrcode/releases) or [npm](https://www.npmjs.com/package/html5-qrcode). And include this in `index.html`.
 

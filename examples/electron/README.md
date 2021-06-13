@@ -11,12 +11,12 @@ You can download this from [Github release page](https://github.com/mebjas/html5
 <script src="html5-qrcode.min.js"></script>
 ```
 
-### And include the `html` placeholder:
+### And include the `html` placeholder
 ```html
 <div style="width: 600px" id="reader"></div>
 ```
 
-### And `javascript` initialization:
+### And `javascript` initialization
 ```js
 function onScanSuccess(qrCodeMessage) {
     // handle on success condition with the decoded message

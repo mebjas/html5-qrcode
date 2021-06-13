@@ -179,7 +179,7 @@ class InternalHtml5QrcodeConfig implements InternalHtml5QrcodeConfig {
     }
 
     public isShadedBoxEnabled(): boolean {
-        return this.qrbox != undefined;
+        return (typeof this.qrbox !== "undefined");
     }
 
     /**
