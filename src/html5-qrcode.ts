@@ -22,7 +22,7 @@ import {
     Html5QrcodeErrorFactory,
     Html5QrcodeSupportedFormats,
     QrcodeDecoder,
-    IsValidHtml5QrcodeSupportedFormats,
+    isValidHtml5QrcodeSupportedFormats,
     Html5QrcodeConstants
 } from "./core";
 
@@ -299,7 +299,7 @@ export class Html5Qrcode {
 
         if (!qrCodeSuccessCallback
             || typeof qrCodeSuccessCallback != "function") {
-            throw "qrCodeSuccessCallback is required and should be a function."
+            throw "qrCodeSuccessCallback is required and should be a function.";
         }
 
         if (!qrCodeErrorCallback) {
@@ -364,7 +364,7 @@ export class Html5Qrcode {
                     {
                         audio: false,
                         video: videoConstraints
-                    }).then(stream => {
+                    }).then((stream) => {
                         $this.onMediaStreamReceived(
                             stream,
                             internalConfig,
@@ -372,13 +372,13 @@ export class Html5Qrcode {
                             width,
                             qrCodeSuccessCallback,
                             qrCodeErrorCallback!)
-                            .then(_ => {
+                            .then((_) => {
                                 $this.isScanning = true;
                                 resolve(/* Void */ null);
                             })
                             .catch(reject);
                     })
-                    .catch(error => {
+                    .catch((error) => {
                         reject(Html5QrcodeStrings.errorGettingUserMedia(error));
                     });
             } else if (navigator.getUserMedia) {
@@ -390,7 +390,7 @@ export class Html5Qrcode {
                     video: videoConstraints
                 };
                 navigator.getUserMedia(getCameraConfig,
-                    stream => {
+                    (stream) => {
                         $this.onMediaStreamReceived(
                             stream,
                             internalConfig,
@@ -403,13 +403,13 @@ export class Html5Qrcode {
                                 resolve(/* Void */ null);
 
                             })
-                            .catch(error => {
+                            .catch((error) => {
                                 reject(
                                     Html5QrcodeStrings.errorGettingUserMedia(
                                         error));
 
                             });
-                    }, error => {
+                    }, (error) => {
                         reject(Html5QrcodeStrings.errorGettingUserMedia(error));
                     });
             } else {
@@ -431,6 +431,19 @@ export class Html5Qrcode {
             clearTimeout(this.foreverScanTimeout);
         }
 
+        // Removes the shaded region if exists.
+        const removeQrRegion = () => {
+            if (!this.element) {
+                return;
+            }
+            while (this.element.getElementsByClassName(
+                Constants.SHADED_REGION_CLASSNAME).length) {
+                const shadedChild = this.element.getElementsByClassName(
+                    Constants.SHADED_REGION_CLASSNAME)[0];
+                this.element.removeChild(shadedChild);
+            }
+        }
+
         return new Promise((resolve, _) => {
             const onAllTracksClosed = () => {
                 this.localMediaStream = undefined;
@@ -448,7 +461,7 @@ export class Html5Qrcode {
                     this.context = undefined;
                 }
                 resolve();
-            }
+            };
 
             if (!this.localMediaStream) {
                 onAllTracksClosed();
@@ -458,20 +471,7 @@ export class Html5Qrcode {
                 = this.localMediaStream!.getVideoTracks().length;
             var tracksClosed = 0;
 
-            // Removes the shaded region if exists.
-            const removeQrRegion = () => {
-                if (!this.element) {
-                    return;
-                }
-                while (this.element.getElementsByClassName(
-                    Constants.SHADED_REGION_CLASSNAME).length) {
-                    const shadedChild = this.element.getElementsByClassName(
-                        Constants.SHADED_REGION_CLASSNAME)[0];
-                    this.element.removeChild(shadedChild);
-                }
-            }
-
-            this.localMediaStream!.getVideoTracks().forEach(videoTrack => {
+            this.localMediaStream!.getVideoTracks().forEach((videoTrack) => {
                 this.localMediaStream!.removeTrack(videoTrack);
                 videoTrack.stop();
                 ++tracksClosed;
@@ -536,10 +536,10 @@ export class Html5Qrcode {
                     imageWidth, imageHeight, containerWidth, containerHeight);
                 if (showImage) {
                     const visibleCanvas = this.createCanvasElement(
-                        containerWidth, containerHeight, 'qr-canvas-visible');
+                        containerWidth, containerHeight, "qr-canvas-visible");
                     visibleCanvas.style.display = "inline-block";
                     element.appendChild(visibleCanvas);
-                    const context = visibleCanvas.getContext('2d');
+                    const context = visibleCanvas.getContext("2d");
                     if (!context) {
                         throw "Unable to get 2d context from canvas";
                     }
@@ -562,7 +562,7 @@ export class Html5Qrcode {
                 const hiddenCanvas = this.createCanvasElement(
                     config.width, config.height);
                 element.appendChild(hiddenCanvas);
-                const context = hiddenCanvas.getContext('2d');
+                const context = hiddenCanvas.getContext("2d");
                 if (!context) {
                     throw "Unable to get 2d context from canvas";
                 }
@@ -649,7 +649,7 @@ export class Html5Qrcode {
                 + " QR code scanning using camera is in running state.";
         }
 
-        if (this.localMediaStream.getVideoTracks().length == 0) {
+        if (this.localMediaStream.getVideoTracks().length === 0) {
             throw "No video tracks found";
         }
 
@@ -714,7 +714,7 @@ export class Html5Qrcode {
         return new Promise((resolve, reject) => {
             navigator.mediaDevices.getUserMedia(
                 { audio: false, video: true })
-                .then(stream => {
+                .then((stream) => {
                     // hacky approach to close any active stream if they are
                     // active.
                     const closeActiveStreams = (stream: MediaStream) => {
@@ -727,10 +727,10 @@ export class Html5Qrcode {
                     }
 
                     navigator.mediaDevices.enumerateDevices()
-                        .then(devices => {
+                        .then((devices) => {
                             const results = [];
                             for (const device of devices) {
-                                if (device.kind == "videoinput") {
+                                if (device.kind === "videoinput") {
                                     results.push({
                                         id: device.deviceId,
                                         label: device.label
@@ -740,13 +740,13 @@ export class Html5Qrcode {
                             closeActiveStreams(stream);
                             resolve(results);
                         })
-                        .catch(err => {
+                        .catch((err) => {
                             reject(`${err.name} : ${err.message}`);
                         });
                 })
-                .catch(err => {
+                .catch((err) => {
                     reject(`${err.name} : ${err.message}`);
-                })
+                });
         });
     }
 
@@ -755,7 +755,7 @@ export class Html5Qrcode {
             const callback = (sourceInfos: Array<any>) => {
                 const results = [];
                 for (const sourceInfo of sourceInfos) {
-                    if (sourceInfo.kind === 'video') {
+                    if (sourceInfo.kind === "video") {
                         results.push({
                             id: sourceInfo.id,
                             label: sourceInfo.label
@@ -829,7 +829,7 @@ export class Html5Qrcode {
 
         const supportedFormats: Array<Html5QrcodeSupportedFormats> = [];
         for (const format of configOrVerbosityFlag.formatsToSupport) {
-            if (IsValidHtml5QrcodeSupportedFormats(format)) {
+            if (isValidHtml5QrcodeSupportedFormats(format)) {
                 supportedFormats.push(format);
             } else {
                 this.logger.warn(
@@ -837,7 +837,7 @@ export class Html5Qrcode {
             }
         }
 
-        if (supportedFormats.length == 0) {
+        if (supportedFormats.length === 0) {
             throw "None of formatsToSupport match supported values.";
         }
         return supportedFormats;
@@ -876,7 +876,7 @@ export class Html5Qrcode {
         const canvasElement = this.createCanvasElement(
             qrRegion.width, qrRegion.height);
         const context: CanvasRenderingContext2D
-             = canvasElement.getContext('2d')!;
+             = canvasElement.getContext("2d")!;
         context.canvas.width = qrRegion.width;
         context.canvas.height = qrRegion.height;
  
@@ -1028,7 +1028,7 @@ export class Html5Qrcode {
                 }
                 const track = mediaStream.getVideoTracks()[0];
                 track.applyConstraints(constraints)
-                    .then(_ => setupVideo())
+                    .then((_) => setupVideo())
                     .catch(error => {
                         $this.logger.logErrors(
                             ["[Html5Qrcode] Constriants could not "
@@ -1064,18 +1064,18 @@ export class Html5Qrcode {
             };
 
             const keys = Object.keys(cameraIdOrConfig);
-            if (keys.length != 1) {
+            if (keys.length !== 1) {
                 throw "'cameraIdOrConfig' object should have exactly 1 key,"
                     + ` if passed as an object, found ${keys.length} keys`;
             }
 
             const key:string = Object.keys(cameraIdOrConfig)[0];
-            if (key != facingModeKey && key != deviceIdKey) {
+            if (key !== facingModeKey && key !== deviceIdKey) {
                 throw `Only '${facingModeKey}' and '${deviceIdKey}' `
                     + " are supported for 'cameraIdOrConfig'";
             }
 
-            if (key == facingModeKey) {
+            if (key === facingModeKey) {
                 /**
                  * Supported scenarios:
                  * - { facingMode: "user" }
@@ -1181,7 +1181,7 @@ export class Html5Qrcode {
 
     private clearElement(): void {
         if (this.isScanning) {
-            throw 'Cannot clear while scan is ongoing, close it first.';
+            throw "Cannot clear while scan is ongoing, close it first.";
         }
         const element = document.getElementById(this.elementId);
         if (element) {
@@ -1190,7 +1190,7 @@ export class Html5Qrcode {
     }
 
     private createVideoElement(width: number): HTMLVideoElement {
-        const videoElement = document.createElement('video');
+        const videoElement = document.createElement("video");
         videoElement.style.width = `${width}px`;
         videoElement.muted = true;
         videoElement.setAttribute("muted", "true");

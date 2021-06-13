@@ -306,7 +306,7 @@ export class Html5QrcodeScanner {
         const scpCameraScanRegion = document.createElement("div");
         scpCameraScanRegion.id = this.getDashboardSectionCameraScanRegionId();
         scpCameraScanRegion.style.display
-            = this.currentScanType == Html5QrcodeScanType.SCAN_TYPE_CAMERA
+            = this.currentScanType === Html5QrcodeScanType.SCAN_TYPE_CAMERA
                 ? "block" : "none";
         sectionControlPanel.appendChild(scpCameraScanRegion);
 
@@ -325,10 +325,10 @@ export class Html5QrcodeScanner {
             $this.setHeaderMessage(
                 Html5QrcodeScannerStrings.cameraPermissionRequesting());
 
-            Html5Qrcode.getCameras().then(cameras => {
+            Html5Qrcode.getCameras().then((cameras) => {
                 $this.setStatus(Html5QrcodeScannerStrings.idleStatus());
                 $this.resetHeaderMessage();
-                if (!cameras || cameras.length == 0) {
+                if (!cameras || cameras.length === 0) {
                     $this.setStatus(
                         Html5QrcodeScannerStrings.noCameraFoundErrorStatus(),
                         Html5QrcodeScannerStatus.STATUS_WARNING);
@@ -360,12 +360,12 @@ export class Html5QrcodeScanner {
         fileScanInput.type = "file";
         fileScanInput.style.width = "200px";
         fileScanInput.disabled
-            = this.currentScanType == Html5QrcodeScanType.SCAN_TYPE_CAMERA;
+            = this.currentScanType === Html5QrcodeScanType.SCAN_TYPE_CAMERA;
         const fileScanLabel = document.createElement("span");
         fileScanLabel.innerHTML = "&nbsp; Select Image";
         fileBasedScanRegion.appendChild(fileScanInput);
         fileBasedScanRegion.appendChild(fileScanLabel);
-        fileScanInput.addEventListener('change', (e: any) => {
+        fileScanInput.addEventListener("change", (e: any) => {
             if (!$this.html5Qrcode) {
                 throw "html5Qrcode not defined";
             }
@@ -373,10 +373,10 @@ export class Html5QrcodeScanner {
             if (e == null || e.target == null) {
                 return;
             }
-            if ($this.currentScanType != Html5QrcodeScanType.SCAN_TYPE_FILE) {
+            if ($this.currentScanType !== Html5QrcodeScanType.SCAN_TYPE_FILE) {
                 return;
             }
-            if (e.target.files.length == 0) {
+            if (e.target.files.length === 0) {
                 return;
             }
             const file = e.target.files[0];
@@ -387,7 +387,7 @@ export class Html5QrcodeScanner {
                         decodedText,
                         Html5QrcodeResultFactory.createFrom(decodedText));
                 })
-                .catch(error => {
+                .catch((error) => {
                     $this.setStatus(
                         Html5QrcodeScannerStrings.errorStatus(),
                         Html5QrcodeScannerStatus.STATUS_WARNING);
@@ -415,7 +415,7 @@ export class Html5QrcodeScanner {
         for (const camera of cameras) {
             const value = camera.id;
             const name = camera.label == null ? value : camera.label;
-            const option = document.createElement('option');
+            const option = document.createElement("option");
             option.value = value;
             option.innerHTML = name;
             cameraSelectionSelect.appendChild(option);
@@ -438,7 +438,7 @@ export class Html5QrcodeScanner {
 
         scpCameraScanRegion.appendChild(cameraActionContainer);
 
-        cameraActionStartButton.addEventListener('click', _ => {
+        cameraActionStartButton.addEventListener("click", (_) => {
             cameraSelectionSelect.disabled = true;
             cameraActionStartButton.disabled = true;
             $this.showHideScanTypeSwapLink(false);
@@ -448,7 +448,7 @@ export class Html5QrcodeScanner {
                 toHtml5QrcodeCameraScanConfig($this.config),
                 $this.qrCodeSuccessCallback!,
                 $this.qrCodeErrorCallback!)
-                .then(_ => {
+                .then((_) => {
                     cameraActionStopButton.disabled = false;
                     cameraActionStopButton.style.display = "inline-block";
                     cameraActionStartButton.style.display = "none";
@@ -464,7 +464,7 @@ export class Html5QrcodeScanner {
                 });
         });
 
-        cameraActionStopButton.addEventListener('click', _ => {
+        cameraActionStopButton.addEventListener("click", (_) => {
             if (!$this.html5Qrcode) {
                 throw "html5Qrcode not defined";
             }
@@ -506,7 +506,7 @@ export class Html5QrcodeScanner {
             = this.currentScanType == Html5QrcodeScanType.SCAN_TYPE_CAMERA
                 ? TEXT_IF_CAMERA_SCAN_SELECTED : TEXT_IF_FILE_SCAN_SELECTED;
         swithToFileBasedLink.href = "#scan-using-file";
-        swithToFileBasedLink.addEventListener('click', function () {
+        swithToFileBasedLink.addEventListener("click", function () {
             if (!$this.sectionSwapAllowed) {
                 if ($this.verbose) {
                     $this.logger.logError(
@@ -522,7 +522,7 @@ export class Html5QrcodeScanner {
 
             $this.sectionSwapAllowed = false;
             
-            if ($this.currentScanType == Html5QrcodeScanType.SCAN_TYPE_CAMERA) {
+            if ($this.currentScanType === Html5QrcodeScanType.SCAN_TYPE_CAMERA) {
                 // swap to file
                 $this.clearScanRegion();
                 $this.getFileScanInput().disabled = false;
@@ -629,7 +629,7 @@ export class Html5QrcodeScanner {
         }
 
         this.cameraScanImage = new Image;
-        this.cameraScanImage.onload = _ => {
+        this.cameraScanImage.onload = (_) => {
             qrCodeScanRegion.innerHTML = "<br>";
             qrCodeScanRegion.appendChild($this.cameraScanImage!);
         }
@@ -650,7 +650,7 @@ export class Html5QrcodeScanner {
         }
 
         this.fileScanImage = new Image;
-        this.fileScanImage.onload = _ => {
+        this.fileScanImage.onload = (_) => {
             qrCodeScanRegion.innerHTML = "<br>";
             qrCodeScanRegion.appendChild($this.fileScanImage!);
         }

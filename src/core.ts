@@ -32,7 +32,7 @@ export enum Html5QrcodeSupportedFormats {
 }
 
 /** Returns true if the passed object instance is a valid format. */
-export function IsValidHtml5QrcodeSupportedFormats(format: any): boolean {
+export function isValidHtml5QrcodeSupportedFormats(format: any): boolean {
     return Object.values(Html5QrcodeSupportedFormats).includes(format);
 }
 
