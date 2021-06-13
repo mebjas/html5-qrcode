@@ -296,54 +296,66 @@ Check these articles on how to use this library:
 _Figure: Screenshot from Google Chrome running on Macbook Pro_
 
 ## Documentation
-Following methods are available in this library
+Following methods are available in this library (typescript definition)
 
-```js
-class Html5Qrcode {
+```ts
+/** Camera Device interface. */
+interface CameraDevice {
+  id: string;
+  label: string;
+}
+
+/**
+ * Code formats supported by this library.
+ */
+enum Html5QrcodeSupportedFormats {
+  QR_CODE = 0,
+  AZTEC,
+  CODABAR,
+  CODE_39,
+  CODE_93,
+  CODE_128,
+  DATA_MATRIX,
+  MAXICODE,
+  ITF,
+  EAN_13,
+  EAN_8,
+  PDF_417,
+  RSS_14,
+  RSS_EXPANDED,
+  UPC_A,
+  UPC_E,
+  UPC_EAN_EXTENSION,
+}
+
+/**
+ * Interface for configuring {@class Html5Qrcode} class instance.
+ */
+interface Html5QrcodeConfigs {
   /**
-   * Returns a Promise with list of all cameras supported by the device.
-   * 
-   * The returned object is a list of result object of type:
-   * [{
-   *      id: String;     // Id of the camera.
-   *      label: String;  // Human readable name of the camera.
-   * }]
+   * Array of formats to support of type {@type Html5QrcodeSupportedFormats}.
    */
-  static getCameras() // Returns a Promise
+  formatsToSupport: Array<Html5QrcodeSupportedFormats> | undefined;
+}
 
+/** Configuration for creating {@class Html5Qrcode}. */
+interface Html5QrcodeFullConfig extends Html5QrcodeConfigs {
   /**
-   * Initialize QR Code scanner.
-   * 
-   * @param {String} elementId - Id of the HTML element.
-   * @param {Boolean} verbose - Optional argument, if true, all logs
-   *                  would be printed to console. 
+   * If true, all logs would be printed to console. False by default.
    */
-  constructor(elementId, verbose /* Optional */) {}
+  verbose: boolean | undefined;
+}
+
+interface Html5QrcodeCameraScanConfig {
+  /**
+   * Optional, Expected framerate of QR code scanning. example { fps: 2 } means the
+   * scanning would be done every 500 ms.
+   */
+  fps: number | undefined;
 
   /**
-   * Start scanning QR Code for given camera.
-   * 
-   * @param {String or Object} identifier of the camera, it can either be the
-   *  cameraId retrieved from {@code Html5Qrcode#getCameras()} method or
-   *  object with facingMode constraint.
-   *  Example values:
-   *      - "a76afe74e951cde2d3e29aa73065c9cd89438627b3bde"
-   *          ^ This is 'deviceId' from camera retrieved from 
-   *          {@code Html5Qrcode#getCameras()}
-   *      - { facingMode: "user" }
-   *      - { facingMode: "environment" }
-   *      - { facingMode: { exact: "environment" } }
-   *      - { facingMode: { exact: "user" } }
-   *      - { deviceId: { exact: "a76afe74e95e3....73065c9cd89438627b3bde" }
-   *      - { deviceId: "a76afe74e95e3....73065c9cd89438627b3bde" }
-   *  Reference: https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia#Syntax
-   * @param {Object} config extra configurations to tune QR code scanner.
-   *  Supported Fields:
-   *      - fps: expected framerate of qr code scanning. example { fps: 2 }
-   *          means the scanning would be done every 500 ms.
-   *      - qrbox: width of QR scanning box, this should be smaller than
-   *          the width and height of the box. This would make the scanner
-   *          look like this:
+   * Optional, width of QR scanning box, this should be smaller than the width
+   * and height of the box. This would make the scanner look like this:
    *          ----------------------
    *          |********************|
    *          |******,,,,,,,,,*****|      <--- shaded region
@@ -353,112 +365,132 @@ class Html5Qrcode {
    *          |********************|
    *          |********************|
    *          ----------------------
-   *      - aspectRatio: Optional, desired aspect ratio for the video feed.
-   *          Ideal aspect ratios are 4:3 or 16:9. Passing very wrong aspect
-   *          ratio could lead to video feed not showing up.
-   *      - disableFlip: Optional, if {@code true} flipped QR Code won't be
-   *          scanned. Only use this if you are sure the camera cannot give
-   *          mirrored feed if you are facing performance constraints.
-   * @param {Function} qrCodeSuccessCallback callback on QR Code found.
-   *  Example:
-   *      function(qrCodeMessage) {}
-   * @param {Function} qrCodeErrorCallback callback on QR Code parse error.
-   *  Example:
-   *      function(errorMessage) {}
-   * 
-   * @returns Promise for starting the scan. The Promise can fail if the user
-   * doesn't grant permission or some API is not supported by the browser.
    */
-  start(cameraId,
-      configuration,
-      qrCodeSuccessCallback,
-      qrCodeErrorCallback) {}  // Returns a Promise
+  qrbox: number | undefined;
+
+  /**
+   * Optional, Desired aspect ratio for the video feed. Ideal aspect ratios
+   * are 4:3 or 16:9. Passing very wrong aspect ratio could lead to video feed
+   * not showing up.
+   */
+  aspectRatio: number | undefined;
+
+  /**
+   * Optional, if {@code true} flipped QR Code won't be scanned. Only use this
+   * if you are sure the camera cannot give mirrored feed if you are facing
+   * performance constraints.
+   */
+  disableFlip: boolean | undefined;
+
+  /**
+   * Optional, @beta(this config is not well supported yet).
+   *
+   * Important: When passed this will override other parameters like
+   * 'cameraIdOrConfig' or configurations like 'aspectRatio'.
+   * 'videoConstraints' should be of type {@code MediaTrackConstraints} as
+   * defined in
+   * https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints
+   * and is used to specify a variety of video or camera controls like:
+   * aspectRatio, facingMode, frameRate, etc.
+   */
+  videoConstraints: MediaTrackConstraints | undefined;
+}
+
+/**
+ * Interface for controlling different aspects of {@class Html5QrcodeScanner}.
+ */
+interface Html5QrcodeScannerConfig
+  extends Html5QrcodeCameraScanConfig, Html5QrcodeConfigs {};
+
+class Html5Qrcode {
+  /**
+   * Returns a Promise with a list of all cameras supported by the device.
+   */
+  static getCameras(): Array<CameraDevice> // Returns a Promise
+
+  /**
+   * Initialize QR Code scanner.
+   * 
+   * @param elementId - Id of the HTML element.
+   * @param verbose - optional configuration object
+   */
+  constructor(elementId: string, config:  Html5QrcodeFullConfig | undefined) {}
+
+  /**
+   * Start scanning QR codes or barcodes for a given camera.
+   * 
+   * @param cameraIdOrConfig Identifier of the camera, it can either be the
+   *  camera id retrieved from {@code Html5Qrcode#getCameras()} method or
+   *  object with facing mode constraint.
+   * @param configuration Extra configurations to tune the code scanner.
+   * @param qrCodeSuccessCallback Callback called when an instance of a QR
+   * code or any other supported bar code is found.
+   * @param qrCodeErrorCallback Callback called in cases where no instance of
+   * QR code or any other supported bar code is found.
+   */
+  start(
+    cameraIdOrConfig: Html5QrcodeIdentifier,
+    configuration: Html5QrcodeCameraScanConfig | undefined,
+    qrCodeSuccessCallback: QrcodeSuccessCallback | undefined,
+    qrCodeErrorCallback: QrcodeErrorCallback | undefined,
+  ): Promise<null> {}ass
 
   /**
    * Stops streaming QR Code video and scanning. 
-   * 
-   * @returns Promise for safely closing the video stream.
    */
-  stop() {} // Returns a Promise
+  stop(): Promise<void> {}
 
   /**
    * Scans an Image File for QR Code.
-   * 
-   * This feature is mutually exclusive to camera based scanning, you should call
-   * stop() if the camera based scanning was ongoing.
-   * 
-   * @param {File} imageFile a local file with Image content.
-   * @param {boolean} showImage if true the Image will be rendered on given element.
-   * 
-   * @returns Promise with decoded QR code string on success and error message on failure.
-   *            Failure could happen due to different reasons:
-   *            1. QR Code decode failed because enough patterns not found in image.
-   *            2. Input file was not image or unable to load the image or other image load
-   *              errors.
+   *
+   * This feature is mutually exclusive to camera-based scanning, you should
+   * call stop() if the camera-based scanning was ongoing.
+   *
+   * @param imageFile a local file with Image content.
+   * @param showImage if true, the Image will be rendered on given element.
+   *
+   * @returns Promise with decoded QR code string on success.
    */
-  scanFile(imageFile, /* default=true */ showImage) {}
+  scanFile(
+    imageFile: File,
+    /* default=true */ showImage: boolean | undefined): Promise<string> {}
 
   /**
    * Clears the existing canvas.
    * 
-   * Note: in case of ongoing web cam based scan, it needs to be explicitly
-   * closed before calling this method, else it will throw exception.
+   * Note: in case of ongoing web-cam based scan, it needs to be explicitly
+   * closed before calling this method, else it will throw an exception.
    */
-  clear() {}  // Returns void
+  clear(): void {}  // Returns void
 }
 
 class Html5QrcodeScanner {
-    /**
-     * Creates instance of this class.
-     *
-     * @param {String} elementId - Id of the HTML element.
-     * @param {Object} config extra configurations to tune QR code scanner.
-     *  Supported Fields:
-     *      - fps: expected framerate of qr scanning. example { fps: 2 }
-     *          means the scanning would be done every 500 ms.
-     *      - qrbox: width of QR scanning box, this should be smaller than
-     *          the width and height of the box. This would make the scanner
-     *          look like this:
-     *          ----------------------
-     *          |********************|
-     *          |******,,,,,,,,,*****|      <--- shaded region
-     *          |******|       |*****|      <--- non shaded region would be
-     *          |******|       |*****|          used for QR code scanning.
-     *          |******|_______|*****|
-     *          |********************|
-     *          |********************|
-     *          ----------------------
-     *      - aspectRatio: Optional, desired aspect ratio for the video feed.
-     *          Ideal aspect ratios are 4:3 or 16:9. Passing very wrong aspect
-     *          ratio could lead to video feed not showing up.
-     *      - disableFlip: Optional, if {@code true} flipped QR Code won't be
-     *          scanned. Only use this if you are sure the camera cannot give
-     *          mirrored feed if you are facing performance constraints.
-     * @param {Boolean} verbose - Optional argument, if true, all logs
-     *                  would be printed to console. 
-     */
-    constructor(elementId, config, verbose) {}
+  /**
+   * Creates an instance of this class.
+   *
+   * @param elementId Id of the HTML element.
+   * @param config Extra configurations to tune the code scanner.
+   * @param verbose - If true, all logs would be printed to console. 
+   */
+  constructor(
+    elementId: string,
+    config: Html5QrcodeScannerConfig | undefined,
+    verbose: boolean | undefined) {}
 
-    /**
-     * Renders the User Interface
-     * 
-     * @param {Function} qrCodeSuccessCallback - callback on QR Code found.
-     *  Example:
-     *      function(qrCodeMessage) {}
-     * @param {Function} qrCodeErrorCallback - callback on QR Code parse error.
-     *  Example:
-     *      function(errorMessage) {}
-     * 
-     */
-    render(qrCodeSuccessCallback, qrCodeErrorCallback) {}
+  /**
+   * Renders the User Interface.
+   * 
+   * @param qrCodeSuccessCallback Callback called when an instance of a QR
+   * code or any other supported bar code is found.
+   * @param qrCodeErrorCallback optional callback called in cases where no
+   * instance of QR code or any other supported bar code is found.
+   */
+  render(
+    qrCodeSuccessCallback: QrcodeSuccessCallback,
+    qrCodeErrorCallback: QrcodeErrorCallback | undefined) {}
 
-    /**
-     * Removes the QR Code scanner.
-     * 
-     * @returns Promise which succeeds if the cleanup is complete successfully,
-     *  fails otherwise.
-     */
-    clear() {}
+  /** Removes the QR Code scanner. */
+  clear(): Promise<void>  {}
 }
 ```
 
@@ -489,27 +521,91 @@ By default, the scanner can scan for horizontally flipped QR Codes. This also en
  - You are sure that the camera feed cannot be mirrored (Horizontally flipped)
  - You are facing performance issues with this enabled.
 
-Here's an example of normal and mirrored QR Code
+Here's an example of a normal and mirrored QR Code
 | Normal QR Code | Mirrored QR Code |
 | ----- | ---- |
 | <img src="./assets/qr-code.png" width="200px"> | <img src="./assets/qr-code-flipped.png" width="200px"><br> |
+
+### Scanning only specific formats
+By default, both camera stream and image files are scanned against all the
+supported code formats.  Both `Html5QrcodeScanner` and `Html5Qrcode` classes can
+ be configured to only support a subset of supported formats. Supported formats
+are defined in
+[enum Html5QrcodeSupportedFormats](https://github.com/mebjas/html5-qrcode/blob/master/src/core.ts#L14).
+
+```ts
+enum Html5QrcodeSupportedFormats {
+  QR_CODE = 0,
+  AZTEC,
+  CODABAR,
+  CODE_39,
+  CODE_93,
+  CODE_128,
+  DATA_MATRIX,
+  MAXICODE,
+  ITF,
+  EAN_13,
+  EAN_8,
+  PDF_417,
+  RSS_14,
+  RSS_EXPANDED,
+  UPC_A,
+  UPC_E,
+  UPC_EAN_EXTENSION,
+}
+```
+
+I recommend using this only if you need to explicitly omit support for certain
+formats or want to reduce the number of scans done per second for performance
+reasons.
+
+#### Scanning only QR code with `Html5Qrcode`
+```js
+const html5QrCode = new Html5Qrcode(
+  "reader", { formatsToSupport: [ Html5QrcodeSupportedFormats.QR_CODE ] });
+const qrCodeSuccessCallback = message => { /* handle success */ }
+const config = { fps: 10, qrbox: 250 };
+
+// If you want to prefer front camera
+html5QrCode.start({ facingMode: "user" }, config, qrCodeSuccessCallback);
+```
+
+#### Scaning only QR code and UPC codes with `Html5QrcodeScanner`
+```js
+function onScanSuccess(qrMessage) {
+  // handle the scanned code as you like, for example:
+  console.log(`QR matched = ${qrMessage}`);
+}
+
+const formatsToSupport = [
+  Html5QrcodeSupportedFormats.QR_CODE,
+  Html5QrcodeSupportedFormats.UPC_A,
+  Html5QrcodeSupportedFormats.UPC_E,
+  Html5QrcodeSupportedFormats.UPC_EAN_EXTENSION,
+];
+const html5QrcodeScanner = new Html5QrcodeScanner(
+  "reader",
+  { fps: 10, qrbox: 250, formatsToSupport: formatsToSupport },
+  /* verbose= */ false);
+html5QrcodeScanner.render(onScanSuccess);
+```
 
 ## How to modify and build
 1. Code changes should only be made to [/src](./src) only.
 2. Run `npm install` to install all dependencies.
 3. Run `npm run-script build` to build javascript output. The output javascript distribution is built to [/dist/html5-qrcode.min.js](./dist/html5-qrcode.min.js). If you are developing on Windows OS, run `npm run-script build-windows`.
 4. Testing
-    - Run `npm test`
-    - Run the tests before sending a pull request, all tests should run.
-    - Please add tests for new behaviors sent in PR.
+- Run `npm test`
+- Run the tests before sending a pull request, all tests should run.
+- Please add tests for new behaviors sent in PR.
 5. Send a pull request
-    - Include code changes only to `./src`. **Do not change `./dist` manually.**
-    - In the PR add a comment like
-      ```
-      @all-contributors please add @mebjas for this new feature or tests
-      ```
-      For calling out your contributions - the bot will update the contributions file.
-    - Code will be built & published by the author in batches.
+- Include code changes only to `./src`. **Do not change `./dist` manually.**
+- In the pull request add a comment like
+  ```
+  @all-contributors please add @mebjas for this new feature or tests
+  ```
+  For calling out your contributions - the bot will update the contributions file.
+- Code will be built & published by the author in batches.
 
 ## Credits
 The decoder used for the QRcode reading is from `Zxing-js` https://github.com/zxing-js/library<br>

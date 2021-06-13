@@ -55,7 +55,8 @@ export class ZXingHtml5QrcodeDecoder implements QrcodeDecoder {
                 ZXing.BarcodeFormat.UPC_EAN_EXTENSION ]
         ]);
 
-    private zxingDecoder: any;
+    private hints: Map<any, any>;
+    private verbose: boolean;
 
     public constructor(
         requestedFormats: Array<Html5QrcodeSupportedFormats>,
@@ -63,22 +64,30 @@ export class ZXingHtml5QrcodeDecoder implements QrcodeDecoder {
         if (!ZXing) {
             throw 'Use html5qrcode.min.js without edit, ZXing not found.';
         }
+        this.verbose = verbose;
 
-        const hints = new Map();
         const formats = this.createZXingFormats(requestedFormats);
+        const hints = new Map();
         hints.set(ZXing.DecodeHintType.POSSIBLE_FORMATS, formats);
-
-        this.zxingDecoder = new ZXing.MultiFormatReader(verbose);
-        this.zxingDecoder.setHints(hints);
+        this.hints = hints;
     }
 
     decode(canvas: HTMLCanvasElement): QrcodeResult {
+        // Note: Earlier we used to instantiate the zxingDecoder once as state
+        // of this class and use it for each scans. There seems to be some
+        // stateful bug in ZXing library around RSS_14 likely due to
+        // https://github.com/zxing-js/library/issues/211.
+        // Recreating a new instance per scan doesn't lead to performance issues
+        // and temporarily mitigates this issue.
+        // TODO(mebjas): Properly fix this issue in ZXing library.
+        const zxingDecoder = new ZXing.MultiFormatReader(
+            this.verbose, this.hints);
         const luminanceSource
             = new ZXing.HTMLCanvasElementLuminanceSource(canvas);
         const binaryBitmap
             = new ZXing.BinaryBitmap(
                 new ZXing.HybridBinarizer(luminanceSource));
-        let result = this.zxingDecoder.decode(binaryBitmap);
+        let result = zxingDecoder.decode(binaryBitmap);
         return {
             text: result.text
         };

@@ -20702,9 +20702,13 @@
          * Creates an instance of this class
          * 
          * @param {Boolean} verbose if 'true' logs will be dumped to console, otherwise hidden.
+         * @param hints The hints to use, clearing the previous state.
          */
-        constructor(verbose) {
+        constructor(verbose, hints) {
             this.verbose = (verbose === true);
+            if (hints) {
+                this.setHints(hints);
+            }
         }
         /**
          * This version of decode honors the intent of Reader.decode(BinaryBitmap) in that it
@@ -20732,7 +20736,9 @@
          */
         /*@Override*/
         decode(image, hints) {
-            this.setHints(hints);
+            if (hints) {
+                this.setHints(hints);
+            }
             return this.decodeInternal(image);
         }
         /**

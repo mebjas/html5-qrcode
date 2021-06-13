@@ -22,16 +22,17 @@ import {
 
 import {
     Html5Qrcode,
-    Html5QrcodeConfig
+    Html5QrcodeConfigs,
+    Html5QrcodeCameraScanConfig,
+    Html5QrcodeFullConfig,
 } from "./html5-qrcode";
 
 import {
     Html5QrcodeScannerStrings,
-    Html5QrcodeStrings
 } from "./strings"
 
 /**
- * Different states of QR Code Scanner
+ * Different states of QR Code Scanner.
  */
 enum Html5QrcodeScannerStatus {
     STATUS_DEFAULT = 0,
@@ -39,23 +40,48 @@ enum Html5QrcodeScannerStatus {
     STATUS_WARNING = 2,
 }
 
+/**
+ * Interface for controlling different aspects of {@class Html5QrcodeScanner}.
+ */
+interface Html5QrcodeScannerConfig
+    extends Html5QrcodeCameraScanConfig, Html5QrcodeConfigs {}
+
+function toHtml5QrcodeCameraScanConfig(config: Html5QrcodeScannerConfig)
+    : Html5QrcodeCameraScanConfig {
+    return {
+        fps: config.fps,
+        qrbox: config.qrbox,
+        aspectRatio: config.aspectRatio,
+        disableFlip: config.disableFlip,
+        videoConstraints: config.videoConstraints
+    };
+}
+
+function toHtml5QrcodeFullConfig(
+    config: Html5QrcodeConfigs, verbose: boolean | undefined)
+    : Html5QrcodeFullConfig {
+    return {
+        formatsToSupport: config.formatsToSupport,
+        verbose: verbose
+    }
+}
+
 export class Html5QrcodeScanner {
 
     //#region private fields
     private elementId: string;
-    private config: Html5QrcodeConfig;
+    private config: Html5QrcodeScannerConfig;
     private verbose: boolean;
     private currentScanType: Html5QrcodeScanType;
     private sectionSwapAllowed: boolean;
 
     // Initally null fields.
-    private section?: HTMLElement;
-    private html5Qrcode?: Html5Qrcode;
-    private qrCodeSuccessCallback?: QrcodeSuccessCallback;
-    private qrCodeErrorCallback?: QrcodeErrorCallback;
-    private lastMatchFound?: string;
-    private cameraScanImage?: HTMLImageElement;
-    private fileScanImage?: HTMLImageElement;
+    private html5Qrcode: Html5Qrcode | undefined;
+    private qrCodeSuccessCallback: QrcodeSuccessCallback | undefined;
+    private qrCodeErrorCallback: QrcodeErrorCallback | undefined;
+    private lastMatchFound: string | undefined;
+    private cameraScanImage: HTMLImageElement | undefined;
+    private fileScanImage: HTMLImageElement | undefined;
     //#endregion
 
     /**
@@ -67,10 +93,10 @@ export class Html5QrcodeScanner {
      */
     public constructor(
         elementId: string,
-        config: Html5QrcodeConfig,
-        verbose?: boolean) {
+        config: Html5QrcodeScannerConfig | undefined,
+        verbose: boolean | undefined) {
         this.elementId = elementId;
-        this.config = config;
+        this.config = this.createConfig(config);
         this.verbose = verbose === true;
 
         if (!document.getElementById(elementId)) {
@@ -86,12 +112,12 @@ export class Html5QrcodeScanner {
      * 
      * @param qrCodeSuccessCallback Callback called when an instance of a QR
      * code or any other supported bar code is found.
-     * @param qrCodeErrorCallback Callback called in cases where no instance of
-     * QR code or any other supported bar code is found.
+     * @param qrCodeErrorCallback optional, callback called in cases where no
+     * instance of QR code or any other supported bar code is found.
      */
     public render(
         qrCodeSuccessCallback: QrcodeSuccessCallback,
-        qrCodeErrorCallback: QrcodeErrorCallback) {
+        qrCodeErrorCallback: QrcodeErrorCallback | undefined) {
         this.lastMatchFound = undefined;
 
         // Add wrapper to success callback.
@@ -126,9 +152,9 @@ export class Html5QrcodeScanner {
         }
         container.innerHTML = "";
         this.createBasicLayout(container!);
-
         this.html5Qrcode = new Html5Qrcode(
-            this.getScanRegionId(), this.verbose);
+            this.getScanRegionId(),
+            toHtml5QrcodeFullConfig(this.config, this.verbose));
     }
 
     /**
@@ -177,6 +203,18 @@ export class Html5QrcodeScanner {
     }
 
     //#region Private methods
+    private createConfig(config: Html5QrcodeScannerConfig | undefined)
+        : Html5QrcodeScannerConfig {
+        if (config) {
+            if (!config.fps) {
+                config.fps = Html5QrcodeConstants.SCAN_DEFAULT_FPS;
+            }
+            return config;
+        }
+
+        return { fps: Html5QrcodeConstants.SCAN_DEFAULT_FPS };
+    }
+
     private createBasicLayout(parent: HTMLElement) {
         parent.style.position = "relative";
         parent.style.padding = "0px";
@@ -401,14 +439,10 @@ export class Html5QrcodeScanner {
             cameraSelectionSelect.disabled = true;
             cameraActionStartButton.disabled = true;
             $this.showHideScanTypeSwapLink(false);
-
-            const config = $this.config ?
-                $this.config : { fps: 10, qrbox: 250 };
-
             const cameraId = cameraSelectionSelect.value;
             $this.html5Qrcode!.start(
                 cameraId,
-                config,
+                toHtml5QrcodeCameraScanConfig($this.config),
                 $this.qrCodeSuccessCallback!,
                 $this.qrCodeErrorCallback!)
                 .then(_ => {
