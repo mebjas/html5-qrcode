@@ -31,7 +31,7 @@ import {
 
 import {
     Html5QrcodeScannerStrings,
-} from "./strings"
+} from "./strings";
 
 /**
  * Different states of QR Code Scanner.
@@ -65,7 +65,7 @@ function toHtml5QrcodeFullConfig(
     return {
         formatsToSupport: config.formatsToSupport,
         verbose: verbose
-    }
+    };
 }
 
 export class Html5QrcodeScanner {
@@ -183,7 +183,7 @@ export class Html5QrcodeScanner {
                     return;
                 }
                 if (this.html5Qrcode.isScanning) {
-                    this.html5Qrcode.stop().then(_ => {
+                    this.html5Qrcode.stop().then((_) => {
                         if (!this.html5Qrcode) {
                             resolve();
                             return;
@@ -192,13 +192,13 @@ export class Html5QrcodeScanner {
                         this.html5Qrcode.clear();
                         emptyHtmlContainer();
                         resolve();
-                    }).catch(error => {
+                    }).catch((error) => {
                         if (this.verbose) {
                             this.logger.logError(
                                 "Unable to stop qrcode scanner", error);
                         }
                         reject(error);
-                    })
+                    });
                 }
             });
         }
