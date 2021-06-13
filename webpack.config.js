@@ -1,26 +1,26 @@
-const path = require( 'path' );
+const path = require("path");
 
 module.exports = {
     // bundling mode
-    mode: 'production',
+    mode: "production",
     // entry files
-    entry: './src/index.ts',
+    entry: "./src/index.ts",
     // output bundles (location)
     output: {
-        path: path.resolve( __dirname, 'dist' ),
-        filename: 'html5-qrcode.library.min.js',
+        path: path.resolve( __dirname, "dist" ),
+        filename: "html5-qrcode.library.min.js",
         library: "_",
     },
     // file resolutions
     resolve: {
-        extensions: [ '.ts' ],
+        extensions: [ ".ts" ],
     },
     target: "web",
     module: {
         rules: [
             {
                 test: /\.tsx?/,
-                use: 'ts-loader',
+                use: "ts-loader",
                 exclude: /node_modules/,
             },
         ]

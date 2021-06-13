@@ -10,7 +10,7 @@
 <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
 ```
 
-### Create a `qrcode-scanner` component.
+### Create a `qrcode-scanner` component
 
 ```js
 Vue.component('qrcode-scanner', {
