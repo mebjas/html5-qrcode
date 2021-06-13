@@ -1,3 +1,4 @@
+#!/bin/bash
 ## Build Script
 echo 'Initiating default build sequence.'
 

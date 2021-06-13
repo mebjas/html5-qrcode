@@ -1,3 +1,4 @@
+# shellcheck shell=batch
 ## Build Script
 echo 'Initiating default build sequence for Windows OS.'
 

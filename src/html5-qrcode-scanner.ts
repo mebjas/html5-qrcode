@@ -17,7 +17,9 @@ import {
     Html5QrcodeError,
     Html5QrcodeErrorFactory,
     Html5QrcodeResultFactory,
-    CameraDevice
+    CameraDevice,
+    BaseLoggger,
+    Logger,
 } from "./core";
 
 import {
@@ -74,6 +76,7 @@ export class Html5QrcodeScanner {
     private verbose: boolean;
     private currentScanType: Html5QrcodeScanType;
     private sectionSwapAllowed: boolean;
+    private logger: Logger;
 
     // Initally null fields.
     private html5Qrcode: Html5Qrcode | undefined;
@@ -100,11 +103,12 @@ export class Html5QrcodeScanner {
         this.verbose = verbose === true;
 
         if (!document.getElementById(elementId)) {
-            throw `HTML Element with id=${elementId} not found`;;
+            throw `HTML Element with id=${elementId} not found`;
         }
 
         this.currentScanType = Html5QrcodeScanType.SCAN_TYPE_CAMERA;
         this.sectionSwapAllowed = true;
+        this.logger = new BaseLoggger(this.verbose);
     }
 
     /**
@@ -148,7 +152,7 @@ export class Html5QrcodeScanner {
 
         const container = document.getElementById(this.elementId);
         if (!container) {
-            throw `HTML Element with id=${this.elementId} not found`;;
+            throw `HTML Element with id=${this.elementId} not found`;
         }
         container.innerHTML = "";
         this.createBasicLayout(container!);
@@ -190,7 +194,7 @@ export class Html5QrcodeScanner {
                         resolve();
                     }).catch(error => {
                         if (this.verbose) {
-                            console.error(
+                            this.logger.logError(
                                 "Unable to stop qrcode scanner", error);
                         }
                         reject(error);
@@ -505,7 +509,8 @@ export class Html5QrcodeScanner {
         swithToFileBasedLink.addEventListener('click', function () {
             if (!$this.sectionSwapAllowed) {
                 if ($this.verbose) {
-                    console.error("Section swap called when not allowed");
+                    $this.logger.logError(
+                        "Section swap called when not allowed");
                 }
                 return;
             }

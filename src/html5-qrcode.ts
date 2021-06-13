@@ -302,7 +302,7 @@ export class Html5Qrcode {
         }
 
         if (!qrCodeErrorCallback) {
-            qrCodeErrorCallback = this.verbose ? console.log : () => {};
+            qrCodeErrorCallback = this.verbose ? this.logger.log : () => {};
         }
 
         const internalConfig = InternalHtml5QrcodeConfig.create(
@@ -831,7 +831,7 @@ export class Html5Qrcode {
             if (IsValidHtml5QrcodeSupportedFormats(format)) {
                 supportedFormats.push(format);
             } else {
-                console.warn(
+                this.logger.warn(
                     `Invalid format: ${format} passed in config, ignoring.`);
             }
         }
