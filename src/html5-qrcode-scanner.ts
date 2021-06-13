@@ -408,8 +408,7 @@ export class Html5QrcodeScanner {
 
         const cameraSelectionSelect = document.createElement("select");
         cameraSelectionSelect.id = this.getCameraSelectionId();
-        for (var i = 0; i < cameras.length; i++) {
-            const camera = cameras[i];
+        for (const camera of cameras) {
             const value = camera.id;
             const name = camera.label == null ? value : camera.label;
             const option = document.createElement('option');

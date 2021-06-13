@@ -718,8 +718,7 @@ export class Html5Qrcode {
                     // active.
                     const closeActiveStreams = (stream: MediaStream) => {
                         const tracks = stream.getVideoTracks();
-                        for (var i = 0; i < tracks.length; i++) {
-                            const track = tracks[i];
+                        for (const track of tracks) {
                             track.enabled = false;
                             track.stop();
                             stream.removeTrack(track);
@@ -729,8 +728,7 @@ export class Html5Qrcode {
                     navigator.mediaDevices.enumerateDevices()
                         .then(devices => {
                             const results = [];
-                            for (var i = 0; i < devices.length; i++) {
-                                const device = devices[i];
+                            for (const device of devices) {
                                 if (device.kind == "videoinput") {
                                     results.push({
                                         id: device.deviceId,
@@ -755,8 +753,7 @@ export class Html5Qrcode {
         return new Promise((resolve, _) => {
             const callback = (sourceInfos: Array<any>) => {
                 const results = [];
-                for (var i = 0; i !== sourceInfos.length; ++i) {
-                    const sourceInfo = sourceInfos[i];
+                for (const sourceInfo of sourceInfos) {
                     if (sourceInfo.kind === 'video') {
                         results.push({
                             id: sourceInfo.id,
@@ -830,9 +827,7 @@ export class Html5Qrcode {
         }
 
         const supportedFormats: Array<Html5QrcodeSupportedFormats> = [];
-        for (let i = 0; i < configOrVerbosityFlag.formatsToSupport.length; ++i) {
-            let format:Html5QrcodeSupportedFormats
-                = configOrVerbosityFlag.formatsToSupport[i];
+        for (const format of configOrVerbosityFlag.formatsToSupport) {
             if (IsValidHtml5QrcodeSupportedFormats(format)) {
                 supportedFormats.push(format);
             } else {

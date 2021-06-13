@@ -39,8 +39,7 @@ export class VideoConstraintsUtil {
         ];
         const bannedkeysSet = new Set(bannedKeys);
         const keysInVideoConstraints = Object.keys(videoConstraints);
-        for (let i = 0; i < keysInVideoConstraints.length; i++) {
-            const key = keysInVideoConstraints[i];
+        for (const key of keysInVideoConstraints) {
             if (bannedkeysSet.has(key)) {
                 logger.logError(
                     `${key} is not supported videoConstaints.`,
