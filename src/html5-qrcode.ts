@@ -609,7 +609,7 @@ export class Html5Qrcode {
                 } catch (exception) {
                     reject(`QR code parse error, error = ${exception}`);
                 }
-            }
+            };
 
             inputImage.onerror = reject;
             inputImage.onabort = reject;
@@ -1055,7 +1055,7 @@ export class Html5Qrcode {
                 const track = mediaStream.getVideoTracks()[0];
                 track.applyConstraints(constraints)
                     .then((_) => setupVideo())
-                    .catch(error => {
+                    .catch((error) => {
                         $this.logger.logErrors(
                             ["[Html5Qrcode] Constriants could not "
                                 + "be satisfied, ignoring constraints",

@@ -293,7 +293,7 @@ export class BaseLoggger implements Logger {
     }
 
     public logErrors(errors: Array<any>): void {
-        if (errors.length == 0) {
+        if (errors.length === 0) {
             throw "Logger#logError called without arguments";
         }
         if (this.verbose) {

@@ -15,7 +15,7 @@ import {
     Logger
 } from "./core";
 
-import { ZXingHtml5QrcodeDecoder } from "./zxing-html5-qrcode-decoder"
+import { ZXingHtml5QrcodeDecoder } from "./zxing-html5-qrcode-decoder";
 
 /**
  * Shim layer for {@interface QrcodeDecoder}.
