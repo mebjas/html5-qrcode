@@ -74,8 +74,8 @@ ReactDOM.render(
             fps={10}
             qrBox={250}
             disableFlip={false}
-            qrCodeSuccessCallback={mesg => { console.log(mesg); }}
-            qrCodeErrorCallback={error => { console.error(error); }} />
+            qrCodeSuccessCallback={console.log}
+            qrCodeErrorCallback={console.error} />
     </div>,
     document.getElementById('root')
 );

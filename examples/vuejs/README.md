@@ -34,8 +34,8 @@ Vue.component('qrcode-scanner', {
     html5QrcodeScanner.render(this.onScanSuccess);
   },
   methods: {
-    onScanSuccess (qrCodeMessage) {
-      this.$emit('result', qrCodeMessage);
+    onScanSuccess (decodedText, decodedResult) {
+      this.$emit('result', decodedText, decodedResult);
     }
   }
 });
@@ -56,7 +56,7 @@ Vue.component('qrcode-scanner', {
 <script>
 export default {
   methods: {
-    onScan (qrCodeMessage) {
+    onScan (decodedText, decodedResult) {
       // handle the message here :)
     }
   }
