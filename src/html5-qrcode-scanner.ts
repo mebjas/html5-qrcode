@@ -380,12 +380,12 @@ export class Html5QrcodeScanner {
                 return;
             }
             const file = e.target.files[0];
-            $this.html5Qrcode.scanFile(file, /* showImage= */ true)
-                .then((decodedText: string) => {
+            $this.html5Qrcode.scanFileV2(file, /* showImage= */ true)
+                .then((html5qrcodeResult: Html5QrcodeResult) => {
                     $this.resetHeaderMessage();
                     $this.qrCodeSuccessCallback!(
-                        decodedText,
-                        Html5QrcodeResultFactory.createFrom(decodedText));
+                        html5qrcodeResult.decodedText,
+                        html5qrcodeResult);
                 })
                 .catch((error) => {
                     $this.setStatus(

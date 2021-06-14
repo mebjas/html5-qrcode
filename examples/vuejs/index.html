@@ -38,8 +38,8 @@
                     config['qrbox'] = this.qrbox;
                 }
 
-                function onScanSuccess(qrCodeMessage) {
-                    $this.$root.$emit('decodedQrCode', qrCodeMessage);
+                function onScanSuccess(decodedText, decodedResult) {
+                    $this.$root.$emit('decodedCode', decodedText, decodedResult);
                 }
 
                 var html5QrcodeScanner = new Html5QrcodeScanner(
@@ -55,8 +55,8 @@
                 result: ''
             },
             created: function () {
-                this.$root.$on('decodedQrCode', function (qrCodeMessage) {
-                    this.decodedMessage = qrCodeMessage;
+                this.$root.$on('decodedCode', function (decodedText, decodedResult) {
+                    this.decodedText = decodedText;
                 }.bind(this));
             }
         });

@@ -17,12 +17,12 @@
 var resultContainer = document.getElementById('qr-reader-results');
 var lastResult, countResults = 0;
 
-function onScanSuccess(qrCodeMessage) {
-    if (qrCodeMessage !== lastResult) {
+function onScanSuccess(decodedText, decodedResult) {
+    if (decodedText !== lastResult) {
         ++countResults;
-        lastResult = qrCodeMessage;
-        resultContainer.innerHTML 
-            += `<div>[${countResults}] - ${qrCodeMessage}</div>`;
+        lastResult = decodedText;
+        // Handle on success condition with the decoded message.
+        onsole.log(`Scan result ${decodedText}`, decodedResult);
     }
 }
 

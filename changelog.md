@@ -1,3 +1,7 @@
+### Version 2.0.9
+ - Added support for returning the type of code scanned (
+     [feature request](https://github.com/mebjas/html5-qrcode/issues/224))
+
 ### Version 2.0.8
  - Added support for configuring supported formats in `Html5Qrcode` & `Html5QrcodeScanner`.
 

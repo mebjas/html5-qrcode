@@ -12,6 +12,7 @@
 
 import {
     QrcodeResult,
+    QrcodeResultFormat,
     Html5QrcodeSupportedFormats,
     QrcodeDecoder,
     Logger
@@ -25,7 +26,7 @@ declare const ZXing: any;
  */
 export class ZXingHtml5QrcodeDecoder implements QrcodeDecoder {
 
-    private static formatMap: Map<Html5QrcodeSupportedFormats, any>
+    private readonly formatMap: Map<Html5QrcodeSupportedFormats, any>
         = new Map([
             [Html5QrcodeSupportedFormats.QR_CODE, ZXing.BarcodeFormat.QR_CODE ],
             [Html5QrcodeSupportedFormats.AZTEC, ZXing.BarcodeFormat.AZTEC ],
@@ -55,6 +56,8 @@ export class ZXingHtml5QrcodeDecoder implements QrcodeDecoder {
                 Html5QrcodeSupportedFormats.UPC_EAN_EXTENSION,
                 ZXing.BarcodeFormat.UPC_EAN_EXTENSION ]
         ]);
+    private readonly reverseFormatMap: Map<any, Html5QrcodeSupportedFormats>
+        = this.createReverseFormatMap();
 
     private hints: Map<any, any>;
     private verbose: boolean;
@@ -93,8 +96,27 @@ export class ZXingHtml5QrcodeDecoder implements QrcodeDecoder {
                 new ZXing.HybridBinarizer(luminanceSource));
         let result = zxingDecoder.decode(binaryBitmap);
         return {
-            text: result.text
+            text: result.text,
+            format: QrcodeResultFormat.create(
+                this.toHtml5QrcodeSupportedFormats(result.format))
         };
+    }
+
+    private createReverseFormatMap(): Map<any, Html5QrcodeSupportedFormats> {
+        let result = new Map();
+        this.formatMap.forEach(
+            (value: any, key: Html5QrcodeSupportedFormats, _) => {
+            result.set(value, key);
+        });
+        return result;
+    }
+
+    private toHtml5QrcodeSupportedFormats(zxingFormat: any)
+        : Html5QrcodeSupportedFormats {
+        if (!this.reverseFormatMap.has(zxingFormat)) {
+            throw `reverseFormatMap doesn't have ${zxingFormat}`;
+        }
+        return this.reverseFormatMap.get(zxingFormat)!;
     }
 
     private createZXingFormats(
@@ -102,10 +124,9 @@ export class ZXingHtml5QrcodeDecoder implements QrcodeDecoder {
         Array<any> {
             let zxingFormats = [];
             for (const requestedFormat of requestedFormats) {
-                if (ZXingHtml5QrcodeDecoder.formatMap.has(requestedFormat)) {
+                if (this.formatMap.has(requestedFormat)) {
                     zxingFormats.push(
-                        ZXingHtml5QrcodeDecoder.formatMap.get(
-                            requestedFormat));
+                        this.formatMap.get(requestedFormat));
                 } else {
                     this.logger.logError(`${requestedFormat} is not supported by`
                         + "ZXingHtml5QrcodeShim");

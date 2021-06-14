@@ -18,8 +18,9 @@ You can download this from [Github release page](https://github.com/mebjas/html5
 
 ### And `javascript` initialization
 ```js
-function onScanSuccess(qrCodeMessage) {
-    // handle on success condition with the decoded message
+function onScanSuccess(decodedText, decodedResult) {
+    // Handle on success condition with the decoded message.
+    console.log(`Scan result ${decodedText}`, decodedResult);
 }
 var html5QrcodeScanner = new Html5QrcodeScanner(
     "reader", { fps: 10, qrbox: 250 });
