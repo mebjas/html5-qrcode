@@ -339,16 +339,33 @@ enum Html5QrcodeSupportedFormats {
   UPC_EAN_EXTENSION,
 }
 
-/**
- * Type for a callback for a successful code scan.
- */
-export type QrcodeSuccessCallback
+/** Format of detected code. */
+class QrcodeResultFormat {
+    public readonly format: Html5QrcodeSupportedFormats;
+    public readonly formatName: string;
+}
+
+/** Detailed scan result. */
+interface QrcodeResult {
+    /** Decoded text. */
+    text: string;
+
+    /** Format that was successfully scanned. */
+    format?: QrcodeResultFormat,
+}
+
+/** QrCode result object. */
+interface Html5QrcodeResult {
+    decodedText: string;
+    result: QrcodeResult;
+}
+
+/** Type for a callback for a successful code scan. */
+type QrcodeSuccessCallback
   = (decodedText: string, result: Html5QrcodeResult) => void;
 
-/**
- * Type for a callback for failure during code scan.
- */
-export type QrcodeErrorCallback
+/** Type for a callback for failure during code scan. */
+type QrcodeErrorCallback
   = (errorMessage: string, error: Html5QrcodeError) => void;
 
 /**
