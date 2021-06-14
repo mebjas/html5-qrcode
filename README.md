@@ -3,12 +3,15 @@
 A cross-platform HTML5 QR code & barcode reader.
 
 Use this lightweight library to easily / quickly integrate QR code, bar code, and other common code scanning capabilities to your web application. 
- - Supports easy scanning using an integrated webcam or camera in smartphones (Android / IOS).
- - Supports scanning codes from files or default cameras on smartphones. 
- - **<u>Recently Added</u>**  Supports bar code scanning in various formats.
- - Supports two kind of APIs
-    - `Html5QrcodeScanner` - End-to-end scanner with UI, integrate with less than ten lines of code.
-    - `Html5Qrcode` - Powerful set of APIs you can use to build your UI without worrying about camera setup, handling permissions, reading codes, etc.
+-  Supports easy scanning using an integrated webcam or camera in smartphones (Android / IOS).
+
+-  Supports scanning codes from files or default cameras on smartphones.
+
+-  **<u>Recently Added</u>**  Supports bar code scanning in various formats.
+
+-  Supports two kind of APIs
+    -  `Html5QrcodeScanner` - End-to-end scanner with UI, integrate with less than ten lines of code.
+    -  `Html5Qrcode` - Powerful set of APIs you can use to build your UI without worrying about camera setup, handling permissions, reading codes, etc.
 
 > Support for scanning local files on the device is a new addition and helpful for the web browser which does not support inline web-camera access in smartphones. **Note:** This doesn't upload files to any server - everything is done locally.
 
@@ -26,9 +29,9 @@ Use this lightweight library to easily / quickly integrate QR code, bar code, an
 ## Supported platforms
 We are working continuously on adding support for more and more platforms. If you find a platform or a browser where the library is not working, please feel free to file an issue. Check the [demo link](https://blog.minhazav.dev/research/html5-qrcode.html) to test it out.
 
-##### Legends
- - ![](assets/done.png) Means full support - inline webcam and file based 
- - ![](assets/partial.png) Means partial support - only file based, webcam in progress
+**Legends**
+-  ![](assets/done.png) Means full support - inline webcam and file based 
+-  ![](assets/partial.png) Means partial support - only file based, webcam in progress
 
 ### PC / Mac
 
@@ -83,10 +86,10 @@ Code scanning is dependent on [Zxing-js](https://github.com/zxing-js/library) li
 This is a cross-platform Javascript library to integrate QR code, bar codes & a few other types of code scanning capabilities to your applications running on HTML5 compatible browser.
 
 Supports:
- - Querying camera on the device (with user permissions)
- - Rendering live camera feed, with easy to use user interface for scanning
- - Supports scanning a different kind of QR codes, bar codes and other formats
- - Supports selecting image files from the device for scanning codes
+-  Querying camera on the device (with user permissions)
+-  Rendering live camera feed, with easy to use user interface for scanning
+-  Supports scanning a different kind of QR codes, bar codes and other formats
+-  Supports selecting image files from the device for scanning codes
 
 ## How to use?
 > For full information [read this article](https://blog.minhazav.dev/HTML5-QR-Code-scanning-launched-v1.0.1/).
@@ -119,15 +122,15 @@ Add `minified/html5-qrcode.min.js` in your web page.
 
 You can setup the scanner as follows:
 ```js
-function onScanSuccess(qrMessage) {
+function onScanSuccess(decodedText, decodedResult) {
   // handle the scanned code as you like, for example:
-  console.log(`QR matched = ${qrMessage}`);
+  console.log(`Code matched = ${decodedText}`, decodedResult);
 }
 
 function onScanFailure(error) {
   // handle scan failure, usually better to ignore and keep scanning.
   // for example:
-  console.warn(`QR error = ${error}`);
+  console.warn(`Code scan error = ${error}`);
 }
 
 let html5QrcodeScanner = new Html5QrcodeScanner(
@@ -171,16 +174,16 @@ const html5QrCode = new Html5Qrcode(/* element id */ "reader");
 html5QrCode.start(
   cameraId, 
   {
-    fps: 10,    // Optional frame per seconds for qr code scanning
-    qrbox: 250  // Optional if you want bounded box UI
+    fps: 10,    // Optional, frame per seconds for qr code scanning
+    qrbox: 250  // Optional, if you want bounded box UI
   },
-  qrCodeMessage => {
+  (decodedText, decodedResult) => {
     // do something when code is read
   },
-  errorMessage => {
+  (errorMessage) => {
     // parse error, ignore it.
   })
-.catch(err => {
+.catch((err) => {
   // Start failed, handle it.
 });
 ```
@@ -196,7 +199,9 @@ In mobile devices you may want users to directly scan the QR code using the back
 
 ```js
 const html5QrCode = new Html5Qrcode("reader");
-const qrCodeSuccessCallback = message => { /* handle success */ }
+const qrCodeSuccessCallback = (decodedText, decodedResult) => {
+    /* handle success */
+};
 const config = { fps: 10, qrbox: 250 };
 
 // If you want to prefer front camera
@@ -221,9 +226,9 @@ html5QrCode.start({ deviceId: { exact: cameraId} }, config, qrCodeSuccessCallbac
 
 To stop using camera and thus stop scanning, call `Html5Qrcode#stop()` which returns a `Promise` for stopping the video feed and scanning.
 ```js
-html5QrCode.stop().then(ignore => {
+html5QrCode.stop().then((ignore) => {
   // QR Code scanning is stopped.
-}).catch(err => {
+}).catch((err) => {
   // Stop failed, handle it.
 });
 ```
@@ -269,15 +274,21 @@ fileinput.addEventListener('change', e => {
   const imageFile = e.target.files[0];
   // Scan QR Code
   html5QrCode.scanFile(imageFile, true)
-  .then(qrCodeMessage => {
-    // success, use qrCodeMessage
-    console.log(qrCodeMessage);
+  .then(decodedText => {
+    // success, use decodedText
+    console.log(decodedText);
   })
   .catch(err => {
     // failure, handle it.
     console.log(`Error scanning file. Reason: ${err}`)
   });
 });
+
+// Note: Current public API `scanFile` only returns the decoded text. There is
+// another work in progress API (in beta) which returns a full decoded result of
+// type `QrcodeResult` (check interface in src/core.ts) which contains the
+// decoded text, code format, code bounds, etc.
+// Eventually, this beta API will be migrated to the public API.
 ```
 
 > Note that inline scanning and file-based scanning are mutually exclusive at the moment. This means you can only use one of them at a time. I'll soon be adding support for the option to have both if the requirement comes in. If you want to use both, use `html5QrCode#clear()` method to clear the canvas.
@@ -288,8 +299,8 @@ _Scan this image or visit [blog.minhazav.dev/research/html5-qrcode.html](https:/
 
 ### For more information
 Check these articles on how to use this library:
- - [HTML5 QR Code scanning - launched v1.0.1 without jQuery dependency and refactored Promise based APIs](https://blog.minhazav.dev/HTML5-QR-Code-scanning-launched-v1.0.1/).
- - [HTML5 QR Code scanning with javascript - Support for scanning the local file and using default camera added (v1.0.5)](https://blog.minhazav.dev/HTML5-QR-Code-scanning-support-for-local-file-and-default-camera/)
+-  [HTML5 QR Code scanning - launched v1.0.1 without jQuery dependency and refactored Promise based APIs](https://blog.minhazav.dev/HTML5-QR-Code-scanning-launched-v1.0.1/).
+-  [HTML5 QR Code scanning with javascript - Support for scanning the local file and using default camera added (v1.0.5)](https://blog.minhazav.dev/HTML5-QR-Code-scanning-support-for-local-file-and-default-camera/)
 
 ## Screenshots
 ![screenshot](assets/screen.gif)<br>
@@ -329,6 +340,18 @@ enum Html5QrcodeSupportedFormats {
 }
 
 /**
+ * Type for a callback for a successful code scan.
+ */
+export type QrcodeSuccessCallback
+  = (decodedText: string, result: Html5QrcodeResult) => void;
+
+/**
+ * Type for a callback for failure during code scan.
+ */
+export type QrcodeErrorCallback
+  = (errorMessage: string, error: Html5QrcodeError) => void;
+
+/**
  * Interface for configuring {@class Html5Qrcode} class instance.
  */
 interface Html5QrcodeConfigs {
@@ -354,8 +377,9 @@ interface Html5QrcodeCameraScanConfig {
   fps: number | undefined;
 
   /**
-   * Optional, width of QR scanning box, this should be smaller than the width
-   * and height of the box. This would make the scanner look like this:
+   * Optional, width of scanning region box, this should be smaller than the
+   * width and height of the full region.
+   * This would make the scanner look like this:
    *          ----------------------
    *          |********************|
    *          |******,,,,,,,,,*****|      <--- shaded region
@@ -366,21 +390,21 @@ interface Html5QrcodeCameraScanConfig {
    *          |********************|
    *          ----------------------
    */
-  qrbox: number | undefined;
+  qrbox?: number | undefined;
 
   /**
    * Optional, Desired aspect ratio for the video feed. Ideal aspect ratios
    * are 4:3 or 16:9. Passing very wrong aspect ratio could lead to video feed
    * not showing up.
    */
-  aspectRatio: number | undefined;
+  aspectRatio?: number | undefined;
 
   /**
    * Optional, if {@code true} flipped QR Code won't be scanned. Only use this
    * if you are sure the camera cannot give mirrored feed if you are facing
    * performance constraints.
    */
-  disableFlip: boolean | undefined;
+  disableFlip?: boolean | undefined;
 
   /**
    * Optional, @beta(this config is not well supported yet).
@@ -393,7 +417,7 @@ interface Html5QrcodeCameraScanConfig {
    * and is used to specify a variety of video or camera controls like:
    * aspectRatio, facingMode, frameRate, etc.
    */
-  videoConstraints: MediaTrackConstraints | undefined;
+  videoConstraints?: MediaTrackConstraints | undefined;
 }
 
 /**
@@ -516,10 +540,10 @@ Use this property to render the video feed in a certain aspect ratio. Passing a 
 If you do not pass any value, the whole viewfinder would be used for scanning. 
 **Note**: this value has to be smaller than the width and height of the `QR code HTML element`.
 
-#### `disableFlip` - Boolean (Optional), default = false.
+#### `disableFlip` - Boolean (Optional), default = false
 By default, the scanner can scan for horizontally flipped QR Codes. This also enables scanning QR code using the front camera on mobile devices which are sometimes mirrored. This is `false` by default and I recommend changing this only if:
- - You are sure that the camera feed cannot be mirrored (Horizontally flipped)
- - You are facing performance issues with this enabled.
+-  You are sure that the camera feed cannot be mirrored (Horizontally flipped)
+-  You are facing performance issues with this enabled.
 
 Here's an example of a normal and mirrored QR Code
 | Normal QR Code | Mirrored QR Code |
@@ -563,7 +587,9 @@ reasons.
 ```js
 const html5QrCode = new Html5Qrcode(
   "reader", { formatsToSupport: [ Html5QrcodeSupportedFormats.QR_CODE ] });
-const qrCodeSuccessCallback = message => { /* handle success */ }
+const qrCodeSuccessCallback = (decodedText, decodedResult) => {
+    /* handle success */
+};
 const config = { fps: 10, qrbox: 250 };
 
 // If you want to prefer front camera
@@ -572,9 +598,9 @@ html5QrCode.start({ facingMode: "user" }, config, qrCodeSuccessCallback);
 
 #### Scaning only QR code and UPC codes with `Html5QrcodeScanner`
 ```js
-function onScanSuccess(qrMessage) {
-  // handle the scanned code as you like, for example:
-  console.log(`QR matched = ${qrMessage}`);
+function onScanSuccess(decodedText, decodedResult) {
+  // Handle the scanned code as you like, for example:
+  console.log(`Code matched = ${decodedText}`, decodedResult);
 }
 
 const formatsToSupport = [
@@ -591,21 +617,25 @@ html5QrcodeScanner.render(onScanSuccess);
 ```
 
 ## How to modify and build
-1. Code changes should only be made to [/src](./src) only.
-2. Run `npm install` to install all dependencies.
-3. Run `npm run-script build` to build javascript output. The output javascript distribution is built to [/dist/html5-qrcode.min.js](./dist/html5-qrcode.min.js). If you are developing on Windows OS, run `npm run-script build-windows`.
+1.  Code changes should only be made to [/src](./src) only.
+
+2.  Run `npm install` to install all dependencies.
+
+3.  Run `npm run-script build` to build javascript output. The output javascript distribution is built to [/dist/html5-qrcode.min.js](./dist/html5-qrcode.min.js). If you are developing on Windows OS, run `npm run-script build-windows`.
+
 4. Testing
-	- Run `npm test`
-	- Run the tests before sending a pull request, all tests should run.
-	- Please add tests for new behaviors sent in PR.
+	-  Run `npm test`
+	-  Run the tests before sending a pull request, all tests should run.
+	-  Please add tests for new behaviors sent in PR.
+
 5. Send a pull request
-	- Include code changes only to `./src`. **Do not change `./dist` manually.**
-	- In the pull request add a comment like
+	-  Include code changes only to `./src`. **Do not change `./dist` manually.**
+	-  In the pull request add a comment like
 	```
 	@all-contributors please add @mebjas for this new feature or tests
 	```
 	For calling out your contributions - the bot will update the contributions file.
-  	- Code will be built & published by the author in batches.
+  	-  Code will be built & published by the author in batches.
 
 ## Credits
 The decoder used for the QRcode reading is from `Zxing-js` https://github.com/zxing-js/library<br>

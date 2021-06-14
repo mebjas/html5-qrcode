@@ -220,13 +220,13 @@ export class Html5QrcodeErrorFactory {
 }
 
 /**
- * Type for callback for successfull code scan.
+ * Type for a callback for a successful code scan.
  */
 export type QrcodeSuccessCallback
     = (decodedText: string, result: Html5QrcodeResult) => void;
 
 /**
- * Type for callback for failure during code scan.
+ * Type for a callback for failure during code scan.
  */
 export type QrcodeErrorCallback
     = (errorMessage: string, error: Html5QrcodeError) => void;
