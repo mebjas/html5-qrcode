@@ -91,11 +91,11 @@ Supports:
 -   Supports scanning a different kind of QR codes, bar codes and other formats
 -   Supports selecting image files from the device for scanning codes
 
-## How to use?
+## How to use
 > For full information [read this article](https://blog.minhazav.dev/HTML5-QR-Code-scanning-launched-v1.0.1/).
 
 Download the script from [release page](https://github.com/mebjas/html5-qrcode/releases) or `npm` with:
-```
+```sh
 npm i html5-qrcode
 ```
 
@@ -648,10 +648,10 @@ html5QrcodeScanner.render(onScanSuccess);
 5.  Send a pull request
     -   Include code changes only to `./src`. **Do not change `./dist` manually.**
     -   In the pull request add a comment like
-	```
-	@all-contributors please add @mebjas for this new feature or tests
-	```
-	For calling out your contributions - the bot will update the contributions file.
+	  ```text
+	  @all-contributors please add @mebjas for this new feature or tests
+	  ```
+	  For calling out your contributions - the bot will update the contributions file.
     -   Code will be built & published by the author in batches.
 
 ## Credits

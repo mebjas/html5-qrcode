@@ -148,7 +148,7 @@ export class Html5QrcodeScanner {
             if (qrCodeErrorCallback) {
                 qrCodeErrorCallback(errorMessage, error);
             }
-        }
+        };
 
         const container = document.getElementById(this.elementId);
         if (!container) {
@@ -470,7 +470,7 @@ export class Html5QrcodeScanner {
             }
             cameraActionStopButton.disabled = true;
             $this.html5Qrcode.stop()
-                .then(_ => {
+                .then((_) => {
                     $this.showHideScanTypeSwapLink(true);
                     cameraSelectionSelect.disabled = false;
                     cameraActionStartButton.disabled = false;
@@ -478,7 +478,7 @@ export class Html5QrcodeScanner {
                     cameraActionStartButton.style.display = "inline-block";
                     $this.setStatus(Html5QrcodeScannerStrings.idleStatus());
                     $this.insertCameraScanImageToScanRegion();
-                }).catch(error => {
+                }).catch((error) => {
                     cameraActionStopButton.disabled = false;
                     $this.setStatus(
                         Html5QrcodeScannerStrings.errorStatus(),

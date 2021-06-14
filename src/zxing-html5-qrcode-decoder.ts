@@ -68,7 +68,7 @@ export class ZXingHtml5QrcodeDecoder implements QrcodeDecoder {
         verbose: boolean,
         logger: Logger) {
         if (!ZXing) {
-            throw 'Use html5qrcode.min.js without edit, ZXing not found.';
+            throw "Use html5qrcode.min.js without edit, ZXing not found.";
         }
         this.verbose = verbose;
         this.logger = logger;
