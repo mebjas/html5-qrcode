@@ -23,7 +23,8 @@ import {
     Html5QrcodeSupportedFormats,
     QrcodeDecoder,
     isValidHtml5QrcodeSupportedFormats,
-    Html5QrcodeConstants
+    Html5QrcodeConstants,
+    Html5QrcodeResult
 } from "./core";
 
 import { Html5QrcodeStrings } from "./strings";
@@ -501,7 +502,29 @@ export class Html5Qrcode {
      */
     public scanFile(
         imageFile: File, /* default=true */ showImage?: boolean): Promise<string> {
-        
+        return this.scanFileV2(imageFile, showImage)
+            .then((html5qrcodeResult) => html5qrcodeResult.decodedText);
+    }
+
+    /**
+     * Scans an Image File for QR Code & returns {@code Html5QrcodeResult}.
+     *
+     * This feature is mutually exclusive to camera-based scanning, you should
+     * call stop() if the camera-based scanning was ongoing.
+     *
+     * @param imageFile a local file with Image content.
+     * @param showImage if true the Image will be rendered on given
+     * element.
+     *
+     * @returns Promise which resolves with result of type
+     * {@code Html5QrcodeResult}.
+     * 
+     * @beta This is a WIP method, it's available as a public method but not
+     * documented.
+     * TODO(mebjas): Replace scanFile with ScanFileV2
+     */
+    public scanFileV2(imageFile: File, /* default=true */ showImage?: boolean)
+        : Promise<Html5QrcodeResult> {
         if (!imageFile || !(imageFile instanceof File)) {
             throw "imageFile argument is mandatory and should be instance "
                 + "of File. Use 'event.target.files[0]'.";
@@ -580,7 +603,8 @@ export class Html5Qrcode {
                     /* dHeight= */ config.height);
                 try {
                     let result = this.qrcode.decode(hiddenCanvas);
-                    resolve(result.text);
+                    resolve(
+                        Html5QrcodeResultFactory.createFromQrcodeResult(result));
                 } catch (exception) {
                     reject(`QR code parse error, error = ${exception}`);
                 }
@@ -908,7 +932,8 @@ export class Html5Qrcode {
         try {
             let result = this.qrcode.decode(this.canvasElement!);
             qrCodeSuccessCallback(
-                result.text, Html5QrcodeResultFactory.createFrom(result.text));
+                result.text,
+                Html5QrcodeResultFactory.createFromQrcodeResult(result));
             this.possiblyUpdateShaders(/* qrMatch= */ true);
             return true;
         } catch (exception) {

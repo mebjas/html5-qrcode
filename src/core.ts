@@ -31,6 +31,40 @@ export enum Html5QrcodeSupportedFormats {
     UPC_EAN_EXTENSION,
 }
 
+/** {@code Html5QrcodeSupportedFormats} to friendly name map. */
+const html5QrcodeSupportedFormatsTextMap
+    : Map<Html5QrcodeSupportedFormats, string> = new Map(
+    [
+        [ Html5QrcodeSupportedFormats.QR_CODE, "QR_CODE" ],
+        [ Html5QrcodeSupportedFormats.AZTEC, "AZTEC" ],
+        [ Html5QrcodeSupportedFormats.CODABAR, "CODABAR" ],
+        [ Html5QrcodeSupportedFormats.CODE_39, "CODE_39" ],
+        [ Html5QrcodeSupportedFormats.CODE_93, "CODE_93" ],
+        [ Html5QrcodeSupportedFormats.CODE_128, "CODE_128" ],
+        [ Html5QrcodeSupportedFormats.DATA_MATRIX, "DATA_MATRIX" ],
+        [ Html5QrcodeSupportedFormats.MAXICODE, "MAXICODE" ],
+        [ Html5QrcodeSupportedFormats.ITF, "ITF" ],
+        [ Html5QrcodeSupportedFormats.EAN_13, "EAN_13" ],
+        [ Html5QrcodeSupportedFormats.EAN_8, "EAN_8" ],
+        [ Html5QrcodeSupportedFormats.PDF_417, "PDF_417" ],
+        [ Html5QrcodeSupportedFormats.RSS_14, "RSS_14" ],
+        [ Html5QrcodeSupportedFormats.RSS_EXPANDED, "RSS_EXPANDED" ],
+        [ Html5QrcodeSupportedFormats.UPC_A, "UPC_A" ],
+        [ Html5QrcodeSupportedFormats.UPC_E, "UPC_E" ],
+        [ Html5QrcodeSupportedFormats.UPC_EAN_EXTENSION, "UPC_EAN_EXTENSION" ]
+    ]
+);
+
+/**
+ * Indicates the type of decoded text.
+ *
+ * Note: this is very experimental in nature at the moment.
+ */
+export enum DecodedTextType {
+    UNKNOWN = 0,
+    URL,
+}
+
 /** Returns true if the passed object instance is a valid format. */
 export function isValidHtml5QrcodeSupportedFormats(format: any): boolean {
     return Object.values(Html5QrcodeSupportedFormats).includes(format);
@@ -72,13 +106,56 @@ export interface QrBounds {
     height: number;
 }
 
+/** Format of detected code. */
+export class QrcodeResultFormat {
+    public readonly format: Html5QrcodeSupportedFormats;
+    public readonly formatName: string;
+
+    private constructor(
+        format: Html5QrcodeSupportedFormats,
+        formatName: string) {
+        this.format = format;
+        this.formatName = formatName;
+    }
+
+    public toString(): string {
+        return this.formatName;
+    }
+
+    public static create(format: Html5QrcodeSupportedFormats) {
+        if (!html5QrcodeSupportedFormatsTextMap.has(format)) {
+            throw `${format} not in html5QrcodeSupportedFormatsTextMap`;
+        }
+        return new QrcodeResultFormat(
+            format, html5QrcodeSupportedFormatsTextMap.get(format)!);
+    }
+}
+
 /**
  * Detailed scan result.
  */
 export interface QrcodeResult {
+    /** Decoded text. */
     text: string;
+
+    /** Format that was successfully scanned. */
+    format?: QrcodeResultFormat,
+
+    /**
+     * The bounds of the decoded QR code or bar code in the whole stream of
+     * image.
+     * 
+     * Note: this is experimental, and not fully supported.
+     */
     bounds?: QrBounds;
-    isUrl?: boolean;
+
+    /**
+     * If the decoded text from the QR code or bar code is of a known type like
+     * url or upi id or email id.
+     * 
+     * Note: this is experimental, and not fully supported.
+     */
+    decodedTextType?: DecodedTextType;
 }
 
 /**
@@ -86,21 +163,29 @@ export interface QrcodeResult {
  */
 export interface Html5QrcodeResult {
     decodedText: string;
-    fullResult: QrcodeResult;
+    result: QrcodeResult;
 }
 
 /**
  * Static factory for creating {@interface Html5QrcodeResult} instance.
  */
 export class Html5QrcodeResultFactory {
-    static createFrom(decodedText: string): Html5QrcodeResult {
+    static createFromText(decodedText: string): Html5QrcodeResult {
         let qrcodeResult = {
             text: decodedText
         };
 
         return {
             decodedText: decodedText,
-            fullResult: qrcodeResult
+            result: qrcodeResult
+        };
+    }
+
+    static createFromQrcodeResult(qrcodeResult: QrcodeResult)
+        : Html5QrcodeResult {
+        return {
+            decodedText: qrcodeResult.text,
+            result: qrcodeResult
         };
     }
 }
