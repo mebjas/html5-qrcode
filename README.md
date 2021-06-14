@@ -299,6 +299,8 @@ _Scan this image or visit [blog.minhazav.dev/research/html5-qrcode.html](https:/
 
 ### For more information
 Check these articles on how to use this library:
+<!-- TODO(mebjas) Mirgate this link to blog.minhazav.dev -->
+-   [QR and barcode scanner using HTML and Javascript](https://minhazav.medium.com/qr-and-barcode-scanner-using-html-and-javascript-2cdc937f793d)
 -   [HTML5 QR Code scanning - launched v1.0.1 without jQuery dependency and refactored Promise based APIs](https://blog.minhazav.dev/HTML5-QR-Code-scanning-launched-v1.0.1/).
 -   [HTML5 QR Code scanning with javascript - Support for scanning the local file and using default camera added (v1.0.5)](https://blog.minhazav.dev/HTML5-QR-Code-scanning-support-for-local-file-and-default-camera/)
 
