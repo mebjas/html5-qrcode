@@ -3,15 +3,15 @@
 A cross-platform HTML5 QR code & barcode reader.
 
 Use this lightweight library to easily / quickly integrate QR code, bar code, and other common code scanning capabilities to your web application. 
--  Supports easy scanning using an integrated webcam or camera in smartphones (Android / IOS).
+-   Supports easy scanning using an integrated webcam or camera in smartphones (Android / IOS).
 
--  Supports scanning codes from files or default cameras on smartphones.
+-   Supports scanning codes from files or default cameras on smartphones.
 
--  **<u>Recently Added</u>**  Supports bar code scanning in various formats.
+-   **<u>Recently Added</u>**  Supports bar code scanning in various formats.
 
--  Supports two kind of APIs
-    -  `Html5QrcodeScanner` - End-to-end scanner with UI, integrate with less than ten lines of code.
-    -  `Html5Qrcode` - Powerful set of APIs you can use to build your UI without worrying about camera setup, handling permissions, reading codes, etc.
+-   Supports two kind of APIs
+    -   `Html5QrcodeScanner` - End-to-end scanner with UI, integrate with less than ten lines of code.
+    -   `Html5Qrcode` - Powerful set of APIs you can use to build your UI without worrying about camera setup, handling permissions, reading codes, etc.
 
 > Support for scanning local files on the device is a new addition and helpful for the web browser which does not support inline web-camera access in smartphones. **Note:** This doesn't upload files to any server - everything is done locally.
 
@@ -30,8 +30,8 @@ Use this lightweight library to easily / quickly integrate QR code, bar code, an
 We are working continuously on adding support for more and more platforms. If you find a platform or a browser where the library is not working, please feel free to file an issue. Check the [demo link](https://blog.minhazav.dev/research/html5-qrcode.html) to test it out.
 
 **Legends**
--  ![](assets/done.png) Means full support - inline webcam and file based 
--  ![](assets/partial.png) Means partial support - only file based, webcam in progress
+-   ![](assets/done.png) Means full support - inline webcam and file based 
+-   ![](assets/partial.png) Means partial support - only file based, webcam in progress
 
 ### PC / Mac
 
@@ -86,10 +86,10 @@ Code scanning is dependent on [Zxing-js](https://github.com/zxing-js/library) li
 This is a cross-platform Javascript library to integrate QR code, bar codes & a few other types of code scanning capabilities to your applications running on HTML5 compatible browser.
 
 Supports:
--  Querying camera on the device (with user permissions)
--  Rendering live camera feed, with easy to use user interface for scanning
--  Supports scanning a different kind of QR codes, bar codes and other formats
--  Supports selecting image files from the device for scanning codes
+-   Querying camera on the device (with user permissions)
+-   Rendering live camera feed, with easy to use user interface for scanning
+-   Supports scanning a different kind of QR codes, bar codes and other formats
+-   Supports selecting image files from the device for scanning codes
 
 ## How to use?
 > For full information [read this article](https://blog.minhazav.dev/HTML5-QR-Code-scanning-launched-v1.0.1/).
@@ -299,8 +299,8 @@ _Scan this image or visit [blog.minhazav.dev/research/html5-qrcode.html](https:/
 
 ### For more information
 Check these articles on how to use this library:
--  [HTML5 QR Code scanning - launched v1.0.1 without jQuery dependency and refactored Promise based APIs](https://blog.minhazav.dev/HTML5-QR-Code-scanning-launched-v1.0.1/).
--  [HTML5 QR Code scanning with javascript - Support for scanning the local file and using default camera added (v1.0.5)](https://blog.minhazav.dev/HTML5-QR-Code-scanning-support-for-local-file-and-default-camera/)
+-   [HTML5 QR Code scanning - launched v1.0.1 without jQuery dependency and refactored Promise based APIs](https://blog.minhazav.dev/HTML5-QR-Code-scanning-launched-v1.0.1/).
+-   [HTML5 QR Code scanning with javascript - Support for scanning the local file and using default camera added (v1.0.5)](https://blog.minhazav.dev/HTML5-QR-Code-scanning-support-for-local-file-and-default-camera/)
 
 ## Screenshots
 ![screenshot](assets/screen.gif)<br>
@@ -559,8 +559,8 @@ If you do not pass any value, the whole viewfinder would be used for scanning.
 
 #### `disableFlip` - Boolean (Optional), default = false
 By default, the scanner can scan for horizontally flipped QR Codes. This also enables scanning QR code using the front camera on mobile devices which are sometimes mirrored. This is `false` by default and I recommend changing this only if:
--  You are sure that the camera feed cannot be mirrored (Horizontally flipped)
--  You are facing performance issues with this enabled.
+-   You are sure that the camera feed cannot be mirrored (Horizontally flipped)
+-   You are facing performance issues with this enabled.
 
 Here's an example of a normal and mirrored QR Code
 | Normal QR Code | Mirrored QR Code |
@@ -640,19 +640,19 @@ html5QrcodeScanner.render(onScanSuccess);
 
 3.  Run `npm run-script build` to build javascript output. The output javascript distribution is built to [/dist/html5-qrcode.min.js](./dist/html5-qrcode.min.js). If you are developing on Windows OS, run `npm run-script build-windows`.
 
-4. Testing
-    -  Run `npm test`
-    -  Run the tests before sending a pull request, all tests should run.
-    -  Please add tests for new behaviors sent in PR.
+4.  Testing
+    -   Run `npm test`
+    -   Run the tests before sending a pull request, all tests should run.
+    -   Please add tests for new behaviors sent in PR.
 
-5. Send a pull request
-    -  Include code changes only to `./src`. **Do not change `./dist` manually.**
-    -  In the pull request add a comment like
+5.  Send a pull request
+    -   Include code changes only to `./src`. **Do not change `./dist` manually.**
+    -   In the pull request add a comment like
 	```
 	@all-contributors please add @mebjas for this new feature or tests
 	```
 	For calling out your contributions - the bot will update the contributions file.
-    -  Code will be built & published by the author in batches.
+    -   Code will be built & published by the author in batches.
 
 ## Credits
 The decoder used for the QRcode reading is from `Zxing-js` https://github.com/zxing-js/library<br>
