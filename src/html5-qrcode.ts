@@ -24,7 +24,8 @@ import {
     QrcodeDecoder,
     isValidHtml5QrcodeSupportedFormats,
     Html5QrcodeConstants,
-    Html5QrcodeResult
+    Html5QrcodeResult,
+    isNullOrUndefined
 } from "./core";
 
 import { Html5QrcodeStrings } from "./strings";
@@ -180,7 +181,7 @@ class InternalHtml5QrcodeConfig implements InternalHtml5QrcodeConfig {
     }
 
     public isShadedBoxEnabled(): boolean {
-        return (typeof this.qrbox !== "undefined");
+        return !isNullOrUndefined(this.qrbox);
     }
 
     /**
@@ -214,17 +215,17 @@ export class Html5Qrcode {
     // TODO(mebjas): Reduce the statefulness of this mammoth class, by splitting
     // into independent classes for better separation of concerns and reducing
     // error prone nature of a large stateful class.
-    private element: HTMLElement | undefined;
-    private canvasElement: HTMLCanvasElement | undefined;
-    private hasBorderShaders: boolean | undefined;
-    private borderShaders: Array<HTMLElement> | undefined;
-    private qrMatch: boolean | undefined;
-    private videoElement: HTMLVideoElement | undefined;
+    private element: HTMLElement | null = null;
+    private canvasElement: HTMLCanvasElement | null = null;
+    private hasBorderShaders: boolean | null = null;
+    private borderShaders: Array<HTMLElement> | null = null;
+    private qrMatch: boolean | null = null;
+    private videoElement: HTMLVideoElement | null = null;
     private foreverScanTimeout: any;
-    private localMediaStream: MediaStream | undefined;
-    private qrRegion: QrcodeRegionBounds | undefined;
-    private context: CanvasRenderingContext2D | undefined;
-    private lastScanImageFile: string | undefined;
+    private localMediaStream: MediaStream | null = null;
+    private qrRegion: QrcodeRegionBounds | null = null;
+    private context: CanvasRenderingContext2D | null = null;
+    private lastScanImageFile: string | null = null;
     //#endregion
 
     public isScanning: boolean;
@@ -399,7 +400,7 @@ export class Html5Qrcode {
                             width,
                             qrCodeSuccessCallback,
                             qrCodeErrorCallback!)
-                            .then(_ => {
+                            .then((_) => {
                                 $this.isScanning = true;
                                 resolve(/* Void */ null);
 
@@ -443,11 +444,11 @@ export class Html5Qrcode {
                     Constants.SHADED_REGION_CLASSNAME)[0];
                 this.element.removeChild(shadedChild);
             }
-        }
+        };
 
         return new Promise((resolve, _) => {
             const onAllTracksClosed = () => {
-                this.localMediaStream = undefined;
+                this.localMediaStream = null;
                 if (this.element) {
                     this.element.removeChild(this.videoElement!);
                     this.element.removeChild(this.canvasElement!);
@@ -456,10 +457,10 @@ export class Html5Qrcode {
                 removeQrRegion();
                 this.isScanning = false;
                 if (this.qrRegion) {
-                    this.qrRegion = undefined;
+                    this.qrRegion = null;
                 }
                 if (this.context) {
-                    this.context = undefined;
+                    this.context = null;
                 }
                 resolve();
             };
@@ -530,7 +531,7 @@ export class Html5Qrcode {
                 + "of File. Use 'event.target.files[0]'.";
         }
 
-        if (showImage === undefined) {
+        if (isNullOrUndefined(showImage)) {
             showImage = true;
         }
 
@@ -705,12 +706,12 @@ export class Html5Qrcode {
             throw "invalid videoConstaints passed, check logs for more details";
         }
 
-        if (this.localMediaStream == null) {
+        if (this.localMediaStream === null) {
             throw "Scanning is not in running state, call this API only when"
                 + " QR code scanning using camera is in running state.";
         }
 
-        if (this.localMediaStream.getVideoTracks().length == 0) {
+        if (this.localMediaStream.getVideoTracks().length === 0) {
             throw "No video tracks found";
         }
 
@@ -724,10 +725,10 @@ export class Html5Qrcode {
             // TODO(mebjas): This can be simplified to just return the promise
             // directly.
             videoTrack.applyConstraints(videoConstaints)
-                .then(_ => {
+                .then((_) => {
                     resolve(_);
                 })
-                .catch(error => {
+                .catch((error) => {
                     reject(error);
                 });
         });
@@ -1231,7 +1232,7 @@ export class Html5Qrcode {
         if (this.hasBorderShaders
             && this.borderShaders
             && this.borderShaders.length) {
-            this.borderShaders.forEach(shader => {
+            this.borderShaders.forEach((shader) => {
                 shader.style.backgroundColor = qrMatch
                     ? Constants.BORDER_SHADER_MATCH_COLOR
                     : Constants.BORDER_SHADER_DEFAULT_COLOR;
@@ -1243,7 +1244,7 @@ export class Html5Qrcode {
     private possiblyCloseLastScanImageFile() {
         if (this.lastScanImageFile) {
             URL.revokeObjectURL(this.lastScanImageFile);
-            this.lastScanImageFile = undefined;
+            this.lastScanImageFile = null;
         }
     }
 
@@ -1251,12 +1252,12 @@ export class Html5Qrcode {
         width: number, height: number, customId?: string): HTMLCanvasElement {
         const canvasWidth = width;
         const canvasHeight = height;
-        const canvasElement = document.createElement('canvas');
+        const canvasElement = document.createElement("canvas");
         canvasElement.style.width = `${canvasWidth}px`;
         canvasElement.style.height = `${canvasHeight}px`;
         canvasElement.style.display = "none";
-        // This id is set by lazarsoft/jsqrcode
-        canvasElement.id = customId == undefined ? 'qr-canvas' : customId;
+        canvasElement.id = isNullOrUndefined(customId)
+            ? "qr-canvas" : customId!;
         return canvasElement;
     }
 
@@ -1283,7 +1284,7 @@ export class Html5Qrcode {
         if ((width - qrboxSize) < 1 || (height - qrboxSize) < 1) {
           return;
         }
-        const shadingElement = document.createElement('div');
+        const shadingElement = document.createElement("div");
         shadingElement.style.position = "absolute";
         shadingElement.style.borderLeft
             = `${(width-qrboxSize)/2}px solid #0000007a`;
