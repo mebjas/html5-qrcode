@@ -1,3 +1,6 @@
+### Version 2.0.10
+ - Migrate from assets hosted on Github to embedded base64 assets.
+
 ### Version 2.0.9
  - Added support for returning the type of code scanned (
      [feature request](https://github.com/mebjas/html5-qrcode/issues/224))
