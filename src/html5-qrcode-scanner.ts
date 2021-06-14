@@ -16,7 +16,6 @@ import {
     Html5QrcodeResult,
     Html5QrcodeError,
     Html5QrcodeErrorFactory,
-    Html5QrcodeResultFactory,
     CameraDevice,
     BaseLoggger,
     Logger,
@@ -32,6 +31,11 @@ import {
 import {
     Html5QrcodeScannerStrings,
 } from "./strings";
+
+import {
+    ASSET_FILE_SCAN,
+    ASSET_CAMERA_SCAN
+} from "./image-assets";
 
 /**
  * Different states of QR Code Scanner.
@@ -635,7 +639,7 @@ export class Html5QrcodeScanner {
         }
         this.cameraScanImage.width = 64;
         this.cameraScanImage.style.opacity = "0.3";
-        this.cameraScanImage.src = Html5QrcodeConstants.ASSET_CAMERA_SCAN;
+        this.cameraScanImage.src = ASSET_CAMERA_SCAN;
     }
 
     private insertFileScanImageToScanRegion() {
@@ -656,7 +660,7 @@ export class Html5QrcodeScanner {
         }
         this.fileScanImage.width = 64;
         this.fileScanImage.style.opacity = "0.3";
-        this.fileScanImage.src = Html5QrcodeConstants.ASSET_FILE_SCAN;
+        this.fileScanImage.src = ASSET_FILE_SCAN;
     }
 
     private clearScanRegion() {

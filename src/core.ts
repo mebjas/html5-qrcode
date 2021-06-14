@@ -82,16 +82,8 @@ export enum Html5QrcodeScanType {
  * Constants used in QR code library.
  */
 export class Html5QrcodeConstants {
-    static ASSET_FILE_SCAN: string
-        = "https://raw.githubusercontent.com/mebjas/html5-qrcode/master/assets"
-        + "/file-scan.gif";
-    static ASSET_CAMERA_SCAN: string
-        = "https://raw.githubusercontent.com/mebjas/html5-qrcode/master/assets"
-        + "/camera-scan.gif";
-
     static GITHUB_PROJECT_URL: string
         = "https://github.com/mebjas/html5-qrcode";
-
     static SCAN_DEFAULT_FPS = 2;
     static DEFAULT_DISABLE_FLIP = false;
 }
