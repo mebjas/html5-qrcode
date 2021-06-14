@@ -302,3 +302,10 @@ export class BaseLoggger implements Logger {
         }
     }
 }
+
+//#region global functions
+/** Returns true if the {@param obj} is null or undefined. */
+export function isNullOrUndefined(obj?: any) {
+    return (typeof obj === "undefined") || obj === null;
+}
+//#endregion
