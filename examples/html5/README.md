@@ -22,7 +22,7 @@ function onScanSuccess(decodedText, decodedResult) {
         ++countResults;
         lastResult = decodedText;
         // Handle on success condition with the decoded message.
-        onsole.log(`Scan result ${decodedText}`, decodedResult);
+        console.log(`Scan result ${decodedText}`, decodedResult);
     }
 }
 
