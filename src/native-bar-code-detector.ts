@@ -120,7 +120,7 @@ interface BarcodeDetectorResult {
     async decodeAsync(canvas: HTMLCanvasElement): Promise<QrcodeResult> {
         const barcodes: Array<BarcodeDetectorResult>
             = await this.detector.detect(canvas);
-        if (!barcodes || barcodes.length == 0) {
+        if (!barcodes || barcodes.length === 0) {
             throw "No barcode or QR code detected.";
         }
 
@@ -139,21 +139,19 @@ interface BarcodeDetectorResult {
 
     private selectLargestBarcode(barcodes: Array<BarcodeDetectorResult>)
         : BarcodeDetectorResult {
-        let largestIndex = 0;
-        let maxArea
-            = barcodes[0].boundingBox.height * barcodes[0].boundingBox.height;
-        for (let i = 1; i < barcodes.length; ++i) {
-            let area
-                = barcodes[i].boundingBox.height
-                    * barcodes[i].boundingBox.height;
-
+        let largestBarcode: BarcodeDetectorResult | null = null;
+        let maxArea = 0;
+        for (let barcode of barcodes) {
+            let area = barcode.boundingBox.width * barcode.boundingBox.height;
             if (area > maxArea) {
-                largestIndex = i;
                 maxArea = area;
+                largestBarcode = barcode;
             }
         }
-
-        return barcodes[largestIndex];
+        if (!largestBarcode) {
+            throw "No largest barcode found";
+        }
+        return largestBarcode!;
     }
 
     private createBarcodeDetectorFormats(

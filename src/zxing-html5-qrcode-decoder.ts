@@ -86,7 +86,7 @@ export class ZXingHtml5QrcodeDecoder implements QrcodeDecoderAsync {
             } catch (error) {
                 reject(error);
             }
-        })
+        });
     }
 
     private decode(canvas: HTMLCanvasElement): QrcodeResult {

@@ -54,7 +54,7 @@ export class ExperimentalFeaturesConfigFactory {
         }
 
         if (config.useBarCodeDetectorIfSupported !== true) {
-            config.useBarCodeDetectorIfSupported = false
+            config.useBarCodeDetectorIfSupported = false;
         }
 
         return config;

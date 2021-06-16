@@ -1032,7 +1032,7 @@ export class Html5Qrcode {
                     this.scanContext(qrCodeSuccessCallback, qrCodeErrorCallback)
                         .finally(() => {
                             triggerNextScan();
-                        })
+                        });
                 } else {
                     triggerNextScan();
                 }
