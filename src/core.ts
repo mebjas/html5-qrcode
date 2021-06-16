@@ -230,14 +230,13 @@ export interface CameraDevice {
 }
 
 /** Code decoder interface. */
-export interface QrcodeDecoder {
-
+export interface QrcodeDecoderAsync {
     /**
      * Decodes content of the canvas to find a valid QR code or bar code.
      * 
      * @param canvas a valid html5 canvas element.
      */
-    decode(canvas: HTMLCanvasElement): QrcodeResult;
+    decodeAsync(canvas: HTMLCanvasElement): Promise<QrcodeResult>;
 }
 
 /** Interface for logger. */

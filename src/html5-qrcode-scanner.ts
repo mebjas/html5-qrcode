@@ -68,6 +68,7 @@ function toHtml5QrcodeFullConfig(
     : Html5QrcodeFullConfig {
     return {
         formatsToSupport: config.formatsToSupport,
+        experimentalFeatures: config.experimentalFeatures,
         verbose: verbose
     };
 }
