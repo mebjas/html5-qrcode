@@ -10,7 +10,7 @@ Turning on this flag allows using native [BarcodeDetector](https://developer.moz
 api now being introduced in web browsers for code scanning instead of `ZXing`
 library we use officially.
 
-### How to turn this on?
+### How to turn this on
 It can be turned on using new config called `useBarCodeDetectorIfSupported`
 added to `experimentalFeatures` config group. It's off (`value = false`) by
 default. If set to on (`value = true`) and the `BarcodeDetector` is supported
@@ -68,5 +68,5 @@ codes than with Zxing library.
 | Pixel 4a Google Chrome || |
 | (low end) Android Device Google Chrome | 373 ms | 77.5 ms|
 
-### More references:
- - [https://web.dev/shape-detection/#barcodedetector](https://web.dev/shape-detection/#barcodedetector)
+### More references
+ -    [https://web.dev/shape-detection/#barcodedetector](https://web.dev/shape-detection/#barcodedetector)

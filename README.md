@@ -70,16 +70,19 @@ Code scanning is dependent on [Zxing-js](https://github.com/zxing-js/library) li
 | CODE_39|  <img src="./assets/code_39.gif" > |
 | CODE_93| <img src="./assets/code_93.gif" >|
 | CODE_128| <img src="./assets/code_128.gif" >|
-| MAXICODE| <img src="./assets/maxicode.gif" > |
 | ITF| <img src="./assets/itf.png" >|
 | EAN_13|<img src="./assets/ean13.jpeg" > |
 | EAN_8| <img src="./assets/ean8.jpeg" >|
 | PDF_417| <img src="./assets/pdf417.png" >|
-| RSS_14| <img src="./assets/rss14.gif" >|
-| RSS_EXPANDED|<img src="./assets/rssexpanded.gif" > |
 | UPC_A| <img src="./assets/upca.jpeg" >|
 | UPC_E| <img src="./assets/upce.jpeg" >|
 | DATA_MATRIX|<img src="./assets/datamatrix.png" > |
+| MAXICODE*| <img src="./assets/maxicode.gif" > |
+| RSS_14*| <img src="./assets/rss14.gif" >|
+| RSS_EXPANDED*|<img src="./assets/rssexpanded.gif" > |
+
+> *Formats are not supported by our experimental integration with native
+BarcodeDetector API integration ([Read more](blob/master/experimental.md)).
 
 ## Description - [View Demo](https://blog.minhazav.dev/research/html5-qrcode.html)
 
@@ -634,6 +637,13 @@ const html5QrcodeScanner = new Html5QrcodeScanner(
   /* verbose= */ false);
 html5QrcodeScanner.render(onScanSuccess);
 ```
+
+## Experimental features
+The library now supports some experimental features which are supported in the
+library but not recommended for production usage either due to limited testing
+done or limited compatibility for underlying APIs used. Read more about it [here](blob/master/experimental.md).
+Some of the experimental features include:
+ - [Support for BarcodeDetector javascript API](blob/master/experimental.md)
 
 ## How to modify and build
 1.  Code changes should only be made to [/src](./src) only.
