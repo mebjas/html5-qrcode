@@ -1,9 +1,31 @@
+### Version 2.0.11
+ -    Add support for native [BarcodeDetector](https://web.dev/shape-detection/#barcodedetector) based scanning.
+      - On Chrome `ZXing` based decoder takes `20-25` ms on my Mac book pro 16.
+      - On Chrome `BarcodeDetector` based decoder takes `8.6-11 ms` on my Mac book pro 16.
+      ```js
+      // How to enable
+      // Note: will only work if browser / OS supports this HTML api.
+      // Read more: https://developer.mozilla.org/en-US/docs/Web/API/BarcodeDetector#browser_compatibility
+      function onScanSuccess(decodedText, decodedResult) {
+          // handle success.
+      }
+      let html5QrcodeScanner = new Html5QrcodeScanner(
+        "reader", 
+        { 
+            fps: 10,
+            qrbox: 250,
+            experimentalFeatures: {
+                useBarCodeDetectorIfSupported: true
+            }
+        });
+      html5QrcodeScanner.render(onScanSuccess);
+      ```
+
 ### Version 2.0.10
- - Migrate from assets hosted on Github to embedded base64 assets.
+ -    Migrate from assets hosted on Github to embedded base64 assets.
 
 ### Version 2.0.9
- - Added support for returning the type of code scanned (
-     [feature request](https://github.com/mebjas/html5-qrcode/issues/224))
+ -    Added support for returning the type of code scanned ([feature request](https://github.com/mebjas/html5-qrcode/issues/224))
 
 ### Version 2.0.8
  - Added support for configuring supported formats in `Html5Qrcode` & `Html5QrcodeScanner`.

@@ -14,8 +14,8 @@ import {
     QrcodeResult,
     QrcodeResultFormat,
     Html5QrcodeSupportedFormats,
-    QrcodeDecoder,
-    Logger
+    Logger,
+    QrcodeDecoderAsync
 } from "./core";
 
 // Ambient tag to refer to ZXing library.
@@ -24,7 +24,7 @@ declare const ZXing: any;
 /**
  * ZXing based Code decoder.
  */
-export class ZXingHtml5QrcodeDecoder implements QrcodeDecoder {
+export class ZXingHtml5QrcodeDecoder implements QrcodeDecoderAsync {
 
     private readonly formatMap: Map<Html5QrcodeSupportedFormats, any>
         = new Map([
@@ -79,7 +79,17 @@ export class ZXingHtml5QrcodeDecoder implements QrcodeDecoder {
         this.hints = hints;
     }
 
-    decode(canvas: HTMLCanvasElement): QrcodeResult {
+    decodeAsync(canvas: HTMLCanvasElement): Promise<QrcodeResult> {
+        return new Promise((resolve, reject) => {
+            try {
+                resolve(this.decode(canvas));
+            } catch (error) {
+                reject(error);
+            }
+        });
+    }
+
+    private decode(canvas: HTMLCanvasElement): QrcodeResult {
         // Note: Earlier we used to instantiate the zxingDecoder once as state
         // of this class and use it for each scans. There seems to be some
         // stateful bug in ZXing library around RSS_14 likely due to

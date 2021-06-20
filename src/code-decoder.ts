@@ -11,21 +11,23 @@
 import {
     QrcodeResult,
     Html5QrcodeSupportedFormats,
-    QrcodeDecoder,
-    Logger
+    Logger,
+    QrcodeDecoderAsync
 } from "./core";
 
 import { ZXingHtml5QrcodeDecoder } from "./zxing-html5-qrcode-decoder";
+import { BarcodeDetectorDelegate } from "./native-bar-code-detector";
+import { ExperimentalFeaturesConfig } from "./experimental-features";
 
 /**
  * Shim layer for {@interface QrcodeDecoder}.
  * 
  * Currently uses {@class ZXingHtml5QrcodeDecoder}, can be replace with another library.
  */
-export class Html5QrcodeShim implements QrcodeDecoder {
+export class Html5QrcodeShim implements QrcodeDecoderAsync {
     
     private verbose: boolean;
-    private zxingDecorderDelegate: QrcodeDecoder;
+    private decoder: QrcodeDecoderAsync;
 
     private readonly EXECUTIONS_TO_REPORT_PERFORMANCE = 100;
     private executions: number = 0;
@@ -34,27 +36,31 @@ export class Html5QrcodeShim implements QrcodeDecoder {
     public constructor(
         requestedFormats: Array<Html5QrcodeSupportedFormats>,
         verbose: boolean,
-        logger: Logger) {
+        logger: Logger,
+        experimentalFeatureConfig: ExperimentalFeaturesConfig) {
         this.verbose = verbose;
-        this.zxingDecorderDelegate = new ZXingHtml5QrcodeDecoder(
-            requestedFormats, verbose, logger);
+
+        // Use BarcodeDetector library if enabled by config and is supported.
+        if (experimentalFeatureConfig.useBarCodeDetectorIfSupported === true
+            && BarcodeDetectorDelegate.isSupported()) {
+            this.decoder = new BarcodeDetectorDelegate(
+                requestedFormats, verbose, logger);
+        } else {
+            this.decoder = new ZXingHtml5QrcodeDecoder(
+                requestedFormats, verbose, logger);
+        }
     }
 
-    decode(canvas: HTMLCanvasElement): QrcodeResult {
+    decodeAsync(canvas: HTMLCanvasElement): Promise<QrcodeResult> {
         let start = performance.now();
-        try {
-            let result: QrcodeResult = this.zxingDecorderDelegate.decode(canvas);
-            return result;
-        } catch (ex) {
-            throw ex;
-        } finally {
+        return this.decoder.decodeAsync(canvas).finally(() => {
             if (this.verbose) {
                 let executionTime = performance.now() - start;
                 this.executionResults.push(executionTime);
                 this.executions++;
                 this.possiblyFlushPerformanceReport();
             }
-        }
+        });
     }
 
     // Dumps mean decoding latency to console for last
