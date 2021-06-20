@@ -82,7 +82,7 @@ Code scanning is dependent on [Zxing-js](https://github.com/zxing-js/library) li
 | RSS_EXPANDED*|<img src="./assets/rssexpanded.gif" > |
 
 > *Formats are not supported by our experimental integration with native
-> BarcodeDetector API integration ([Read more](blob/master/experimental.md)).
+> BarcodeDetector API integration ([Read more](/experimental.md)).
 
 ## Description - [View Demo](https://blog.minhazav.dev/research/html5-qrcode.html)
 
@@ -641,9 +641,9 @@ html5QrcodeScanner.render(onScanSuccess);
 ## Experimental features
 The library now supports some experimental features which are supported in the
 library but not recommended for production usage either due to limited testing
-done or limited compatibility for underlying APIs used. Read more about it [here](blob/master/experimental.md).
+done or limited compatibility for underlying APIs used. Read more about it [here](/experimental.md).
 Some of the experimental features include:
--   [Support for BarcodeDetector javascript API](blob/master/experimental.md)
+-   [Support for BarcodeDetector javascript API](/experimental.md)
 
 ## How to modify and build
 1.  Code changes should only be made to [/src](./src) only.
