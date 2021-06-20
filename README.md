@@ -641,7 +641,7 @@ html5QrcodeScanner.render(onScanSuccess);
 ## Experimental features
 The library now supports some experimental features which are supported in the
 library but not recommended for production usage either due to limited testing
-done or limited compatibility for underlying APIs used. Read more about it [here](blob/master/experimental.md).
+done or limited compatibility for underlying APIs used. Read more about it [here](/experimental.md).
 Some of the experimental features include:
 -   [Support for BarcodeDetector javascript API](/experimental.md)
 
