@@ -88,6 +88,15 @@ interface BarcodeDetectorResult {
     private logger: Logger;
     private detector: any;
 
+    /**
+     * Returns true if this API is supported by the browser.
+     * 
+     * TODO(mebjas): Add checks like this 
+     * https://web.dev/shape-detection/#featuredetection
+     * TODO(mebjas): Check for format supported by the BarcodeDetector using
+     * getSupportedFormats() API.
+     * @returns 
+     */
     public static isSupported(): boolean {
         if (!BarcodeDetector) {
             return false;

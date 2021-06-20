@@ -367,7 +367,7 @@ export class Html5QrcodeScanner {
         fileScanInput.disabled
             = this.currentScanType === Html5QrcodeScanType.SCAN_TYPE_CAMERA;
         const fileScanLabel = document.createElement("span");
-        fileScanLabel.innerHTML = "&nbsp; Select Image";
+        fileScanLabel.innerText = " Select Image";
         fileBasedScanRegion.appendChild(fileScanInput);
         fileBasedScanRegion.appendChild(fileScanLabel);
         fileScanInput.addEventListener("change", (e: any) => {
@@ -412,7 +412,7 @@ export class Html5QrcodeScanner {
 
         const cameraSelectionContainer = document.createElement("span");
         cameraSelectionContainer.innerText
-            = `Select Camera (${cameras.length}) &nbsp;`;
+            = `Select Camera (${cameras.length})  `;
         cameraSelectionContainer.style.marginRight = "10px";
 
         const cameraSelectionSelect = document.createElement("select");
