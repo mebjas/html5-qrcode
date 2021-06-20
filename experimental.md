@@ -64,9 +64,11 @@ codes than with Zxing library.
 |--|--|--|--|
 | Macbook Pro 16, Google Chrome | 21 ms |  10 ms|
 | Pixel 4 Google Chrome | 56 ms | 23 ms |
-| Iphone 7 | | |
 | Pixel 4a Google Chrome || |
 | (low end) Android Device Google Chrome | 373 ms | 77.5 ms|
 
+Not supported on:
+-   Macbook Pro 16, Safari (macOS Big Sur)
+
 ### More references
- -    [https://web.dev/shape-detection/#barcodedetector](https://web.dev/shape-detection/#barcodedetector)
+-   [https://web.dev/shape-detection/#barcodedetector](https://web.dev/shape-detection/#barcodedetector)

@@ -98,7 +98,7 @@ interface BarcodeDetectorResult {
      * @returns 
      */
     public static isSupported(): boolean {
-        if (!BarcodeDetector) {
+        if (!('BarcodeDetector' in window)) {
             return false;
         }
         const dummyDetector = new BarcodeDetector({formats: [ "qr_code" ]});
@@ -109,7 +109,7 @@ interface BarcodeDetectorResult {
         requestedFormats: Array<Html5QrcodeSupportedFormats>,
         verbose: boolean,
         logger: Logger) {
-        if (!BarcodeDetector) {
+        if (!BarcodeDetectorDelegate.isSupported()) {
             throw "Use html5qrcode.min.js without edit, Use "
                 + "BarcodeDetectorDelegate only if it isSupported();";
         }
@@ -172,7 +172,7 @@ interface BarcodeDetectorResult {
                     formats.push(
                         this.formatMap.get(requestedFormat)!);
                 } else {
-                    this.logger.logError(`${requestedFormat} is not supported by`
+                    this.logger.warn(`${requestedFormat} is not supported by`
                         + "BarcodeDetectorDelegate");
                 }
             }

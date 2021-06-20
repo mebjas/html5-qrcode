@@ -82,7 +82,7 @@ Code scanning is dependent on [Zxing-js](https://github.com/zxing-js/library) li
 | RSS_EXPANDED*|<img src="./assets/rssexpanded.gif" > |
 
 > *Formats are not supported by our experimental integration with native
-BarcodeDetector API integration ([Read more](blob/master/experimental.md)).
+> BarcodeDetector API integration ([Read more](blob/master/experimental.md)).
 
 ## Description - [View Demo](https://blog.minhazav.dev/research/html5-qrcode.html)
 
@@ -428,7 +428,7 @@ interface Html5QrcodeCameraScanConfig {
    */
   disableFlip?: boolean | undefined;
 
-  /**
+  /*
    * Optional, @beta(this config is not well supported yet).
    *
    * Important: When passed this will override other parameters like
@@ -643,7 +643,7 @@ The library now supports some experimental features which are supported in the
 library but not recommended for production usage either due to limited testing
 done or limited compatibility for underlying APIs used. Read more about it [here](blob/master/experimental.md).
 Some of the experimental features include:
- - [Support for BarcodeDetector javascript API](blob/master/experimental.md)
+-   [Support for BarcodeDetector javascript API](blob/master/experimental.md)
 
 ## How to modify and build
 1.  Code changes should only be made to [/src](./src) only.
