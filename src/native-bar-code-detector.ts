@@ -98,7 +98,7 @@ interface BarcodeDetectorResult {
      * @returns 
      */
     public static isSupported(): boolean {
-        if (!('BarcodeDetector' in window)) {
+        if (!("BarcodeDetector" in window)) {
             return false;
         }
         const dummyDetector = new BarcodeDetector({formats: [ "qr_code" ]});
