@@ -5,7 +5,7 @@
         "sourceMap": true,
         "moduleResolution": "classic",
         "lib": [
-            "es7",
+            "es2018",
             "dom"
         ],
 

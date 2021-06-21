@@ -94,6 +94,14 @@ export class Html5QrcodeScannerStrings {
         return "Start Scanning";
     }
 
+    public static toggleFlashOnText(): string {
+        return "Turn flash on";
+    }
+
+    public static toggleFlashOffText(): string {
+        return "Turn flash off";
+    }
+
     /**
      * Text to show when camera scan is selected.
      * 
