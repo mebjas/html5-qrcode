@@ -237,6 +237,7 @@ export class Html5Qrcode {
     private qrRegion: QrcodeRegionBounds | null = null;
     private context: CanvasRenderingContext2D | null = null;
     private lastScanImageFile: string | null = null;
+    private flashOn: boolean;
     //#endregion
 
     public isScanning: boolean;
@@ -285,7 +286,7 @@ export class Html5Qrcode {
         this.localMediaStream;
         this.shouldScan = true;
         this.isScanning = false;
-
+        this.flashOn = false;
     }
 
     //#region start()
@@ -393,7 +394,14 @@ export class Html5Qrcode {
                             qrCodeErrorCallback!)
                             .then((_) => {
                                 $this.isScanning = true;
-                                resolve(/* Void */ null);
+                                if (!$this.flashOn) {
+                                    resolve(/* Void */ null);
+                                    return;
+                                }
+                                // Turn on flash light if it was turned on before
+                                $this.setFlash(true).then(() => {
+                                    resolve(/* Void */ null);
+                                });
                             })
                             .catch(reject);
                     })
@@ -492,6 +500,7 @@ export class Html5Qrcode {
 
             this.localMediaStream!.getVideoTracks().forEach((videoTrack) => {
                 this.localMediaStream!.removeTrack(videoTrack);
+                // This will also stop flash light
                 videoTrack.stop();
                 ++tracksClosed;
 
@@ -499,6 +508,63 @@ export class Html5Qrcode {
                     onAllTracksClosed();
                 }
             });
+        });
+    }
+
+    /**
+     * Checks if current video track has flash light capability.
+     * 
+     * This feature requires that camera is started.
+     *
+     * @returns Promise with detected flash capability result.
+     */
+    public hasFlash(): Promise<boolean> {
+        if (!("ImageCapture" in window)) {
+            return Promise.resolve(false);
+        }
+
+        const track = this.videoElement?.srcObject ? (<MediaStream>this.videoElement.srcObject).getVideoTracks()[0] : null;
+        if (!track) {
+            throw "Scan should be started to detect flash capability";
+        }
+
+        return new ImageCapture(track).getPhotoCapabilities()
+            .then((result) => {
+                return result.fillLightMode.includes("flash");
+            })
+            .catch((err) => {
+                this.logger.warn(err);
+                return false;
+            });
+    }
+
+    /**
+     * Checks if flash is turned on.
+     *
+     * @returns Current flash state.
+     */
+    public isFlashOn(): boolean {
+        return this.flashOn;
+    }
+
+    /**
+     * Change flash state.
+     * 
+     * @param on if true flash will be turned on otherwise turned off.
+     * @returns Promise that flash state has changed.
+     */
+    public setFlash(on: boolean): Promise<void> {
+        return this.hasFlash().then((hasFlash) => {
+            if (!hasFlash) {
+                return Promise.reject("No flash available");
+            }
+
+            // At this point we already know that video element is not null and has track
+            return (<MediaStream>this.videoElement!.srcObject).getVideoTracks()[0].applyConstraints({
+                advanced: [{ torch: on }]
+            });
+        }).then(() => {
+            this.flashOn = on;
         });
     }
 
@@ -767,6 +833,7 @@ export class Html5Qrcode {
                         const tracks = stream.getVideoTracks();
                         for (const track of tracks) {
                             track.enabled = false;
+                            // This will also stop flash light
                             track.stop();
                             stream.removeTrack(track);
                         }

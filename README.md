@@ -90,6 +90,7 @@ This is a cross-platform Javascript library to integrate QR code, bar codes & a 
 
 Supports:
 -   Querying camera on the device (with user permissions)
+-   Turning on/off flash light if device supports that
 -   Rendering live camera feed, with easy to use user interface for scanning
 -   Supports scanning a different kind of QR codes, bar codes and other formats
 -   Supports selecting image files from the device for scanning codes
@@ -144,7 +145,7 @@ html5QrcodeScanner.render(onScanSuccess, onScanFailure);
 ### Pro Mode - if you want to implement your own user interface
 You can use `Html5Qrcode` class to set up your QR code scanner (with your own user interface) and allow users to scan QR codes using the camera or by choosing an image file in the file system or native cameras in smartphones.
 
-You can use the following APIs to `fetch camera`, `start` scanning and `stop` scanning.
+You can use the following APIs to `fetch camera`, `start` scanning, `stop` scanning and `set flash` state.
 
 #### For using inline QR Code scanning with Webcam or Smartphone camera
 
@@ -237,6 +238,20 @@ html5QrCode.stop().then((ignore) => {
 ```
 
 > Note that the class is stateful and `stop()` should be called to properly tear down the video and camera objects safely after calling `start()` when the scan is over or the user intend to move on. `stop()` will stop the video feed on the viewfinder.
+
+### Flash light support
+
+To detect if camera supports flash light, call call `Html5Qrcode#hasFlash()` which returns a `Promise` with detected result.
+```js
+html5QrCode.hasFlash().then((hasFlash) => {
+  if (hasFlash) {
+    // Flash light is supported, turn it on
+    html5QrCode.setFlash(true);
+  }
+});
+```
+
+> Not that camera must be already selected and started to be able to detect and turn on flash light.
 
 #### For QR Code scanning using local files or inbuild camera on Smartphones
 | Selector in Android | Selector in IOS|

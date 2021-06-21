@@ -441,6 +441,13 @@ export class Html5QrcodeScanner {
         cameraActionStopButton.disabled = true;
         cameraActionContainer.appendChild(cameraActionStopButton);
 
+        const flashActionToggleButton = document.createElement("button");
+        flashActionToggleButton.innerText
+            = Html5QrcodeScannerStrings.toggleFlashOnText();
+        flashActionToggleButton.style.display = "none";
+        flashActionToggleButton.disabled = true;
+        cameraActionContainer.appendChild(flashActionToggleButton);
+
         scpCameraScanRegion.appendChild(cameraActionContainer);
 
         cameraActionStartButton.addEventListener("click", (_) => {
@@ -458,6 +465,12 @@ export class Html5QrcodeScanner {
                     cameraActionStopButton.style.display = "inline-block";
                     cameraActionStartButton.style.display = "none";
                     $this.setStatus(Html5QrcodeScannerStrings.scanningStatus());
+                    $this.html5Qrcode!.hasFlash().then((hasFlash) => {
+                        if (hasFlash) {
+                            flashActionToggleButton.style.display = "inline-block";
+                            flashActionToggleButton.disabled = false;
+                        }
+                    });
                 })
                 .catch((error) => {
                     $this.showHideScanTypeSwapLink(true);
@@ -481,6 +494,7 @@ export class Html5QrcodeScanner {
                     cameraActionStartButton.disabled = false;
                     cameraActionStopButton.style.display = "none";
                     cameraActionStartButton.style.display = "inline-block";
+                    flashActionToggleButton.style.display = "none";
                     $this.setStatus(Html5QrcodeScannerStrings.idleStatus());
                     $this.insertCameraScanImageToScanRegion();
                 }).catch((error) => {
@@ -491,6 +505,23 @@ export class Html5QrcodeScanner {
                     $this.setHeaderMessage(
                         error, Html5QrcodeScannerStatus.STATUS_WARNING);
                 });
+        });
+
+        flashActionToggleButton.addEventListener("click", (_) => {
+            if (!$this.html5Qrcode) {
+                throw "html5Qrcode not defined";
+            }
+            flashActionToggleButton.disabled = true;
+            $this.html5Qrcode.setFlash(!$this.html5Qrcode.isFlashOn()).then((_) => {
+                flashActionToggleButton.disabled = false;
+                if ($this.html5Qrcode && $this.html5Qrcode.isFlashOn()) {
+                    flashActionToggleButton.innerText
+                        = Html5QrcodeScannerStrings.toggleFlashOffText();
+                } else {
+                    flashActionToggleButton.innerText
+                        = Html5QrcodeScannerStrings.toggleFlashOnText();
+                }
+            });
         });
     }
 
