@@ -109,15 +109,15 @@ Add an element you want to use as a placeholder for QR Code scanner
 ```
 > Ideally do not set the height of this container as the height should depend on the height of the video feed from the camera. The library would honor the existing width, otherwise apply the default width. The height is derived from the aspect ratio of the video feed.
 
-Add `minified/html5-qrcode.min.js` in your web page. 
+Add `dist/html5-qrcode.min.js` in your web page. 
 > I would recommend using the minified version as it's transformed to standard javascript. The `html5-qrcode.js` is written with ECMAScript and may not be supported in the older version of the browsers. I wrote in this as it's easier to maintain!
 
 ```html
-<script src="./minified/html5-qrcode.js"></script>
+<script src="./dist/html5-qrcode.js"></script>
 <!--
   Or use directly from Github
 
-<script src="https://raw.githubusercontent.com/mebjas/html5-qrcode/master/minified/html5-qrcode.min.js"></script>
+<script src="https://raw.githubusercontent.com/mebjas/html5-qrcode/master/dist/html5-qrcode.min.js"></script>
 -->
 ```
 
@@ -249,7 +249,7 @@ You can alternatively leverage QR Code scanning for local files on the device or
 Define the HTML container and import the javascript library as mentioned above
 ```html
 <div id="reader" width="600px" height="600px"></div>
-<script src="./minified/html5-qrcode.js"></script>
+<script src="./dist/html5-qrcode.js"></script>
 ```
 > It's not mandatory to set the height and width of the HTML element. If provided, the library would try to honor it. If it's not set, the library would set a default width and derive the height based on the input image's aspect ratio.
 
