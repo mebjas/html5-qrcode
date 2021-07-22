@@ -271,7 +271,8 @@ export class Html5QrcodeScanner {
         const titleLink = document.createElement("a");
         titleLink.innerText = Html5QrcodeScannerStrings.codeScannerTitle();
         titleLink.href = Html5QrcodeConstants.GITHUB_PROJECT_URL;
-        titleSpan.appendChild(titleLink);
+        titleLink.target = "_blank";
+	titleSpan.appendChild(titleLink);
         header.appendChild(titleSpan);
 
         const statusSpan = document.createElement("span");
@@ -640,6 +641,7 @@ export class Html5QrcodeScanner {
         }
         this.cameraScanImage.width = 64;
         this.cameraScanImage.style.opacity = "0.3";
+        this.cameraScanImage.style.margin = "auto";
         this.cameraScanImage.src = ASSET_CAMERA_SCAN;
     }
 
