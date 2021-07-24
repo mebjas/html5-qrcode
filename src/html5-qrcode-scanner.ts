@@ -272,7 +272,7 @@ export class Html5QrcodeScanner {
         titleLink.innerText = Html5QrcodeScannerStrings.codeScannerTitle();
         titleLink.href = Html5QrcodeConstants.GITHUB_PROJECT_URL;
         titleLink.target = "_blank";
-	titleSpan.appendChild(titleLink);
+        titleSpan.appendChild(titleLink);
         header.appendChild(titleSpan);
 
         const statusSpan = document.createElement("span");
