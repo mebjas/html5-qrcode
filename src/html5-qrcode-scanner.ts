@@ -271,8 +271,9 @@ export class Html5QrcodeScanner {
         const titleLink = document.createElement("a");
         titleLink.innerText = Html5QrcodeScannerStrings.codeScannerTitle();
         titleLink.href = Html5QrcodeConstants.GITHUB_PROJECT_URL;
+        titleLink.position = "absolute";
         titleLink.target = "_blank";
-	titleSpan.appendChild(titleLink);
+        titleSpan.appendChild(titleLink);
         header.appendChild(titleSpan);
 
         const statusSpan = document.createElement("span");
@@ -641,6 +642,7 @@ export class Html5QrcodeScanner {
         }
         this.cameraScanImage.width = 64;
         this.cameraScanImage.style.opacity = "0.3";
+        this.cameraScanImage.style.position = "absolute";
         this.cameraScanImage.style.margin = "auto";
         this.cameraScanImage.src = ASSET_CAMERA_SCAN;
     }
@@ -663,6 +665,8 @@ export class Html5QrcodeScanner {
         }
         this.fileScanImage.width = 64;
         this.fileScanImage.style.opacity = "0.3";
+        this.fileScanImage.style.position = "absolute";
+        this.fileScanImage.style.margin = "auto";
         this.fileScanImage.src = ASSET_FILE_SCAN;
     }
 
