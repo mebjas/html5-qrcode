@@ -24,8 +24,8 @@ class Html5QrcodeScannerPlugin extends React.Component {
             if (props.fps) {
             config.fps = props.fps;
             }
-            if (props.qrBox) {
-            config.qrBox = props.qrBox;
+            if (props.qrbox) {
+            config.qrbox = props.qrbox;
             }
             if (props.aspectRatio) {
             config.aspectRatio = props.aspectRatio;
@@ -72,7 +72,7 @@ ReactDOM.render(
         <h1>Html5Qrcode React example!</h1>
         <Html5QrcodeScannerPlugin
             fps={10}
-            qrBox={250}
+            qrbox={250}
             disableFlip={false}
             qrCodeSuccessCallback={console.log}
             qrCodeErrorCallback={console.error} />
