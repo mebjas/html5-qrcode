@@ -7,7 +7,7 @@
 ### Include the js library in your project
 
 ```html
-<script src="https://unpkg.com/html5-qrcode@2.0.11/dist/html5-qrcode.min.js"></script>
+<script src="https://unpkg.com/html5-qrcode"></script>
 ```
 
 ### Create a `qrcode-scanner` component
