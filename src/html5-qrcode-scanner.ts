@@ -47,7 +47,7 @@ import {
 
 import {
   CameraManager
-} from './camera';
+} from "./camera";
 
 /**
  * Different states of QR Code Scanner.
@@ -66,8 +66,10 @@ interface Html5QrcodeScannerConfig
     extends Html5QrcodeCameraScanConfig, Html5QrcodeConfigs {
 
     /**
-     * The library will remember the last used camera if this is set to true.
-     * Otherwise start with first camera.
+     * If {@code true} the library will remember if the camera permissions
+     * were previously granted and what camera was last used. If the permissions
+     * is already granted for "camera", QR code scanning will automatically
+     * start for previously used camera.
      * 
      * Note: default value is true.
      */
@@ -386,7 +388,7 @@ export class Html5QrcodeScanner {
             $this.createCameraListUi(
                 scpCameraScanRegion,
                 requestPermissionContainer,
-                requestPermissionButton)
+                requestPermissionButton);
         });
         requestPermissionContainer.appendChild(requestPermissionButton);
     }
@@ -581,7 +583,7 @@ export class Html5QrcodeScanner {
             const cameraId = $this.persistedDataManager.getLastUsedCameraId();
             let cameraFound = false;
             for (const option of options) {
-                if (option.value == cameraId) {
+                if (option.value === cameraId) {
                     cameraFound = true;
                     break;
                 }
