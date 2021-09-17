@@ -86,6 +86,10 @@ export class Html5QrcodeScannerStrings {
         return "Requesting camera permissions...";
     }
 
+    public static noCameraFound(): string {
+        return "No camera found";
+    }
+
     public static scanButtonStopScanningText(): string {
         return "Stop Scanning";
     }
@@ -110,5 +114,17 @@ export class Html5QrcodeScannerStrings {
      */
     public static textIfFileScanSelected(): string {
         return "Scan using camera directly";
+    }
+}
+
+/** Strings used in {@class LibraryInfoDiv} */
+export class LibraryInfoStrings {
+
+    public static builtUsing(): string {
+        return "Built using ";
+    }
+
+    public static reportIssues(): string {
+        return "Report issues";
     }
 }

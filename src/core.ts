@@ -86,6 +86,7 @@ export class Html5QrcodeConstants {
         = "https://github.com/mebjas/html5-qrcode";
     static SCAN_DEFAULT_FPS = 2;
     static DEFAULT_DISABLE_FLIP = false;
+    static DEFAULT_REMEMBER_LAST_CAMERA_USED = true;
 }
 
 /**

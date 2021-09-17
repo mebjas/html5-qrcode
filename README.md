@@ -447,7 +447,16 @@ interface Html5QrcodeCameraScanConfig {
  * Interface for controlling different aspects of {@class Html5QrcodeScanner}.
  */
 interface Html5QrcodeScannerConfig
-  extends Html5QrcodeCameraScanConfig, Html5QrcodeConfigs {};
+  extends Html5QrcodeCameraScanConfig, Html5QrcodeConfigs {
+
+  /**
+   * The library will remember the last used camera if this is set to true.
+   * Otherwise start with first camera.
+   * 
+   * Note: default value is true.
+   */
+  rememberLastUsedCamera?: boolean | undefined;
+};
 
 class Html5Qrcode {
   /**
@@ -572,6 +581,9 @@ Here's an example of a normal and mirrored QR Code
 | Normal QR Code | Mirrored QR Code |
 | ----- | ---- |
 | <img src="./assets/qr-code.png" width="200px"> | <img src="./assets/qr-code-flipped.png" width="200px"><br> |
+
+#### `rememberLastUsedCamera` - Boolean (Optional), default = true
+If `true` the last camera used by the user and weather or not permission was granted would be remembered in the local storage. If the user has previously granted permissions - the request permission option in the UI will be skipped and the last selected camera would be launched automatically for scanning.
 
 ### Scanning only specific formats
 By default, both camera stream and image files are scanned against all the
