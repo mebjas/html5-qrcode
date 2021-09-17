@@ -7,13 +7,13 @@ Use this lightweight library to easily / quickly integrate QR code, bar code, an
 
 -   Supports scanning codes from files or default cameras on smartphones.
 
--   **<u>Recently Added</u>**  Supports bar code scanning in various formats.
+-   **<u>Recently Added</u>** Supports bar code scanning in various formats.
 
--   Supports two kind of APIs
-    -   `Html5QrcodeScanner` - End-to-end scanner with UI, integrate with less than ten lines of code.
-    -   `Html5Qrcode` - Powerful set of APIs you can use to build your UI without worrying about camera setup, handling permissions, reading codes, etc.
+-   Supports two kinds of APIs
+    -   `Html5QrcodeScanner` — End-to-end scanner with UI, integrate with less than ten lines of code.
+    -   `Html5Qrcode` — Powerful set of APIs you can use to build your UI without worrying about camera setup, handling permissions, reading codes, etc.
 
-> Support for scanning local files on the device is a new addition and helpful for the web browser which does not support inline web-camera access in smartphones. **Note:** This doesn't upload files to any server - everything is done locally.
+> Support for scanning local files on the device is a new addition and helpful for the web browser which does not support inline web-camera access in smartphones. **Note:** This doesn't upload files to any server — everything is done locally.
 
 [![Build Status](https://travis-ci.org/mebjas/html5-qrcode.svg?branch=master)](https://travis-ci.org/mebjas/html5-qrcode) [![GitHub issues](https://img.shields.io/github/issues/mebjas/html5-qrcode)](https://github.com/mebjas/html5-qrcode/issues) [![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/mebjas/html5-qrcode)](https://github.com/mebjas/html5-qrcode/releases) ![GitHub](https://img.shields.io/github/license/mebjas/html5-qrcode) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/51e4f0ef8b0b42e1b93ce29875dd23a0)](https://www.codacy.com/gh/mebjas/html5-qrcode/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=mebjas/html5-qrcode&amp;utm_campaign=Badge_Grade) [![Gitter](https://badges.gitter.im/html5-qrcode/community.svg)](https://gitter.im/html5-qrcode/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
@@ -22,17 +22,17 @@ Use this lightweight library to easily / quickly integrate QR code, bar code, an
 
 | <img src="./assets/pixel3.gif" width="200px"> | <img src="./assets/pixel4_barcode_480.gif" width="180px">|
 | -- | -- |
-| _Figure: Running on Android, Pixel 3_ | _Figure: Running on Android, Pixel 4, **Scanning different types of codes**_  |
+| _Figure: Running on Android, Pixel 3_ | _Figure: Running on Android, Pixel 4, **Scanning different types of codes**_ |
 
 ## Notice
-**UX/UXD/UXR help wanted**: We are looking to improve user experience of this code scanning library - if you are interested in making this experience better for both developers and end users, please share your ideas, thoughts, inputs in [this discussion](https://github.com/mebjas/html5-qrcode/discussions/213)
+**UX/UXD/UXR help wanted**: We are looking to improve user experience of this code scanning library — if you are interested in making this experience better for both developers and end users, please share your ideas, thoughts, inputs in [this discussion](https://github.com/mebjas/html5-qrcode/discussions/213)
 
 ## Supported platforms
 We are working continuously on adding support for more and more platforms. If you find a platform or a browser where the library is not working, please feel free to file an issue. Check the [demo link](https://blog.minhazav.dev/research/html5-qrcode.html) to test it out.
 
 **Legends**
--   ![](assets/done.png) Means full support - inline webcam and file based 
--   ![](assets/partial.png) Means partial support - only file based, webcam in progress
+-   ![](assets/done.png) Means full support — inline webcam and file based 
+-   ![](assets/partial.png) Means partial support — only file based, webcam in progress
 
 ### PC / Mac
 
@@ -87,7 +87,7 @@ Code scanning is dependent on [Zxing-js](https://github.com/zxing-js/library) li
 
 ## Description - [View Demo](https://blog.minhazav.dev/research/html5-qrcode.html)
 
-This is a cross-platform Javascript library to integrate QR code, bar codes & a few other types of code scanning capabilities to your applications running on HTML5 compatible browser.
+This is a cross-platform JavaScript library to integrate QR code, bar codes & a few other types of code scanning capabilities to your applications running on HTML5 compatible browser.
 
 Supports:
 -   Querying camera on the device (with user permissions)
@@ -110,7 +110,7 @@ Add an element you want to use as a placeholder for QR Code scanner
 > Ideally do not set the height of this container as the height should depend on the height of the video feed from the camera. The library would honor the existing width, otherwise apply the default width. The height is derived from the aspect ratio of the video feed.
 
 Add `dist/html5-qrcode.min.js` in your web page. 
-> I would recommend using the minified version as it's transformed to standard javascript. The `html5-qrcode.js` is written with ECMAScript and may not be supported in the older version of the browsers. I wrote in this as it's easier to maintain!
+> I would recommend using the minified version as it's transformed to standard JavaScript. The `html5-qrcode.js` is written with ECMAScript and may not be supported in the older version of the browsers. I wrote in this as it's easier to maintain!
 
 ```html
 <script src="./dist/html5-qrcode.js"></script>
@@ -124,7 +124,7 @@ Add `dist/html5-qrcode.min.js` in your web page.
 ### Easy Mode - With end to end scanner user interface
 `Html5QrcodeScanner` lets you implement an end to end scanner with few lines of code with the default user interface which allows scanning using the camera or selecting an image from the file system.
 
-You can setup the scanner as follows:
+You can set up the scanner as follows:
 ```js
 function onScanSuccess(decodedText, decodedResult) {
   // handle the scanned code as you like, for example:
@@ -172,7 +172,7 @@ Html5Qrcode.getCameras().then(devices => {
 > 
 > Warning: Asking for access to the camera on page load will result in most of your users rejecting access to it. [More info](https://developers.google.com/web/fundamentals/media/capturing-images)
 
-Once you have the camera id from `device.id`, start camera using `Html5Qrcode#start(..)`. This method returns a `Promise` with Qr code scanning initiation.
+Once you have the camera ID from `device.id`, start camera using `Html5Qrcode#start(..)`. This method returns a `Promise` with Qr code scanning initiation.
 ```js
 const html5QrCode = new Html5Qrcode(/* element id */ "reader");
 html5QrCode.start(
@@ -199,7 +199,7 @@ const html5QrCode = new Html5Qrcode("reader", /* verbose= */ true);
 ```
 
 ##### Scanning without cameraId
-In mobile devices you may want users to directly scan the QR code using the back camera or the front camera for some use cases. For such cases you can avoid using the exact camera device id that you get from `Html5Qrcode.getCameras()`. The `start()` method allows passing constraints in place of camera device id similar to [html5 web API syntax](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia#Syntax). You can start scanning like mentioned in these examples:
+In mobile devices you may want users to directly scan the QR code using the back camera or the front camera for some use cases. For such cases you can avoid using the exact camera device ID that you get from `Html5Qrcode.getCameras()`. The `start()` method allows passing constraints in place of camera device ID similar to [html5 web API syntax](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia#Syntax). You can start scanning like mentioned in these examples:
 
 ```js
 const html5QrCode = new Html5Qrcode("reader");
@@ -221,7 +221,7 @@ html5QrCode.start({ facingMode: { exact: "user"} }, config, qrCodeSuccessCallbac
 html5QrCode.start({ facingMode: { exact: "environment"} }, config, qrCodeSuccessCallback);
 ```
 
-Passing the `cameraId` (recommended appraoch) is similar to
+Passing the `cameraId` (recommended approach) is similar to
 ```js
 html5QrCode.start({ deviceId: { exact: cameraId} }, config, qrCodeSuccessCallback);
 ```
@@ -239,14 +239,14 @@ html5QrCode.stop().then((ignore) => {
 
 > Note that the class is stateful and `stop()` should be called to properly tear down the video and camera objects safely after calling `start()` when the scan is over or the user intend to move on. `stop()` will stop the video feed on the viewfinder.
 
-#### For QR Code scanning using local files or inbuild camera on Smartphones
+#### For QR Code scanning using local files or inbuilt camera on Smartphones
 | Selector in Android | Selector in IOS|
 |------|-------|
 | Taken on Pixel 3, Google Chrome<br><img src="./assets/selector_android.png" width="300px"> |  Taken on iPhone 7, Google Chrome<br><img src="./assets/selector_iphone.jpg" width="300px"> |
 
 You can alternatively leverage QR Code scanning for local files on the device or default camera on the device. It works similar to inline QR Code scanning.
 
-Define the HTML container and import the javascript library as mentioned above
+Define the HTML container and import the JavaScript library as mentioned above
 ```html
 <div id="reader" width="600px" height="600px"></div>
 <script src="./dist/html5-qrcode.js"></script>
@@ -264,7 +264,7 @@ Add an `Input` element for supporting file selection like this:
 ```
 Find more information about this at [developers.google.com](https://developers.google.com/web/fundamentals/media/capturing-images).
 
-And in javascript code initialize the object and attach listener like this:
+And in JavaScript code initialize the object and attach listener like this:
 ```js
 const html5QrCode = new Html5Qrcode(/* element id */ "reader");
 // File based scanning
@@ -304,13 +304,13 @@ _Scan this image or visit [blog.minhazav.dev/research/html5-qrcode.html](https:/
 ### For more information
 Check these articles on how to use this library:
 <!-- TODO(mebjas) Mirgate this link to blog.minhazav.dev -->
--   [QR and barcode scanner using HTML and Javascript](https://minhazav.medium.com/qr-and-barcode-scanner-using-html-and-javascript-2cdc937f793d)
--   [HTML5 QR Code scanning - launched v1.0.1 without jQuery dependency and refactored Promise based APIs](https://blog.minhazav.dev/HTML5-QR-Code-scanning-launched-v1.0.1/).
--   [HTML5 QR Code scanning with javascript - Support for scanning the local file and using default camera added (v1.0.5)](https://blog.minhazav.dev/HTML5-QR-Code-scanning-support-for-local-file-and-default-camera/)
+-   [QR and barcode scanner using HTML and JavaScript](https://minhazav.medium.com/qr-and-barcode-scanner-using-html-and-javascript-2cdc937f793d)
+-   [HTML5 QR Code scanning — launched v1.0.1 without jQuery dependency and refactored Promise based APIs](https://blog.minhazav.dev/HTML5-QR-Code-scanning-launched-v1.0.1/).
+-   [HTML5 QR Code scanning with JavaScript — Support for scanning the local file and using default camera added (v1.0.5)](https://blog.minhazav.dev/HTML5-QR-Code-scanning-support-for-local-file-and-default-camera/)
 
 ## Screenshots
 ![screenshot](assets/screen.gif)<br>
-_Figure: Screenshot from Google Chrome running on Macbook Pro_
+_Figure: Screenshot from Google Chrome running on MacBook Pro_
 
 ## Documentation
 Following methods are available in this library (typescript definition)
@@ -447,7 +447,16 @@ interface Html5QrcodeCameraScanConfig {
  * Interface for controlling different aspects of {@class Html5QrcodeScanner}.
  */
 interface Html5QrcodeScannerConfig
-  extends Html5QrcodeCameraScanConfig, Html5QrcodeConfigs {};
+  extends Html5QrcodeCameraScanConfig, Html5QrcodeConfigs {
+
+  /**
+   * If {@code true} the library will remember if the camera permissions
+   * were previously granted and what camera was last used. If the permissions
+   * is already granted for "camera", QR code scanning will automatically
+   * start for previously used camera.
+   */
+  rememberLastUsedCamera?: boolean | undefined;
+};
 
 class Html5Qrcode {
   /**
@@ -544,26 +553,26 @@ class Html5QrcodeScanner {
 ### Extra optional `configuration` in `start()` method
 Configuration object that can be used to configure both the scanning behavior and the user interface (UI). Most of the fields have default properties that will be used unless a different value is provided. If you do not want to override anything, you can just pass in an empty object `{}`.
 
-#### `fps` - Integer, Example = 10
-A.K.A frame per second, the default value for this is 2 but it can be increased to get faster scanning. Increasing too high value could affect performance. Value `>1000` will simply fail.
+#### `fps` — Integer, Example = 10
+A.K.A frame per second, the default value for this is 2, but it can be increased to get faster scanning. Increasing too high value could affect performance. Value `>1000` will simply fail.
 
-#### `qrbox` - Integer, Example = 250
+#### `qrbox` — Integer, Example = 250
 Use this property to limit the region of the viewfinder you want to use for scanning. The rest of the viewfinder would be shaded. For example, by passing config `{ qrbox : 250 }`, the screen will look like:
 
 <img src="./assets/screen.gif">
 
-#### `aspectRatio` - Float, Example 1.777778 for 16:9 aspect ratio
+#### `aspectRatio` — Float, Example 1.777778 for 16:9 aspect ratio
 Use this property to render the video feed in a certain aspect ratio. Passing a nonstandard aspect ratio like `100000:1` could lead to the video feed not even showing up. Ideal values can be:
 | Value | Aspect Ratio | Use Case |
 | ----- | ------------ | -------- |
 |1.333334 | 4:3 | Standard camera aspect ratio |
-|1.777778 | 16:9 | Fullscreen, cinematic |
+|1.777778 | 16:9 | Full screen, cinematic |
 |1.0 | 1:1 | Square view |
 
 If you do not pass any value, the whole viewfinder would be used for scanning. 
 **Note**: this value has to be smaller than the width and height of the `QR code HTML element`.
 
-#### `disableFlip` - Boolean (Optional), default = false
+#### `disableFlip` — Boolean (Optional), default = false
 By default, the scanner can scan for horizontally flipped QR Codes. This also enables scanning QR code using the front camera on mobile devices which are sometimes mirrored. This is `false` by default and I recommend changing this only if:
 -   You are sure that the camera feed cannot be mirrored (Horizontally flipped)
 -   You are facing performance issues with this enabled.
@@ -572,6 +581,13 @@ Here's an example of a normal and mirrored QR Code
 | Normal QR Code | Mirrored QR Code |
 | ----- | ---- |
 | <img src="./assets/qr-code.png" width="200px"> | <img src="./assets/qr-code-flipped.png" width="200px"><br> |
+
+#### `rememberLastUsedCamera` — Boolean (Optional), default = true
+If `true` the last camera used by the user and weather or not permission was granted would be remembered in the local storage. If the user has previously granted permissions — the request permission option in the UI will be skipped and the last selected camera would be launched automatically for scanning.
+
+If `true` the library shall remember if the camera permissions were previously
+granted and what camera was last used. If the permissions is already granted for
+"camera", QR code scanning will automatically * start for previously used camera.
 
 ### Scanning only specific formats
 By default, both camera stream and image files are scanned against all the
@@ -643,15 +659,15 @@ html5QrcodeScanner.render(onScanSuccess);
 The library now supports some experimental features which are supported in the
 library but not recommended for production usage either due to limited testing
 done or limited compatibility for underlying APIs used. Read more about it [here](/experimental.md).
-Some of the experimental features include:
--   [Support for BarcodeDetector javascript API](/experimental.md)
+Some experimental features include:
+-   [Support for BarcodeDetector JavaScript API](/experimental.md)
 
 ## How to modify and build
 1.  Code changes should only be made to [/src](./src) only.
 
 2.  Run `npm install` to install all dependencies.
 
-3.  Run `npm run-script build` to build javascript output. The output javascript distribution is built to [/dist/html5-qrcode.min.js](./dist/html5-qrcode.min.js). If you are developing on Windows OS, run `npm run-script build-windows`.
+3.  Run `npm run-script build` to build JavaScript output. The output JavaScript distribution is built to [/dist/html5-qrcode.min.js](./dist/html5-qrcode.min.js). If you are developing on Windows OS, run `npm run-script build-windows`.
 
 4.  Testing
     -   Run `npm test`
@@ -664,8 +680,8 @@ Some of the experimental features include:
 	  ```text
 	  @all-contributors please add @mebjas for this new feature or tests
 	  ```
-	  For calling out your contributions - the bot will update the contributions file.
+	  -   For calling out your contributions, the bot will update the contributions file.
     -   Code will be built & published by the author in batches.
 
 ## Credits
-The decoder used for the QRcode reading is from `Zxing-js` https://github.com/zxing-js/library<br>
+The decoder used for the QR code reading is from `Zxing-js` https://github.com/zxing-js/library<br>

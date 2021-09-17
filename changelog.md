@@ -1,3 +1,21 @@
+### Version 2.0.12
+-   Redundant information in the top status bar removed.
+-   Added support for remembering permission and last camera used. This feature is on by default. Can be turned on or off using `rememberLastUsedCamera` flag in `Html5QrcodeScannerConfig`. How to explicitly enable it:
+    ```js
+      function onScanSuccess(decodedText, decodedResult) {
+          // handle success.
+      }
+      let html5QrcodeScanner = new Html5QrcodeScanner(
+        "reader", 
+        { 
+            fps: 10,
+            qrbox: 250,
+            rememberLastUsedCamera: true
+            // ^ set this to false to disable this.
+        });
+      html5QrcodeScanner.render(onScanSuccess);
+      ```
+
 ### Version 2.0.11
  -    Add support for native [BarcodeDetector](https://web.dev/shape-detection/#barcodedetector) based scanning.
       - On Chrome `ZXing` based decoder takes `20-25` ms on my Mac book pro 16.
