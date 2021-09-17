@@ -258,7 +258,8 @@ export class Html5QrcodeScanner {
 
         return {
             fps: Html5QrcodeConstants.SCAN_DEFAULT_FPS,
-            rememberLastUsedCamera: Html5QrcodeConstants.DEFAULT_REMEMBER_LAST_CAMERA_USED
+            rememberLastUsedCamera:
+                Html5QrcodeConstants.DEFAULT_REMEMBER_LAST_CAMERA_USED
         };
     }
 

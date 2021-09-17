@@ -5,7 +5,11 @@
  * @author mebjas <minhazav@gmail.com>
  */
 
-
+/**
+ * Util class around camera management.
+ * 
+ * TODO(mebjas): Migrate camera specific code / logic to this class / library.
+ */
 export class CameraManager {
 
   /**

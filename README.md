@@ -680,7 +680,7 @@ Some experimental features include:
 	  ```text
 	  @all-contributors please add @mebjas for this new feature or tests
 	  ```
-	  For calling out your contributions — the bot will update the contributions file.
+	  -   For calling out your contributions, the bot will update the contributions file.
     -   Code will be built & published by the author in batches.
 
 ## Credits
