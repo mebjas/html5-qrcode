@@ -663,7 +663,7 @@ export class Html5Qrcode {
         // Using deprecated api to support really old browsers.
         var mst = <any>MediaStreamTrack;
         if (MediaStreamTrack && mst.getSources) {
-            return Html5Qrcode.getCamerasFrmoMediaStreamTrack();
+            return Html5Qrcode.getCamerasFromMediaStreamTrack();
         }
 
         // This can potentially happen if the page is loaded without SSL.
@@ -796,7 +796,7 @@ export class Html5Qrcode {
         });
     }
 
-    private static getCamerasFrmoMediaStreamTrack(): Promise<Array<CameraDevice>> {
+    private static getCamerasFromMediaStreamTrack(): Promise<Array<CameraDevice>> {
         return new Promise((resolve, _) => {
             const callback = (sourceInfos: Array<any>) => {
                 const results = [];
