@@ -1,3 +1,29 @@
+### Version 2.0.13
+Added ability to set custom width and height to the scanner with `config.qrbox` argument.
+
+Now we can pass `config.qrbox` argument as instance of interface `QrDimensions`.
+
+```js
+function onScanSuccess(decodedText, decodedResult) { /* handle success. */ }
+function onScanFailure(error) { /* handle failure. */ }
+
+let config = { fps: 10, qrbox: {width: 250, height: 250} };
+
+let html5QrcodeScanner = new Html5QrcodeScanner(
+    "reader", config , /* verbose= */ false);
+html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+```
+
+For a rectangular QR Scanning box we can set it to something like:
+```js
+// .. rest of the code
+let config = { fps: 10, qrbox: {width: 400, height: 150} };
+
+let html5QrcodeScanner = new Html5QrcodeScanner(
+    "reader", config , /* verbose= */ false);
+html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+```
+
 ### Version 2.0.12
 -   Redundant information in the top status bar removed.
 -   Added support for remembering permission and last camera used. This feature is on by default. Can be turned on or off using `rememberLastUsedCamera` flag in `Html5QrcodeScannerConfig`. How to explicitly enable it:

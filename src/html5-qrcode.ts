@@ -25,7 +25,8 @@ import {
     isValidHtml5QrcodeSupportedFormats,
     Html5QrcodeConstants,
     Html5QrcodeResult,
-    isNullOrUndefined
+    isNullOrUndefined,
+    QrDimensions
 } from "./core";
 
 import { Html5QrcodeStrings } from "./strings";
@@ -104,8 +105,9 @@ export interface Html5QrcodeCameraScanConfig {
     fps: number | undefined;
 
     /**
-     * Optional, width of QR scanning box, this should be smaller than the width
-     * and height of the box. This would make the scanner look like this:
+     * Optional, edge size or dimension of QR scanning box, this should be 
+     * smaller than the width and height of the full region.
+     * This would make the scanner look like this:
      *          ----------------------
      *          |********************|
      *          |******,,,,,,,,,*****|      <--- shaded region
@@ -115,8 +117,11 @@ export interface Html5QrcodeCameraScanConfig {
      *          |********************|
      *          |********************|
      *          ----------------------
+     * 
+     * Instance of {@interface QrDimensions} can be passed to construct a non
+     * square rendering of scanner box.
      */
-    qrbox?: number | undefined;
+    qrbox?: number | QrDimensions | undefined;
 
     /**
      * Optional, Desired aspect ratio for the video feed. Ideal aspect ratios
@@ -155,7 +160,7 @@ class InternalHtml5QrcodeConfig implements InternalHtml5QrcodeConfig {
     // TODO(mebjas) Make items that doesn't need to be public private.
     public fps: number;
     public disableFlip: boolean;
-    public qrbox: number | undefined;
+    public qrbox: number | QrDimensions | undefined;
     public aspectRatio: number | undefined;
     public videoConstraints: MediaTrackConstraints | undefined;
 
@@ -346,7 +351,7 @@ export class Html5Qrcode {
         // qr shaded box
         const isShadedBoxEnabled = internalConfig.isShadedBoxEnabled();
         const element = document.getElementById(this.elementId)!;
-        const width = element.clientWidth
+        const rootElementWidth = element.clientWidth
             ? element.clientWidth : Constants.DEFAULT_WIDTH;
         element.style.position = "relative";
 
@@ -355,16 +360,7 @@ export class Html5Qrcode {
 
         // Validate before insertion
         if (isShadedBoxEnabled) {
-            const qrboxSize = internalConfig.qrbox!;
-            if (qrboxSize < Constants.MIN_QR_BOX_SIZE) {
-                throw "minimum size of 'config.qrbox' is"
-                + ` ${Constants.MIN_QR_BOX_SIZE}px.`;
-            }
-
-            if (qrboxSize > width) {
-                throw "'config.qrbox' should not be greater than the "
-                + "width of the HTML element.";
-            }
+            this.validateQrboxSize(internalConfig, rootElementWidth);
         }
 
         const $this = this;
@@ -388,7 +384,7 @@ export class Html5Qrcode {
                             stream,
                             internalConfig,
                             areVideoConstraintsEnabled,
-                            width,
+                            rootElementWidth,
                             qrCodeSuccessCallback,
                             qrCodeErrorCallback!)
                             .then((_) => {
@@ -409,12 +405,12 @@ export class Html5Qrcode {
                     video: videoConstraints
                 };
                 navigator.getUserMedia(getCameraConfig,
-                    (stream) => {
+                    (stream: MediaStream) => {
                         $this.onMediaStreamReceived(
                             stream,
                             internalConfig,
                             areVideoConstraintsEnabled,
-                            width,
+                            rootElementWidth,
                             qrCodeSuccessCallback,
                             qrCodeErrorCallback!)
                             .then((_) => {
@@ -428,7 +424,7 @@ export class Html5Qrcode {
                                         error));
 
                             });
-                    }, (error) => {
+                    }, (error: any) => {
                         reject(Html5QrcodeStrings.errorGettingUserMedia(error));
                     });
             } else {
@@ -890,6 +886,68 @@ export class Html5Qrcode {
 
     }
 
+    /**
+     * Validates if the passed config for qrbox is correct.
+     */
+    private validateQrboxSize(
+        internalConfig: InternalHtml5QrcodeConfig,
+        rootElementWidth: Number) {
+        const qrboxSize = internalConfig.qrbox!;
+        this.validateQrboxConfig(qrboxSize);
+        let qrDimensions = this.toQrdimensions(qrboxSize);
+
+        const validateMinSize = (size: number) => {
+            if (size < Constants.MIN_QR_BOX_SIZE) {
+                throw "minimum size of 'config.qrbox' dimension value is"
+                    + ` ${Constants.MIN_QR_BOX_SIZE}px.`;
+            }
+        };
+
+        const validateAgainstRootElementSize = (size: number) => {
+            if (size > rootElementWidth) {
+                throw "'config.qrbox' dimensions values should not be greater "
+                    + "than the width of the HTML element.";
+            }
+        };
+
+        validateMinSize(qrDimensions.width);
+        validateMinSize(qrDimensions.height);
+        validateAgainstRootElementSize(qrDimensions.width);
+        // Note: In this case if the height of the qrboxSize turns out to be
+        // greater than the height of the root element (which should later be
+        // based on the aspect ratio of the camera stream), it would be silently
+        // ignored with a warning.
+    }
+
+    /**
+     * Validates if the {@param qrboxSize} is a valid value.
+     * 
+     * It's expected to be either a number or of type {@interface QrDimensions}.
+     */
+    private validateQrboxConfig(qrboxSize: number | QrDimensions) {
+        if (typeof qrboxSize === "number") {
+            // This is a valid format.
+            return;
+        }
+
+        // Alternatively, the config is expected to be of type QrDimensions.
+        if (qrboxSize.width === undefined || qrboxSize.height === undefined) {
+            throw "Invalid instance of QrDimensions passed for "
+                + "'config.qrbox'."
+        }
+    }
+
+    /**
+     * Possibly converts {@param qrboxSize} to an object of type
+     * {@interface QrDimensions}.
+     */
+    private toQrdimensions(qrboxSize: number | QrDimensions): QrDimensions {
+        if (typeof qrboxSize === "number") {
+            return { width: qrboxSize, height: qrboxSize};
+        }
+        return qrboxSize;
+    }
+
     //#region Documented private methods for camera based scanner.
     /**
     * Setups the UI elements, changes the state of this class.
@@ -902,21 +960,26 @@ export class Html5Qrcode {
         height: number,
         internalConfig: InternalHtml5QrcodeConfig): void {
         const qrboxSize = internalConfig.qrbox!;
-        if (qrboxSize > height) {
-            this.logger.warn("[Html5Qrcode] config.qrboxsize is greater "
-                + "than video height. Shading will be ignored");
+        this.validateQrboxConfig(qrboxSize);
+        let qrDimensions = this.toQrdimensions(qrboxSize);
+        if (qrDimensions.height > height) {
+            this.logger.warn("[Html5Qrcode] config.qrbox has height that is"
+                + "greater than the height of the video stream. Shading will be"
+                + " ignored");
         }
  
         const shouldShadingBeApplied
-            = internalConfig.isShadedBoxEnabled() && qrboxSize <= height;
+            = internalConfig.isShadedBoxEnabled()
+                && qrDimensions.height <= height;
         const defaultQrRegion: QrcodeRegionBounds = {
             x: 0,
             y: 0,
             width: width,
             height: height
         };
+
         const qrRegion = shouldShadingBeApplied
-            ? this.getShadedRegionBounds(width, height, qrboxSize)
+            ? this.getShadedRegionBounds(width, height, qrDimensions)
             : defaultQrRegion;
  
         const canvasElement = this.createCanvasElement(
@@ -930,7 +993,7 @@ export class Html5Qrcode {
         this.element!.append(canvasElement);
         if (shouldShadingBeApplied) {
             this.possiblyInsertShadingElement(
-                this.element!, width, height, qrboxSize);
+                this.element!, width, height, qrDimensions);
         }
  
         // Update local states
@@ -1299,17 +1362,18 @@ export class Html5Qrcode {
     }
 
     private getShadedRegionBounds(
-        width: number, height: number, qrboxSize: number): QrcodeRegionBounds {
-        if (qrboxSize > width || qrboxSize > height) {
-            throw "'config.qrbox' should not be greater than the "
-            + "width and height of the HTML element.";
+        width: number, height: number, qrboxSize: QrDimensions)
+        : QrcodeRegionBounds {
+        if (qrboxSize.width > width || qrboxSize.height > height) {
+            throw "'config.qrbox' dimensions should not be greater than the "
+            + "dimensions of the root HTML element.";
         }
 
         return {
-            x: (width - qrboxSize) / 2,
-            y: (height - qrboxSize) / 2,
-            width: qrboxSize,
-            height: qrboxSize
+            x: (width - qrboxSize.width) / 2,
+            y: (height - qrboxSize.height) / 2,
+            width: qrboxSize.width,
+            height: qrboxSize.height
         };
     }
 
@@ -1317,20 +1381,24 @@ export class Html5Qrcode {
         element: HTMLElement,
         width: number,
         height: number,
-        qrboxSize: number) {
-        if ((width - qrboxSize) < 1 || (height - qrboxSize) < 1) {
+        qrboxSize: QrDimensions) {
+        if ((width - qrboxSize.width) < 1 || (height - qrboxSize.height) < 1) {
           return;
         }
         const shadingElement = document.createElement("div");
         shadingElement.style.position = "absolute";
+
+        const rightLeftBorderSize = (width - qrboxSize.width) / 2;
+        const topBottomBorderSize = (height - qrboxSize.height) / 2;
+
         shadingElement.style.borderLeft
-            = `${(width-qrboxSize)/2}px solid #0000007a`;
+            = `${rightLeftBorderSize}px solid #0000007a`;
         shadingElement.style.borderRight
-            = `${(width-qrboxSize)/2}px solid #0000007a`;
+            = `${rightLeftBorderSize}px solid #0000007a`;
         shadingElement.style.borderTop
-            = `${(height-qrboxSize)/2}px solid #0000007a`;
+            = `${topBottomBorderSize}px solid #0000007a`;
         shadingElement.style.borderBottom
-            = `${(height-qrboxSize)/2}px solid #0000007a`;
+            = `${topBottomBorderSize}px solid #0000007a`;
         shadingElement.style.boxSizing = "border-box";
         shadingElement.style.top = "0px";
         shadingElement.style.bottom = "0px";
@@ -1340,58 +1408,69 @@ export class Html5Qrcode {
   
         // Check if div is too small for shadows. As there are two 5px width
         // borders the needs to have a size above 10px.
-        if ((width - qrboxSize) < 11 || (height - qrboxSize) < 11) {
+        if ((width - qrboxSize.width) < 11 
+            || (height - qrboxSize.height) < 11) {
           this.hasBorderShaders = false;
         } else {
-          const smallSize = 5;
-          const largeSize = 40;
-          this.insertShaderBorders(
-              shadingElement, largeSize, smallSize, -smallSize, 0, true);
-          this.insertShaderBorders(
-              shadingElement, largeSize, smallSize, -smallSize, 0, false);
-          this.insertShaderBorders(
-              shadingElement,
-              largeSize,
-              smallSize,
-              qrboxSize + smallSize,
-              0,
-              true);
-          this.insertShaderBorders(
-              shadingElement,
-              largeSize,
-              smallSize,
-              qrboxSize + smallSize,
-              0,
-              false);
-          this.insertShaderBorders(
-              shadingElement,
-              smallSize,
-              largeSize + smallSize,
-              -smallSize,
-              -smallSize,
-              true);
-          this.insertShaderBorders(
-              shadingElement,
-              smallSize,
-              largeSize + smallSize,
-              qrboxSize + smallSize - largeSize,
-              -smallSize,
-              true);
-          this.insertShaderBorders(
-              shadingElement,
-              smallSize,
-              largeSize + smallSize,
-              -smallSize,
-              -smallSize,
-              false);
-          this.insertShaderBorders(
-              shadingElement,
-              smallSize,
-              largeSize + smallSize,
-              qrboxSize + smallSize - largeSize,
-              -smallSize,
-              false);
-          this.hasBorderShaders = true;
+            const smallSize = 5;
+            const largeSize = 40;
+            this.insertShaderBorders(
+                shadingElement,
+                /* width= */ largeSize, 
+                /* height= */ smallSize,
+                /* top= */ -smallSize,
+                /* side= */ 0,
+                /* isLeft= */ true);
+            this.insertShaderBorders(
+                shadingElement,
+                /* width= */ largeSize,
+                /* height= */ smallSize,
+                /* top= */ -smallSize,
+                /* side= */ 0,
+                /* isLeft= */ false);
+            this.insertShaderBorders(
+                shadingElement,
+                /* width= */ largeSize,
+                /* height= */ smallSize,
+                /* top= */ qrboxSize.height + smallSize,
+                /* side= */ 0,
+                /* isLeft= */ true);
+            this.insertShaderBorders(
+                shadingElement,
+                /* width= */ largeSize,
+                /* height= */ smallSize,
+                /* top= */ qrboxSize.height + smallSize,
+                /* side= */ 0,
+                /* isLeft= */ false);
+            this.insertShaderBorders(
+                shadingElement,
+                /* width= */ smallSize,
+                /* height= */ largeSize + smallSize,
+                /* top= */ -smallSize,
+                /* side= */ -smallSize,
+                /* isLeft= */ true);
+            this.insertShaderBorders(
+                shadingElement,
+                /* width= */ smallSize,
+                /* height= */ largeSize + smallSize,
+                /* top= */ qrboxSize.height + smallSize - largeSize,
+                /* side= */ -smallSize,
+                /* isLeft= */ true);
+            this.insertShaderBorders(
+                shadingElement,
+                /* width= */ smallSize,
+                /* height= */ largeSize + smallSize,
+                /* top= */ -smallSize,
+                /* side= */ -smallSize,
+                /* isLeft= */ false);
+            this.insertShaderBorders(
+                shadingElement,
+                /* width= */ smallSize,
+                /* height= */ largeSize + smallSize,
+                /* top= */ qrboxSize.height + smallSize - largeSize,
+                /* side= */ -smallSize,
+                /* isLeft= */ false);
+            this.hasBorderShaders = true;
         }
         element.append(shadingElement);
     }

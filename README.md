@@ -138,7 +138,9 @@ function onScanFailure(error) {
 }
 
 let html5QrcodeScanner = new Html5QrcodeScanner(
-	"reader", { fps: 10, qrbox: 250 }, /* verbose= */ false);
+	"reader",
+  { fps: 10, qrbox: {width: 250, height: 250} },
+  /* verbose= */ false);
 html5QrcodeScanner.render(onScanSuccess, onScanFailure);
 ```
 
@@ -206,7 +208,7 @@ const html5QrCode = new Html5Qrcode("reader");
 const qrCodeSuccessCallback = (decodedText, decodedResult) => {
     /* handle success */
 };
-const config = { fps: 10, qrbox: 250 };
+const config = { fps: 10, qrbox: {width: 250, height: 250} };
 
 // If you want to prefer front camera
 html5QrCode.start({ facingMode: "user" }, config, qrCodeSuccessCallback);
@@ -345,25 +347,31 @@ enum Html5QrcodeSupportedFormats {
   UPC_EAN_EXTENSION,
 }
 
+/** Defines dimension for QR Code Scanner. */
+interface QrDimensions {
+  width: number;
+  height: number;
+}
+
 /** Format of detected code. */
 class QrcodeResultFormat {
-    public readonly format: Html5QrcodeSupportedFormats;
-    public readonly formatName: string;
+  public readonly format: Html5QrcodeSupportedFormats;
+  public readonly formatName: string;
 }
 
 /** Detailed scan result. */
 interface QrcodeResult {
-    /** Decoded text. */
-    text: string;
+  /** Decoded text. */
+  text: string;
 
-    /** Format that was successfully scanned. */
-    format?: QrcodeResultFormat,
+  /** Format that was successfully scanned. */
+  format?: QrcodeResultFormat,
 }
 
 /** QrCode result object. */
 interface Html5QrcodeResult {
-    decodedText: string;
-    result: QrcodeResult;
+  decodedText: string;
+  result: QrcodeResult;
 }
 
 /** Type for a callback for a successful code scan. */
@@ -400,8 +408,8 @@ interface Html5QrcodeCameraScanConfig {
   fps: number | undefined;
 
   /**
-   * Optional, width of scanning region box, this should be smaller than the
-   * width and height of the full region.
+   * Optional, edge size or dimension of QR scanning box, this should be 
+   * smaller than the width and height of the full region.
    * This would make the scanner look like this:
    *          ----------------------
    *          |********************|
@@ -412,8 +420,11 @@ interface Html5QrcodeCameraScanConfig {
    *          |********************|
    *          |********************|
    *          ----------------------
+   * 
+   * Instance of {@interface QrDimensions} can be passed to construct a non
+   * square rendering of scanner box.
    */
-  qrbox?: number | undefined;
+  qrbox?: number | QrDimensions | undefined;
 
   /**
    * Optional, Desired aspect ratio for the video feed. Ideal aspect ratios
@@ -629,7 +640,7 @@ const html5QrCode = new Html5Qrcode(
 const qrCodeSuccessCallback = (decodedText, decodedResult) => {
     /* handle success */
 };
-const config = { fps: 10, qrbox: 250 };
+const config = { fps: 10, qrbox: {width: 250, height: 250} };
 
 // If you want to prefer front camera
 html5QrCode.start({ facingMode: "user" }, config, qrCodeSuccessCallback);
@@ -650,7 +661,11 @@ const formatsToSupport = [
 ];
 const html5QrcodeScanner = new Html5QrcodeScanner(
   "reader",
-  { fps: 10, qrbox: 250, formatsToSupport: formatsToSupport },
+  {
+    fps: 10,
+    qrbox: {width: 250, height: 250},
+    formatsToSupport: formatsToSupport
+  },
   /* verbose= */ false);
 html5QrcodeScanner.render(onScanSuccess);
 ```
