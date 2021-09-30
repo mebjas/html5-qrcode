@@ -7,7 +7,7 @@ Now we can pass `config.qrbox` argument as instance of interface `QrDimensions`.
 function onScanSuccess(decodedText, decodedResult) { /* handle success. */ }
 function onScanFailure(error) { /* handle failure. */ }
 
-let config = { fps: 10, qrbox: {width: 250, height: 250} };
+let config = { fps: 10, qrbox: { width: 250, height: 250 } };
 
 let html5QrcodeScanner = new Html5QrcodeScanner(
     "reader", config , /* verbose= */ false);
@@ -17,7 +17,7 @@ html5QrcodeScanner.render(onScanSuccess, onScanFailure);
 For a rectangular QR Scanning box we can set it to something like:
 ```js
 // .. rest of the code
-let config = { fps: 10, qrbox: {width: 400, height: 150} };
+let config = { fps: 10, qrbox: { width: 400, height: 150 } };
 
 let html5QrcodeScanner = new Html5QrcodeScanner(
     "reader", config , /* verbose= */ false);
