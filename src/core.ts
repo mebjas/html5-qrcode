@@ -89,14 +89,18 @@ export class Html5QrcodeConstants {
     static DEFAULT_REMEMBER_LAST_CAMERA_USED = true;
 }
 
+/** Defines dimension for QR Code Scanner. */
+export interface QrDimensions {
+    width: number;
+    height: number;
+}
+
 /**
  * Defines bounds of detected QR code w.r.t the scan region.
  */
-export interface QrBounds {
+export interface QrBounds extends QrDimensions {
     x: number;
     y: number;
-    width: number;
-    height: number;
 }
 
 /** Format of detected code. */

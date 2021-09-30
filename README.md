@@ -138,7 +138,9 @@ function onScanFailure(error) {
 }
 
 let html5QrcodeScanner = new Html5QrcodeScanner(
-	"reader", { fps: 10, qrbox: 250 }, /* verbose= */ false);
+  "reader",
+  { fps: 10, qrbox: {width: 250, height: 250} },
+  /* verbose= */ false);
 html5QrcodeScanner.render(onScanSuccess, onScanFailure);
 ```
 
@@ -179,7 +181,7 @@ html5QrCode.start(
   cameraId, 
   {
     fps: 10,    // Optional, frame per seconds for qr code scanning
-    qrbox: 250  // Optional, if you want bounded box UI
+    qrbox: { width: 250, height: 250 }  // Optional, if you want bounded box UI
   },
   (decodedText, decodedResult) => {
     // do something when code is read
@@ -206,7 +208,7 @@ const html5QrCode = new Html5Qrcode("reader");
 const qrCodeSuccessCallback = (decodedText, decodedResult) => {
     /* handle success */
 };
-const config = { fps: 10, qrbox: 250 };
+const config = { fps: 10, qrbox: { width: 250, height: 250 } };
 
 // If you want to prefer front camera
 html5QrCode.start({ facingMode: "user" }, config, qrCodeSuccessCallback);
@@ -345,25 +347,31 @@ enum Html5QrcodeSupportedFormats {
   UPC_EAN_EXTENSION,
 }
 
+/** Defines dimension for QR Code Scanner. */
+interface QrDimensions {
+  width: number;
+  height: number;
+}
+
 /** Format of detected code. */
 class QrcodeResultFormat {
-    public readonly format: Html5QrcodeSupportedFormats;
-    public readonly formatName: string;
+  public readonly format: Html5QrcodeSupportedFormats;
+  public readonly formatName: string;
 }
 
 /** Detailed scan result. */
 interface QrcodeResult {
-    /** Decoded text. */
-    text: string;
+  /** Decoded text. */
+  text: string;
 
-    /** Format that was successfully scanned. */
-    format?: QrcodeResultFormat,
+  /** Format that was successfully scanned. */
+  format?: QrcodeResultFormat,
 }
 
 /** QrCode result object. */
 interface Html5QrcodeResult {
-    decodedText: string;
-    result: QrcodeResult;
+  decodedText: string;
+  result: QrcodeResult;
 }
 
 /** Type for a callback for a successful code scan. */
@@ -400,8 +408,8 @@ interface Html5QrcodeCameraScanConfig {
   fps: number | undefined;
 
   /**
-   * Optional, width of scanning region box, this should be smaller than the
-   * width and height of the full region.
+   * Optional, edge size or dimension of QR scanning box, this should be 
+   * smaller than the width and height of the full region.
    * This would make the scanner look like this:
    *          ----------------------
    *          |********************|
@@ -412,8 +420,11 @@ interface Html5QrcodeCameraScanConfig {
    *          |********************|
    *          |********************|
    *          ----------------------
+   * 
+   * Instance of {@interface QrDimensions} can be passed to construct a non
+   * square rendering of scanner box.
    */
-  qrbox?: number | undefined;
+  qrbox?: number | QrDimensions | undefined;
 
   /**
    * Optional, Desired aspect ratio for the video feed. Ideal aspect ratios
@@ -556,10 +567,18 @@ Configuration object that can be used to configure both the scanning behavior an
 #### `fps` — Integer, Example = 10
 A.K.A frame per second, the default value for this is 2, but it can be increased to get faster scanning. Increasing too high value could affect performance. Value `>1000` will simply fail.
 
-#### `qrbox` — Integer, Example = 250
-Use this property to limit the region of the viewfinder you want to use for scanning. The rest of the viewfinder would be shaded. For example, by passing config `{ qrbox : 250 }`, the screen will look like:
+#### `qrbox` — `QrDimensions`, Example = `{ width: 250, height: 250 }`
+Use this property to limit the region of the viewfinder you want to use for scanning. The rest of the viewfinder would be shaded. For example, by passing config `{ qrbox : { width: 250, height: 250 } }`, the screen will look like:
 
 <img src="./assets/screen.gif">
+
+This can be used to set a rectangular scanning area with config like:
+
+```js
+let config = { qrbox : { width: 400, height: 150 } }
+```
+
+> This might be desirable for bar code scanning.
 
 #### `aspectRatio` — Float, Example 1.777778 for 16:9 aspect ratio
 Use this property to render the video feed in a certain aspect ratio. Passing a nonstandard aspect ratio like `100000:1` could lead to the video feed not even showing up. Ideal values can be:
@@ -629,13 +648,13 @@ const html5QrCode = new Html5Qrcode(
 const qrCodeSuccessCallback = (decodedText, decodedResult) => {
     /* handle success */
 };
-const config = { fps: 10, qrbox: 250 };
+const config = { fps: 10, qrbox: { width: 250, height: 250 } };
 
 // If you want to prefer front camera
 html5QrCode.start({ facingMode: "user" }, config, qrCodeSuccessCallback);
 ```
 
-#### Scaning only QR code and UPC codes with `Html5QrcodeScanner`
+#### Scanning only QR code and UPC codes with `Html5QrcodeScanner`
 ```js
 function onScanSuccess(decodedText, decodedResult) {
   // Handle the scanned code as you like, for example:
@@ -650,7 +669,11 @@ const formatsToSupport = [
 ];
 const html5QrcodeScanner = new Html5QrcodeScanner(
   "reader",
-  { fps: 10, qrbox: 250, formatsToSupport: formatsToSupport },
+  {
+    fps: 10,
+    qrbox: { width: 250, height: 250 },
+    formatsToSupport: formatsToSupport
+  },
   /* verbose= */ false);
 html5QrcodeScanner.render(onScanSuccess);
 ```
