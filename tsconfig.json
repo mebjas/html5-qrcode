@@ -3,7 +3,8 @@
         "target": "es5",
         "module": "ES2015",
         "sourceMap": true,
-        "moduleResolution": "classic",
+        "moduleResolution": "Node",
+        "declaration": true,
         "lib": [
             "es7",
             "dom"
@@ -20,6 +21,6 @@
         "noImplicitAny": true
     },
     "files": [
-        "src/index.ts"
+        "src/index.ts",
     ]
 }

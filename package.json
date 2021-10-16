@@ -1,13 +1,27 @@
 {
-  "name": "html5-qrcode",
-  "version": "2.0.13",
+  "name": "@scanapp/html5-qrcode",
+  "version": "0.0.1",
   "description": "A cross platform HTML5 QR Code & bar code scanner",
-  "main": "dist/html5-qrcode.min.js",
+  "main": "./cjs/index.js",
+  "module": "./esm/index.js",
+  "typings": "./esm/index.d.ts",
+  "esnext": "./es2015/index.js",
+  "unpkg": "./html5-qrcode.library.min.js",
   "scripts": {
     "build-windows": "scripts\\build-windows.sh",
-    "build": "./scripts/build-default.sh",
     "test": "./scripts/test.sh",
-    "lint-md": "remark ."
+    "lint-md": "remark .",
+    "clean": "rm -Rf ./lib/* ./build/* ./meta/bundlesize/* ./meta/coverage/* ./.rpt2_cache",
+    "prebuild": "npm run clean",
+    "build": "npm run build:es2015 && npm run build:esm && npm run build:esnext && npm run build:cjs && npm run build:umd && npm run build:typing && npm run build:copy",
+    "build:es2015": "tsc --build tsconfig.lib-es2015.json",
+    "build:esm": "tsc --build tsconfig.lib-esm.json",
+    "build:esnext": "tsc --build tsconfig.lib-esm.json",
+    "build:cjs": "tsc --build tsconfig.lib-cjs.json",
+    "build:typing": "tsc --emitDeclarationOnly --outDir ./dist",
+    "build:umd": "webpack",
+    "build:copy": "cp README.md dist && cp package.json dist && cp LICENSE dist",
+    "release": "npm run build && npm publish dist"
   },
   "repository": {
     "type": "git",
@@ -18,7 +32,10 @@
     "qrcode",
     "html",
     "camera",
-    "scanner"
+    "scanner",
+    "barcode",
+    "barcode 1d",
+    "barcode 2d"
   ],
   "author": "minhazav@gmail.com",
   "license": "Apache-2.0",
@@ -53,5 +70,8 @@
   },
   "files": [
     "dist/*"
-  ]
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
 }
