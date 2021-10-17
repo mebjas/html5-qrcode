@@ -8,12 +8,12 @@ module.exports = {
     // output bundles (location)
     output: {
         path: path.resolve( __dirname, "dist" ),
-        filename: "html5-qrcode.library.min.js",
-        library: "_",
+        filename: "html5-qrcode.min.js",
+        library: "__Html5QrcodeLibrary__",
     },
     // file resolutions
     resolve: {
-        extensions: [ ".ts" ],
+        extensions: [ ".ts", ".js" ],
     },
     target: "web",
     module: {

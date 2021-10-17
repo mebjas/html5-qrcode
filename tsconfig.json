@@ -3,7 +3,8 @@
         "target": "es5",
         "module": "ES2015",
         "sourceMap": true,
-        "moduleResolution": "classic",
+        "moduleResolution": "Node",
+        "declaration": true,
         "lib": [
             "es7",
             "dom"
@@ -17,9 +18,20 @@
         "experimentalDecorators": true,
         "removeComments": true,
         "preserveConstEnums": true,
-        "noImplicitAny": true
+        "noImplicitAny": true,
+
+        // Allow javascript source to be built
+        "allowJs": true
     },
     "files": [
         "src/index.ts"
-    ]
+    ],
+    "paths": {
+        "@scanapp/html5-qrcode": [
+            "./dist"
+        ],
+        "@scanapp/html5-qrcode/*": [
+            "./dist/*"
+        ]
+    }
 }

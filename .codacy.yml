@@ -7,3 +7,4 @@ exclude_paths:
   - "third_party/**"
   - "changelog.md"
   - "CODE_OF_CONDUCT.md"
+  - "scripts/**"
