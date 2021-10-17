@@ -10,6 +10,8 @@
  * http://www.denso-wave.com/qrcode/faqpatent-e.html
  */
 
+import * as ZXing from "../third_party/zxing-js.umd";
+
 import {
     QrcodeResult,
     QrcodeResultFormat,
@@ -17,9 +19,6 @@ import {
     Logger,
     QrcodeDecoderAsync
 } from "./core";
-
-// Ambient tag to refer to ZXing library.
-declare const ZXing: any;
 
 /**
  * ZXing based Code decoder.

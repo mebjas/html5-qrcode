@@ -5,7 +5,4 @@
         "target": "es5",
         "outDir": "dist/esm"
     },
-    "exclude": [
-        "src/test"
-    ]
 }

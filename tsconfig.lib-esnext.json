@@ -5,7 +5,4 @@
         "target": "esnext",
         "outDir": "dist/esnext"
     },
-    "exclude": [
-        "src/test"
-    ]
 }

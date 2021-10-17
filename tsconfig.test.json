@@ -11,7 +11,7 @@
         "outDir": "output/tests"
     },
     "include": [
-        "src/test/**/*.ts"
+        "test/**/*.ts"
     ],
     "exclude": [
         "node_modules",

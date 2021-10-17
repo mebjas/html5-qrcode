@@ -396,37 +396,6 @@ export class Html5Qrcode {
                     .catch((error) => {
                         reject(Html5QrcodeStrings.errorGettingUserMedia(error));
                     });
-            } else if (navigator.getUserMedia) {
-                if (typeof cameraIdOrConfig != "string") {
-                    // TODO(mebjas): Make errors more concrete and categorizable.
-                    throw Html5QrcodeStrings.onlyDeviceSupportedError();
-                }
-                const getCameraConfig: MediaStreamConstraints = {
-                    video: videoConstraints
-                };
-                navigator.getUserMedia(getCameraConfig,
-                    (stream: MediaStream) => {
-                        $this.onMediaStreamReceived(
-                            stream,
-                            internalConfig,
-                            areVideoConstraintsEnabled,
-                            rootElementWidth,
-                            qrCodeSuccessCallback,
-                            qrCodeErrorCallback!)
-                            .then((_) => {
-                                $this.isScanning = true;
-                                resolve(/* Void */ null);
-
-                            })
-                            .catch((error) => {
-                                reject(
-                                    Html5QrcodeStrings.errorGettingUserMedia(
-                                        error));
-
-                            });
-                    }, (error: any) => {
-                        reject(Html5QrcodeStrings.errorGettingUserMedia(error));
-                    });
             } else {
                 reject(Html5QrcodeStrings.cameraStreamingNotSupported());
             }
