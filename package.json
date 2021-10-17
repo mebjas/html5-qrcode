@@ -1,6 +1,6 @@
 {
-  "name": "@scanapp/html5-qrcode",
-  "version": "0.0.9",
+  "name": "html5-qrcode",
+  "version": "2.1.0",
   "description": "A cross platform HTML5 QR Code & bar code scanner",
   "main": "./cjs/index.js",
   "module": "./esm/index.js",
@@ -11,7 +11,7 @@
     "build-windows": "scripts\\build-windows.sh",
     "test": "./scripts/test.sh",
     "lint-md": "remark .",
-    "clean": "rm -Rf ./lib/* ./build/* ./meta/bundlesize/* ./meta/coverage/* ./.rpt2_cache  ./dist/*",
+    "clean": "rm -Rf ./lib/* ./build/* ./meta/bundlesize/* ./meta/coverage/* ./.rpt2_cache  ./dist/* ./src/*.d.ts",
     "prebuild": "npm run clean",
     "postbuild": "cp -R ./third_party ./dist/third_party",
     "build": "npm run build:es2015 && npm run build:esm && npm run build:esnext && npm run build:cjs && npm run build:umd && npm run build:typing && npm run build:copy",
