@@ -24,7 +24,7 @@
         "allowJs": true
     },
     "files": [
-        "src/index.ts",
+        "src/index.ts"
     ],
     "paths": {
         "@scanapp/html5-qrcode": [
