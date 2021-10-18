@@ -9,4 +9,7 @@ webpack
 ## make classes global to be backwards compatible.
 cat scripts/webpack_append_data.js >> dist/html5-qrcode.min.js
 
+cp dist/html5-qrcode.min.js minified/html5-qrcode.min.js
+echo 'Copied the webpack script to minified/..'
+
 echo 'Webpack building done.'
