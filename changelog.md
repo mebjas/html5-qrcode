@@ -1,3 +1,10 @@
+### Version 2.1.0
+ - `[Fixed]` issues related to using with lodash - https://github.com/mebjas/html5-qrcode/issues/284
+ - `[Fixed]` Unable to use with typescript definition - https://github.com/mebjas/html5-qrcode/issues/283
+ - `[Fixed]` Not working with react - https://github.com/mebjas/html5-qrcode/issues/322
+ - `[Fixed]` TypeError: Html5QrcodeScanner is not a constructor - https://github.com/mebjas/html5-qrcode/issues/270
+ - `[Fixed]` TypeError: window._ is undefined - https://github.com/mebjas/html5-qrcode/issues/248
+
 ### Version 2.0.13
 Added ability to set custom width and height to the scanner with `config.qrbox` argument.
 
