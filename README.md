@@ -98,7 +98,7 @@ Supports:
 ## How to use
 > For full information [read this article](https://blog.minhazav.dev/HTML5-QR-Code-scanning-launched-v1.0.1/).
 
-Download the script from [release page](https://github.com/mebjas/html5-qrcode/releases) or `npm` with:
+Download the script from [release page](https://github.com/mebjas/html5-qrcode/releases) or install using `npm` with:
 ```sh
 npm i html5-qrcode
 ```
@@ -109,16 +109,24 @@ Add an element you want to use as a placeholder for QR Code scanner
 ```
 > Ideally do not set the height of this container as the height should depend on the height of the video feed from the camera. The library would honor the existing width, otherwise apply the default width. The height is derived from the aspect ratio of the video feed.
 
-Add `minified/html5-qrcode.min.js` in your web page. 
-> I would recommend using the minified version as it's transformed to standard JavaScript. The `html5-qrcode.js` is written with ECMAScript and may not be supported in the older version of the browsers. I wrote in this as it's easier to maintain!
+### Using directly in browser without any loader
+If you are not using any loader, you can get the latest UMD javascript code in production from [https://unpkg.com/html5-qrcode](https://unpkg.com/html5-qrcode).
 
 ```html
-<script src="./minified/html5-qrcode.js"></script>
-<!--
-  Or use directly from Github
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript">
+```
 
-<script src="https://raw.githubusercontent.com/mebjas/html5-qrcode/master/dist/html5-qrcode.min.js"></script>
--->
+> In case you installed the plugin using `npm` but still use javascript without any module loader, you can get the minified script in `node_modules/html5-qrcode/html5-qrcode.min.js`
+
+### Using with module loaders
+Include the script with
+
+```js
+// To use Html5QrcodeScanner (more info below)
+import {Html5QrcodeScanner} from "html5-qrcode"
+
+// To use Html5Qrcode (more info below)
+import {Html5Qrcode} from "html5-qrcode"
 ```
 
 ### Easy Mode - With end to end scanner user interface
