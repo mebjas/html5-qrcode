@@ -138,8 +138,7 @@ class StateManagerImpl implements StateManager, StateManagerTransaction {
     private failIfNewStateIs(
         newState: Html5QrcodeScannerState,
         disallowedStatesToTransition: Array<Html5QrcodeScannerState>) {
-        for (let i = 0; i < disallowedStatesToTransition.length; ++i) {
-            const disallowedState = disallowedStatesToTransition[i];
+        for (const disallowedState of disallowedStatesToTransition) {
             if (newState === disallowedState) {
                 throw `Cannot transition from ${this.state} to ${newState}`;
             }
