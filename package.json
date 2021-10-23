@@ -1,6 +1,6 @@
 {
   "name": "html5-qrcode",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "A cross platform HTML5 QR Code & bar code scanner",
   "main": "./cjs/index.js",
   "module": "./esm/index.js",

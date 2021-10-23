@@ -48,6 +48,7 @@ import {
 import {
   CameraManager
 } from "./camera";
+import { Html5QrcodeScannerState } from "./state-manager";
 
 /**
  * Different states of QR Code Scanner.
@@ -195,6 +196,55 @@ export class Html5QrcodeScanner {
             toHtml5QrcodeFullConfig(this.config, this.verbose));
     }
 
+    //#region State related public APIs
+    /**
+     * Pauses the ongoing scan.
+     * 
+     * Notes:
+     * -   Should only be called if camera scan is ongoing.
+     * -   This will not stop the viewfinder, but stop decoding camera stream.
+     * 
+     * @throws error if method is called when scanner is not in scanning state.
+     */
+    public pause() {
+        if (!this.html5Qrcode) {
+            throw "Code scanner not initialized.";
+        }
+
+        this.html5Qrcode.pause();
+    }
+    
+    /**
+     * Resumes the paused scan.
+     * 
+     * Notes:
+     * -   Should only be called if camera scan is ongoing.
+     * -   With this caller will start getting results in success and error
+     * callbacks.
+     * 
+     * @throws error if method is called when scanner is not in paused state.
+     */
+    public resume() {
+        if (!this.html5Qrcode) {
+            throw "Code scanner not initialized.";
+        }
+
+        this.html5Qrcode.resume();
+    }
+
+    /**
+     * Gets state of the camera scan.
+     *
+     * @returns state of type {@enum Html5QrcodeScannerState}.
+     */
+    public getState(): Html5QrcodeScannerState {
+        if (!this.html5Qrcode) {
+            throw "Code scanner not initialized.";
+        }
+
+        return this.html5Qrcode.getState();
+    }
+
     /**
      * Removes the QR Code scanner UI.
      * 
@@ -239,6 +289,52 @@ export class Html5QrcodeScanner {
 
         return Promise.resolve();
     }
+    //#endregion
+
+    //#region Beta APIs to modify running stream state.
+    /**
+     * Returns the capabilities of the running video track.
+     * 
+     * Note: Should only be called if {@code Html5QrcodeScanner#getState()}
+     *   returns {@code Html5QrcodeScannerState#SCANNING} or 
+     *   {@code Html5QrcodeScannerState#PAUSED}.
+     *
+     * @beta This is an experimental API
+     * @returns the capabilities of a running video track.
+     * @throws error if the scanning is not in running state.
+     */
+    public getRunningTrackCapabilities(): MediaTrackCapabilities {
+        if (!this.html5Qrcode) {
+            throw "Code scanner not initialized.";
+        }
+
+        return this.html5Qrcode.getRunningTrackCapabilities();
+    }
+
+    /**
+     * Apply a video constraints on running video track from camera.
+     *
+     * Note: Should only be called if {@code Html5QrcodeScanner#getState()}
+     *   returns {@code Html5QrcodeScannerState#SCANNING} or 
+     *   {@code Html5QrcodeScannerState#PAUSED}.
+     *
+     * @beta This is an experimental API
+     * @param {MediaTrackConstraints} specifies a variety of video or camera
+     *  controls as defined in
+     *  https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints
+     * @returns a Promise which succeeds if the passed constraints are applied,
+     *  fails otherwise.
+     * @throws error if the scanning is not in running state.
+     */
+    public applyVideoConstraints(videoConstaints: MediaTrackConstraints)
+        : Promise<any> {
+        if (!this.html5Qrcode) {
+            throw "Code scanner not initialized.";
+        }
+
+        return this.html5Qrcode.applyVideoConstraints(videoConstaints);
+    }
+    //#endregion
 
     //#region Private methods
     private createConfig(config: Html5QrcodeScannerConfig | undefined)
@@ -321,7 +417,7 @@ export class Html5QrcodeScanner {
         const section = document.createElement("div");
         section.id = this.getDashboardSectionId();
         section.style.width = "100%";
-        section.style.padding = "10px";
+        section.style.padding = "10px 0px 10px 0px";
         section.style.textAlign = "left";
         dashboard.appendChild(section);
     }

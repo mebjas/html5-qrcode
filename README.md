@@ -332,6 +332,17 @@ interface CameraDevice {
   label: string;
 }
 
+/** Different states of scanner */
+enum Html5QrcodeScannerState {
+  // Indicates the sanning is not running or user is using file based
+  // scanning.
+  NOT_STARTED = 0,
+  // Camera scan is running.
+  SCANNING,
+  // Camera scan is paused but camera is running.
+  PAUSED,
+}
+
 /**
  * Code formats supported by this library.
  */
@@ -508,12 +519,38 @@ class Html5Qrcode {
     configuration: Html5QrcodeCameraScanConfig | undefined,
     qrCodeSuccessCallback: QrcodeSuccessCallback | undefined,
     qrCodeErrorCallback: QrcodeErrorCallback | undefined,
-  ): Promise<null> {}ass
+  ): Promise<null> {}
+
+  /**
+   * Pauses the ongoing scan.
+   * 
+   * Note: this will not stop the viewfinder, but stop decoding camera stream.
+   * 
+   * @throws error if method is called when scanner is not in scanning state.
+   */
+  pause();
+
+  /**
+   * Resumes the paused scan.
+   * 
+   * Note: with this caller will start getting results in success and error
+   * callbacks.
+   * 
+   * @throws error if method is called when scanner is not in paused state.
+   */
+  resume();
 
   /**
    * Stops streaming QR Code video and scanning. 
    */
   stop(): Promise<void> {}
+
+  /**
+   * Gets state of the camera scan.
+   *
+   * @returns state of type {@enum ScannerState}.
+   */
+  getState(): Html5QrcodeScannerState;
 
   /**
    * Scans an Image File for QR Code.
@@ -563,6 +600,36 @@ class Html5QrcodeScanner {
   render(
     qrCodeSuccessCallback: QrcodeSuccessCallback,
     qrCodeErrorCallback: QrcodeErrorCallback | undefined) {}
+
+  /**
+   * Pauses the ongoing scan.
+   * 
+   * Notes:
+   * -   Should only be called if camera scan is ongoing.
+   * -   This will not stop the viewfinder, but stop decoding camera stream.
+   * 
+   * @throws error if method is called when scanner is not in scanning state.
+   */
+  pause();
+
+  /**
+   * Resumes the paused scan.
+   * 
+   * Notes:
+   * -   Should only be called if camera scan is ongoing.
+   * -   With this caller will start getting results in success and error
+   * callbacks.
+   * 
+   * @throws error if method is called when scanner is not in paused state.
+   */
+  resume();
+    
+  /**
+   * Gets state of the camera scan.
+   *
+   * @returns state of type {@enum Html5QrcodeScannerState}.
+   */
+  getState(): Html5QrcodeScannerState;
 
   /** Removes the QR Code scanner. */
   clear(): Promise<void>  {}
