@@ -1,9 +1,115 @@
+### Version 2.1.1
+-   Fixed dashboard section exceeding the parent HTML element width.
+-   Added support for following beta APIs which allows modifying running video
+    stream state, which camera stream is running.
+    ```js
+    /**
+     * Returns the capabilities of the running video track.
+     * 
+     * Note: Should only be called if {@code Html5QrcodeScanner#getState()}
+     *   returns {@code Html5QrcodeScannerState#SCANNING} or 
+     *   {@code Html5QrcodeScannerState#PAUSED}.
+     *
+     * @beta This is an experimental API
+     * @returns the capabilities of a running video track.
+     * @throws error if the scanning is not in running state.
+     */
+    public getRunningTrackCapabilities(): MediaTrackCapabilities;
+
+    /**
+     * Apply a video constraints on running video track from camera.
+     *
+     * Note: Should only be called if {@code Html5QrcodeScanner#getState()}
+     *   returns {@code Html5QrcodeScannerState#SCANNING} or 
+     *   {@code Html5QrcodeScannerState#PAUSED}.
+     *
+     * @beta This is an experimental API
+     * @param {MediaTrackConstraints} specifies a variety of video or camera
+     *  controls as defined in
+     *  https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints
+     * @returns a Promise which succeeds if the passed constraints are applied,
+     *  fails otherwise.
+     * @throws error if the scanning is not in running state.
+     */
+    public applyVideoConstraints(videoConstaints: MediaTrackConstraints)   
+    ```
+
+    **Important note**: Both these APIs are beta and not publicly documented.
+
+-   Support for pausing and resuming code scanning in camera scan mode. New APIs
+    are added to both `Html5QrcodeScanner` and `Html5Qrcode`. They should only be called when the scanner state is `Html5QrcodeScannerState#SCANNING` (== `2`) or
+    `Html5QrcodeScannerState#PAUSED` (== `3`).
+    
+    APIs added:
+    ```js
+    /**
+     * Pauses the ongoing scan.
+     * 
+     * Note: this will not stop the viewfinder, but stop decoding camera stream.
+     * 
+     * @throws error if method is called when scanner is not in scanning state.
+     */
+    public pause();
+
+    /**
+     * Resumes the paused scan.
+     * 
+     * Note: with this caller will start getting results in success and error
+     * callbacks.
+     * 
+     * @throws error if method is called when scanner is not in paused state.
+     */
+    public resume();
+
+        /**
+     * Gets state of the camera scan.
+     *
+     * @returns state of type {@enum ScannerState}.
+     */
+    public getState(): Html5QrcodeScannerState;
+    ```
+
+    Example usage:
+
+    ```js
+    let html5QrcodeScanner = new Html5QrcodeScanner(
+        "reader", 
+        { 
+            fps: 10,
+            qrbox: {width: 250, height: 250},
+            rememberLastUsedCamera: true,
+            aspectRatio: 1.7777778
+        });
+
+    function onScanSuccess(decodedText, decodedResult) {
+        if (html5QrcodeScanner.getState() 
+            !== Html5QrcodeScannerState.NOT_STARTED) {
+            // Add this check to ensure success callback is not being called
+            // from file based scanner.
+
+            // Pause on scan result
+            html5QrcodeScanner.pause();
+        }
+
+
+        // Handle your business logic
+        // ...
+
+        // .. ok to resume now or elsewhere.
+        // just call html5QrcodeScanner.resume();
+        // Make sure to check if the state is !== NOT_STARTED
+    }
+	html5QrcodeScanner.render(onScanSuccess);
+    ```
+
+    Note: when camera scan is paused it adds a UI element indicating that state.
+
 ### Version 2.1.0
- - `[Fixed]` issues related to using with lodash - https://github.com/mebjas/html5-qrcode/issues/284
- - `[Fixed]` Unable to use with typescript definition - https://github.com/mebjas/html5-qrcode/issues/283
- - `[Fixed]` Not working with react - https://github.com/mebjas/html5-qrcode/issues/322
- - `[Fixed]` TypeError: Html5QrcodeScanner is not a constructor - https://github.com/mebjas/html5-qrcode/issues/270
- - `[Fixed]` TypeError: window._ is undefined - https://github.com/mebjas/html5-qrcode/issues/248
+-   `[Fixed]` issues related to using with lodash - https://github.com/mebjas/html5-qrcode/issues/284
+-   `[Fixed]` Unable to use with typescript definition - https://github.com/mebjas/html5-qrcode/issues/283
+-   `[Fixed]` Not working with react - https://github.com/mebjas/html5-qrcode/issues/322
+-   `[Fixed]` TypeError: Html5QrcodeScanner is not a constructor - https://github.com/mebjas/html5-qrcode/issues/270
+-   `[Fixed]` TypeError: window._ is undefined - https://github.com/mebjas/html5-qrcode/issues/248
 
 ### Version 2.0.13
 Added ability to set custom width and height to the scanner with `config.qrbox` argument.

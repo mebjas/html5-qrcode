@@ -36,6 +36,12 @@ import {
     ExperimentalFeaturesConfig,
     ExperimentalFeaturesConfigFactory
 } from "./experimental-features";
+import {
+    StateManagerProxy,
+    StateManagerFactory,
+    StateManagerTransaction,
+    Html5QrcodeScannerState
+} from "./state-manager";
 
 type Html5QrcodeIdentifier = string | MediaTrackConstraints;
 
@@ -233,6 +239,7 @@ export class Html5Qrcode {
     // error prone nature of a large stateful class.
     private element: HTMLElement | null = null;
     private canvasElement: HTMLCanvasElement | null = null;
+    private scannerPausedUiElement: HTMLDivElement | null = null;
     private hasBorderShaders: boolean | null = null;
     private borderShaders: Array<HTMLElement> | null = null;
     private qrMatch: boolean | null = null;
@@ -244,7 +251,10 @@ export class Html5Qrcode {
     private lastScanImageFile: string | null = null;
     //#endregion
 
-    public isScanning: boolean;
+    public stateManagerProxy: StateManagerProxy;
+
+    // TODO(mebjas): deprecate this.
+    public isScanning: boolean = false;
 
     /**
      * Initialize the code scanner.
@@ -289,8 +299,7 @@ export class Html5Qrcode {
         this.foreverScanTimeout;
         this.localMediaStream;
         this.shouldScan = true;
-        this.isScanning = false;
-
+        this.stateManagerProxy = StateManagerFactory.create();
     }
 
     //#region start()
@@ -364,11 +373,14 @@ export class Html5Qrcode {
         }
 
         const $this = this;
+        const toScanningStateChangeTransaction: StateManagerTransaction
+            = this.stateManagerProxy.startTransition(Html5QrcodeScannerState.SCANNING);
         return new Promise((resolve, reject) => {
             const videoConstraints = areVideoConstraintsEnabled
                     ? internalConfig.videoConstraints
                     : $this.createVideoConstraints(cameraIdOrConfig);
             if (!videoConstraints) {
+                toScanningStateChangeTransaction.cancel();
                 reject("videoConstraints should be defined");
                 return;
             }
@@ -388,20 +400,68 @@ export class Html5Qrcode {
                             qrCodeSuccessCallback,
                             qrCodeErrorCallback!)
                             .then((_) => {
+                                toScanningStateChangeTransaction.execute();
                                 $this.isScanning = true;
                                 resolve(/* Void */ null);
                             })
-                            .catch(reject);
+                            .catch((error) => {
+                                toScanningStateChangeTransaction.cancel();
+                                reject(error);
+                            });
                     })
                     .catch((error) => {
+                        toScanningStateChangeTransaction.cancel();
                         reject(Html5QrcodeStrings.errorGettingUserMedia(error));
                     });
             } else {
+                toScanningStateChangeTransaction.cancel();
                 reject(Html5QrcodeStrings.cameraStreamingNotSupported());
             }
         });
     }
     //#endregion
+
+    //#region Other state related public APIs
+    /**
+     * Pauses the ongoing scan.
+     * 
+     * Note: this will not stop the viewfinder, but stop decoding camera stream.
+     * 
+     * @throws error if method is called when scanner is not in scanning state.
+     */
+    public pause() {
+        if (!this.stateManagerProxy.isStrictlyScanning()) {
+            throw "Cannot pause, scanner is not scanning.";
+        }
+        this.stateManagerProxy.directTransition(Html5QrcodeScannerState.PAUSED);
+        this.showPausedState();
+    }
+
+    /**
+     * Resumes the paused scan.
+     * 
+     * Note: with this caller will start getting results in success and error
+     * callbacks.
+     * 
+     * @throws error if method is called when scanner is not in paused state.
+     */
+    public resume() {
+        if (!this.stateManagerProxy.isPaused()) {
+            throw "Cannot result, scanner is not paused.";
+        }
+        this.stateManagerProxy.directTransition(
+            Html5QrcodeScannerState.SCANNING);
+        this.hidePausedState();
+    }
+
+    /**
+     * Gets state of the camera scan.
+     *
+     * @returns state of type {@enum ScannerState}.
+     */
+    public getState(): Html5QrcodeScannerState {
+        return this.stateManagerProxy.getState();
+    }
 
     /**
      * Stops streaming QR Code video and scanning.
@@ -409,7 +469,14 @@ export class Html5Qrcode {
      * @returns Promise for safely closing the video stream.
      */
     public stop(): Promise<void> {
-        // TODO(mebjas): fail fast if the start() wasn't called.
+        if (!this.stateManagerProxy.isScanning()) {
+            throw "Cannot stop, scanner is not running or paused.";
+        }
+
+        const toStoppedStateTransaction: StateManagerTransaction
+            = this.stateManagerProxy.startTransition(
+                Html5QrcodeScannerState.NOT_STARTED);
+
         this.shouldScan = false;
         if (this.foreverScanTimeout) {
             clearTimeout(this.foreverScanTimeout);
@@ -437,13 +504,16 @@ export class Html5Qrcode {
                 }
 
                 removeQrRegion();
-                this.isScanning = false;
                 if (this.qrRegion) {
                     this.qrRegion = null;
                 }
                 if (this.context) {
                     this.context = null;
                 }
+
+                toStoppedStateTransaction.execute();
+                this.hidePausedState();
+                this.isScanning = false;
                 resolve();
             };
 
@@ -466,7 +536,9 @@ export class Html5Qrcode {
             });
         });
     }
+    //#endregion
 
+    //#region File scan related public APIs
     /**
      * Scans an Image File for QR Code.
      *
@@ -517,8 +589,8 @@ export class Html5Qrcode {
             showImage = true;
         }
 
-        if (this.isScanning) {
-            throw "Close ongoing scan before scanning a file.";
+        if (!this.stateManagerProxy.canScanFile()) {
+            throw "Cannot start file scan - ongoing camera scan";
         }
 
         return new Promise((resolve, reject) => {
@@ -604,6 +676,7 @@ export class Html5Qrcode {
             inputImage.src = URL.createObjectURL(imageFile);
         });
     }
+    //#endregion
 
     /**
      * Clears the existing canvas.
@@ -654,7 +727,7 @@ export class Html5Qrcode {
      * @returns the capabilities of a running video track.
      * @throws error if the scanning is not in running state.
      */
-    public getRunningTrackCapabilities() {
+    public getRunningTrackCapabilities(): MediaTrackCapabilities {
         if (this.localMediaStream == null) {
             throw "Scanning is not in running state, call this API only when"
                 + " QR code scanning using camera is in running state.";
@@ -964,11 +1037,28 @@ export class Html5Qrcode {
             this.possiblyInsertShadingElement(
                 this.element!, width, height, qrDimensions);
         }
+
+        this.createScannerPausedUiElement(this.element!);
  
         // Update local states
         this.qrRegion = qrRegion;
         this.context = context;
         this.canvasElement = canvasElement;
+    }
+
+    // TODO(mebjas): Convert this to a standard message viewer.
+    private createScannerPausedUiElement(rootElement: HTMLElement) {
+        const scannerPausedUiElement = document.createElement("div");
+        scannerPausedUiElement.innerText = "Scanner paused";
+        scannerPausedUiElement.style.display = "none";
+        scannerPausedUiElement.style.position = "absolute";
+        scannerPausedUiElement.style.top = "0px";
+        scannerPausedUiElement.style.zIndex = "1";
+        scannerPausedUiElement.style.background = "yellow";
+        scannerPausedUiElement.style.textAlign = "center";
+        scannerPausedUiElement.style.width = "100%";
+        rootElement.appendChild(scannerPausedUiElement);
+        this.scannerPausedUiElement = scannerPausedUiElement;
     }
  
      /**
@@ -983,6 +1073,10 @@ export class Html5Qrcode {
          qrCodeSuccessCallback: QrcodeSuccessCallback,
          qrCodeErrorCallback: QrcodeErrorCallback
      ): Promise<boolean> {
+        if (this.stateManagerProxy.isPaused()) {
+            return Promise.resolve(false);
+        }
+
         return this.qrcode.decodeAsync(this.canvasElement!)
         .then((result) => {
             qrCodeSuccessCallback(
@@ -1275,7 +1369,7 @@ export class Html5Qrcode {
     //#endregion
 
     private clearElement(): void {
-        if (this.isScanning) {
+        if (this.stateManagerProxy.isScanning()) {
             throw "Cannot clear while scan is ongoing, close it first.";
         }
         const element = document.getElementById(this.elementId);
@@ -1467,6 +1561,20 @@ export class Html5Qrcode {
         }
         this.borderShaders.push(elem);
         shaderElem.appendChild(elem);
+    }
+
+    private showPausedState() {
+        if (!this.scannerPausedUiElement) {
+            throw "[internal error] scanner paused UI element not found";
+        }
+        this.scannerPausedUiElement.style.display = "block";
+    }
+
+    private hidePausedState() {
+        if (!this.scannerPausedUiElement) {
+            throw "[internal error] scanner paused UI element not found";
+        }
+        this.scannerPausedUiElement.style.display = "none";
     }
 
     private getTimeoutFps(fps: number) {

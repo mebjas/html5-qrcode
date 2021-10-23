@@ -27,7 +27,7 @@ class LibraryInfoDiv {
         this.infoDiv.style.position = "absolute";
         this.infoDiv.style.top = "10px";
         this.infoDiv.style.right = "10px";
-        this.infoDiv.style.zIndex = "1";
+        this.infoDiv.style.zIndex = "2";
         this.infoDiv.style.display = "none";
         this.infoDiv.style.padding = "5pt";
         this.infoDiv.style.border = "1px solid silver";
