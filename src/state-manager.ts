@@ -5,9 +5,16 @@
  * @author mebjas <minhazav@gmail.com>
  */
 
+/** Different states of scanner */
 export enum Html5QrcodeScannerState {
-    NOT_STARTED = 0,
+    // Invalid internal state, do not set to this state.
+    UNKNOWN = 0,
+    // Indicates the sanning is not running or user is using file based
+    // scanning.
+    NOT_STARTED = 1,
+    // Camera scan is running.
     SCANNING,
+    // Camera scan is paused but camera is running.
     PAUSED,
 }
 
@@ -60,7 +67,8 @@ class StateManagerImpl implements StateManager, StateManagerTransaction {
 
     private state: Html5QrcodeScannerState = Html5QrcodeScannerState.NOT_STARTED;
 
-    private onGoingTransactionNewState: Html5QrcodeScannerState | undefined = undefined;
+    private onGoingTransactionNewState: Html5QrcodeScannerState
+        = Html5QrcodeScannerState.UNKNOWN;
 
     public directTransition(newState: Html5QrcodeScannerState) {
         this.failIfTransitionOngoing();
@@ -77,21 +85,23 @@ class StateManagerImpl implements StateManager, StateManagerTransaction {
     }
 
     public execute() {
-        if (this.onGoingTransactionNewState === undefined) {
+        if (this.onGoingTransactionNewState 
+                === Html5QrcodeScannerState.UNKNOWN) {
             throw "Transaction is already cancelled, cannot execute().";
         }
 
         const tempNewState = this.onGoingTransactionNewState!;
-        this.onGoingTransactionNewState = undefined;
+        this.onGoingTransactionNewState = Html5QrcodeScannerState.UNKNOWN;
         this.directTransition(tempNewState);        
     }
 
     public cancel() {
-        if (!this.onGoingTransactionNewState) {
+        if (this.onGoingTransactionNewState 
+                === Html5QrcodeScannerState.UNKNOWN) {
             throw "Transaction is already cancelled, cannot cancel().";
         }
 
-        this.onGoingTransactionNewState = undefined;
+        this.onGoingTransactionNewState = Html5QrcodeScannerState.UNKNOWN;
     }
 
     public getState(): Html5QrcodeScannerState {
@@ -107,6 +117,8 @@ class StateManagerImpl implements StateManager, StateManagerTransaction {
 
     private validateTransition(newState: Html5QrcodeScannerState) {
         switch(this.state) {
+            case Html5QrcodeScannerState.UNKNOWN:
+                throw "Transition from unknown is not allowed";
             case Html5QrcodeScannerState.NOT_STARTED:
                 this.failIfNewStateIs(newState, [Html5QrcodeScannerState.PAUSED]);
                 break;
@@ -125,7 +137,7 @@ class StateManagerImpl implements StateManager, StateManagerTransaction {
         for (let i = 0; i < disallowedStatesToTransition.length; ++i) {
             const disallowedState = disallowedStatesToTransition[i];
             if (newState === disallowedState) {
-                throw `Cannot transition from {this.state} to {newState}`;
+                throw `Cannot transition from ${this.state} to ${newState}`;
             }
         }
     }
