@@ -54,7 +54,7 @@ export interface StateManager {
      * @throws error if the new state is not a valid transition from current
      * state.
      */
-    directTransition(newState: Html5QrcodeScannerState): any;
+    directTransition(newState: Html5QrcodeScannerState): void;
 
     /**
      * Get current state.
@@ -62,7 +62,10 @@ export interface StateManager {
     getState(): Html5QrcodeScannerState;
 }
 
-/** Implementation of {@interface StateManager}. */
+/** 
+ * Implementation of {@interface StateManager} and 
+ * {@interface StateManagerTransaction}.
+ */
 class StateManagerImpl implements StateManager, StateManagerTransaction {
 
     private state: Html5QrcodeScannerState = Html5QrcodeScannerState.NOT_STARTED;
@@ -90,7 +93,7 @@ class StateManagerImpl implements StateManager, StateManagerTransaction {
             throw "Transaction is already cancelled, cannot execute().";
         }
 
-        const tempNewState = this.onGoingTransactionNewState!;
+        const tempNewState = this.onGoingTransactionNewState;
         this.onGoingTransactionNewState = Html5QrcodeScannerState.UNKNOWN;
         this.directTransition(tempNewState);        
     }
@@ -110,7 +113,8 @@ class StateManagerImpl implements StateManager, StateManagerTransaction {
 
     //#region private methods
     private failIfTransitionOngoing() {
-        if (this.onGoingTransactionNewState) {
+        if (this.onGoingTransactionNewState 
+            !== Html5QrcodeScannerState.UNKNOWN) {
             throw "Cannnot transition to a new state, already under transition"; 
          }
     }

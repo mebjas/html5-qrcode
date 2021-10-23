@@ -253,7 +253,7 @@ export class Html5Qrcode {
 
     public stateManagerProxy: StateManagerProxy;
 
-    // TODO(minhazav): deprecate this.
+    // TODO(mebjas): deprecate this.
     public isScanning: boolean = false;
 
     /**
@@ -404,9 +404,13 @@ export class Html5Qrcode {
                                 $this.isScanning = true;
                                 resolve(/* Void */ null);
                             })
-                            .catch(reject);
+                            .catch((error) => {
+                                toScanningStateChangeTransaction.cancel();
+                                reject(error);
+                            });
                     })
                     .catch((error) => {
+                        toScanningStateChangeTransaction.cancel();
                         reject(Html5QrcodeStrings.errorGettingUserMedia(error));
                     });
             } else {
@@ -508,6 +512,7 @@ export class Html5Qrcode {
                 }
 
                 toStoppedStateTransaction.execute();
+                this.hidePausedState();
                 this.isScanning = false;
                 resolve();
             };
@@ -1041,6 +1046,7 @@ export class Html5Qrcode {
         this.canvasElement = canvasElement;
     }
 
+    // TODO(mebjas): Convert this to a standard message viewer.
     private createScannerPausedUiElement(rootElement: HTMLElement) {
         const scannerPausedUiElement = document.createElement("div");
         scannerPausedUiElement.innerText = "Scanner paused";

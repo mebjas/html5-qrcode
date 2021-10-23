@@ -37,8 +37,8 @@
     **Important note**: Both these APIs are beta and not publicly documented.
 
 -   Support for pausing and resuming code scanning in camera scan mode. New APIs
-    are added to both `Html5QrcodeScanner` and `Html5Qrcode`. They should only be called when the scanner state is `Html5QrcodeScannerState#SCANNING` (== `1`) or
-    `Html5QrcodeScannerState#PAUSED` (== `2`).
+    are added to both `Html5QrcodeScanner` and `Html5Qrcode`. They should only be called when the scanner state is `Html5QrcodeScannerState#SCANNING` (== `2`) or
+    `Html5QrcodeScannerState#PAUSED` (== `3`).
     
     APIs added:
     ```js
