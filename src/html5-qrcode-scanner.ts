@@ -596,11 +596,19 @@ export class Html5QrcodeScanner {
         scpCameraScanRegion.style.textAlign = "center";
 
         const cameraSelectionContainer = document.createElement("span");
-        cameraSelectionContainer.innerText
-            = `Select Camera (${cameras.length})  `;
         cameraSelectionContainer.style.marginRight = "10px";
 
+        const numCameras = cameras.length;
         const cameraSelectionSelect = document.createElement("select");
+        if (numCameras == 1) {
+            // If only one camera is found, don't show camera selection.
+            cameraSelectionSelect.style.display = "none";
+        } else {
+            // Otherwise, show the number of cameras found as well.
+            const selectCameraString = Html5QrcodeScannerStrings.selectCamera();
+            cameraSelectionContainer.innerText
+                = `${selectCameraString} (${cameras.length})  `;
+        }
         cameraSelectionSelect.id = this.getCameraSelectionId();
         const options = [];
         for (const camera of cameras) {
@@ -630,9 +638,26 @@ export class Html5QrcodeScanner {
 
         scpCameraScanRegion.appendChild(cameraActionContainer);
 
+        const resetCameraActionStarButton = (shouldShow: boolean) => {
+            if (!shouldShow) {
+                cameraActionStartButton.style.display = "none";
+            }
+            cameraActionStartButton.innerText
+                = Html5QrcodeScannerStrings
+                    .scanButtonStartScanningText();
+            cameraActionStartButton.style.opacity = "1";
+            cameraActionStartButton.disabled = false;
+            if (shouldShow) {
+                cameraActionStartButton.style.display = "inline-block";
+            }
+        };
+
         cameraActionStartButton.addEventListener("click", (_) => {
+            cameraActionStartButton.innerText
+                = Html5QrcodeScannerStrings.scanButtonScanningStarting();
             cameraSelectionSelect.disabled = true;
             cameraActionStartButton.disabled = true;
+            cameraActionStartButton.style.opacity = "0.5";
             $this.showHideScanTypeSwapLink(false);
             const cameraId = cameraSelectionSelect.value;
             $this.persistedDataManager.setLastUsedCameraId(cameraId);
@@ -645,16 +670,21 @@ export class Html5QrcodeScanner {
                 .then((_) => {
                     cameraActionStopButton.disabled = false;
                     cameraActionStopButton.style.display = "inline-block";
-                    cameraActionStartButton.style.display = "none";
+                    resetCameraActionStarButton(/* shouldShow= */ false);
                 })
                 .catch((error) => {
                     $this.showHideScanTypeSwapLink(true);
                     cameraSelectionSelect.disabled = false;
-                    cameraActionStartButton.disabled = false;
+                    resetCameraActionStarButton(/* shouldShow= */ true);
                     $this.setHeaderMessage(
                         error, Html5QrcodeScannerStatus.STATUS_WARNING);
                 });
         });
+
+        if (numCameras == 1) {
+            // If there is only one camera, start scanning directly.
+            cameraActionStartButton.click();
+        }
 
         cameraActionStopButton.addEventListener("click", (_) => {
             if (!$this.html5Qrcode) {
