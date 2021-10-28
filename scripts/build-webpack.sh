@@ -13,5 +13,3 @@ cp dist/html5-qrcode.min.js minified/html5-qrcode.min.js
 echo 'Copied the webpack script to minified/..'
 
 echo 'Webpack building done.'
-
-cp minified/html5-qrcode.min.js ../scanapp-org.github.io/assets/js/html5-qrcode.min.js
