@@ -843,7 +843,7 @@ export class Html5QrcodeScanner {
             qrCodeScanRegion.appendChild($this.cameraScanImage!);
         }
         this.cameraScanImage.width = 64;
-        this.cameraScanImage.style.opacity = "0.3";
+        this.cameraScanImage.style.opacity = "0.8";
         this.cameraScanImage.src = ASSET_CAMERA_SCAN;
     }
 
@@ -864,7 +864,7 @@ export class Html5QrcodeScanner {
             qrCodeScanRegion.appendChild($this.fileScanImage!);
         }
         this.fileScanImage.width = 64;
-        this.fileScanImage.style.opacity = "0.3";
+        this.fileScanImage.style.opacity = "0.8";
         this.fileScanImage.src = ASSET_FILE_SCAN;
     }
 

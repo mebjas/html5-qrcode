@@ -1,3 +1,6 @@
+### Version 2.1.3
+-   Reduce the assets size using SVG instead of GIF files.
+
 ### Version 2.1.2
 -   If there is only one camera detected, automatically use that.
 -   Cosmetic fixes: show `Launching Camera...` in button when launching the camera.

@@ -86,6 +86,8 @@ class LibraryInfoIcon {
         this.infoIcon.style.opacity = "0.6";
         this.infoIcon.style.cursor = "pointer";
         this.infoIcon.style.zIndex = "2";
+        this.infoIcon.style.width = "16px";
+        this.infoIcon.style.height = "16px";
 
         this.infoIcon.onmouseover = (_) => this.onHoverIn();
         this.infoIcon.onmouseout = (_) => this.onHoverOut();
