@@ -98,6 +98,10 @@ export class Html5QrcodeScannerStrings {
         return "Start Scanning";
     }
 
+    public static scanButtonScanningStarting(): string {
+        return "Launching Camera...";
+    }
+
     /**
      * Text to show when camera scan is selected.
      * 
@@ -114,6 +118,10 @@ export class Html5QrcodeScannerStrings {
      */
     public static textIfFileScanSelected(): string {
         return "Scan using camera directly";
+    }
+
+    public static selectCamera(): string {
+        return "Select Camera";
     }
 }
 
