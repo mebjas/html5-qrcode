@@ -272,7 +272,7 @@ export class Html5Qrcode {
      * TODO(mebjas): Deprecate the verbosity boolean flag completely.
      */
     public constructor(elementId: string, 
-        configOrVerbosityFlag: boolean | Html5QrcodeFullConfig | undefined) {
+        configOrVerbosityFlag?: boolean | Html5QrcodeFullConfig | undefined) {
         if (!document.getElementById(elementId)) {
             throw `HTML Element with id=${elementId} not found`;
         }
