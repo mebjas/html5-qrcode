@@ -600,7 +600,7 @@ export class Html5QrcodeScanner {
 
         const numCameras = cameras.length;
         const cameraSelectionSelect = document.createElement("select");
-        if (numCameras == 1) {
+        if (numCameras === 1) {
             // If only one camera is found, don't show camera selection.
             cameraSelectionSelect.style.display = "none";
         } else {
