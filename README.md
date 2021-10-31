@@ -20,9 +20,9 @@ Use this lightweight library to easily / quickly integrate QR code, bar code, an
 ![GitHub all releases](https://img.shields.io/github/downloads/mebjas/html5-qrcode/total?label=Github%20downloads&style=for-the-badge) ![npm](https://img.shields.io/npm/dw/html5-qrcode?label=npm%20downloads&style=for-the-badge)
 
 
-| <img src="./assets/pixel3.gif" width="200px"> | <img src="./assets/pixel4_barcode_480.gif" width="180px">|
+| <img src="./assets/pixel3.gif" width="320px"> | <img src="./assets/pixel4_barcode_480.gif" width="180px">|
 | -- | -- |
-| _Figure: Running on Android, Pixel 3_ | _Figure: Running on Android, Pixel 4, **Scanning different types of codes**_ |
+| _Figure: Demo on [scanapp.org](https://scanapp.org)_ | _Figure: Running on Android, Pixel 4, **Scanning different types of codes**_ |
 
 ## Notice
 **UX/UXD/UXR help wanted**: We are looking to improve user experience of this code scanning library — if you are interested in making this experience better for both developers and end users, please share your ideas, thoughts, inputs in [this discussion](https://github.com/mebjas/html5-qrcode/discussions/213)
@@ -86,6 +86,8 @@ Code scanning is dependent on [Zxing-js](https://github.com/zxing-js/library) li
 > BarcodeDetector API integration ([Read more](/experimental.md)).
 
 ## Description - [View Demo](https://blog.minhazav.dev/research/html5-qrcode.html)
+
+> See an end to end scanner experience at [scanapp.org](https://scanapp.org).
 
 This is a cross-platform JavaScript library to integrate QR code, bar codes & a few other types of code scanning capabilities to your applications running on HTML5 compatible browser.
 
