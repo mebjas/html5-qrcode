@@ -1,3 +1,7 @@
+### Version 2.1.2
+-   If there is only one camera detected, automatically use that.
+-   Cosmetic fixes: show `Launching Camera...` in button when launching the camera.
+
 ### Version 2.1.1
 -   Fixed dashboard section exceeding the parent HTML element width.
 -   Added support for following beta APIs which allows modifying running video
