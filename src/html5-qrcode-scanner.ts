@@ -681,7 +681,7 @@ export class Html5QrcodeScanner {
                 });
         });
 
-        if (numCameras == 1) {
+        if (numCameras === 1) {
             // If there is only one camera, start scanning directly.
             cameraActionStartButton.click();
         }
