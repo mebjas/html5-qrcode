@@ -20,7 +20,7 @@ Use this lightweight library to easily / quickly integrate QR code, bar code, an
 ![GitHub all releases](https://img.shields.io/github/downloads/mebjas/html5-qrcode/total?label=Github%20downloads&style=for-the-badge) ![npm](https://img.shields.io/npm/dw/html5-qrcode?label=npm%20downloads&style=for-the-badge)
 
 
-| <img src="./assets/pixel3.gif" width="320px"> | <img src="./assets/pixel4_barcode_480.gif" width="180px">|
+| <img src="./assets/pixel3.gif" width="180px"> | <img src="./assets/pixel4_barcode_480.gif" width="180px">|
 | -- | -- |
 | _Figure: Demo on [scanapp.org](https://scanapp.org)_ | _Figure: Running on Android, Pixel 4, **Scanning different types of codes**_ |
 
