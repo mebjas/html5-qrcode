@@ -2,7 +2,7 @@
 
 ## Include the js library in your project
 ```html
-<script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+<script src="https://unpkg.com/html5-qrcode"></script>
 ```
 
 ## Add a placeholder in html
