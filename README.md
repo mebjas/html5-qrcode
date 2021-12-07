@@ -244,6 +244,7 @@ To stop using camera and thus stop scanning, call `Html5Qrcode#stop()` which ret
 ```js
 html5QrCode.stop().then((ignore) => {
   // QR Code scanning is stopped.
+  html5QrCode.clear(); // Turns off the camera
 }).catch((err) => {
   // Stop failed, handle it.
 });
