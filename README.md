@@ -783,5 +783,13 @@ Some experimental features include:
 	  -   For calling out your contributions, the bot will update the contributions file.
     -   Code will be built & published by the author in batches.
 
+## How to contribute
+You can contribute to the project in several ways:
+
+-   File issue ticket for any observed bug or compatibility issue with the project.
+-   File feature request for missing features.
+-   Take open bugs or feature request and work on it and send a Pull Request.
+-   Write unit tests for existing codebase (which is not covered by tests today). **Help wanted on this** - [read more](./tests).
+
 ## Credits
 The decoder used for the QR code reading is from `Zxing-js` https://github.com/zxing-js/library<br>
