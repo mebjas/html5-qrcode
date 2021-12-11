@@ -1,5 +1,7 @@
 import {
-    isValidHtml5QrcodeSupportedFormats
+    Html5QrcodeSupportedFormats,
+    isValidHtml5QrcodeSupportedFormats,
+    QrcodeResultFormat
 } from "../src/core";
 
 test('isValidHtml5QrcodeSupportedFormats supported format', () => {
@@ -11,4 +13,15 @@ test('isValidHtml5QrcodeSupportedFormats supported format', () => {
 
 test('isValidHtml5QrcodeSupportedFormats unsupported format', () => {
     expect(isValidHtml5QrcodeSupportedFormats("random")).toBe(false);
+});
+
+test('QrcodeResultFormat#toString() returns corrrect format', () => {
+    let qrcodeResultFormat = QrcodeResultFormat.create(
+        Html5QrcodeSupportedFormats.AZTEC);
+
+    expect(qrcodeResultFormat.toString()).toBe("AZTEC");
+
+    qrcodeResultFormat = QrcodeResultFormat.create(
+        Html5QrcodeSupportedFormats.DATA_MATRIX);
+    expect(qrcodeResultFormat.toString()).toBe("DATA_MATRIX");
 });

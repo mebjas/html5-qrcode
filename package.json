@@ -9,6 +9,7 @@
   "unpkg": "./html5-qrcode.min.js",
   "scripts": {
     "build-windows": "scripts\\build-windows.sh",
+    "test": "npx jest",
     "lint-md": "remark .",
     "clean": "rm -Rf ./lib/* ./build/* ./meta/bundlesize/* ./meta/coverage/* ./.rpt2_cache  ./dist/* ./src/*.d.ts",
     "prebuild": "npm run clean",
