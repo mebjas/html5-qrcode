@@ -10,6 +10,9 @@ and tracked in [issue#205](https://github.com/mebjas/html5-qrcode/issues/205).
         -   [ ] `P1` Coverage > 70%
         -   [ ] `P2` Coverage > 80%
         -   [ ] `P3` Coverage > 90%
+
     -   [ ] Add integration for code coverage
+
     -   [ ] Integrate code coverage with Codacy
+
 -   [ ] `P2` Browser based e2e testing
