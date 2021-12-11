@@ -1,3 +1,5 @@
+import { expect } from "chai";
+
 import {
     Html5QrcodeSupportedFormats,
     isValidHtml5QrcodeSupportedFormats,
@@ -9,23 +11,21 @@ import {
     Html5QrcodeErrorTypes,
     isNullOrUndefined
 } from "../src/core";
-import { expect } from "chai";
 
 describe("isValidHtml5QrcodeSupportedFormats function", () => {
     it("should return true for supported formats", () => {
-        expect(isValidHtml5QrcodeSupportedFormats("AZTEC")).to.equal(true);
-        expect(isValidHtml5QrcodeSupportedFormats("QR_CODE")).to.equal(true);
-        expect(isValidHtml5QrcodeSupportedFormats("UPC_A")).to.equal(true);
-        expect(isValidHtml5QrcodeSupportedFormats("EAN_8")).to.equal(true);
+        expect(isValidHtml5QrcodeSupportedFormats("AZTEC")).to.be.true;
+        expect(isValidHtml5QrcodeSupportedFormats("QR_CODE")).to.be.true;
+        expect(isValidHtml5QrcodeSupportedFormats("UPC_A")).to.be.true;
+        expect(isValidHtml5QrcodeSupportedFormats("EAN_8")).to.be.true;
     });
 
     it("should return false for unsupported formats", () => {
-        expect(isValidHtml5QrcodeSupportedFormats("random")).to.equal(false);
-        expect(isValidHtml5QrcodeSupportedFormats("")).to.equal(false);
+        expect(isValidHtml5QrcodeSupportedFormats("random")).to.be.false;
+        expect(isValidHtml5QrcodeSupportedFormats("")).to.be.false;
 
     });
 });
-
 
 describe("QrcodeResultFormat class", () => {
     it("toString() should return correct string value", () => {
@@ -75,18 +75,18 @@ describe("Html5QrcodeErrorFactory class", () => {
 
 describe("isNullOrUndefined function", () => {
     it("obj is null, undefined, returns true", () => {
-        expect(isNullOrUndefined(null)).to.equal(true);
+        expect(isNullOrUndefined(null)).to.be.true;
         let obj;
-        expect(isNullOrUndefined(obj)).to.equal(true);
+        expect(isNullOrUndefined(obj)).to.be.true;
         obj = undefined;
-        expect(isNullOrUndefined(obj)).to.equal(true);
+        expect(isNullOrUndefined(obj)).to.be.true;
     });
 
     it("obj is defined, returns true", () => {
         let obj = "something";
-        expect(isNullOrUndefined(obj)).to.equal(false);
-        expect(isNullOrUndefined(0)).to.equal(false);
-        expect(isNullOrUndefined(-1)).to.equal(false);
-        expect(isNullOrUndefined("undefined")).to.equal(false);
+        expect(isNullOrUndefined(obj)).to.be.false;
+        expect(isNullOrUndefined(0)).to.be.false;
+        expect(isNullOrUndefined(-1)).to.be.false;
+        expect(isNullOrUndefined("undefined")).to.be.false;
     });
 });
