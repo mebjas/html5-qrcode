@@ -55,7 +55,7 @@ class Constants extends Html5QrcodeConstants {
     static SHADED_RIGHT = 2;
     static SHADED_TOP = 3;
     static SHADED_BOTTOM = 4;
-    static SHADED_REGION_CLASSNAME = "qr-shaded-region";
+    static SHADED_REGION_ELEMENT_ID = "qr-shaded-region";
     static VERBOSE = false;
     static BORDER_SHADER_DEFAULT_COLOR = "#ffffff";
     static BORDER_SHADER_MATCH_COLOR = "rgb(90, 193, 56)";
@@ -487,13 +487,11 @@ export class Html5Qrcode {
             if (!this.element) {
                 return;
             }
-            while (this.element.getElementsByClassName(
-                Constants.SHADED_REGION_CLASSNAME).length) {
-                const shadedChild = this.element.getElementsByClassName(
-                    Constants.SHADED_REGION_CLASSNAME)[0];
-                this.element.removeChild(shadedChild);
+            let childElement = document.getElementById(Constants.SHADED_REGION_ELEMENT_ID);
+            if (childElement) {
+                this.element.removeChild(childElement);
             }
-        };
+         };
 
         return new Promise((resolve, _) => {
             const onAllTracksClosed = () => {
@@ -1467,7 +1465,7 @@ export class Html5Qrcode {
         shadingElement.style.bottom = "0px";
         shadingElement.style.left = "0px";
         shadingElement.style.right = "0px";
-        shadingElement.id = `${Constants.SHADED_REGION_CLASSNAME}`;
+        shadingElement.id = `${Constants.SHADED_REGION_ELEMENT_ID}`;
   
         // Check if div is too small for shadows. As there are two 5px width
         // borders the needs to have a size above 10px.

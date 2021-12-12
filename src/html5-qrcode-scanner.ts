@@ -653,12 +653,16 @@ export class Html5QrcodeScanner {
         };
 
         cameraActionStartButton.addEventListener("click", (_) => {
+            // Update the UI.
             cameraActionStartButton.innerText
                 = Html5QrcodeScannerStrings.scanButtonScanningStarting();
             cameraSelectionSelect.disabled = true;
             cameraActionStartButton.disabled = true;
             cameraActionStartButton.style.opacity = "0.5";
             $this.showHideScanTypeSwapLink(false);
+            $this.resetHeaderMessage();
+
+            // Attempt starting the camera.
             const cameraId = cameraSelectionSelect.value;
             $this.persistedDataManager.setLastUsedCameraId(cameraId);
 

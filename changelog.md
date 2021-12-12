@@ -1,3 +1,14 @@
+### Version 2.1.4
+
+#### Huge thanks to [Ben Richardson](https://github.com/ben-gy) for sponsorship
+This is helpful in keeping the project in shape! Cheers to you!!
+
+[See sponsorship dashboard](https://github.com/sponsors/mebjas)
+
+### Changelog
+-   Fix bug in `stop()` method in `Html5Qrcode` class.
+-   Fix a minor UI error, where error message shown due to a certain camera not working, is not hidden when a functional camera is selected.
+
 ### Version 2.1.3
 -   Reduce the assets size using SVG instead of GIF files.
 
