@@ -19,6 +19,7 @@ import {
     CameraDevice,
     BaseLoggger,
     Logger,
+    isNullOrUndefined,
 } from "./core";
 
 import {
@@ -202,20 +203,30 @@ export class Html5QrcodeScanner {
      * 
      * Notes:
      * -   Should only be called if camera scan is ongoing.
-     * -   This will not stop the viewfinder, but stop decoding camera stream.
+     * 
+     * @param shouldPauseVideo (Optional, default = false) If {@code true}
+     * the video will be paused.
      * 
      * @throws error if method is called when scanner is not in scanning state.
      */
-    public pause() {
+    public pause(shouldPauseVideo?: boolean) {
         if (!this.html5Qrcode) {
             throw "Code scanner not initialized.";
         }
 
-        this.html5Qrcode.pause();
+        if (isNullOrUndefined(shouldPauseVideo) || shouldPauseVideo !== true) {
+            shouldPauseVideo = false;
+        }
+
+        this.html5Qrcode.pause(shouldPauseVideo);
     }
     
     /**
      * Resumes the paused scan.
+     * 
+     * If the video was previously paused by setting {@code shouldPauseVideo}
+     * to {@code true} in {@link Html5QrcodeScanner#pause(shouldPauseVideo)},
+     * calling this method will resume the video.
      * 
      * Notes:
      * -   Should only be called if camera scan is ongoing.

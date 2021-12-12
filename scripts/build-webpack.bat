@@ -14,5 +14,3 @@ copy dist\html5-qrcode.min.js minified\html5-qrcode.min.js
 
 ECHO Copied the webpack script to minified/..
 ECHO Webpack building done.
-
-copy minified\html5-qrcode.min.js ..\mebjas.github.io\assets\research\html5qrcode\html5-qrcode.min.js
