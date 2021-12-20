@@ -802,5 +802,19 @@ You can contribute to the project in several ways:
 -   Take open bugs or feature request and work on it and send a Pull Request.
 -   Write unit tests for existing codebase (which is not covered by tests today). **Help wanted on this** - [read more](./tests).
 
+## Support 💖
+
+This project would not be possible without all of our fantastic contributors and [sponsors](https://github.com/sponsors/mebjas). If you'd like to support the maintenance and upkeep of this project you can [donate via GitHub Sponsors](https://github.com/sponsors/mebjas).
+
+<!-- sponsors -->
+<a href="https://github.com/ben-gy"><img src="https://github.com/ben-gy.png" width="40px" alt="" /></a>
+<!-- sponsors -->
+
+And huge thanks to following organizations for non monitery sponsorships
+
+<!-- sponsors -->
+<a href="https://www.browserstack.com"><img src="https://www.browserstack.com/images/layout/browserstack-logo-600x315.png" height="100px" alt="" /></a>
+<!-- sponsors -->
+
 ## Credits
 The decoder used for the QR code reading is from `Zxing-js` https://github.com/zxing-js/library<br>
