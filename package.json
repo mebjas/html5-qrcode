@@ -1,6 +1,6 @@
 {
   "name": "html5-qrcode",
-  "version": "2.1.3",
+  "version": "2.1.4",
   "description": "A cross platform HTML5 QR Code & bar code scanner",
   "main": "./cjs/index.js",
   "module": "./esm/index.js",
@@ -26,6 +26,7 @@
     "build:cjs": "tsc --build tsconfig.lib-cjs.json",
     "build:typing": "tsc --emitDeclarationOnly --outDir ./dist",
     "build:umd": "./scripts/build-webpack.sh",
+    "build:umd_windows": ".\\scripts\\build-webpack.bat",
     "build:copy": "cp README.md dist && cp package.json dist && cp LICENSE dist",
     "release": "npm run build && cd dist && npm publish"
   },

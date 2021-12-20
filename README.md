@@ -526,15 +526,20 @@ class Html5Qrcode {
   /**
    * Pauses the ongoing scan.
    * 
-   * Note: this will not stop the viewfinder, but stop decoding camera stream.
+   * @param shouldPauseVideo (Optional, default = false) If {@code true} the
+   * video will be paused.
    * 
    * @throws error if method is called when scanner is not in scanning state.
    */
-  pause();
+  pause(shouldPauseVideo?: boolean);
 
   /**
    * Resumes the paused scan.
    * 
+   * If the video was previously paused by setting {@code shouldPauseVideo}
+   * to {@code true} in {@link Html5Qrcode#pause(shouldPauseVideo)}, calling
+   * this method will resume the video.
+   *
    * Note: with this caller will start getting results in success and error
    * callbacks.
    * 
@@ -608,15 +613,21 @@ class Html5QrcodeScanner {
    * 
    * Notes:
    * -   Should only be called if camera scan is ongoing.
-   * -   This will not stop the viewfinder, but stop decoding camera stream.
+   *
+   * @param shouldPauseVideo (Optional, default = false) If {@code true}
+   * the video will be paused.
    * 
    * @throws error if method is called when scanner is not in scanning state.
    */
-  pause();
+  pause(shouldPauseVideo?: boolean);
 
   /**
    * Resumes the paused scan.
    * 
+   * If the video was previously paused by setting {@code shouldPauseVideo}
+   * to {@code true} in {@link Html5QrcodeScanner#pause(shouldPauseVideo)},
+   * calling this method will resume the video.
+   *
    * Notes:
    * -   Should only be called if camera scan is ongoing.
    * -   With this caller will start getting results in success and error

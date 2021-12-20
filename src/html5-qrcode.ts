@@ -55,7 +55,7 @@ class Constants extends Html5QrcodeConstants {
     static SHADED_RIGHT = 2;
     static SHADED_TOP = 3;
     static SHADED_BOTTOM = 4;
-    static SHADED_REGION_CLASSNAME = "qr-shaded-region";
+    static SHADED_REGION_ELEMENT_ID = "qr-shaded-region";
     static VERBOSE = false;
     static BORDER_SHADER_DEFAULT_COLOR = "#ffffff";
     static BORDER_SHADER_MATCH_COLOR = "rgb(90, 193, 56)";
@@ -425,20 +425,33 @@ export class Html5Qrcode {
     /**
      * Pauses the ongoing scan.
      * 
-     * Note: this will not stop the viewfinder, but stop decoding camera stream.
+     * @param shouldPauseVideo (Optional, default = false) If {@code true} the
+     * video will be paused.
      * 
      * @throws error if method is called when scanner is not in scanning state.
      */
-    public pause() {
+    public pause(shouldPauseVideo?: boolean) {
         if (!this.stateManagerProxy.isStrictlyScanning()) {
             throw "Cannot pause, scanner is not scanning.";
         }
         this.stateManagerProxy.directTransition(Html5QrcodeScannerState.PAUSED);
         this.showPausedState();
+
+        if (isNullOrUndefined(shouldPauseVideo) || shouldPauseVideo !== true) {
+            shouldPauseVideo = false;
+        }
+
+        if (shouldPauseVideo && this.videoElement) {
+            this.videoElement.pause();
+        }
     }
 
     /**
      * Resumes the paused scan.
+     * 
+     * If the video was previously paused by setting {@code shouldPauseVideo}
+     * to {@code true} in {@link Html5Qrcode#pause(shouldPauseVideo)}, calling
+     * this method will resume the video.
      * 
      * Note: with this caller will start getting results in success and error
      * callbacks.
@@ -449,9 +462,33 @@ export class Html5Qrcode {
         if (!this.stateManagerProxy.isPaused()) {
             throw "Cannot result, scanner is not paused.";
         }
-        this.stateManagerProxy.directTransition(
-            Html5QrcodeScannerState.SCANNING);
-        this.hidePausedState();
+
+        if (!this.videoElement) {
+            throw "VideoElement doesn't exist while trying resume()";
+        }
+
+        const $this = this;
+        const transitionToScanning = () => {
+            $this.stateManagerProxy.directTransition(
+                Html5QrcodeScannerState.SCANNING);
+            $this.hidePausedState();
+        }
+
+        let isVideoPaused = this.videoElement.paused;
+        if (!isVideoPaused) {
+            transitionToScanning();
+            return;
+        }
+
+        // Transition state, when the video playback has resumed
+        // in case it was paused.
+        const onVideoResume = () => {
+            // Transition after 300ms to avoid the previous canvas frame being rescanned.
+            setTimeout(transitionToScanning, 200);
+            $this.videoElement?.removeEventListener("playing", onVideoResume);
+        }
+        this.videoElement.addEventListener("playing", onVideoResume);
+        this.videoElement.play();
     }
 
     /**
@@ -487,13 +524,11 @@ export class Html5Qrcode {
             if (!this.element) {
                 return;
             }
-            while (this.element.getElementsByClassName(
-                Constants.SHADED_REGION_CLASSNAME).length) {
-                const shadedChild = this.element.getElementsByClassName(
-                    Constants.SHADED_REGION_CLASSNAME)[0];
-                this.element.removeChild(shadedChild);
+            let childElement = document.getElementById(Constants.SHADED_REGION_ELEMENT_ID);
+            if (childElement) {
+                this.element.removeChild(childElement);
             }
-        };
+         };
 
         return new Promise((resolve, _) => {
             const onAllTracksClosed = () => {
@@ -1187,19 +1222,20 @@ export class Html5Qrcode {
                 // Attach listeners to video.
                 videoElement.onabort = reject;
                 videoElement.onerror = reject;
-                videoElement.onplaying = () => {
+
+                const onVideoStart = () => {
                     const videoWidth = videoElement.clientWidth;
                     const videoHeight = videoElement.clientHeight;
                     $this.setupUi(videoWidth, videoHeight, internalConfig);
-
                     // start scanning after video feed has started
                     $this.foreverScan(
                         internalConfig,
                         qrCodeSuccessCallback,
                         qrCodeErrorCallback);
+                    videoElement.removeEventListener("playing", onVideoStart);
                     resolve(/* void */ null);
                 }
-
+                videoElement.addEventListener("playing", onVideoStart);
                 videoElement.srcObject = mediaStream;
                 videoElement.play();
 
@@ -1467,7 +1503,7 @@ export class Html5Qrcode {
         shadingElement.style.bottom = "0px";
         shadingElement.style.left = "0px";
         shadingElement.style.right = "0px";
-        shadingElement.id = `${Constants.SHADED_REGION_CLASSNAME}`;
+        shadingElement.id = `${Constants.SHADED_REGION_ELEMENT_ID}`;
   
         // Check if div is too small for shadows. As there are two 5px width
         // borders the needs to have a size above 10px.
