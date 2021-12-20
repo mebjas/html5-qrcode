@@ -968,7 +968,7 @@ export class Html5Qrcode {
      */
     private validateQrboxSize(
         internalConfig: InternalHtml5QrcodeConfig,
-        rootElementWidth: Number) {
+        rootElementWidth: number) {
         const qrboxSize = internalConfig.qrbox!;
         this.validateQrboxConfig(qrboxSize);
         let qrDimensions = this.toQrdimensions(qrboxSize);
@@ -980,16 +980,28 @@ export class Html5Qrcode {
             }
         };
 
-        const validateAgainstRootElementSize = (size: number) => {
-            if (size > rootElementWidth) {
-                throw "'config.qrbox' dimensions values should not be greater "
-                    + "than the width of the HTML element.";
+        /**
+         * The 'config.qrbox.width' shall be overriden if it's larger than the
+         * width of the root element.
+         * 
+         * Based on the verbosity settings, this will be logged to the logger.
+         * 
+         * @param configWidth the width of qrbox set by users in the config.
+         */
+        const correctWidthBasedOnRootElementSize = (configWidth: number) => {
+            if (configWidth > rootElementWidth) {
+                this.logger.warn("`qrbox.width` or `qrbox` is larger than the"
+                    + " width of the root element. The width will be truncated"
+                    + " to the width of root element.");
+                configWidth = rootElementWidth;
             }
+            return configWidth;
         };
 
         validateMinSize(qrDimensions.width);
         validateMinSize(qrDimensions.height);
-        validateAgainstRootElementSize(qrDimensions.width);
+        qrDimensions.width = correctWidthBasedOnRootElementSize(
+            qrDimensions.width);
         // Note: In this case if the height of the qrboxSize turns out to be
         // greater than the height of the root element (which should later be
         // based on the aspect ratio of the camera stream), it would be silently
