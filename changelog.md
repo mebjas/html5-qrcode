@@ -10,6 +10,8 @@ This is helpful in keeping the project in shape! Cheers to you!!
 -   Fix a minor UI error, where error message shown due to a certain camera not working, is not hidden when a functional camera is selected.
 -   [Feature Request#356](https://github.com/mebjas/html5-qrcode/issues/356) - Freeze the image (not clear) on success.
 
+Now calling `html5qrcode.pause(/* shouldPauseVideo */ true)` or `html5qrcodeScanner.pause(/* shouldPauseVideo */ true)` will freeze the viewfinder and calling corresponding `resume()` will unfreeze the viewfinder. Calling with `false` or no argument will just pause scanning without effecting the viewfinder.
+
 ### Version 2.1.3
 -   Reduce the assets size using SVG instead of GIF files.
 
