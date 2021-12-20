@@ -1025,7 +1025,7 @@ export class Html5Qrcode {
         // Alternatively, the config is expected to be of type QrDimensions.
         if (qrboxSize.width === undefined || qrboxSize.height === undefined) {
             throw "Invalid instance of QrDimensions passed for "
-                + "'config.qrbox'. Both 'width' and 'height' should be set."
+                + "'config.qrbox'. Both 'width' and 'height' should be set.";
         }
     }
 
