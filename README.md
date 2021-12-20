@@ -647,7 +647,7 @@ class Html5QrcodeScanner {
    */
   getState(): Html5QrcodeScannerState;
 
-  /** Removes the QR Code scanner. */
+  /** Removes the QR Code scanner UI. */
   clear(): Promise<void>  {}
 }
 ```
