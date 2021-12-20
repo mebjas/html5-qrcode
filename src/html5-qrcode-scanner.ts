@@ -294,6 +294,10 @@ export class Html5QrcodeScanner {
                         }
                         reject(error);
                     });
+                } else {
+                    // Assuming file based scan was ongoing.
+                    this.html5Qrcode.clear();
+                    emptyHtmlContainer();
                 }
             });
         }

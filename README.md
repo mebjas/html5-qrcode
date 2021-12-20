@@ -444,6 +444,9 @@ interface Html5QrcodeCameraScanConfig {
    * 
    * Instance of {@interface QrDimensions} can be passed to construct a non
    * square rendering of scanner box.
+   * 
+   * If this value is not set, no shaded QR box will be rendered and the scanner
+   * will scan the entire area of video stream.
    */
   qrbox?: number | QrDimensions | undefined;
 
@@ -644,7 +647,7 @@ class Html5QrcodeScanner {
    */
   getState(): Html5QrcodeScannerState;
 
-  /** Removes the QR Code scanner. */
+  /** Removes the QR Code scanner UI. */
   clear(): Promise<void>  {}
 }
 ```
@@ -655,7 +658,7 @@ Configuration object that can be used to configure both the scanning behavior an
 #### `fps` — Integer, Example = 10
 A.K.A frame per second, the default value for this is 2, but it can be increased to get faster scanning. Increasing too high value could affect performance. Value `>1000` will simply fail.
 
-#### `qrbox` — `QrDimensions`, Example = `{ width: 250, height: 250 }`
+#### `qrbox` — `QrDimensions` (Optional), Example = `{ width: 250, height: 250 }`
 Use this property to limit the region of the viewfinder you want to use for scanning. The rest of the viewfinder would be shaded. For example, by passing config `{ qrbox : { width: 250, height: 250 } }`, the screen will look like:
 
 <img src="./assets/screen.gif">
@@ -667,6 +670,8 @@ let config = { qrbox : { width: 400, height: 150 } }
 ```
 
 > This might be desirable for bar code scanning.
+
+If this value is not set, no shaded QR box will be rendered and the scanner will scan the entire area of video stream.
 
 #### `aspectRatio` — Float, Example 1.777778 for 16:9 aspect ratio
 Use this property to render the video feed in a certain aspect ratio. Passing a nonstandard aspect ratio like `100000:1` could lead to the video feed not even showing up. Ideal values can be:
