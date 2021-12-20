@@ -9,7 +9,6 @@ This is helpful in keeping the project in shape! Cheers to you!!
 -   Fix bug in `stop()` method in `Html5Qrcode` class.
 -   Fix a minor UI error, where error message shown due to a certain camera not working, is not hidden when a functional camera is selected.
 -   [Feature Request#356](https://github.com/mebjas/html5-qrcode/issues/356) - Freeze the image (not clear) on success.
--   [ ] [Feature Request#358](https://github.com/mebjas/html5-qrcode/issues/358) - Update qrbox size from instance
 
 ### Version 2.1.3
 -   Reduce the assets size using SVG instead of GIF files.
