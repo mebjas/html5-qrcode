@@ -4,6 +4,10 @@
     than the width of the root element. In such cases the dimension will automatically
     be truncated to the size of root element and will throw a warning based on verbosity
     settings. This should address [issue#357](https://github.com/mebjas/html5-qrcode/issues/357)
+-   If `qrbox` is not set in config for either `Html5QrcodeScanner` or `Html5Qrcode`
+    the scanning box will default to the size of video stream. From UI perspective
+    there will be no shaded QR scanning box visible to user. This should resolve
+    [Issue#343](https://github.com/mebjas/html5-qrcode/issues/343)
 
 ### Version 2.1.4
 

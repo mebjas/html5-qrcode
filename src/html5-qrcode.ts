@@ -126,6 +126,9 @@ export interface Html5QrcodeCameraScanConfig {
      * 
      * Instance of {@interface QrDimensions} can be passed to construct a non
      * square rendering of scanner box.
+     * 
+     * If this value is not set, no shaded QR box will be rendered and the
+     * scanner will scan the entire area of video stream.
      */
     qrbox?: number | QrDimensions | undefined;
 
@@ -1022,7 +1025,7 @@ export class Html5Qrcode {
         // Alternatively, the config is expected to be of type QrDimensions.
         if (qrboxSize.width === undefined || qrboxSize.height === undefined) {
             throw "Invalid instance of QrDimensions passed for "
-                + "'config.qrbox'."
+                + "'config.qrbox'. Both 'width' and 'height' should be set."
         }
     }
 
@@ -1048,7 +1051,12 @@ export class Html5Qrcode {
         width: number,
         height: number,
         internalConfig: InternalHtml5QrcodeConfig): void {
-        const qrboxSize = internalConfig.qrbox!;
+
+        // If `qrbox` size is not set, it will default to the dimensions of the
+        // viewfinder.
+        const qrboxSize = isNullOrUndefined(internalConfig.qrbox) ? 
+            {width: width, height: height}: internalConfig.qrbox!;
+
         this.validateQrboxConfig(qrboxSize);
         let qrDimensions = this.toQrdimensions(qrboxSize);
         if (qrDimensions.height > height) {
