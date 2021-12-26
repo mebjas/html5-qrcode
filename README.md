@@ -818,6 +818,7 @@ This project would not be possible without all of our fantastic contributors and
 And huge thanks to following organizations for non monitery sponsorships
 
 <!-- sponsors -->
+<a href="https://scanapp.org"><img src="https://scanapp.org/assets/svg/scanapp.svg" height="60px" alt="" /></a>
 <a href="https://www.browserstack.com"><img src="https://www.browserstack.com/images/layout/browserstack-logo-600x315.png" height="100px" alt="" /></a>
 <!-- sponsors -->
 
