@@ -1,3 +1,6 @@
+### Version 2.1.6
+-   Add `alt` information to info icon to improve accessibility.
+
 ### Version 2.1.5
 
 -   Changed behavior from throwing error in case `qrbox.width` or `qrbox` is larger than the width of the root element. In such cases the dimension will automatically be truncated to the size of root element and will throw a warning based on verbosity settings. This should address [issue#357](https://github.com/mebjas/html5-qrcode/issues/357)

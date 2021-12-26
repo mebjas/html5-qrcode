@@ -79,6 +79,7 @@ class LibraryInfoIcon {
     }
     
     public renderInto(parent: HTMLElement) {
+        this.infoIcon.alt = "Info icon";
         this.infoIcon.src = ASSET_INFO_ICON_16PX;
         this.infoIcon.style.position = "absolute";
         this.infoIcon.style.top = "4px";
