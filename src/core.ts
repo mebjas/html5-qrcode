@@ -96,6 +96,15 @@ export interface QrDimensions {
 }
 
 /**
+ * A function that takes in the width and height of the video stream 
+ * and returns QrDimensions.
+ * 
+ * Viewfinder refers to the video showing camera stream.
+ */
+export type QrDimensionFunction =
+    (viewfinderWidth: number, viewfinderHeight: number) => QrDimensions;
+
+/**
  * Defines bounds of detected QR code w.r.t the scan region.
  */
 export interface QrBounds extends QrDimensions {
