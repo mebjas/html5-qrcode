@@ -50,9 +50,12 @@ We are working continuously on adding support for more and more platforms. If yo
 
 | <img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari-ios/safari-ios_24x24.png" alt="Safari" width="24px" height="24px" /><br/>Safari | <img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" /><br/>Chrome | <img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" /><br/>Firefox | <img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="Edge" width="24px" height="24px" /><br/> Edge 
 | --------- | --------- | --------- | --------- |
-|![](./assets/done.png)| ![](./assets/done.png) `>= iOS 15.1`| ![](assets/partial.png)| ![](assets/partial.png) 
+|![](./assets/done.png)| ![](./assets/done.png)* | ![](./assets/done.png)* | ![](assets/partial.png) 
 
-> Apparently, Webkit for IOS is used by Chrome, Firefox, and other browsers in IOS and they do not have webcam permissions yet. There is an ongoing issue on fixing the support for iOS - [issue/14](https://github.com/mebjas/html5-qrcode/issues/14)
+
+> \* Supported for IOS versions >= 15.1
+>
+> Before version 15.1, Webkit for IOS is used by Chrome, Firefox, and other browsers in IOS and they do not have webcam permissions yet. There is an ongoing issue on fixing the support for iOS - [issue/14](https://github.com/mebjas/html5-qrcode/issues/14)
 
 ### Framework support
 The library can be easily used with several other frameworks, I have been adding examples for a few of them and would continue to add more.
