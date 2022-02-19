@@ -169,7 +169,7 @@ export interface Html5QrcodeCameraScanConfig {
  * Internal implementation of {@interface Html5QrcodeConfig} with util & factory
  * methods.
  */
-class InternalHtml5QrcodeConfig implements InternalHtml5QrcodeConfig {
+class InternalHtml5QrcodeConfig implements Html5QrcodeCameraScanConfig {
 
     // TODO(mebjas) Make items that doesn't need to be public private.
     public fps: number;
@@ -1020,7 +1020,11 @@ export class Html5Qrcode {
      */
     private validateQrboxConfig(
         qrboxSize: number | QrDimensions | QrDimensionFunction) {
-        if (typeof qrboxSize === "number" || typeof qrboxSize === "function") {
+        if (typeof qrboxSize === "number") {
+            return;
+        }
+
+        if (typeof qrboxSize === "function") {
             // This is a valid format.
             return;
         }
