@@ -26,7 +26,8 @@ import {
     Html5QrcodeConstants,
     Html5QrcodeResult,
     isNullOrUndefined,
-    QrDimensions
+    QrDimensions,
+    QrDimensionFunction
 } from "./core";
 
 import { Html5QrcodeStrings } from "./strings";
@@ -111,8 +112,10 @@ export interface Html5QrcodeCameraScanConfig {
     fps: number | undefined;
 
     /**
-     * Optional, edge size or dimension of QR scanning box, this should be 
-     * smaller than the width and height of the full region.
+     * Optional, edge size, dimension or calculator function for QR scanning
+     * box, the value or computed value should be smaller than the width and
+     * height of the full region.
+     * 
      * This would make the scanner look like this:
      *          ----------------------
      *          |********************|
@@ -125,12 +128,14 @@ export interface Html5QrcodeCameraScanConfig {
      *          ----------------------
      * 
      * Instance of {@interface QrDimensions} can be passed to construct a non
-     * square rendering of scanner box.
+     * square rendering of scanner box. You can also pass in a function of type
+     * {@type QrDimensionFunction} that takes in the width and height of the
+     * video stream and return QR box size of type {@interface QrDimensions}.
      * 
      * If this value is not set, no shaded QR box will be rendered and the
      * scanner will scan the entire area of video stream.
      */
-    qrbox?: number | QrDimensions | undefined;
+    qrbox?: number | QrDimensions | QrDimensionFunction | undefined;
 
     /**
      * Optional, Desired aspect ratio for the video feed. Ideal aspect ratios
@@ -164,12 +169,12 @@ export interface Html5QrcodeCameraScanConfig {
  * Internal implementation of {@interface Html5QrcodeConfig} with util & factory
  * methods.
  */
-class InternalHtml5QrcodeConfig implements InternalHtml5QrcodeConfig {
+class InternalHtml5QrcodeConfig implements Html5QrcodeCameraScanConfig {
 
     // TODO(mebjas) Make items that doesn't need to be public private.
     public fps: number;
     public disableFlip: boolean;
-    public qrbox: number | QrDimensions | undefined;
+    public qrbox: number | QrDimensions | QrDimensionFunction | undefined;
     public aspectRatio: number | undefined;
     public videoConstraints: MediaTrackConstraints | undefined;
 
@@ -369,11 +374,6 @@ export class Html5Qrcode {
 
         this.shouldScan = true;
         this.element = element;
-
-        // Validate before insertion
-        if (isShadedBoxEnabled) {
-            this.validateQrboxSize(internalConfig, rootElementWidth);
-        }
 
         const $this = this;
         const toScanningStateChangeTransaction: StateManagerTransaction
@@ -970,11 +970,13 @@ export class Html5Qrcode {
      * Validates if the passed config for qrbox is correct.
      */
     private validateQrboxSize(
-        internalConfig: InternalHtml5QrcodeConfig,
-        rootElementWidth: number) {
+        viewfinderWidth: number,
+        viewfinderHeight: number,
+        internalConfig: InternalHtml5QrcodeConfig) {
         const qrboxSize = internalConfig.qrbox!;
         this.validateQrboxConfig(qrboxSize);
-        let qrDimensions = this.toQrdimensions(qrboxSize);
+        let qrDimensions = this.toQrdimensions(
+            viewfinderWidth, viewfinderHeight, qrboxSize);
 
         const validateMinSize = (size: number) => {
             if (size < Constants.MIN_QR_BOX_SIZE) {
@@ -992,11 +994,11 @@ export class Html5Qrcode {
          * @param configWidth the width of qrbox set by users in the config.
          */
         const correctWidthBasedOnRootElementSize = (configWidth: number) => {
-            if (configWidth > rootElementWidth) {
+            if (configWidth > viewfinderWidth) {
                 this.logger.warn("`qrbox.width` or `qrbox` is larger than the"
                     + " width of the root element. The width will be truncated"
                     + " to the width of root element.");
-                configWidth = rootElementWidth;
+                configWidth = viewfinderWidth;
             }
             return configWidth;
         };
@@ -1016,8 +1018,13 @@ export class Html5Qrcode {
      * 
      * It's expected to be either a number or of type {@interface QrDimensions}.
      */
-    private validateQrboxConfig(qrboxSize: number | QrDimensions) {
+    private validateQrboxConfig(
+        qrboxSize: number | QrDimensions | QrDimensionFunction) {
         if (typeof qrboxSize === "number") {
+            return;
+        }
+
+        if (typeof qrboxSize === "function") {
             // This is a valid format.
             return;
         }
@@ -1033,9 +1040,20 @@ export class Html5Qrcode {
      * Possibly converts {@param qrboxSize} to an object of type
      * {@interface QrDimensions}.
      */
-    private toQrdimensions(qrboxSize: number | QrDimensions): QrDimensions {
+    private toQrdimensions(
+        viewfinderWidth: number,
+        viewfinderHeight: number,
+        qrboxSize: number | QrDimensions | QrDimensionFunction): QrDimensions {
         if (typeof qrboxSize === "number") {
             return { width: qrboxSize, height: qrboxSize};
+        } else if (typeof qrboxSize === "function") {
+            try {
+                return qrboxSize(viewfinderWidth, viewfinderHeight);
+            } catch (error) {
+                throw new Error(
+                    "qrbox config was passed as a function but it failed with "
+                    + "unknown error" + error);
+            }
         }
         return qrboxSize;
     }
@@ -1044,22 +1062,28 @@ export class Html5Qrcode {
     /**
     * Setups the UI elements, changes the state of this class.
     *
-    * @param width derived width of viewfinder.
-    * @param height derived height of viewfinder.
+    * @param viewfinderWidth derived width of viewfinder.
+    * @param viewfinderHeight derived height of viewfinder.
     */
     private setupUi(
-        width: number,
-        height: number,
+        viewfinderWidth: number,
+        viewfinderHeight: number,
         internalConfig: InternalHtml5QrcodeConfig): void {
+
+        // Validate before insertion
+        if (internalConfig.isShadedBoxEnabled()) {
+            this.validateQrboxSize(
+                viewfinderWidth, viewfinderHeight, internalConfig);
+        }
 
         // If `qrbox` size is not set, it will default to the dimensions of the
         // viewfinder.
         const qrboxSize = isNullOrUndefined(internalConfig.qrbox) ? 
-            {width: width, height: height}: internalConfig.qrbox!;
+            {width: viewfinderWidth, height: viewfinderHeight}: internalConfig.qrbox!;
 
         this.validateQrboxConfig(qrboxSize);
-        let qrDimensions = this.toQrdimensions(qrboxSize);
-        if (qrDimensions.height > height) {
+        let qrDimensions = this.toQrdimensions(viewfinderWidth, viewfinderHeight, qrboxSize);
+        if (qrDimensions.height > viewfinderHeight) {
             this.logger.warn("[Html5Qrcode] config.qrbox has height that is"
                 + "greater than the height of the video stream. Shading will be"
                 + " ignored");
@@ -1067,16 +1091,16 @@ export class Html5Qrcode {
  
         const shouldShadingBeApplied
             = internalConfig.isShadedBoxEnabled()
-                && qrDimensions.height <= height;
+                && qrDimensions.height <= viewfinderHeight;
         const defaultQrRegion: QrcodeRegionBounds = {
             x: 0,
             y: 0,
-            width: width,
-            height: height
+            width: viewfinderWidth,
+            height: viewfinderHeight
         };
 
         const qrRegion = shouldShadingBeApplied
-            ? this.getShadedRegionBounds(width, height, qrDimensions)
+            ? this.getShadedRegionBounds(viewfinderWidth, viewfinderHeight, qrDimensions)
             : defaultQrRegion;
  
         const canvasElement = this.createCanvasElement(
@@ -1090,7 +1114,7 @@ export class Html5Qrcode {
         this.element!.append(canvasElement);
         if (shouldShadingBeApplied) {
             this.possiblyInsertShadingElement(
-                this.element!, width, height, qrDimensions);
+                this.element!, viewfinderWidth, viewfinderHeight, qrDimensions);
         }
 
         this.createScannerPausedUiElement(this.element!);

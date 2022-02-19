@@ -377,6 +377,15 @@ interface QrDimensions {
   height: number;
 }
 
+/**
+ * A function that takes in the width and height of the video stream 
+ * and returns QrDimensions.
+ * 
+ * Viewfinder refers to the video showing camera stream.
+ */
+type QrDimensionFunction =
+    (viewfinderWidth: number, viewfinderHeight: number) => QrDimensions;
+
 /** Format of detected code. */
 class QrcodeResultFormat {
   public readonly format: Html5QrcodeSupportedFormats;
@@ -432,8 +441,10 @@ interface Html5QrcodeCameraScanConfig {
   fps: number | undefined;
 
   /**
-   * Optional, edge size or dimension of QR scanning box, this should be 
-   * smaller than the width and height of the full region.
+   * Optional, edge size, dimension or calculator function for QR scanning
+   * box, the value or computed value should be smaller than the width and
+   * height of the full region.
+   * 
    * This would make the scanner look like this:
    *          ----------------------
    *          |********************|
@@ -446,12 +457,14 @@ interface Html5QrcodeCameraScanConfig {
    *          ----------------------
    * 
    * Instance of {@interface QrDimensions} can be passed to construct a non
-   * square rendering of scanner box.
+   * square rendering of scanner box. You can also pass in a function of type
+   * {@type QrDimensionFunction} that takes in the width and height of the
+   * video stream and return QR box size of type {@interface QrDimensions}.
    * 
    * If this value is not set, no shaded QR box will be rendered and the scanner
    * will scan the entire area of video stream.
    */
-  qrbox?: number | QrDimensions | undefined;
+  qrbox?: number | QrDimensions | QrDimensionFunction | undefined;
 
   /**
    * Optional, Desired aspect ratio for the video feed. Ideal aspect ratios
@@ -661,7 +674,7 @@ Configuration object that can be used to configure both the scanning behavior an
 #### `fps` — Integer, Example = 10
 A.K.A frame per second, the default value for this is 2, but it can be increased to get faster scanning. Increasing too high value could affect performance. Value `>1000` will simply fail.
 
-#### `qrbox` — `QrDimensions` (Optional), Example = `{ width: 250, height: 250 }`
+#### `qrbox` — `QrDimensions` or `QrDimensionFunction` (Optional), Example = `{ width: 250, height: 250 }`
 Use this property to limit the region of the viewfinder you want to use for scanning. The rest of the viewfinder would be shaded. For example, by passing config `{ qrbox : { width: 250, height: 250 } }`, the screen will look like:
 
 <img src="./assets/screen.gif">
@@ -671,6 +684,20 @@ This can be used to set a rectangular scanning area with config like:
 ```js
 let config = { qrbox : { width: 400, height: 150 } }
 ```
+
+This config also accepts a function of type
+```ts
+/**
+  * A function that takes in the width and height of the video stream 
+* and returns QrDimensions.
+* 
+* Viewfinder refers to the video showing camera stream.
+*/
+type QrDimensionFunction =
+    (viewfinderWidth: number, viewfinderHeight: number) => QrDimensions;
+```
+
+This allows you to set dynamic QR box dimensions based on the video dimensions. See this blog article for example: [Setting dynamic QR box size in Html5-qrcode - ScanApp blog](https://scanapp.org/blog/2022/01/09/setting-dynamic-qr-box-size-in-html5-qrcode.html)
 
 > This might be desirable for bar code scanning.
 
