@@ -690,7 +690,7 @@ This config also accepts a function of type
 * 
 * Viewfinder refers to the video showing camera stream.
 */
-export type QrDimensionFunction =
+type QrDimensionFunction =
     (viewfinderWidth: number, viewfinderHeight: number) => QrDimensions;
 ```
 
