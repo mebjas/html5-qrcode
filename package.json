@@ -8,7 +8,7 @@
   "esnext": "./es2015/index.js",
   "unpkg": "./html5-qrcode.min.js",
   "scripts": {
-    "build-windows": "scripts\\build-windows.sh",
+    "build-windows": "npm run build:es2015 && npm run build:esm && npm run build:esnext && npm run build:cjs && npm run build:umd_windows && npm run build:typing && npm run build:copy_windows",
     "test": "npm run-script test:build && npm run-script test:run && npm run-script test:clean",
     "test_windows": "npm run-script test:build && npm run-script test:run && npm run-script test:clean_windows",
     "test:build": "tsc --build tsconfig.test.json",
@@ -28,6 +28,7 @@
     "build:umd": "./scripts/build-webpack.sh",
     "build:umd_windows": ".\\scripts\\build-webpack.bat",
     "build:copy": "cp README.md dist && cp package.json dist && cp LICENSE dist",
+    "build:copy_windows": "copy README.md dist && copy package.json dist && copy LICENSE dist",
     "release": "npm run build && cd dist && npm publish"
   },
   "repository": {
