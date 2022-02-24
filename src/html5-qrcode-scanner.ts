@@ -492,6 +492,7 @@ export class Html5QrcodeScanner {
         requestPermissionContainer: HTMLDivElement) {
         const $this = this;
         const requestPermissionButton = document.createElement("button");
+             requestPermissionButton.setAttribute("type", "button");
         requestPermissionButton.innerText
             = Html5QrcodeScannerStrings.cameraPermissionTitle();
 
@@ -640,11 +641,13 @@ export class Html5QrcodeScanner {
 
         const cameraActionContainer = document.createElement("span");
         const cameraActionStartButton = document.createElement("button");
+        cameraActionStartButton.setAttribute("type", "button");
         cameraActionStartButton.innerText
             = Html5QrcodeScannerStrings.scanButtonStartScanningText();
         cameraActionContainer.appendChild(cameraActionStartButton);
 
         const cameraActionStopButton = document.createElement("button");
+        cameraActionStopButton.setAttribute("type", "button");
         cameraActionStopButton.innerText
             = Html5QrcodeScannerStrings.scanButtonStopScanningText();
         cameraActionStopButton.style.display = "none";
