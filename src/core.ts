@@ -79,6 +79,15 @@ export enum Html5QrcodeScanType {
 }
 
 /**
+ * Types of scans selected by the consumer
+ */
+ export enum Html5QrcodeSelectedScanType {
+    SELECTED_SCAN_TYPE_CAMERA = "camera",   // Camera based scanner.
+    SELECTED_SCAN_TYPE_FILE = "file",      // File based scanner.
+    SELECTED_SCAN_TYPE_BOTH = "camera/file"      // if both scan types are selected, camera and file based scanners are available
+}
+
+/**
  * Constants used in QR code library.
  */
 export class Html5QrcodeConstants {
