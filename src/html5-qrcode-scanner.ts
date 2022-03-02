@@ -150,7 +150,7 @@ export class Html5QrcodeScanner {
         
         this.currentScanType = Html5QrcodeScanType.SCAN_TYPE_CAMERA;
         //checking if selectedScanType is file then, setting currentScanType accordingly, else no change 
-        if(this.config.selectedScanType == Html5QrcodeSelectedScanType.SELECTED_SCAN_TYPE_FILE){
+        if(this.config.selectedScanType === Html5QrcodeSelectedScanType.SELECTED_SCAN_TYPE_FILE){
             this.currentScanType = Html5QrcodeScanType.SCAN_TYPE_FILE;
         }
 
@@ -423,11 +423,11 @@ export class Html5QrcodeScanner {
     }
 
     private setupInitialDashboard(dashboard: HTMLElement) {
-        const $this = this
+        const $this = this;
         this.createSection(dashboard);
         this.createSectionControlPanel();
-        if (this.config.selectedScanType != Html5QrcodeSelectedScanType.SELECTED_SCAN_TYPE_CAMERA &&
-             this.config.selectedScanType != Html5QrcodeSelectedScanType.SELECTED_SCAN_TYPE_FILE ){
+        if (this.config.selectedScanType !== Html5QrcodeSelectedScanType.SELECTED_SCAN_TYPE_CAMERA &&
+             this.config.selectedScanType !== Html5QrcodeSelectedScanType.SELECTED_SCAN_TYPE_FILE ){
             this.createSectionSwap();
         }
 
@@ -577,7 +577,7 @@ export class Html5QrcodeScanner {
         requestPermissionContainer.style.textAlign = "center";
         scpCameraScanRegion.appendChild(requestPermissionContainer);
         //If file scan type is used, camera permission request is unnecessary.
-        if (this.config.selectedScanType != Html5QrcodeSelectedScanType.SELECTED_SCAN_TYPE_FILE){
+        if (this.config.selectedScanType !== Html5QrcodeSelectedScanType.SELECTED_SCAN_TYPE_FILE){
             this.createPermissionsUi(
                 scpCameraScanRegion, requestPermissionContainer);
         }
@@ -703,7 +703,7 @@ export class Html5QrcodeScanner {
             cameraActionStartButton.disabled = true;
             cameraActionStartButton.style.opacity = "0.5";
             //Swap link is available only for "camera/file" option.
-            if (this.config.selectedScanType == Html5QrcodeSelectedScanType.SELECTED_SCAN_TYPE_BOTH){
+            if (this.config.selectedScanType === Html5QrcodeSelectedScanType.SELECTED_SCAN_TYPE_BOTH){
                 $this.showHideScanTypeSwapLink(false);
             }
             $this.resetHeaderMessage();
