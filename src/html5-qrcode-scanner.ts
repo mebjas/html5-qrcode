@@ -744,7 +744,7 @@ export class Html5QrcodeScanner {
             $this.html5Qrcode.stop()
                 .then((_) => {
                     //if selected scan type is "camera/file", swap link is availale.
-                    if (this.config.selectedScanType == Html5QrcodeSelectedScanType.SELECTED_SCAN_TYPE_BOTH){
+                    if (this.config.selectedScanType === Html5QrcodeSelectedScanType.SELECTED_SCAN_TYPE_BOTH){
                         $this.showHideScanTypeSwapLink(true);
                     }
                     cameraSelectionSelect.disabled = false;
