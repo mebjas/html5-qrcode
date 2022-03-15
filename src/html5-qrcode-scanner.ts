@@ -775,7 +775,7 @@ export class Html5QrcodeScanner {
                         Html5QrcodeScanType.SCAN_TYPE_CAMERA) &&
                         this.config.supportedScanTypes?.includes(
                             Html5QrcodeScanType.SCAN_TYPE_FILE)){
-                        $this.showHideScanTypeSwapLink(true);this.clearScanRegion
+                        $this.showHideScanTypeSwapLink(true);
                     }
                     
                     cameraSelectionSelect.disabled = false;
