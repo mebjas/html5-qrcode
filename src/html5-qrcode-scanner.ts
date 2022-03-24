@@ -79,13 +79,14 @@ interface Html5QrcodeScannerConfig
 
     /**
      * The user can specify the scanning type that they need to use.
-     * [Html5QrcodeScanType.SCAN_TYPE_CAMERA] - [0] - to select only camera based scanning type
-     * [Html5QrcodeScanType.SCAN_TYPE_FILE] - [1] - to select only file based scanning type
-     * [Html5QrcodeScanType.SCAN_TYPE_CAMERA, Html5QrcodeScanType.SCAN_TYPE_FILE] - [0,1] 
+     * [Html5QrcodeScanType.SCAN_TYPE_CAMERA] - to select only camera based scanning type
+     * [Html5QrcodeScanType.SCAN_TYPE_FILE] -  to select only file based scanning type
+     * [Html5QrcodeScanType.SCAN_TYPE_CAMERA, Html5QrcodeScanType.SCAN_TYPE_FILE] 
      *                      - to use both camera as well as file based scanning types.
-     * Note: default value is [0,1], any values other than above mentioned, will result in default ones
+     * Note: default value is [Html5QrcodeScanType.SCAN_TYPE_CAMERA, Html5QrcodeScanType.SCAN_TYPE_FILE], 
+     * any values other than above mentioned, will result in default ones
      */
-    supportedScanTypes?: Array<Html5QrcodeScanType>;
+    supportedScanTypes: Array<Html5QrcodeScanType> | [];
 }
 
 function toHtml5QrcodeCameraScanConfig(config: Html5QrcodeScannerConfig)
@@ -149,9 +150,8 @@ export class Html5QrcodeScanner {
         }
         
         this.currentScanType = Html5QrcodeScanType.SCAN_TYPE_CAMERA;
-        if(this.config.supportedScanTypes?.length === 1 &&
-            this.config.supportedScanTypes[0] ===
-            Html5QrcodeScanType.SCAN_TYPE_FILE){
+        if(this.config.supportedScanTypes[0] ===
+            Html5QrcodeScanType.SCAN_TYPE_FILE) {
             this.currentScanType = Html5QrcodeScanType.SCAN_TYPE_FILE;
         }
 
@@ -379,39 +379,43 @@ export class Html5QrcodeScanner {
                 !Html5QrcodeConstants.DEFAULT_REMEMBER_LAST_CAMERA_USED)) {
                 config.rememberLastUsedCamera
                     = Html5QrcodeConstants.DEFAULT_REMEMBER_LAST_CAMERA_USED;
-            }
-            
-            if (!config.supportedScanTypes){
-                config.supportedScanTypes =
-                [Html5QrcodeScanType.SCAN_TYPE_CAMERA,
-                    Html5QrcodeScanType.SCAN_TYPE_FILE];
-            }
-            // if given length of supportedScanTypes is more than 2
-            else if (config.supportedScanTypes?.length >= 2){
-                config.supportedScanTypes =
-                [Html5QrcodeScanType.SCAN_TYPE_CAMERA,
-                    Html5QrcodeScanType.SCAN_TYPE_FILE];
-            }
-            // if length of supportedScanTypes is 1,
-            // but values are neither 0  nor 1
-            else if(config.supportedScanTypes?.length === 1 &&
-                config.supportedScanTypes[0] !==
-                Html5QrcodeScanType.SCAN_TYPE_CAMERA &&
-                config.supportedScanTypes[0] !==
-                Html5QrcodeScanType.SCAN_TYPE_FILE){
-                    config.supportedScanTypes =
-                    [Html5QrcodeScanType.SCAN_TYPE_CAMERA,
-                        Html5QrcodeScanType.SCAN_TYPE_FILE];
-            }
-            
+            }          
+
+            config.supportedScanTypes =
+                this.validateAndReturnScanTypes(config.supportedScanTypes);
+
             return config;
         }
 
         return {
             fps: Html5QrcodeConstants.SCAN_DEFAULT_FPS,
             rememberLastUsedCamera:
-                Html5QrcodeConstants.DEFAULT_REMEMBER_LAST_CAMERA_USED
+                Html5QrcodeConstants.DEFAULT_REMEMBER_LAST_CAMERA_USED,
+            supportedScanTypes:
+                Html5QrcodeConstants.DEFAULT_SUPPORTED_SCAN_TYPE
         };
+    }
+
+    private validateAndReturnScanTypes(
+        supportedScanTypes?:Array<Html5QrcodeScanType>):
+        Array<Html5QrcodeScanType> {
+        if (!supportedScanTypes) {
+          return Html5QrcodeConstants.DEFAULT_SUPPORTED_SCAN_TYPE;
+        }
+        // Fail if more than 2 values with proper error message
+        if (supportedScanTypes.length >= 2) {
+            // TODO: throw error here
+        }
+        // Fail if values are different than expected with proper error message
+        if((supportedScanTypes.length === 1 &&
+            supportedScanTypes[0] !==
+            Html5QrcodeScanType.SCAN_TYPE_CAMERA) ||
+            (supportedScanTypes.length === 1 &&
+                supportedScanTypes[0] !==
+            Html5QrcodeScanType.SCAN_TYPE_FILE)) {
+                //TODO: throw error here
+        }
+        return supportedScanTypes!;
     }
 
     private createBasicLayout(parent: HTMLElement) {
@@ -446,10 +450,10 @@ export class Html5QrcodeScanner {
         const $this = this;
         this.createSection(dashboard);
         this.createSectionControlPanel();
-        if(this.config.supportedScanTypes?.includes(
-            Html5QrcodeScanType.SCAN_TYPE_CAMERA) &&
-            this.config.supportedScanTypes?.includes(
-                Html5QrcodeScanType.SCAN_TYPE_FILE)){
+        if(this.config.supportedScanTypes[0] ===
+            Html5QrcodeScanType.SCAN_TYPE_CAMERA &&
+            this.config.supportedScanTypes[1] ===
+            Html5QrcodeScanType.SCAN_TYPE_FILE) {
             this.createSectionSwap();
         }
 
@@ -599,9 +603,8 @@ export class Html5QrcodeScanner {
         requestPermissionContainer.style.textAlign = "center";
         scpCameraScanRegion.appendChild(requestPermissionContainer);
         //If file scan type is used, camera permission request is unnecessary.
-        if (!(this.config.supportedScanTypes?.length === 1 &&
-            this.config.supportedScanTypes[0] ===
-            Html5QrcodeScanType.SCAN_TYPE_FILE)){
+        if (!(this.config.supportedScanTypes[0] ===
+            Html5QrcodeScanType.SCAN_TYPE_FILE)) {
             this.createPermissionsUi(
                 scpCameraScanRegion, requestPermissionContainer);
         }
@@ -727,10 +730,10 @@ export class Html5QrcodeScanner {
             cameraActionStartButton.disabled = true;
             cameraActionStartButton.style.opacity = "0.5";
             //Swap link is available only for "camera/file" option.
-            if(this.config.supportedScanTypes?.includes(
-                Html5QrcodeScanType.SCAN_TYPE_CAMERA) &&
-                this.config.supportedScanTypes?.includes(
-                    Html5QrcodeScanType.SCAN_TYPE_FILE)){
+            if(this.config.supportedScanTypes[0] ===
+                Html5QrcodeScanType.SCAN_TYPE_CAMERA &&
+                this.config.supportedScanTypes[1] ===
+                Html5QrcodeScanType.SCAN_TYPE_FILE) {
                 $this.showHideScanTypeSwapLink(false);
             }
             $this.resetHeaderMessage();            
@@ -771,10 +774,10 @@ export class Html5QrcodeScanner {
             $this.html5Qrcode.stop()
                 .then((_) => {
                     //if selected scan type is "camera/file", swap link is availale.
-                    if(this.config.supportedScanTypes?.includes(
-                        Html5QrcodeScanType.SCAN_TYPE_CAMERA) &&
-                        this.config.supportedScanTypes?.includes(
-                            Html5QrcodeScanType.SCAN_TYPE_FILE)){
+                    if(this.config.supportedScanTypes[0] ===
+                        Html5QrcodeScanType.SCAN_TYPE_CAMERA &&
+                        this.config.supportedScanTypes[1] ===
+                        Html5QrcodeScanType.SCAN_TYPE_FILE) {
                         $this.showHideScanTypeSwapLink(true);
                     }
                     

@@ -4,4 +4,5 @@ if (window && !Html5QrcodeScanner) {
     var Html5Qrcode = window.__Html5QrcodeLibrary__.Html5Qrcode;
     var Html5QrcodeSupportedFormats = window.__Html5QrcodeLibrary__.Html5QrcodeSupportedFormats
     var Html5QrcodeScannerState = window.__Html5QrcodeLibrary__.Html5QrcodeScannerState;
+    var Html5QrcodeScanType = window.__Html5QrcodeLibrary__.Html5QrcodeScanType;
 }
