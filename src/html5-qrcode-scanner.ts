@@ -402,20 +402,27 @@ export class Html5QrcodeScanner {
         if (!supportedScanTypes) {
           return Html5QrcodeConstants.DEFAULT_SUPPORTED_SCAN_TYPE;
         }
-        // Fail if more than 2 values with proper error message
-        if (supportedScanTypes.length >= 2) {
-            // TODO: throw error here
+        // Fail if any of the scan types are not supported.
+        for (const scanType of supportedScanTypes) {
+            if (!Html5QrcodeConstants.DEFAULT_SUPPORTED_SCAN_TYPE
+                .includes(scanType)) {
+                throw "Unsupported scan type: " + scanType;
+            }
         }
-        // Fail if values are different than expected with proper error message
+        // Fail if more than 2 values with proper error message.
+        if (supportedScanTypes.length > 2) {
+            throw "Only 2 scan types are supported.";
+        }
+        // Fail if only 1 value is given and is different
+        // than expected with proper error message.
         if((supportedScanTypes.length === 1 &&
             supportedScanTypes[0] !==
-            Html5QrcodeScanType.SCAN_TYPE_CAMERA) ||
-            (supportedScanTypes.length === 1 &&
-                supportedScanTypes[0] !==
+            Html5QrcodeScanType.SCAN_TYPE_CAMERA &&
+            supportedScanTypes[0] !==
             Html5QrcodeScanType.SCAN_TYPE_FILE)) {
-                //TODO: throw error here
+                throw "Unsupported scan type: " + supportedScanTypes[0];
         }
-        return supportedScanTypes!;
+        return supportedScanTypes.sort();
     }
 
     private createBasicLayout(parent: HTMLElement) {
