@@ -752,8 +752,8 @@ granted and what camera was last used. If the permissions is already granted for
 Default = `[Html5QrcodeScanType.SCAN_TYPE_CAMERA, Html5QrcodeScanType.SCAN_TYPE_FILE]`
 
 This field can be used to:
--    Limit support to either of `Camera` or `File` based scan.
--    Change default scan type.
+-   Limit support to either of `Camera` or `File` based scan.
+-   Change default scan type.
 
 How to use:
 

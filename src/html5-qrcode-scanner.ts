@@ -50,7 +50,7 @@ import {
   CameraManager
 } from "./camera";
 import { Html5QrcodeScannerState } from "./state-manager";
-import { ScanTypeSelector } from "./ui/scanner/scan-type-selector"
+import { ScanTypeSelector } from "./ui/scanner/scan-type-selector";
 
 /**
  * Different states of QR Code Scanner.
