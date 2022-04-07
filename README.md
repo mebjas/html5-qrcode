@@ -507,6 +507,23 @@ interface Html5QrcodeScannerConfig
    * start for previously used camera.
    */
   rememberLastUsedCamera?: boolean | undefined;
+
+  /**
+   * Sets the desired scan types to be supported in the scanner.
+   * 
+   *  - Not setting a value will follow the default order supported by
+   *      library.
+   *  - First value would be used as the default value. Example:
+   *    - [SCAN_TYPE_CAMERA, SCAN_TYPE_FILE]: Camera will be default type,
+   *      user can switch to file based scan.
+   *    - [SCAN_TYPE_FILE, SCAN_TYPE_CAMERA]: File based scan will be default
+   *      type, user can switch to camera based scan.
+   *  - Setting only value will disable option to switch to other. Example:
+   *    - [SCAN_TYPE_CAMERA] - Only camera based scan supported.
+   *    - [SCAN_TYPE_FILE] - Only file based scan supported.
+   *  - Setting wrong values or multiple values will fail.
+   */
+  supportedScanTypes: Array<Html5QrcodeScanType> | [];
 };
 
 class Html5Qrcode {
@@ -730,6 +747,53 @@ If `true` the last camera used by the user and weather or not permission was gra
 If `true` the library shall remember if the camera permissions were previously
 granted and what camera was last used. If the permissions is already granted for
 "camera", QR code scanning will automatically * start for previously used camera.
+
+#### `supportedScanTypes` - `Array<Html5QrcodeScanType> | []`
+Default = `[Html5QrcodeScanType.SCAN_TYPE_CAMERA, Html5QrcodeScanType.SCAN_TYPE_FILE]`
+
+This field can be used to:
+-   Limit support to either of `Camera` or `File` based scan.
+-   Change default scan type.
+
+How to use:
+
+```js
+function onScanSuccess(decodedText, decodedResult) {
+  // handle the scanned code as you like, for example:
+  console.log(`Code matched = ${decodedText}`, decodedResult);
+}
+
+let config = {
+  fps: 10,
+  qrbox: {width: 100, height: 100},
+  rememberLastUsedCamera: true,
+  // Only support camera scan type.
+  supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA]
+};
+
+let html5QrcodeScanner = new Html5QrcodeScanner(
+  "reader", config, /* verbose= */ false);
+html5QrcodeScanner.render(onScanSuccess);
+```
+
+For file based scan only choose:
+```js
+supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_FILE]
+```
+
+For supporting both as it is today, you can ignore this field or set as:
+```js
+supportedScanTypes: [
+  Html5QrcodeScanType.SCAN_TYPE_CAMERA,
+  Html5QrcodeScanType.SCAN_TYPE_FILE]
+```
+
+To set the file based scan as defult change the order:
+```js
+supportedScanTypes: [
+  Html5QrcodeScanType.SCAN_TYPE_FILE,
+  Html5QrcodeScanType.SCAN_TYPE_CAMERA]
+```
 
 ### Scanning only specific formats
 By default, both camera stream and image files are scanned against all the

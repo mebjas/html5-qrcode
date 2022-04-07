@@ -4,3 +4,5 @@ package-lock.json
 .vscode/
 dist/
 src/*.d.ts
+src/*/*.d.ts
+src/*/*/*.d.ts

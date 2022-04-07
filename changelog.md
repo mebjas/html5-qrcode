@@ -1,3 +1,49 @@
+### Version 2.2.1
+ - Added support for `supportedScanType` in `Html5QrcodeScanner`. This feature
+    was implemented by our latest contributor - [mohsinaav@](https://github.com/mohsinaav)
+  
+   Now users can decide to only use camera based scan or file based scan or use
+   them in different order. How to use:
+
+
+   ```js
+    function onScanSuccess(decodedText, decodedResult) {
+        // handle the scanned code as you like, for example:
+        console.log(`Code matched = ${decodedText}`, decodedResult);
+    }
+
+    let config = {
+        fps: 10,
+        qrbox: {width: 100, height: 100},
+        rememberLastUsedCamera: true,
+        // Only support camera scan type.
+        supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA]
+    };
+
+    let html5QrcodeScanner = new Html5QrcodeScanner(
+        "reader", config, /* verbose= */ false);
+    html5QrcodeScanner.render(onScanSuccess);
+   ```
+
+   For file based scan only choose:
+   ```js
+   supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_FILE]
+   ```
+
+   For supporting both as it is today, you can ignore this field or set as:
+   ```js
+   supportedScanTypes: [
+       Html5QrcodeScanType.SCAN_TYPE_CAMERA,
+        Html5QrcodeScanType.SCAN_TYPE_FILE]
+   ```
+
+   To set the file based scan as defult change the order:
+   ```js
+      supportedScanTypes: [
+        Html5QrcodeScanType.SCAN_TYPE_FILE,
+        Html5QrcodeScanType.SCAN_TYPE_CAMERA]
+   ```
+
 ### Version 2.2.0
 -   `config.qrbox` now supports consuming function of type
 
