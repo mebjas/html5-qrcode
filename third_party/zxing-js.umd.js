@@ -3484,6 +3484,10 @@
             const binaryBitmap = this.createBinaryBitmap(element);
             return this.decodeBitmap(binaryBitmap);
         }
+        _isHTMLVideoElement(mediaElement) {
+            const potentialVideo = mediaElement;
+            return potentialVideo.videoWidth !== 0;
+        }
         /**
          * Creates a binaryBitmap based in some image source.
          *
@@ -3491,7 +3495,12 @@
          */
         createBinaryBitmap(mediaElement) {
             const ctx = this.getCaptureCanvasContext(mediaElement);
-            this.drawImageOnCanvas(ctx, mediaElement);
+            if (this._isHTMLVideoElement(mediaElement)) {
+                this.drawFrameOnCanvas(mediaElement);
+            }
+            else {
+                this.drawImageOnCanvas(mediaElement);
+            }
             const canvas = this.getCaptureCanvas(mediaElement);
             const luminanceSource = new HTMLCanvasElementLuminanceSource(canvas);
             const hybridBinarizer = new HybridBinarizer(luminanceSource);
@@ -3519,10 +3528,16 @@
             return this.captureCanvas;
         }
         /**
+          * Overwriting this allows you to manipulate the next frame in anyway you want before decode.
+          */
+        drawFrameOnCanvas(srcElement, dimensions = { sx: 0, sy: 0, sWidth: srcElement.videoWidth, sHeight: srcElement.videoHeight, dx: 0, dy: 0, dWidth: srcElement.videoWidth, dHeight: srcElement.videoHeight }, canvasElementContext = this.captureCanvasContext) {
+            canvasElementContext.drawImage(srcElement, dimensions.sx, dimensions.sy, dimensions.sWidth, dimensions.sHeight, dimensions.dx, dimensions.dy, dimensions.dWidth, dimensions.dHeight);
+        }
+        /**
          * Ovewriting this allows you to manipulate the snapshot image in anyway you want before decode.
          */
-        drawImageOnCanvas(canvasElementContext, srcElement) {
-            canvasElementContext.drawImage(srcElement, 0, 0);
+        drawImageOnCanvas(srcElement, dimensions = { sx: 0, sy: 0, sWidth: srcElement.naturalWidth, sHeight: srcElement.naturalHeight, dx: 0, dy: 0, dWidth: srcElement.naturalWidth, dHeight: srcElement.naturalHeight }, canvasElementContext = this.captureCanvasContext) {
+            canvasElementContext.drawImage(srcElement, dimensions.sx, dimensions.sy, dimensions.sWidth, dimensions.sHeight, dimensions.dx, dimensions.dy, dimensions.dWidth, dimensions.dHeight);
         }
         /**
          * Call the encapsulated readers decode
@@ -8826,7 +8841,7 @@
                 if (possibleFormats.indexOf(BarcodeFormat$1.EAN_13) > -1) {
                     readers.push(new EAN13Reader());
                 }
-                else if (possibleFormats.indexOf(BarcodeFormat$1.UPC_A) > -1) {
+                if (possibleFormats.indexOf(BarcodeFormat$1.UPC_A) > -1) {
                     readers.push(new UPCAReader());
                 }
                 if (possibleFormats.indexOf(BarcodeFormat$1.EAN_8) > -1) {
@@ -8838,7 +8853,7 @@
             }
             if (readers.length === 0) {
                 readers.push(new EAN13Reader());
-                // UPC-A is covered by EAN-13
+                readers.push(new UPCAReader());
                 readers.push(new EAN8Reader());
                 readers.push(new UPCEReader());
             }
@@ -8869,7 +8884,7 @@
                     if (ean13MayBeUPCA && canReturnUPCA) {
                         const rawBytes = result.getRawBytes();
                         // Transfer the metadata across
-                        const resultUPCA = new Result(result.getText().substring(1), rawBytes, rawBytes.length, result.getResultPoints(), BarcodeFormat$1.UPC_A);
+                        const resultUPCA = new Result(result.getText().substring(1), rawBytes, (rawBytes ? rawBytes.length : null), result.getResultPoints(), BarcodeFormat$1.UPC_A);
                         resultUPCA.putAllMetadata(result.getResultMetadata());
                         return resultUPCA;
                     }
@@ -10227,13 +10242,13 @@
     // import java.util.List;
     // import java.util.Map;
     // import java.util.Collections;
+    /** @experimental */
     class RSSExpandedReader extends AbstractRSSReader {
-        constructor(verbose) {
+        constructor() {
             super(...arguments);
             this.pairs = new Array(RSSExpandedReader.MAX_PAIRS);
             this.rows = new Array();
             this.startEnd = [2];
-            this.verbose = (verbose === true);
         }
         decodeRow(rowNumber, row, hints) {
             // Rows can start with even pattern in case in prev rows there where odd number of patters.
@@ -10246,9 +10261,7 @@
             }
             catch (e) {
                 // OK
-                if (this.verbose) {
-                    console.log(e);
-                }
+                // console.log(e);
             }
             this.pairs.length = 0;
             this.startFromEven = true;
@@ -10322,9 +10335,7 @@
             }
             catch (e) {
                 // OK
-                if (this.verbose) {
-                    console.log(e);
-                }
+                console.log(e);
             }
             if (reverse) {
                 this.rows = this.rows.reverse();
@@ -10356,9 +10367,7 @@
                 }
                 catch (e) {
                     // We failed, try the next candidate
-                    if (this.verbose) {
-                        console.log(e);
-                    }
+                    console.log(e);
                 }
             }
             throw new NotFoundException();
@@ -10553,9 +10562,7 @@
             }
             catch (e) {
                 rightChar = null;
-                if (this.verbose) {
-                    console.log(e);
-                }
+                console.log(e);
             }
             return new ExpandedPair(leftChar, rightChar, pattern, true);
         }
@@ -11335,10 +11342,9 @@
      * @author Sean Owen
      */
     class MultiFormatOneDReader extends OneDReader {
-        constructor(hints, verbose) {
+        constructor(hints) {
             super();
             this.readers = [];
-            this.verbose = (verbose === true);
             const possibleFormats = !hints ? null : hints.get(DecodeHintType$1.POSSIBLE_FORMATS);
             const useCode39CheckDigit = hints && hints.get(DecodeHintType$1.ASSUME_CODE_39_CHECK_DIGIT) !== undefined;
             if (possibleFormats) {
@@ -11367,7 +11373,8 @@
                     this.readers.push(new RSS14Reader());
                 }
                 if (possibleFormats.includes(BarcodeFormat$1.RSS_EXPANDED)) {
-                    this.readers.push(new RSSExpandedReader(this.verbose));
+                    console.warn('RSS Expanded reader IS NOT ready for production yet! use at your own risk.');
+                    this.readers.push(new RSSExpandedReader());
                 }
             }
             if (this.readers.length === 0) {
@@ -11379,7 +11386,7 @@
                 this.readers.push(new Code128Reader());
                 this.readers.push(new ITFReader());
                 this.readers.push(new RSS14Reader());
-                this.readers.push(new RSSExpandedReader(this.verbose));
+                // this.readers.push(new RSSExpandedReader());
             }
         }
         // @Override
@@ -18351,6 +18358,9 @@
             return invalidRowCounts;
         }
         adjustRowNumbers(barcodeColumn, codewordsRow, codewords) {
+            if (this.detectionResultColumns[barcodeColumn - 1] == null) {
+                return;
+            }
             let codeword = codewords[codewordsRow];
             let previousColumnCodewords = this.detectionResultColumns[barcodeColumn - 1].getCodewords();
             let nextColumnCodewords = previousColumnCodewords;
@@ -20699,18 +20709,6 @@
      */
     class MultiFormatReader {
         /**
-         * Creates an instance of this class
-         * 
-         * @param {Boolean} verbose if 'true' logs will be dumped to console, otherwise hidden.
-         * @param hints The hints to use, clearing the previous state.
-         */
-        constructor(verbose, hints) {
-            this.verbose = (verbose === true);
-            if (hints) {
-                this.setHints(hints);
-            }
-        }
-        /**
          * This version of decode honors the intent of Reader.decode(BinaryBitmap) in that it
          * passes null as a hint to the decoders. However, that makes it inefficient to call repeatedly.
          * Use setHints() followed by decodeWithState() for continuous scan applications.
@@ -20736,9 +20734,7 @@
          */
         /*@Override*/
         decode(image, hints) {
-            if (hints) {
-                this.setHints(hints);
-            }
+            this.setHints(hints);
             return this.decodeInternal(image);
         }
         /**
@@ -20785,7 +20781,7 @@
                 // Put 1D readers upfront in "normal" mode
                 // TYPESCRIPTPORT: TODO: uncomment below as they are ported
                 if (addOneDReader && !tryHarder) {
-                    readers.push(new MultiFormatOneDReader(hints, this.verbose));
+                    readers.push(new MultiFormatOneDReader(hints));
                 }
                 if (formats.includes(BarcodeFormat$1.QR_CODE)) {
                     readers.push(new QRCodeReader());
@@ -20804,12 +20800,12 @@
                 // }
                 // At end in "try harder" mode
                 if (addOneDReader && tryHarder) {
-                    readers.push(new MultiFormatOneDReader(hints, this.verbose));
+                    readers.push(new MultiFormatOneDReader(hints));
                 }
             }
             if (readers.length === 0) {
                 if (!tryHarder) {
-                    readers.push(new MultiFormatOneDReader(hints, this.verbose));
+                    readers.push(new MultiFormatOneDReader(hints));
                 }
                 readers.push(new QRCodeReader());
                 readers.push(new DataMatrixReader());
@@ -20817,7 +20813,7 @@
                 readers.push(new PDF417Reader());
                 // readers.push(new MaxiCodeReader())
                 if (tryHarder) {
-                    readers.push(new MultiFormatOneDReader(hints, this.verbose));
+                    readers.push(new MultiFormatOneDReader(hints));
                 }
             }
             this.readers = readers; // .toArray(new Reader[readers.size()])
@@ -24144,6 +24140,7 @@
         }
     }
 
+    exports.AbstractExpandedDecoder = AbstractExpandedDecoder;
     exports.ArgumentException = ArgumentException;
     exports.ArithmeticException = ArithmeticException;
     exports.AztecCode = AztecCode;
@@ -24242,6 +24239,7 @@
     exports.ZXingStringBuilder = StringBuilder;
     exports.ZXingStringEncoding = StringEncoding;
     exports.ZXingSystem = System;
+    exports.createAbstractExpandedDecoder = createDecoder;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 
