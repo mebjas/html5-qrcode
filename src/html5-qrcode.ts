@@ -732,7 +732,7 @@ export class Html5Qrcode {
      * @returns a Promise with list of {@code CameraDevice}.
      */
     public static getCameras(): Promise<Array<CameraDevice>> {
-        if (navigator.mediaDevices) {
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             return Html5Qrcode.getCamerasFromMediaDevices();
         }
         
