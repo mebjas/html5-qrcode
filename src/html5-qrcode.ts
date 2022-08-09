@@ -732,8 +732,9 @@ export class Html5Qrcode {
      * @returns a Promise with list of {@code CameraDevice}.
      */
     public static getCameras(): Promise<Array<CameraDevice>> {
+        // @ts-ignore
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-            return Html5Qrcode.getCamerasFromMediaDevices();
+          return Html5Qrcode.getCamerasFromMediaDevices();
         }
         
         // Using deprecated api to support really old browsers.
