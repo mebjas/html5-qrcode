@@ -1461,6 +1461,7 @@ export class Html5Qrcode {
     private createVideoElement(width: number): HTMLVideoElement {
         const videoElement = document.createElement("video");
         videoElement.style.width = `${width}px`;
+        videoElement.style.display = "block";
         videoElement.muted = true;
         videoElement.setAttribute("muted", "true");
         (<any>videoElement).playsInline = true;
