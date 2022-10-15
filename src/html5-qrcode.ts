@@ -387,7 +387,7 @@ export class Html5Qrcode {
                 reject("videoConstraints should be defined");
                 return;
             }
-            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            if (navigator.mediaDevices) {
                 // Ignore all other video constraints if the videoConstraints
                 // is passed.
                 navigator.mediaDevices.getUserMedia(
@@ -732,7 +732,7 @@ export class Html5Qrcode {
      * @returns a Promise with list of {@code CameraDevice}.
      */
     public static getCameras(): Promise<Array<CameraDevice>> {
-        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        if (navigator.mediaDevices) {
             return Html5Qrcode.getCamerasFromMediaDevices();
         }
         
