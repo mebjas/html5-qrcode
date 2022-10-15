@@ -1,7 +1,6 @@
 # Html5-QRCode 
-## (supports barcodes now :))
 
-A cross-platform HTML5 QR code & barcode reader.
+## Lightweight & cross platform QR Code and Bar code scanning library for the web
 
 Use this lightweight library to easily / quickly integrate QR code, bar code, and other common code scanning capabilities to your web application. 
 -   Supports easy scanning using an integrated webcam or camera in smartphones (Android / IOS).
@@ -101,7 +100,11 @@ Supports:
 -   Supports selecting image files from the device for scanning codes
 
 ## How to use
-> For full information [read this article](https://blog.minhazav.dev/HTML5-QR-Code-scanning-launched-v1.0.1/).
+
+### If you are on medium 
+[![](https://img.shields.io/badge/Medium-12100E?style=for-the-badge&logo=medium&logoColor=white) - Thorough documentation on Html5-qrcode library on Medium.](https://bit.ly/3CZiASv).
+
+### Documentation
 
 Download the script from [release page](https://github.com/mebjas/html5-qrcode/releases) or install using `npm` with:
 ```sh
