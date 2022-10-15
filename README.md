@@ -102,7 +102,7 @@ Supports:
 ## How to use
 
 ### If you are on medium 
-[![](https://img.shields.io/badge/Medium-12100E?style=for-the-badge&logo=medium&logoColor=white) - Thorough documentation on Html5-qrcode library on Medium.](https://bit.ly/3CZiASv).
+[![](https://img.shields.io/badge/Medium-12100E?style=for-the-badge&logo=medium&logoColor=white) - Thorough documentation on Html5-qrcode library on Medium](https://bit.ly/3CZiASv).
 
 ### Documentation
 
