@@ -327,7 +327,7 @@ Check these articles on how to use this library:
 -   [HTML5 QR Code scanning with JavaScript — Support for scanning the local file and using default camera added (v1.0.5)](https://blog.minhazav.dev/HTML5-QR-Code-scanning-support-for-local-file-and-default-camera/)
 
 ## Screenshots
-![screenshot](assets/screen.gif)<br>
+![screenshot](https://scanapp.org/assets/github_assets/screen.gif)<br>
 _Figure: Screenshot from Google Chrome running on MacBook Pro_
 
 ## Documentation
