@@ -1535,13 +1535,13 @@ export class Html5Qrcode {
         const topBottomBorderSize = (height - qrboxSize.height) / 2;
 
         shadingElement.style.borderLeft
-            = `${rightLeftBorderSize}px solid #0000007a`;
+            = `${rightLeftBorderSize}px solid rgba(0, 0, 0, 0.48)`;
         shadingElement.style.borderRight
-            = `${rightLeftBorderSize}px solid #0000007a`;
+            = `${rightLeftBorderSize}px solid rgba(0, 0, 0, 0.48)`;
         shadingElement.style.borderTop
-            = `${topBottomBorderSize}px solid #0000007a`;
+            = `${topBottomBorderSize}px solid rgba(0, 0, 0, 0.48)`;
         shadingElement.style.borderBottom
-            = `${topBottomBorderSize}px solid #0000007a`;
+            = `${topBottomBorderSize}px solid rgba(0, 0, 0, 0.48)`;
         shadingElement.style.boxSizing = "border-box";
         shadingElement.style.top = "0px";
         shadingElement.style.bottom = "0px";

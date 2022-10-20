@@ -912,16 +912,16 @@ export class Html5QrcodeScanner {
 
         switch (scannerStatus) {
             case Html5QrcodeScannerStatus.STATUS_SUCCESS:
-                messageDiv.style.background = "#6aaf5042";
+                messageDiv.style.background = "rgba(106, 175, 80, 0.26)";
                 messageDiv.style.color = "#477735";
                 break;
             case Html5QrcodeScannerStatus.STATUS_WARNING:
-                messageDiv.style.background = "#cb243124";
+                messageDiv.style.background = "rgba(203, 36, 49, 0.14)";
                 messageDiv.style.color = "#cb2431";
                 break;
             case Html5QrcodeScannerStatus.STATUS_DEFAULT:
             default:
-                messageDiv.style.background = "#00000000";
+                messageDiv.style.background = "rgba(0, 0, 0, 0)";
                 messageDiv.style.color = "rgb(17, 17, 17)";
                 break;
         }
