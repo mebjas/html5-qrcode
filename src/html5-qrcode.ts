@@ -1461,6 +1461,7 @@ export class Html5Qrcode {
     private createVideoElement(width: number): HTMLVideoElement {
         const videoElement = document.createElement("video");
         videoElement.style.width = `${width}px`;
+        videoElement.style.display = "block";
         videoElement.muted = true;
         videoElement.setAttribute("muted", "true");
         (<any>videoElement).playsInline = true;
@@ -1562,6 +1563,7 @@ export class Html5Qrcode {
                 /* width= */ largeSize, 
                 /* height= */ smallSize,
                 /* top= */ -smallSize,
+                /* bottom= */ null,
                 /* side= */ 0,
                 /* isLeft= */ true);
             this.insertShaderBorders(
@@ -1569,20 +1571,23 @@ export class Html5Qrcode {
                 /* width= */ largeSize,
                 /* height= */ smallSize,
                 /* top= */ -smallSize,
+                /* bottom= */ null,
                 /* side= */ 0,
                 /* isLeft= */ false);
             this.insertShaderBorders(
                 shadingElement,
                 /* width= */ largeSize,
                 /* height= */ smallSize,
-                /* top= */ qrboxSize.height + smallSize,
+                /* top= */ null,
+                /* bottom= */ -smallSize,
                 /* side= */ 0,
                 /* isLeft= */ true);
             this.insertShaderBorders(
                 shadingElement,
                 /* width= */ largeSize,
                 /* height= */ smallSize,
-                /* top= */ qrboxSize.height + smallSize,
+                /* top= */ null,
+                /* bottom= */ -smallSize,
                 /* side= */ 0,
                 /* isLeft= */ false);
             this.insertShaderBorders(
@@ -1590,13 +1595,15 @@ export class Html5Qrcode {
                 /* width= */ smallSize,
                 /* height= */ largeSize + smallSize,
                 /* top= */ -smallSize,
+                /* bottom= */ null,
                 /* side= */ -smallSize,
                 /* isLeft= */ true);
             this.insertShaderBorders(
                 shadingElement,
                 /* width= */ smallSize,
                 /* height= */ largeSize + smallSize,
-                /* top= */ qrboxSize.height + smallSize - largeSize,
+                /* top= */ null,
+                /* bottom= */ -smallSize,
                 /* side= */ -smallSize,
                 /* isLeft= */ true);
             this.insertShaderBorders(
@@ -1604,13 +1611,15 @@ export class Html5Qrcode {
                 /* width= */ smallSize,
                 /* height= */ largeSize + smallSize,
                 /* top= */ -smallSize,
+                /* bottom= */ null,
                 /* side= */ -smallSize,
                 /* isLeft= */ false);
             this.insertShaderBorders(
                 shadingElement,
                 /* width= */ smallSize,
                 /* height= */ largeSize + smallSize,
-                /* top= */ qrboxSize.height + smallSize - largeSize,
+                /* top= */ null,
+                /* bottom= */ -smallSize,
                 /* side= */ -smallSize,
                 /* isLeft= */ false);
             this.hasBorderShaders = true;
@@ -1622,7 +1631,8 @@ export class Html5Qrcode {
         shaderElem: HTMLDivElement,
         width: number,
         height: number,
-        top: number,
+        top: number|null,
+        bottom: number|null,
         side: number,
         isLeft: boolean) {
         const elem = document.createElement("div");
@@ -1630,7 +1640,12 @@ export class Html5Qrcode {
         elem.style.backgroundColor = Constants.BORDER_SHADER_DEFAULT_COLOR;
         elem.style.width = `${width}px`;
         elem.style.height = `${height}px`;
-        elem.style.top = `${top}px`;
+        if (top !== null) {
+            elem.style.top = `${top}px`;
+        }
+        if (bottom !== null) {
+            elem.style.bottom = `${bottom}px`;
+        }
         if (isLeft) {
           elem.style.left = `${side}px`;
         } else {
