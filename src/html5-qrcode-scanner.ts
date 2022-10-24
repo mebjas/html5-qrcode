@@ -388,7 +388,8 @@ export class Html5QrcodeScanner {
             }
 
             if (!config.supportedScanTypes) {
-                config.supportedScanTypes = Html5QrcodeConstants.DEFAULT_SUPPORTED_SCAN_TYPE;
+                config.supportedScanTypes
+                    = Html5QrcodeConstants.DEFAULT_SUPPORTED_SCAN_TYPE;
             }
 
             return config;

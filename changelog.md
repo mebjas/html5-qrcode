@@ -1,3 +1,8 @@
+### Version 2.2.4
+ - Improved support for Huawei browser with [PR#563](https://github.com/mebjas/html5-qrcode/pull/563), Contribution by [jackhe16](https://github.com/jackhe16).
+ - Fixed QR Border Placement with [PR#555](https://github.com/mebjas/html5-qrcode/pull/555), Contribution by [allanbrault](https://github.com/allanbrault).
+ - Fixed config issue ([Issue#494](https://github.com/mebjas/html5-qrcode/issues/494)) with [PR#521](https://github.com/mebjas/html5-qrcode/pull/521), Contribution by [rlueder](https://github.com/rlueder).
+
 ### Version 2.2.1
  - Added support for `supportedScanType` in `Html5QrcodeScanner`. This feature
     was implemented by our latest contributor - [mohsinaav@](https://github.com/mohsinaav)

@@ -1631,8 +1631,8 @@ export class Html5Qrcode {
         shaderElem: HTMLDivElement,
         width: number,
         height: number,
-        top: number|null,
-        bottom: number|null,
+        top: number | null,
+        bottom: number | null,
         side: number,
         isLeft: boolean) {
         const elem = document.createElement("div");
