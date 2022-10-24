@@ -387,6 +387,10 @@ export class Html5QrcodeScanner {
                     = Html5QrcodeConstants.DEFAULT_REMEMBER_LAST_CAMERA_USED;
             }
 
+            if (!config.supportedScanTypes) {
+                config.supportedScanTypes = Html5QrcodeConstants.DEFAULT_SUPPORTED_SCAN_TYPE;
+            }
+
             return config;
         }
 
