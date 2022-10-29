@@ -738,7 +738,7 @@ export class Html5QrcodeScanner {
         cameraActionContainer.appendChild(cameraActionStopButton);
 
         // Optional torch button support.
-        const cameraActionTorchButton = TorchButton.create(
+        const torchButton = TorchButton.create(
             $this.html5Qrcode!,
             {display: "none", marginLeft: "5px"},
             // Callback in case of torch action failure.
@@ -748,6 +748,7 @@ export class Html5QrcodeScanner {
                     Html5QrcodeScannerStatus.STATUS_WARNING);
             }
         );
+        const cameraActionTorchButton = torchButton.getTorchButton();
         cameraActionContainer.appendChild(cameraActionTorchButton);
 
         const showTorchButtonIfSupported = (settings: MediaTrackSettings) => {
@@ -840,6 +841,8 @@ export class Html5QrcodeScanner {
                     cameraActionStartButton.disabled = false;
                     cameraActionStopButton.style.display = "none";
                     cameraActionStartButton.style.display = "inline-block";
+                    // Reset torch state.
+                    torchButton.reset();
                     cameraActionTorchButton.style.display = "none";
                     $this.insertCameraScanImageToScanRegion();
                 }).catch((error) => {

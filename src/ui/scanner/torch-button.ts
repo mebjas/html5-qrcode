@@ -83,6 +83,15 @@ class TorchController {
             $this.buttonElement.disabled = false;
         }
     }
+
+    /**
+     * Resets the state.
+     * 
+     * <p>Note: Doesn't turn off the torch implicitly.
+     */
+    public reset() {
+        this.isTorchOn = false;
+    }
 }
 
 /** Options for creating torch button. */
@@ -107,7 +116,7 @@ export class TorchButton {
         html5Qrcode: Html5Qrcode,
         torchButtonOptions: TorchButtonOptions,
         onTorchActionFailureCallback: OnTorchActionFailureCallback)
-        : HTMLButtonElement {
+        : TorchButton {
         let torchButton = document.createElement("button");
         let torchController = new TorchController(
             html5Qrcode,
@@ -121,6 +130,30 @@ export class TorchButton {
         torchButton.addEventListener('click', async (_) => {
             await torchController.flipState();
         });
-        return torchButton;
+        return new TorchButton(torchButton, torchController);
+    }
+
+    private readonly torchButton: HTMLButtonElement;
+    private readonly torchController: TorchController;
+    
+    private constructor(
+        torchButton: HTMLButtonElement, torchController: TorchController) {
+        this.torchButton = torchButton;
+        this.torchController = torchController;
+    }
+
+    /** Returns the torch button. */
+    public getTorchButton(): HTMLButtonElement {
+        return this.torchButton;
+    }
+
+    /**
+     * Resets the state.
+     * 
+     * <p>Note: Doesn't turn off the torch implicitly.
+     */
+    public reset() {
+        this.torchButton.innerText = Html5QrcodeScannerStrings.torchOnButton();
+        this.torchController.reset();
     }
 }
