@@ -1,3 +1,87 @@
+### Version 2.2.5
+
+#### Added support for turning `torch` On and Off in `Html5QrcodeScanner`.
+On supported devices + browsers.
+
+This new feature will implement the feature request - [Issue#129](https://github.com/mebjas/html5-qrcode/issues/129) and add support for torch (also called flash) on supported devices and browsers.
+
+So far I have confirmed functionality on Samsung Flip 4 Chrome and Internet (Samsung's default browser).
+
+This is only supported on `Html5QrcodeScanner` and can be enabled using the config like this.
+
+```ts
+let html5QrcodeScanner = new Html5QrcodeScanner(
+    "reader", 
+    { 
+        fps: 10,
+        qrbox: qrboxFunction,
+        // Important notice: this is experimental feature, use it at your
+        // own risk. See documentation in
+        // mebjas@/html5-qrcode/src/experimental-features.ts
+        experimentalFeatures: {
+            useBarCodeDetectorIfSupported: true
+        },
+        rememberLastUsedCamera: true,
+        aspectRatio: 1.7777778,
+        showTorchButtonIfSupported: true
+    });
+```
+
+The `showTorchButtonIfSupported: true` part is the crucial one. It's off by default for now as I don't like the UI very much.
+
+#### Added support for `getRunningTrackSettings()`.
+
+Added a new API to get settings (type: [MediaTrackSettings](https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackSettings)) for running video streams while QR code is being scanned.
+
+```ts
+/**
+ * Returns the supported settings of the running video track.
+ *
+ * @returns the supported settings of the running video track.
+ * @throws error if the scanning is not in running state.
+ */
+public getRunningTrackSettings(): MediaTrackSettings {}
+```
+
+This API can be used to check the currently applied settings on the running video stream like weather torch is on or not.
+
+#### `getRunningTrackCapabilities(..)` and `applyVideoConstraints(..)` out of beta.
+
+Both `Html5Qrcode` and `Html5QrcodeScanner` classes had support for following APIs.
+
+```ts
+/**
+ * Returns the capabilities of the running video track.
+ * 
+ * Note: Should only be called if {@code Html5QrcodeScanner#getState()}
+ *   returns {@code Html5QrcodeScannerState#SCANNING} or 
+ *   {@code Html5QrcodeScannerState#PAUSED}.
+ *
+ * @returns the capabilities of a running video track.
+ * @throws error if the scanning is not in running state.
+ */
+public getRunningTrackCapabilities(): MediaTrackCapabilities {}
+
+ /**
+ * Apply a video constraints on running video track from camera.
+ *
+ * Note: Should only be called if {@code Html5QrcodeScanner#getState()}
+ *   returns {@code Html5QrcodeScannerState#SCANNING} or 
+ *   {@code Html5QrcodeScannerState#PAUSED}.
+ *
+ * @param {MediaTrackConstraints} specifies a variety of video or camera
+ *  controls as defined in
+ *  https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints
+ * @returns a Promise which succeeds if the passed constraints are applied,
+ *  fails otherwise.
+ * @throws error if the scanning is not in running state.
+ */
+public applyVideoConstraints(videoConstaints: MediaTrackConstraints)
+    : Promise<any> {}
+```
+
+These have now been taken out of beta and publicly documented. More blog articles to be published for these.
+
 ### Version 2.2.4
  - Improved support for Huawei browser with [PR#563](https://github.com/mebjas/html5-qrcode/pull/563), Contribution by [jackhe16](https://github.com/jackhe16).
  - Fixed QR Border Placement with [PR#555](https://github.com/mebjas/html5-qrcode/pull/555), Contribution by [allanbrault](https://github.com/allanbrault).

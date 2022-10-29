@@ -508,6 +508,8 @@ interface Html5QrcodeScannerConfig
    * were previously granted and what camera was last used. If the permissions
    * is already granted for "camera", QR code scanning will automatically
    * start for previously used camera.
+   * 
+   * Note: default value is {@code true}.
    */
   rememberLastUsedCamera?: boolean | undefined;
 
@@ -527,13 +529,21 @@ interface Html5QrcodeScannerConfig
    *  - Setting wrong values or multiple values will fail.
    */
   supportedScanTypes: Array<Html5QrcodeScanType> | [];
+
+  /**
+   * If {@code true} the rendered UI will have button to turn flash on or off 
+   * based on device + browser support.
+   * 
+   * Note: default value is {@code false}.
+   */
+  showTorchButtonIfSupported?: boolean | undefined;
 };
 
 class Html5Qrcode {
   /**
    * Returns a Promise with a list of all cameras supported by the device.
    */
-  static getCameras(): Array<CameraDevice> // Returns a Promise
+  static getCameras(): Promise<Array<CameraDevice>>;
 
   /**
    * Initialize QR Code scanner.
@@ -541,7 +551,7 @@ class Html5Qrcode {
    * @param elementId - Id of the HTML element.
    * @param verbose - optional configuration object
    */
-  constructor(elementId: string, config:  Html5QrcodeFullConfig | undefined) {}
+  constructor(elementId: string, config:  Html5QrcodeFullConfig | undefined);
 
   /**
    * Start scanning QR codes or barcodes for a given camera.
@@ -560,7 +570,7 @@ class Html5Qrcode {
     configuration: Html5QrcodeCameraScanConfig | undefined,
     qrCodeSuccessCallback: QrcodeSuccessCallback | undefined,
     qrCodeErrorCallback: QrcodeErrorCallback | undefined,
-  ): Promise<null> {}
+  ): Promise<null>;
 
   /**
    * Pauses the ongoing scan.
@@ -589,7 +599,7 @@ class Html5Qrcode {
   /**
    * Stops streaming QR Code video and scanning. 
    */
-  stop(): Promise<void> {}
+  stop(): Promise<void>;
 
   /**
    * Gets state of the camera scan.
@@ -611,7 +621,7 @@ class Html5Qrcode {
    */
   scanFile(
     imageFile: File,
-    /* default=true */ showImage: boolean | undefined): Promise<string> {}
+    /* default=true */ showImage: boolean | undefined): Promise<string>;
 
   /**
    * Clears the existing canvas.
@@ -619,7 +629,43 @@ class Html5Qrcode {
    * Note: in case of ongoing web-cam based scan, it needs to be explicitly
    * closed before calling this method, else it will throw an exception.
    */
-  clear(): void {}  // Returns void
+  clear(): void;
+
+  /**
+   * Returns the capabilities of the running video track.
+   * 
+   * Note: Should only be called if {@code Html5QrcodeScanner#getState()}
+   *   returns {@code Html5QrcodeScannerState#SCANNING} or 
+   *   {@code Html5QrcodeScannerState#PAUSED}.
+   *
+   * @returns the capabilities of a running video track.
+   * @throws error if the scanning is not in running state.
+   */
+  getRunningTrackCapabilities(): MediaTrackCapabilities;
+
+  /**
+   * Returns the supported settings of the running video track.
+   *
+   * @returns the supported settings of the running video track.
+   * @throws error if the scanning is not in running state.
+   */
+  getRunningTrackSettings(): MediaTrackSettings;
+
+  /**
+   * Apply a video constraints on running video track from camera.
+   *
+   * Note: Should only be called if {@code Html5QrcodeScanner#getState()}
+   *   returns {@code Html5QrcodeScannerState#SCANNING} or 
+   *   {@code Html5QrcodeScannerState#PAUSED}.
+   *
+   * @param {MediaTrackConstraints} specifies a variety of video or camera
+   *  controls as defined in
+   *  https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints
+   * @returns a Promise which succeeds if the passed constraints are applied,
+   *  fails otherwise.
+   * @throws error if the scanning is not in running state.
+   */
+  applyVideoConstraints(videoConstaints: MediaTrackConstraints): Promise<void>;
 }
 
 class Html5QrcodeScanner {
@@ -633,7 +679,7 @@ class Html5QrcodeScanner {
   constructor(
     elementId: string,
     config: Html5QrcodeScannerConfig | undefined,
-    verbose: boolean | undefined) {}
+    verbose: boolean | undefined);
 
   /**
    * Renders the User Interface.
@@ -645,7 +691,7 @@ class Html5QrcodeScanner {
    */
   render(
     qrCodeSuccessCallback: QrcodeSuccessCallback,
-    qrCodeErrorCallback: QrcodeErrorCallback | undefined) {}
+    qrCodeErrorCallback: QrcodeErrorCallback | undefined);
 
   /**
    * Pauses the ongoing scan.
@@ -684,7 +730,43 @@ class Html5QrcodeScanner {
   getState(): Html5QrcodeScannerState;
 
   /** Removes the QR Code scanner UI. */
-  clear(): Promise<void>  {}
+  clear(): Promise<void>;
+
+  /**
+   * Returns the capabilities of the running video track.
+   * 
+   * Note: Should only be called if {@code Html5QrcodeScanner#getState()}
+   *   returns {@code Html5QrcodeScannerState#SCANNING} or 
+   *   {@code Html5QrcodeScannerState#PAUSED}.
+   *
+   * @returns the capabilities of a running video track.
+   * @throws error if the scanning is not in running state.
+   */
+  getRunningTrackCapabilities(): MediaTrackCapabilities;
+
+  /**
+   * Returns the supported settings of the running video track.
+   *
+   * @returns the supported settings of the running video track.
+   * @throws error if the scanning is not in running state.
+   */
+  getRunningTrackSettings(): MediaTrackSettings;
+
+  /**
+   * Apply a video constraints on running video track from camera.
+   *
+   * Note: Should only be called if {@code Html5QrcodeScanner#getState()}
+   *   returns {@code Html5QrcodeScannerState#SCANNING} or 
+   *   {@code Html5QrcodeScannerState#PAUSED}.
+   *
+   * @param {MediaTrackConstraints} specifies a variety of video or camera
+   *  controls as defined in
+   *  https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints
+   * @returns a Promise which succeeds if the passed constraints are applied,
+   *  fails otherwise.
+   * @throws error if the scanning is not in running state.
+   */
+  applyVideoConstraints(videoConstaints: MediaTrackConstraints) : Promise<void>;
 }
 ```
 
@@ -752,6 +834,8 @@ granted and what camera was last used. If the permissions is already granted for
 "camera", QR code scanning will automatically * start for previously used camera.
 
 #### `supportedScanTypes` - `Array<Html5QrcodeScanType> | []`
+> This is only supported for `Html5QrcodeScanner`.
+
 Default = `[Html5QrcodeScanType.SCAN_TYPE_CAMERA, Html5QrcodeScanType.SCAN_TYPE_FILE]`
 
 This field can be used to:
@@ -797,6 +881,11 @@ supportedScanTypes: [
   Html5QrcodeScanType.SCAN_TYPE_FILE,
   Html5QrcodeScanType.SCAN_TYPE_CAMERA]
 ```
+
+#### `showTorchButtonIfSupported` - `boolean | undefined`
+> This is only supported for `Html5QrcodeScanner`.
+
+If `true` the rendered UI will have button to turn flash on or off based on device + browser support. The value is `false` by default.
 
 ### Scanning only specific formats
 By default, both camera stream and image files are scanned against all the
