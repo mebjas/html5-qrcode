@@ -92,7 +92,7 @@ class TorchController {
             ? Html5QrcodeScannerStrings.torchOnFailedMessage()
             : Html5QrcodeScannerStrings.torchOffFailedMessage();
         if (error) {
-            errorMessage += `; Error = {error}`;
+            errorMessage += "; Error = " + error;
         }
         this.onTorchActionFailureCallback(errorMessage);
     }
