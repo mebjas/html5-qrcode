@@ -62,8 +62,7 @@ class TorchController {
             let settings = this.html5Qrcode.getRunningTrackSettings();
             this.updateUiBasedOnLatestSettings(settings, isTorchOnExpected);
         } catch (error) {
-            /* eslint no-console: "error" */
-            console.error("Failed to change torch state: ", error);
+            this.propagateFailure(isTorchOnExpected, error);
             this.buttonElement.disabled = false;
         }
     }
@@ -82,12 +81,20 @@ class TorchController {
         } else {
             // Torch didn't get set as expected.
             // Show warning.
-            let errorMessage = isTorchOnExpected
-                ? Html5QrcodeScannerStrings.torchOnFailedMessage()
-                : Html5QrcodeScannerStrings.torchOffFailedMessage();
-            this.onTorchActionFailureCallback(errorMessage);
+            this.propagateFailure(isTorchOnExpected);
         }
         this.buttonElement.disabled = false;
+    }
+
+    private propagateFailure(
+        isTorchOnExpected: boolean, error?: any) {
+        let errorMessage = isTorchOnExpected
+            ? Html5QrcodeScannerStrings.torchOnFailedMessage()
+            : Html5QrcodeScannerStrings.torchOffFailedMessage();
+        if (error) {
+            errorMessage += `; Error = {error}`;
+        }
+        this.onTorchActionFailureCallback(errorMessage);
     }
 
     /**
