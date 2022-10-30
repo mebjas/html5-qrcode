@@ -760,8 +760,12 @@ export class Html5Qrcode {
 
     /**
      * Returns the capabilities of the running video track.
+     * 
+     * Read more: https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/getConstraints
+     * 
+     * Important:
+     *  1. Must be called only if the camera based scanning is in progress.
      *
-     * @beta This is an experimental API
      * @returns the capabilities of a running video track.
      * @throws error if the scanning is not in running state.
      */
@@ -780,13 +784,38 @@ export class Html5Qrcode {
     }
 
     /**
+     * Returns the object containing the current values of each constrainable
+     * property of the running video track.
+     * 
+     * Read more: https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/getSettings
+     * 
+     * Important:
+     *  1. Must be called only if the camera based scanning is in progress.
+     *
+     * @returns the supported settings of the running video track.
+     * @throws error if the scanning is not in running state.
+     */
+    public getRunningTrackSettings(): MediaTrackSettings {
+        if (this.localMediaStream == null) {
+            throw "Scanning is not in running state, call this API only when"
+                + " QR code scanning using camera is in running state.";
+        }
+
+        if (this.localMediaStream.getVideoTracks().length === 0) {
+            throw "No video tracks found";
+        }
+
+        const videoTrack = this.localMediaStream.getVideoTracks()[0];
+        return videoTrack.getSettings();
+    }
+
+    /**
      * Apply a video constraints on running video track from camera.
      *
      * Important:
      *  1. Must be called only if the camera based scanning is in progress.
      *  2. Changing aspectRatio while scanner is running is not yet supported.
      *
-     * @beta This is an experimental API
      * @param {MediaTrackConstraints} specifies a variety of video or camera
      *  controls as defined in
      *  https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints
@@ -795,7 +824,7 @@ export class Html5Qrcode {
      * @throws error if the scanning is not in running state.
      */
     public applyVideoConstraints(videoConstaints: MediaTrackConstraints)
-        : Promise<any> {
+        : Promise<void> {
         if (!videoConstaints) {
             throw "videoConstaints is required argument.";
         } else if (!VideoConstraintsUtil.isMediaStreamConstraintsValid(

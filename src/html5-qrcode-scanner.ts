@@ -49,8 +49,15 @@ import {
 import {
   CameraManager
 } from "./camera";
+
 import { Html5QrcodeScannerState } from "./state-manager";
+
 import { ScanTypeSelector } from "./ui/scanner/scan-type-selector";
+
+import {
+    TorchButton,
+    TorchUtils
+} from "./ui/scanner/torch-button";
 
 /**
  * Different states of QR Code Scanner.
@@ -74,7 +81,7 @@ interface Html5QrcodeScannerConfig
      * is already granted for "camera", QR code scanning will automatically
      * start for previously used camera.
      * 
-     * Note: default value is true.
+     * Note: default value is {@code true}.
      */
     rememberLastUsedCamera?: boolean | undefined;
 
@@ -94,6 +101,14 @@ interface Html5QrcodeScannerConfig
      *  - Setting wrong values or multiple values will fail.
      */
     supportedScanTypes: Array<Html5QrcodeScanType> | [];
+
+    /**
+     * If {@code true} the rendered UI will have button to turn flash on or off
+     * based on device + browser support.
+     * 
+     * Note: default value is {@code false}.
+     */
+    showTorchButtonIfSupported?: boolean | undefined;
 }
 
 function toHtml5QrcodeCameraScanConfig(config: Html5QrcodeScannerConfig)
@@ -332,11 +347,12 @@ export class Html5QrcodeScanner {
     /**
      * Returns the capabilities of the running video track.
      * 
+     * Read more: https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/getConstraints
+     * 
      * Note: Should only be called if {@code Html5QrcodeScanner#getState()}
      *   returns {@code Html5QrcodeScannerState#SCANNING} or 
      *   {@code Html5QrcodeScannerState#PAUSED}.
      *
-     * @beta This is an experimental API
      * @returns the capabilities of a running video track.
      * @throws error if the scanning is not in running state.
      */
@@ -349,13 +365,33 @@ export class Html5QrcodeScanner {
     }
 
     /**
+     * Returns the object containing the current values of each constrainable
+     * property of the running video track.
+     * 
+     * Read more: https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/getSettings
+     * 
+     * Note: Should only be called if {@code Html5QrcodeScanner#getState()}
+     *   returns {@code Html5QrcodeScannerState#SCANNING} or 
+     *   {@code Html5QrcodeScannerState#PAUSED}.
+     *
+     * @returns the supported settings of the running video track.
+     * @throws error if the scanning is not in running state.
+     */
+    public getRunningTrackSettings(): MediaTrackSettings {
+        if (!this.html5Qrcode) {
+            throw "Code scanner not initialized.";
+        }
+
+        return this.html5Qrcode.getRunningTrackSettings();
+    }
+
+    /**
      * Apply a video constraints on running video track from camera.
      *
      * Note: Should only be called if {@code Html5QrcodeScanner#getState()}
      *   returns {@code Html5QrcodeScannerState#SCANNING} or 
      *   {@code Html5QrcodeScannerState#PAUSED}.
      *
-     * @beta This is an experimental API
      * @param {MediaTrackConstraints} specifies a variety of video or camera
      *  controls as defined in
      *  https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints
@@ -364,7 +400,7 @@ export class Html5QrcodeScanner {
      * @throws error if the scanning is not in running state.
      */
     public applyVideoConstraints(videoConstaints: MediaTrackConstraints)
-        : Promise<any> {
+        : Promise<void> {
         if (!this.html5Qrcode) {
             throw "Code scanner not initialized.";
         }
@@ -709,6 +745,30 @@ export class Html5QrcodeScanner {
         cameraActionStopButton.disabled = true;
         cameraActionContainer.appendChild(cameraActionStopButton);
 
+        // Optional torch button support.
+        const torchButton = TorchButton.create(
+            $this.html5Qrcode!,
+            {display: "none", marginLeft: "5px"},
+            // Callback in case of torch action failure.
+            (errorMessage) => {
+                $this.setHeaderMessage(
+                    errorMessage,
+                    Html5QrcodeScannerStatus.STATUS_WARNING);
+            }
+        );
+        const cameraActionTorchButton = torchButton.getTorchButton();
+        cameraActionContainer.appendChild(cameraActionTorchButton);
+
+        const showTorchButtonIfSupported = (settings: MediaTrackSettings) => {
+            if (!TorchUtils.isTorchSupported(settings)) {
+                // Torch not supported, ignore.
+                cameraActionTorchButton.style.display = "none";
+                return;
+            }
+
+            cameraActionTorchButton.style.display = "inline-block";
+        };
+
         scpCameraScanRegion.appendChild(cameraActionContainer);
 
         const resetCameraActionStartButton = (shouldShow: boolean) => {
@@ -751,6 +811,12 @@ export class Html5QrcodeScanner {
                     cameraActionStopButton.disabled = false;
                     cameraActionStopButton.style.display = "inline-block";
                     resetCameraActionStartButton(/* shouldShow= */ false);
+
+                    // Show torch button if needed.
+                    if (this.config.showTorchButtonIfSupported === true) {
+                        showTorchButtonIfSupported(
+                            $this.html5Qrcode!.getRunningTrackSettings());
+                    }
                 })
                 .catch((error) => {
                     $this.showHideScanTypeSwapLink(true);
@@ -783,6 +849,9 @@ export class Html5QrcodeScanner {
                     cameraActionStartButton.disabled = false;
                     cameraActionStopButton.style.display = "none";
                     cameraActionStartButton.style.display = "inline-block";
+                    // Reset torch state.
+                    torchButton.reset();
+                    cameraActionTorchButton.style.display = "none";
                     $this.insertCameraScanImageToScanRegion();
                 }).catch((error) => {
                     cameraActionStopButton.disabled = false;

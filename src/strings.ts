@@ -98,6 +98,22 @@ export class Html5QrcodeScannerStrings {
         return "Start Scanning";
     }
 
+    public static torchOnButton(): string {
+        return "Switch On Torch";
+    }
+
+    public static torchOffButton(): string {
+        return "Switch Off Torch";
+    }
+
+    public static torchOnFailedMessage(): string {
+        return "Failed to turn on torch";
+    }
+
+    public static torchOffFailedMessage(): string {
+        return "Failed to turn off torch";
+    }
+
     public static scanButtonScanningStarting(): string {
         return "Launching Camera...";
     }
