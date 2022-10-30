@@ -56,8 +56,7 @@ import { ScanTypeSelector } from "./ui/scanner/scan-type-selector";
 
 import {
     TorchButton,
-    TorchButtonOptions,
-    OnTorchActionFailureCallback
+    TorchUtils
 } from "./ui/scanner/torch-button";
 
 /**
@@ -348,6 +347,8 @@ export class Html5QrcodeScanner {
     /**
      * Returns the capabilities of the running video track.
      * 
+     * Read more: https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/getConstraints
+     * 
      * Note: Should only be called if {@code Html5QrcodeScanner#getState()}
      *   returns {@code Html5QrcodeScannerState#SCANNING} or 
      *   {@code Html5QrcodeScannerState#PAUSED}.
@@ -364,7 +365,14 @@ export class Html5QrcodeScanner {
     }
 
     /**
-     * Returns the supported settings of the running video track.
+     * Returns the object containing the current values of each constrainable
+     * property of the running video track.
+     * 
+     * Read more: https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/getSettings
+     * 
+     * Note: Should only be called if {@code Html5QrcodeScanner#getState()}
+     *   returns {@code Html5QrcodeScannerState#SCANNING} or 
+     *   {@code Html5QrcodeScannerState#PAUSED}.
      *
      * @returns the supported settings of the running video track.
      * @throws error if the scanning is not in running state.
@@ -752,12 +760,12 @@ export class Html5QrcodeScanner {
         cameraActionContainer.appendChild(cameraActionTorchButton);
 
         const showTorchButtonIfSupported = (settings: MediaTrackSettings) => {
-            // @ts-ignore
-            if (!('torch' in settings)) {
+            if (!TorchUtils.isTorchSupported(settings)) {
                 // Torch not supported, ignore.
                 cameraActionTorchButton.style.display = "none";
                 return;
             }
+
             cameraActionTorchButton.style.display = "inline-block";
         };
 

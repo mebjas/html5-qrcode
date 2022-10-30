@@ -631,12 +631,14 @@ class Html5Qrcode {
    */
   clear(): void;
 
+  
   /**
    * Returns the capabilities of the running video track.
    * 
-   * Note: Should only be called if {@code Html5QrcodeScanner#getState()}
-   *   returns {@code Html5QrcodeScannerState#SCANNING} or 
-   *   {@code Html5QrcodeScannerState#PAUSED}.
+   * Read more: https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/getConstraints
+   * 
+   * Important:
+   *  1. Must be called only if the camera based scanning is in progress.
    *
    * @returns the capabilities of a running video track.
    * @throws error if the scanning is not in running state.
@@ -644,7 +646,13 @@ class Html5Qrcode {
   getRunningTrackCapabilities(): MediaTrackCapabilities;
 
   /**
-   * Returns the supported settings of the running video track.
+   * Returns the object containing the current values of each constrainable
+   * property of the running video track.
+   * 
+   * Read more: https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/getSettings
+   * 
+   * Important:
+   *  1. Must be called only if the camera based scanning is in progress.
    *
    * @returns the supported settings of the running video track.
    * @throws error if the scanning is not in running state.
@@ -735,6 +743,8 @@ class Html5QrcodeScanner {
   /**
    * Returns the capabilities of the running video track.
    * 
+   * Read more: https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/getConstraints
+   * 
    * Note: Should only be called if {@code Html5QrcodeScanner#getState()}
    *   returns {@code Html5QrcodeScannerState#SCANNING} or 
    *   {@code Html5QrcodeScannerState#PAUSED}.
@@ -745,7 +755,14 @@ class Html5QrcodeScanner {
   getRunningTrackCapabilities(): MediaTrackCapabilities;
 
   /**
-   * Returns the supported settings of the running video track.
+   * Returns the object containing the current values of each constrainable
+   * property of the running video track.
+   * 
+   * Read more: https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/getSettings
+   * 
+   * Note: Should only be called if {@code Html5QrcodeScanner#getState()}
+   *   returns {@code Html5QrcodeScannerState#SCANNING} or 
+   *   {@code Html5QrcodeScannerState#PAUSED}.
    *
    * @returns the supported settings of the running video track.
    * @throws error if the scanning is not in running state.
@@ -998,6 +1015,7 @@ You can contribute to the project in several ways:
 This project would not be possible without all of our fantastic contributors and [sponsors](https://github.com/sponsors/mebjas). If you'd like to support the maintenance and upkeep of this project you can [donate via GitHub Sponsors](https://github.com/sponsors/mebjas).
 
 <!-- sponsors -->
+<a href="https://github.com/bujjivadu"><img src="https://github.com/bujjivadu.png" width="40px" alt="" /></a>
 <a href="https://github.com/ben-gy"><img src="https://github.com/ben-gy.png" width="40px" alt="" /></a>
 <!-- sponsors -->
 

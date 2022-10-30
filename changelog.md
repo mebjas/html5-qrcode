@@ -35,7 +35,13 @@ Added a new API to get settings (type: [MediaTrackSettings](https://developer.mo
 
 ```ts
 /**
- * Returns the supported settings of the running video track.
+ * Returns the object containing the current values of each constrainable
+ * property of the running video track.
+ * 
+ * Read more: https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/getSettings
+ * 
+ * Important:
+ *  1. Must be called only if the camera based scanning is in progress.
  *
  * @returns the supported settings of the running video track.
  * @throws error if the scanning is not in running state.
@@ -53,21 +59,22 @@ Both `Html5Qrcode` and `Html5QrcodeScanner` classes had support for following AP
 /**
  * Returns the capabilities of the running video track.
  * 
- * Note: Should only be called if {@code Html5QrcodeScanner#getState()}
- *   returns {@code Html5QrcodeScannerState#SCANNING} or 
- *   {@code Html5QrcodeScannerState#PAUSED}.
+ * Read more: https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/getConstraints
+ * 
+ * Important:
+ *  1. Must be called only if the camera based scanning is in progress.
  *
  * @returns the capabilities of a running video track.
  * @throws error if the scanning is not in running state.
  */
 public getRunningTrackCapabilities(): MediaTrackCapabilities {}
 
- /**
+/**
  * Apply a video constraints on running video track from camera.
  *
- * Note: Should only be called if {@code Html5QrcodeScanner#getState()}
- *   returns {@code Html5QrcodeScannerState#SCANNING} or 
- *   {@code Html5QrcodeScannerState#PAUSED}.
+ * Important:
+ *  1. Must be called only if the camera based scanning is in progress.
+ *  2. Changing aspectRatio while scanner is running is not yet supported.
  *
  * @param {MediaTrackConstraints} specifies a variety of video or camera
  *  controls as defined in
@@ -81,6 +88,10 @@ public applyVideoConstraints(videoConstaints: MediaTrackConstraints)
 ```
 
 These have now been taken out of beta and publicly documented. More blog articles to be published for these.
+
+#### Sponsorship
+
+Thanks <a href="https://github.com/bujjivadu"><img src="https://github.com/bujjivadu.png" width="40px" alt="" /></a> for sponsorship!
 
 ### Version 2.2.4
  - Improved support for Huawei browser with [PR#563](https://github.com/mebjas/html5-qrcode/pull/563), Contribution by [jackhe16](https://github.com/jackhe16).

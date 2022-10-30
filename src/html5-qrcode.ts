@@ -760,6 +760,11 @@ export class Html5Qrcode {
 
     /**
      * Returns the capabilities of the running video track.
+     * 
+     * Read more: https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/getConstraints
+     * 
+     * Important:
+     *  1. Must be called only if the camera based scanning is in progress.
      *
      * @returns the capabilities of a running video track.
      * @throws error if the scanning is not in running state.
@@ -779,9 +784,14 @@ export class Html5Qrcode {
     }
 
     /**
-     * Returns the supported settings of the running video track.
+     * Returns the object containing the current values of each constrainable
+     * property of the running video track.
+     * 
+     * Read more: https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/getSettings
+     * 
+     * Important:
+     *  1. Must be called only if the camera based scanning is in progress.
      *
-     * @beta This is an experimental API
      * @returns the supported settings of the running video track.
      * @throws error if the scanning is not in running state.
      */
