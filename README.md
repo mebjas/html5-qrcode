@@ -2,16 +2,27 @@
 
 ## Lightweight & cross platform QR Code and Bar code scanning library for the web
 
-Use this lightweight library to easily / quickly integrate QR code, bar code, and other common code scanning capabilities to your web application. 
--   Supports easy scanning using an integrated webcam or camera in smartphones (Android / IOS).
+Use this lightweight library to easily / quickly integrate QR code, bar code, and other common code scanning capabilities to your web application.
 
--   Supports scanning codes from files or default cameras on smartphones.
+### Key highlights
+-   🔲 Support scanning [different types of bar codes and QR codes](#supported-code-formats).
 
--   **<u>Recently Added</u>** Supports bar code scanning in various formats.
+-   🖥 Supports [different platforms](#supported-platforms) be it Android, IOS, MacOs, Windows or Linux
 
--   Supports two kinds of APIs
-    -   `Html5QrcodeScanner` — End-to-end scanner with UI, integrate with less than ten lines of code.
-    -   `Html5Qrcode` — Powerful set of APIs you can use to build your UI without worrying about camera setup, handling permissions, reading codes, etc.
+-   🌐 Supports [different browsers](#supported-platforms) like Chrome, Firefox, Safari, Edge, Opera ...
+
+-   📷 Supports scanning with camera as well as local files
+
+-   ➡️ Comes with an [end to end library with UI](#easy-mode---with-end-to-end-scanner-user-interface) as well as a [low level library to build your own UI with](#pro-mode---if-you-want-to-implement-your-own-user-interface).
+
+-   🔦 Supports customisations like [flash/torch support](#showtorchbuttonifsupported---boolean--undefined), zooming etc.
+
+
+Supports two kinds of APIs
+
+-   `Html5QrcodeScanner` — End-to-end scanner with UI, integrate with less than ten lines of code.
+    
+-   `Html5Qrcode` — Powerful set of APIs you can use to build your UI without worrying about camera setup, handling permissions, reading codes, etc.
 
 > Support for scanning local files on the device is a new addition and helpful for the web browser which does not support inline web-camera access in smartphones. **Note:** This doesn't upload files to any server — everything is done locally.
 
