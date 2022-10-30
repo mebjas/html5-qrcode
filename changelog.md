@@ -1,4 +1,6 @@
-### Version 2.2.5
+### Version 2.2.5 & Version 2.2.6
+
+> Small minification fix in Version 2.2.6.
 
 #### Added support for turning `torch` On and Off in `Html5QrcodeScanner`.
 On supported devices + browsers.
