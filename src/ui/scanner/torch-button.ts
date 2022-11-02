@@ -10,6 +10,7 @@
 
 import {Html5QrcodeScannerStrings} from "../../strings";
 import {Html5Qrcode} from "../../html5-qrcode";
+import {BaseUiElementFactory} from "./base";
 
 /**
  * Interface for callback that will be called in case of torch action failures.
@@ -130,7 +131,7 @@ export class TorchButton {
         torchButtonOptions: TorchButtonOptions,
         onTorchActionFailureCallback: OnTorchActionFailureCallback)
         : TorchButton {
-        let torchButton = document.createElement("button");
+        let torchButton = BaseUiElementFactory.createButton();
         let torchController = new TorchController(
             html5Qrcode,
             torchButton,

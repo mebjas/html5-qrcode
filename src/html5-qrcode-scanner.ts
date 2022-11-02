@@ -59,6 +59,10 @@ import {
     TorchUtils
 } from "./ui/scanner/torch-button";
 
+import {
+    BaseUiElementFactory
+} from "./ui/scanner/base";
+
 /**
  * Different states of QR Code Scanner.
  */
@@ -564,7 +568,7 @@ export class Html5QrcodeScanner {
         scpCameraScanRegion: HTMLDivElement,
         requestPermissionContainer: HTMLDivElement) {
         const $this = this;
-        const requestPermissionButton = document.createElement("button");
+        const requestPermissionButton = BaseUiElementFactory.createButton();
         requestPermissionButton.id = this.getCameraPermissionButtonId();
         requestPermissionButton.innerText
             = Html5QrcodeScannerStrings.cameraPermissionTitle();
@@ -656,10 +660,9 @@ export class Html5QrcodeScanner {
             ? "none" : "block";
         parent.appendChild(fileBasedScanRegion);
 
-        const fileScanInput = document.createElement("input");
+        const fileScanInput = BaseUiElementFactory.createInputFile();
         fileScanInput.id = this.getFileScanInputId();
         fileScanInput.accept = "image/*";
-        fileScanInput.type = "file";
         fileScanInput.style.width = "200px";
         fileScanInput.disabled
             = ScanTypeSelector.isCameraScanType(this.currentScanType);
@@ -723,7 +726,7 @@ export class Html5QrcodeScanner {
         for (const camera of cameras) {
             const value = camera.id;
             const name = camera.label == null ? value : camera.label;
-            const option = document.createElement("option");
+            const option = BaseUiElementFactory.createOption();
             option.value = value;
             option.innerText = name;
             options.push(option);
@@ -733,12 +736,12 @@ export class Html5QrcodeScanner {
         scpCameraScanRegion.appendChild(cameraSelectionContainer);
 
         const cameraActionContainer = document.createElement("span");
-        const cameraActionStartButton = document.createElement("button");
+        const cameraActionStartButton = BaseUiElementFactory.createButton();
         cameraActionStartButton.innerText
             = Html5QrcodeScannerStrings.scanButtonStartScanningText();
         cameraActionContainer.appendChild(cameraActionStartButton);
 
-        const cameraActionStopButton = document.createElement("button");
+        const cameraActionStopButton = BaseUiElementFactory.createButton();
         cameraActionStopButton.innerText
             = Html5QrcodeScannerStrings.scanButtonStopScanningText();
         cameraActionStopButton.style.display = "none";
@@ -889,7 +892,7 @@ export class Html5QrcodeScanner {
         const section = document.getElementById(this.getDashboardSectionId())!;
         const switchContainer = document.createElement("div");
         switchContainer.style.textAlign = "center";
-        const switchScanTypeLink = document.createElement("a");
+        const switchScanTypeLink = BaseUiElementFactory.createAnchor();
         switchScanTypeLink.style.textDecoration = "underline";
         switchScanTypeLink.id = this.getDashboardSectionSwapLinkId();
         switchScanTypeLink.innerText

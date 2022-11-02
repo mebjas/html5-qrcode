@@ -1,3 +1,6 @@
+### Version 2.2.7
+TBD
+
 ### Version 2.2.5 & Version 2.2.6
 
 > Small minification fix in Version 2.2.6.
