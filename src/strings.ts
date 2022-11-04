@@ -140,8 +140,16 @@ export class Html5QrcodeScannerStrings {
         return "Select Camera";
     }
 
-    public static fileSelectionLabel(): string {
-        return "Select Image";
+    public static fileSelectionChooseImage(): string {
+        return "Choose Image";
+    }
+
+    public static fileSelectionChooseAnother(): string {
+        return "Choose Another";
+    }
+
+    public static fileSelectionNoImageSelected(): string {
+        return "No image choosen";
     }
 }
 

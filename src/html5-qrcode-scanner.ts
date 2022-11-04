@@ -60,6 +60,11 @@ import {
 } from "./ui/scanner/torch-button";
 
 import {
+    FileSelectionUi,
+    OnFileSelected
+} from "./ui/scanner/file-selection-ui";
+
+import {
     BaseUiElementFactory,
     PublicUiElementIdAndClasses
 } from "./ui/scanner/base";
@@ -157,6 +162,7 @@ export class Html5QrcodeScanner {
     private lastMatchFound: string | null = null;
     private cameraScanImage: HTMLImageElement | null = null;
     private fileScanImage: HTMLImageElement | null = null;
+    private fileSelectionUi: FileSelectionUi | null = null;
     //#endregion
 
     /**
@@ -651,57 +657,19 @@ export class Html5QrcodeScanner {
         this.renderFileScanUi(sectionControlPanel);
     }
 
-    // TODO: decouple the UI components for camera scan and file based scan to
-    // independent UI classes.
     private renderFileScanUi(parent: HTMLDivElement) {
+        let showOnRender = ScanTypeSelector.isCameraScanType(
+            this.currentScanType);
         const $this = this;
-        const fileBasedScanRegion = document.createElement("div");
-        parent.appendChild(fileBasedScanRegion);
-        fileBasedScanRegion.style.textAlign = "center";
-
-        let fileScanLabel = document.createElement("label");
-        fileScanLabel.id = this.getDashboardSectionFileScanRegionId();
-        fileScanLabel.setAttribute("for", this.getFileScanInputId());
-        fileScanLabel.style.display
-            = ScanTypeSelector.isCameraScanType(this.currentScanType)
-            ? "none" : "inline-block";
-        fileBasedScanRegion.appendChild(fileScanLabel);
-        
-        let fileSelectionButton
-            = BaseUiElementFactory.createElement<HTMLButtonElement>(
-                "button", this.getFileScanButtonId());
-        fileSelectionButton.innerText = Html5QrcodeScannerStrings.fileSelectionLabel();
-        fileSelectionButton.disabled
-            = ScanTypeSelector.isCameraScanType(this.currentScanType);
-        // Bind click events with the label element.
-        fileSelectionButton.addEventListener("click", (_) => {
-            fileScanLabel.click();
-        });
-        fileScanLabel.append(fileSelectionButton);
-
-        const fileScanInput
-            = BaseUiElementFactory.createElement<HTMLInputElement>(
-                "input", this.getFileScanInputId());
-        fileScanInput.type = "file";
-        fileScanInput.accept = "image/*";
-        fileScanInput.style.display = "none";
-        fileScanLabel.appendChild(fileScanInput);
-        
-        fileScanInput.addEventListener("change", (e: any) => {
+        let onFileSelected: OnFileSelected = (file: File) => {
             if (!$this.html5Qrcode) {
                 throw "html5Qrcode not defined";
             }
 
-            if (e == null || e.target == null) {
-                return;
-            }
             if (!ScanTypeSelector.isFileScanType($this.currentScanType)) {
                 return;
             }
-            if (e.target.files.length === 0) {
-                return;
-            }
-            const file = e.target.files[0];
+            
             $this.html5Qrcode.scanFileV2(file, /* showImage= */ true)
                 .then((html5qrcodeResult: Html5QrcodeResult) => {
                     $this.resetHeaderMessage();
@@ -715,7 +683,10 @@ export class Html5QrcodeScanner {
                     $this.qrCodeErrorCallback!(
                         error, Html5QrcodeErrorFactory.createFrom(error));
                 });
-        });
+        };
+
+        this.fileSelectionUi = FileSelectionUi.create(
+            parent, showOnRender, onFileSelected);
     }
 
     private renderCameraSelection(cameras: Array<CameraDevice>) {
@@ -933,24 +904,22 @@ export class Html5QrcodeScanner {
 
             // Cleanup states
             $this.resetHeaderMessage();
-            $this.getFileScanInput().value = "";
+            $this.fileSelectionUi!.resetValue();
             $this.sectionSwapAllowed = false;
             
             if (ScanTypeSelector.isCameraScanType($this.currentScanType)) {
                 // Swap to file based scanning.
                 $this.clearScanRegion();
-                $this.getFileScanInputButton().disabled = false;
                 $this.getCameraScanRegion().style.display = "none";
-                $this.getFileScanRegion().style.display = "block";
+                $this.fileSelectionUi!.show();
                 switchScanTypeLink.innerText = TEXT_IF_FILE_SCAN_SELECTED;
                 $this.currentScanType = Html5QrcodeScanType.SCAN_TYPE_FILE;
                 $this.insertFileScanImageToScanRegion();
             } else {
                 // Swap to camera based scanning.
                 $this.clearScanRegion();
-                $this.getFileScanInputButton().disabled = true;
                 $this.getCameraScanRegion().style.display = "block";
-                $this.getFileScanRegion().style.display = "none";
+                $this.fileSelectionUi!.hide();
                 switchScanTypeLink.innerText = TEXT_IF_CAMERA_SCAN_SELECTED;
                 $this.currentScanType = Html5QrcodeScanType.SCAN_TYPE_CAMERA;
                 $this.insertCameraScanImageToScanRegion();
@@ -1094,10 +1063,6 @@ export class Html5QrcodeScanner {
         return `${this.elementId}__dashboard_section_csr`;
     }
 
-    private getDashboardSectionFileScanRegionId(): string {
-        return `${this.elementId}__dashboard_section_fsr`;
-    }
-
     private getDashboardSectionSwapLinkId(): string {
         return PublicUiElementIdAndClasses.SCAN_TYPE_CHANGE_ANCHOR_ID;
     }
@@ -1108,14 +1073,6 @@ export class Html5QrcodeScanner {
 
     private getDashboardId(): string {
         return `${this.elementId}__dashboard`;
-    }
-
-    private getFileScanButtonId(): string {
-        return PublicUiElementIdAndClasses.FILE_SELECTION_BUTTON_ID;
-    }
-
-    private getFileScanInputId(): string {
-        return `${this.elementId}__filescan_input`;
     }
 
     private getHeaderMessageContainerId(): string {
@@ -1133,21 +1090,6 @@ export class Html5QrcodeScanner {
     private getCameraScanRegion(): HTMLElement {
         return document.getElementById(
             this.getDashboardSectionCameraScanRegionId())!;
-    }
-
-    private getFileScanRegion(): HTMLElement {
-        return document.getElementById(
-            this.getDashboardSectionFileScanRegionId())!;
-    }
-
-    private getFileScanInputButton(): HTMLButtonElement {
-        return <HTMLButtonElement>document.getElementById(
-            this.getFileScanButtonId())!;
-    }
-
-    private getFileScanInput(): HTMLInputElement {
-        return <HTMLInputElement>document.getElementById(
-            this.getFileScanInputId())!;
     }
 
     private getDashboardSectionSwapLink(): HTMLElement {
