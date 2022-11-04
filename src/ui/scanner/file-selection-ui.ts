@@ -96,7 +96,7 @@ export class FileSelectionUi {
 
     /** Returns {@code true} if UI container is displayed. */
     public isShowing(): boolean {
-        return this.fileBasedScanRegion.style.display == "block";
+        return this.fileBasedScanRegion.style.display === "block";
     }
 
     /** Reset the file selection value */

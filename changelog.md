@@ -11,8 +11,8 @@ List of CSS class and IDs added.
 
 ```css
 button.html5-qrcode-element {
-    color: 'red' !important,
-    border: '1px solid red' !important
+    color: 'red';
+    border: '1px solid red';
 }
 ```
 
