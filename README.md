@@ -30,7 +30,7 @@ Supports two kinds of APIs
 
 ![GitHub all releases](https://img.shields.io/github/downloads/mebjas/html5-qrcode/total?label=Github%20downloads&style=for-the-badge) [![npm](https://img.shields.io/npm/dw/html5-qrcode?label=npm%20downloads&style=for-the-badge)](https://www.npmjs.com/package/html5-qrcode) [![](https://img.shields.io/badge/Medium-12100E?style=for-the-badge&logo=medium&logoColor=white)](https://bit.ly/3CZiASv)
 
-| <img src="https://scanapp.org/assets/github_assets/pixel6pro.gif" width="180px"> | <img src="https://scanapp.org/assets/github_assets/pixel4_barcode_480.gif" width="180px">|
+| <img src="https://scanapp.org/assets/github_assets/pixel6pro-optimised.gif" width="180px"> | <img src="https://scanapp.org/assets/github_assets/pixel4_barcode_480.gif" width="180px">|
 | -- | -- |
 | _Demo at [scanapp.org](https://scanapp.org)_ | _Demo at [qrcode.minhazav.dev](https://qrcode.minhazav.dev) - **Scanning different types of codes**_ |
 
