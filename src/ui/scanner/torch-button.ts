@@ -10,6 +10,10 @@
 
 import {Html5QrcodeScannerStrings} from "../../strings";
 import {Html5Qrcode} from "../../html5-qrcode";
+import {
+    BaseUiElementFactory,
+    PublicUiElementIdAndClasses
+} from "./base";
 
 /**
  * Interface for callback that will be called in case of torch action failures.
@@ -32,6 +36,11 @@ class TorchController {
         this.html5Qrcode = html5Qrcode;
         this.buttonElement = buttonElement;
         this.onTorchActionFailureCallback = onTorchActionFailureCallback;
+    }
+
+    /** Returns {@code true} if torch is enabled. */
+    public isTorchEnabled(): boolean {
+        return this.isTorchOn;
     }
 
     /**
@@ -130,7 +139,9 @@ export class TorchButton {
         torchButtonOptions: TorchButtonOptions,
         onTorchActionFailureCallback: OnTorchActionFailureCallback)
         : TorchButton {
-        let torchButton = document.createElement("button");
+        let torchButton = BaseUiElementFactory.createElement<HTMLButtonElement>(
+            "button", PublicUiElementIdAndClasses.TORCH_BUTTON_ID);
+
         let torchController = new TorchController(
             html5Qrcode,
             torchButton,
@@ -142,6 +153,17 @@ export class TorchButton {
 
         torchButton.addEventListener("click", async (_) => {
             await torchController.flipState();
+            if (torchController.isTorchEnabled()) {
+                torchButton.classList.remove(
+                    PublicUiElementIdAndClasses.TORCH_BUTTON_CLASS_TORCH_OFF);
+                torchButton.classList.add(
+                    PublicUiElementIdAndClasses.TORCH_BUTTON_CLASS_TORCH_ON);  
+            } else {
+                torchButton.classList.remove(
+                    PublicUiElementIdAndClasses.TORCH_BUTTON_CLASS_TORCH_ON);
+                torchButton.classList.add(
+                    PublicUiElementIdAndClasses.TORCH_BUTTON_CLASS_TORCH_OFF);
+            }
         });
         return new TorchButton(torchButton, torchController);
     }

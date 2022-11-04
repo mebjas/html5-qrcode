@@ -29,14 +29,10 @@ import {
     QrDimensions,
     QrDimensionFunction
 } from "./core";
-
 import { Html5QrcodeStrings } from "./strings";
 import { VideoConstraintsUtil } from "./utils";
 import { Html5QrcodeShim } from "./code-decoder";
-import {
-    ExperimentalFeaturesConfig,
-    ExperimentalFeaturesConfigFactory
-} from "./experimental-features";
+import { ExperimentalFeaturesConfig } from "./experimental-features";
 import {
     StateManagerProxy,
     StateManagerFactory,
@@ -76,6 +72,20 @@ export interface Html5QrcodeConfigs {
      * this value.
      */
     formatsToSupport?: Array<Html5QrcodeSupportedFormats> | undefined;
+
+    /**
+     * {@class BarcodeDetector} is being implemented by browsers at the moment.
+     * It has very limited browser support but as it gets available it could
+     * enable faster native code scanning experience.
+     * 
+     * Set this flag to true, to enable using {@class BarcodeDetector} if
+     * supported. This is false by default.
+     * 
+     * Documentations:
+     *  - https://developer.mozilla.org/en-US/docs/Web/API/BarcodeDetector
+     *  - https://web.dev/shape-detection/#barcodedetector
+     */
+    useBarCodeDetectorIfSupported?: boolean | undefined;
 
     /**
      * Config for experimental features.
@@ -171,12 +181,11 @@ export interface Html5QrcodeCameraScanConfig {
  */
 class InternalHtml5QrcodeConfig implements Html5QrcodeCameraScanConfig {
 
-    // TODO(mebjas) Make items that doesn't need to be public private.
-    public fps: number;
-    public disableFlip: boolean;
-    public qrbox: number | QrDimensions | QrDimensionFunction | undefined;
-    public aspectRatio: number | undefined;
-    public videoConstraints: MediaTrackConstraints | undefined;
+    public readonly fps: number;
+    public readonly disableFlip: boolean;
+    public readonly qrbox: number | QrDimensions | QrDimensionFunction | undefined;
+    public readonly aspectRatio: number | undefined;
+    public readonly videoConstraints: MediaTrackConstraints | undefined;
 
     private logger: Logger;
 
@@ -235,11 +244,12 @@ interface QrcodeRegionBounds {
 export class Html5Qrcode {
 
     //#region Private fields.
-    private elementId: string;
-    private verbose: boolean;
-    private qrcode: QrcodeDecoderAsync;
+    private readonly logger: Logger;
+    private readonly elementId: string;
+    private readonly verbose: boolean;
+    private readonly qrcode: QrcodeDecoderAsync;
+
     private shouldScan: boolean;
-    private logger: Logger;
 
     // Nullable elements
     // TODO(mebjas): Reduce the statefulness of this mammoth class, by splitting
@@ -287,22 +297,23 @@ export class Html5Qrcode {
 
         this.elementId = elementId;
         this.verbose = false;
-        let experimentalFeatureConfig;
         
+        let experimentalFeatureConfig : ExperimentalFeaturesConfig | undefined;
+        let configObject: Html5QrcodeFullConfig | undefined;
         if (typeof configOrVerbosityFlag == "boolean") {
             this.verbose = configOrVerbosityFlag === true;
         } else if (configOrVerbosityFlag) {
-            this.verbose = configOrVerbosityFlag.verbose === true;
-            experimentalFeatureConfig = configOrVerbosityFlag.experimentalFeatures;
+            configObject = configOrVerbosityFlag;
+            this.verbose = configObject.verbose === true;
+            experimentalFeatureConfig = configObject.experimentalFeatures;
         }
         
         this.logger = new BaseLoggger(this.verbose);
         this.qrcode = new Html5QrcodeShim(
             this.getSupportedFormats(configOrVerbosityFlag),
+            this.getUseBarCodeDetectorIfSupported(configObject),
             this.verbose,
-            this.logger,
-            ExperimentalFeaturesConfigFactory.createExperimentalFeaturesConfig(
-                experimentalFeatureConfig));
+            this.logger);
 
         this.foreverScanTimeout;
         this.localMediaStream;
@@ -993,6 +1004,35 @@ export class Html5Qrcode {
         }
         return supportedFormats;
 
+    }
+
+    /**
+     * Returns {@code true} if {@code useBarCodeDetectorIfSupported} is
+     * enabled in the config.
+     */
+    /*eslint complexity: ["error", 10]*/
+    private getUseBarCodeDetectorIfSupported(
+        config: Html5QrcodeConfigs | undefined) : boolean {
+        if (isNullOrUndefined(config)) {
+            return false;
+        }
+
+        if (!isNullOrUndefined(config!.useBarCodeDetectorIfSupported)) {
+            // Default value is false.
+            return config!.useBarCodeDetectorIfSupported === true;
+        }
+
+        if (isNullOrUndefined(config!.experimentalFeatures)) {
+            return false;
+        }
+
+        let experimentalFeatures = config!.experimentalFeatures!;
+        if (isNullOrUndefined(
+            experimentalFeatures.useBarCodeDetectorIfSupported)) {
+            return false;
+        }
+
+        return experimentalFeatures.useBarCodeDetectorIfSupported === true;
     }
 
     /**

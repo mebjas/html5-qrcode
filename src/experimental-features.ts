@@ -31,32 +31,14 @@ export interface ExperimentalFeaturesConfig {
      * Set this flag to true, to enable using {@class BarcodeDetector} if
      * supported. This is false by default.
      * 
+     * @deprecated This configuration has graduated to
+     * {@code Html5QrcodeCameraScanConfig} you can set it there directly. All
+     * documentation and future improvements shall be added to that one. This
+     * config will still work for backwards compatibility.
+     * 
      * Documentations:
      *  - https://developer.mozilla.org/en-US/docs/Web/API/BarcodeDetector
      *  - https://web.dev/shape-detection/#barcodedetector
      */
     useBarCodeDetectorIfSupported?: boolean | undefined;
-}
-
-/** Factory for {@interface ExperimentalFeaturesConfig}. */
-export class ExperimentalFeaturesConfigFactory {
-
-    /**
-     * Creates fully filled experimental config.
-    */
-    public static createExperimentalFeaturesConfig(
-        config?: ExperimentalFeaturesConfig | undefined)
-        : ExperimentalFeaturesConfig {
-        if (!config) {
-            return {
-                useBarCodeDetectorIfSupported: false
-            };
-        }
-
-        if (config.useBarCodeDetectorIfSupported !== true) {
-            config.useBarCodeDetectorIfSupported = false;
-        }
-
-        return config;
-    }
 }

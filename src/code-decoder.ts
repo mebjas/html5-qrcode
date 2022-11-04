@@ -17,7 +17,6 @@ import {
 
 import { ZXingHtml5QrcodeDecoder } from "./zxing-html5-qrcode-decoder";
 import { BarcodeDetectorDelegate } from "./native-bar-code-detector";
-import { ExperimentalFeaturesConfig } from "./experimental-features";
 
 /**
  * Shim layer for {@interface QrcodeDecoder}.
@@ -35,14 +34,14 @@ export class Html5QrcodeShim implements QrcodeDecoderAsync {
 
     public constructor(
         requestedFormats: Array<Html5QrcodeSupportedFormats>,
+        useBarCodeDetectorIfSupported: boolean,
         verbose: boolean,
-        logger: Logger,
-        experimentalFeatureConfig: ExperimentalFeaturesConfig) {
+        logger: Logger) {
         this.verbose = verbose;
 
         // Use BarcodeDetector library if enabled by config and is supported.
-        if (experimentalFeatureConfig.useBarCodeDetectorIfSupported === true
-            && BarcodeDetectorDelegate.isSupported()) {
+        if (useBarCodeDetectorIfSupported
+                && BarcodeDetectorDelegate.isSupported()) {
             this.decoder = new BarcodeDetectorDelegate(
                 requestedFormats, verbose, logger);
         } else {
@@ -51,16 +50,18 @@ export class Html5QrcodeShim implements QrcodeDecoderAsync {
         }
     }
 
-    decodeAsync(canvas: HTMLCanvasElement): Promise<QrcodeResult> {
+    async decodeAsync(canvas: HTMLCanvasElement): Promise<QrcodeResult> {
         let start = performance.now();
-        return this.decoder.decodeAsync(canvas).finally(() => {
+        try {
+            return await this.decoder.decodeAsync(canvas);
+        } finally {
             if (this.verbose) {
                 let executionTime = performance.now() - start;
                 this.executionResults.push(executionTime);
                 this.executions++;
                 this.possiblyFlushPerformanceReport();
             }
-        });
+        }
     }
 
     // Dumps mean decoding latency to console for last
