@@ -658,7 +658,7 @@ export class Html5QrcodeScanner {
     }
 
     private renderFileScanUi(parent: HTMLDivElement) {
-        let showOnRender = ScanTypeSelector.isCameraScanType(
+        let showOnRender = ScanTypeSelector.isFileScanType(
             this.currentScanType);
         const $this = this;
         let onFileSelected: OnFileSelected = (file: File) => {
@@ -669,7 +669,7 @@ export class Html5QrcodeScanner {
             if (!ScanTypeSelector.isFileScanType($this.currentScanType)) {
                 return;
             }
-            
+
             $this.html5Qrcode.scanFileV2(file, /* showImage= */ true)
                 .then((html5qrcodeResult: Html5QrcodeResult) => {
                     $this.resetHeaderMessage();

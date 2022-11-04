@@ -5,7 +5,7 @@ import {
     BaseUiElementFactory
 } from "../../../src/ui/scanner/base";
 
-describe("createElement()", () => {
+describe("BaseUiElementFactory#createElement()", () => {
 
     it("Creates requested element - Button", () => {
         let button = BaseUiElementFactory.createElement<HTMLButtonElement>(

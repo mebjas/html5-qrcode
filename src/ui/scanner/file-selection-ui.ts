@@ -34,7 +34,7 @@ export class FileSelectionUi {
         this.fileBasedScanRegion = document.createElement("div");
         this.fileBasedScanRegion.style.textAlign = "center";
         this.fileBasedScanRegion.style.display
-            = showOnRender ? "none" : "block";
+            = showOnRender ? "block" : "none";
         parentElement.appendChild(this.fileBasedScanRegion);
 
         let fileScanLabel = document.createElement("label");
@@ -92,6 +92,11 @@ export class FileSelectionUi {
     public show() {
         this.fileBasedScanRegion.style.display = "block";
         this.fileScanInput.disabled = false;
+    }
+
+    /** Returns {@code true} if UI container is displayed. */
+    public isShowing(): boolean {
+        return this.fileBasedScanRegion.style.display == "block";
     }
 
     /** Reset the file selection value */

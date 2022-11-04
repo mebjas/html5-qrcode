@@ -3,7 +3,7 @@ import { expect } from "chai";
 import { Html5QrcodeScanType } from "../../../src/core";
 import { ScanTypeSelector } from "../../../src/ui/scanner/scan-type-selector"
 
-describe("getDefaultScanType()", () => {
+describe("ScanTypeSelector#getDefaultScanType()", () => {
     it("Camera + File returns camera", () => {
         let selector = new ScanTypeSelector([
             Html5QrcodeScanType.SCAN_TYPE_CAMERA,
@@ -35,7 +35,7 @@ describe("getDefaultScanType()", () => {
     });
 });
 
-describe("hasMoreThanOneScanType()", () => {
+describe("ScanTypeSelector#hasMoreThanOneScanType()", () => {
     it("Both values set - returns true", () => {
         let selector = new ScanTypeSelector([
             Html5QrcodeScanType.SCAN_TYPE_CAMERA,
@@ -59,7 +59,7 @@ describe("hasMoreThanOneScanType()", () => {
     });
 });
 
-describe("isCameraScanRequired()", () => {
+describe("ScanTypeSelector#isCameraScanRequired()", () => {
     it("Both values set - returns true", () => {
         let selector = new ScanTypeSelector([
             Html5QrcodeScanType.SCAN_TYPE_CAMERA,
@@ -85,7 +85,7 @@ describe("isCameraScanRequired()", () => {
     });
 });
 
-describe("isCameraScanType()", () => {
+describe("ScanTypeSelector#isCameraScanType()", () => {
     it("Camera passed - returns true", () => {
         expect(ScanTypeSelector.isCameraScanType(
             Html5QrcodeScanType.SCAN_TYPE_CAMERA)).to.be.true;
@@ -97,7 +97,7 @@ describe("isCameraScanType()", () => {
     });
 });
 
-describe("isFileScanType()", () => {
+describe("ScanTypeSelector#isFileScanType()", () => {
     it("Camera passed - returns false", () => {
         expect(ScanTypeSelector.isFileScanType(
             Html5QrcodeScanType.SCAN_TYPE_CAMERA)).to.be.false;
