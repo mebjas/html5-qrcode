@@ -60,7 +60,8 @@ import {
 } from "./ui/scanner/torch-button";
 
 import {
-    BaseUiElementFactory
+    BaseUiElementFactory,
+    PublicUiElementIdAndClasses
 } from "./ui/scanner/base";
 
 /**
@@ -131,6 +132,7 @@ function toHtml5QrcodeFullConfig(
     : Html5QrcodeFullConfig {
     return {
         formatsToSupport: config.formatsToSupport,
+        useBarCodeDetectorIfSupported: config.useBarCodeDetectorIfSupported,
         experimentalFeatures: config.experimentalFeatures,
         verbose: verbose
     };
@@ -568,8 +570,9 @@ export class Html5QrcodeScanner {
         scpCameraScanRegion: HTMLDivElement,
         requestPermissionContainer: HTMLDivElement) {
         const $this = this;
-        const requestPermissionButton = BaseUiElementFactory.createButton();
-        requestPermissionButton.id = this.getCameraPermissionButtonId();
+        const requestPermissionButton = BaseUiElementFactory
+            .createElement<HTMLButtonElement>(
+                "button", this.getCameraPermissionButtonId());
         requestPermissionButton.innerText
             = Html5QrcodeScannerStrings.cameraPermissionTitle();
 
@@ -653,23 +656,37 @@ export class Html5QrcodeScanner {
     private renderFileScanUi(parent: HTMLDivElement) {
         const $this = this;
         const fileBasedScanRegion = document.createElement("div");
-        fileBasedScanRegion.id = this.getDashboardSectionFileScanRegionId();
-        fileBasedScanRegion.style.textAlign = "center";
-        fileBasedScanRegion.style.display
-            = ScanTypeSelector.isCameraScanType(this.currentScanType)
-            ? "none" : "block";
         parent.appendChild(fileBasedScanRegion);
+        fileBasedScanRegion.style.textAlign = "center";
 
-        const fileScanInput = BaseUiElementFactory.createInputFile();
-        fileScanInput.id = this.getFileScanInputId();
-        fileScanInput.accept = "image/*";
-        fileScanInput.style.width = "200px";
-        fileScanInput.disabled
-            = ScanTypeSelector.isCameraScanType(this.currentScanType);
-        const fileScanLabel = document.createElement("span");
-        fileScanLabel.innerText = " Select Image";
-        fileBasedScanRegion.appendChild(fileScanInput);
+        let fileScanLabel = document.createElement("label");
+        fileScanLabel.id = this.getDashboardSectionFileScanRegionId();
+        fileScanLabel.setAttribute("for", this.getFileScanInputId());
+        fileScanLabel.style.display
+            = ScanTypeSelector.isCameraScanType(this.currentScanType)
+            ? "none" : "inline-block";
         fileBasedScanRegion.appendChild(fileScanLabel);
+        
+        let fileSelectionButton
+            = BaseUiElementFactory.createElement<HTMLButtonElement>(
+                "button", this.getFileScanButtonId());
+        fileSelectionButton.innerText = Html5QrcodeScannerStrings.fileSelectionLabel();
+        fileSelectionButton.disabled
+            = ScanTypeSelector.isCameraScanType(this.currentScanType);
+        // Bind click events with the label element.
+        fileSelectionButton.addEventListener("click", (_) => {
+            fileScanLabel.click();
+        });
+        fileScanLabel.append(fileSelectionButton);
+
+        const fileScanInput
+            = BaseUiElementFactory.createElement<HTMLInputElement>(
+                "input", this.getFileScanInputId());
+        fileScanInput.type = "file";
+        fileScanInput.accept = "image/*";
+        fileScanInput.style.display = "none";
+        fileScanLabel.appendChild(fileScanInput);
+        
         fileScanInput.addEventListener("change", (e: any) => {
             if (!$this.html5Qrcode) {
                 throw "html5Qrcode not defined";
@@ -711,7 +728,9 @@ export class Html5QrcodeScanner {
         cameraSelectionContainer.style.marginRight = "10px";
 
         const numCameras = cameras.length;
-        const cameraSelectionSelect = document.createElement("select");
+        const cameraSelectionSelect
+            = BaseUiElementFactory.createElement<HTMLSelectElement>(
+                "select", this.getCameraSelectionId());
         if (numCameras === 1) {
             // If only one camera is found, don't show camera selection.
             cameraSelectionSelect.style.display = "none";
@@ -721,12 +740,11 @@ export class Html5QrcodeScanner {
             cameraSelectionContainer.innerText
                 = `${selectCameraString} (${cameras.length})  `;
         }
-        cameraSelectionSelect.id = this.getCameraSelectionId();
         const options = [];
         for (const camera of cameras) {
             const value = camera.id;
             const name = camera.label == null ? value : camera.label;
-            const option = BaseUiElementFactory.createOption();
+            const option = document.createElement("option");
             option.value = value;
             option.innerText = name;
             options.push(option);
@@ -736,12 +754,16 @@ export class Html5QrcodeScanner {
         scpCameraScanRegion.appendChild(cameraSelectionContainer);
 
         const cameraActionContainer = document.createElement("span");
-        const cameraActionStartButton = BaseUiElementFactory.createButton();
+        const cameraActionStartButton
+            = BaseUiElementFactory.createElement<HTMLButtonElement>(
+                "button", PublicUiElementIdAndClasses.CAMERA_START_BUTTON_ID);
         cameraActionStartButton.innerText
             = Html5QrcodeScannerStrings.scanButtonStartScanningText();
         cameraActionContainer.appendChild(cameraActionStartButton);
 
-        const cameraActionStopButton = BaseUiElementFactory.createButton();
+        const cameraActionStopButton
+            = BaseUiElementFactory.createElement<HTMLButtonElement>(
+                "button", PublicUiElementIdAndClasses.CAMERA_STOP_BUTTON_ID);
         cameraActionStopButton.innerText
             = Html5QrcodeScannerStrings.scanButtonStopScanningText();
         cameraActionStopButton.style.display = "none";
@@ -892,9 +914,10 @@ export class Html5QrcodeScanner {
         const section = document.getElementById(this.getDashboardSectionId())!;
         const switchContainer = document.createElement("div");
         switchContainer.style.textAlign = "center";
-        const switchScanTypeLink = BaseUiElementFactory.createAnchor();
+        const switchScanTypeLink
+            = BaseUiElementFactory.createElement<HTMLAnchorElement>(
+                "a", this.getDashboardSectionSwapLinkId());
         switchScanTypeLink.style.textDecoration = "underline";
-        switchScanTypeLink.id = this.getDashboardSectionSwapLinkId();
         switchScanTypeLink.innerText
             = ScanTypeSelector.isCameraScanType(this.currentScanType)
             ? TEXT_IF_CAMERA_SCAN_SELECTED : TEXT_IF_FILE_SCAN_SELECTED;
@@ -916,7 +939,7 @@ export class Html5QrcodeScanner {
             if (ScanTypeSelector.isCameraScanType($this.currentScanType)) {
                 // Swap to file based scanning.
                 $this.clearScanRegion();
-                $this.getFileScanInput().disabled = false;
+                $this.getFileScanInputButton().disabled = false;
                 $this.getCameraScanRegion().style.display = "none";
                 $this.getFileScanRegion().style.display = "block";
                 switchScanTypeLink.innerText = TEXT_IF_FILE_SCAN_SELECTED;
@@ -925,7 +948,7 @@ export class Html5QrcodeScanner {
             } else {
                 // Swap to camera based scanning.
                 $this.clearScanRegion();
-                $this.getFileScanInput().disabled = true;
+                $this.getFileScanInputButton().disabled = true;
                 $this.getCameraScanRegion().style.display = "block";
                 $this.getFileScanRegion().style.display = "none";
                 switchScanTypeLink.innerText = TEXT_IF_CAMERA_SCAN_SELECTED;
@@ -1076,7 +1099,7 @@ export class Html5QrcodeScanner {
     }
 
     private getDashboardSectionSwapLinkId(): string {
-        return `${this.elementId}__dashboard_section_swaplink`;
+        return PublicUiElementIdAndClasses.SCAN_TYPE_CHANGE_ANCHOR_ID;
     }
 
     private getScanRegionId(): string {
@@ -1087,12 +1110,12 @@ export class Html5QrcodeScanner {
         return `${this.elementId}__dashboard`;
     }
 
-    private getFileScanInputId(): string {
-        return `${this.elementId}__filescan_input`;
+    private getFileScanButtonId(): string {
+        return PublicUiElementIdAndClasses.FILE_SELECTION_BUTTON_ID;
     }
 
-    private getStatusSpanId(): string {
-        return `${this.elementId}__status_span`;
+    private getFileScanInputId(): string {
+        return `${this.elementId}__filescan_input`;
     }
 
     private getHeaderMessageContainerId(): string {
@@ -1100,11 +1123,11 @@ export class Html5QrcodeScanner {
     }
 
     private getCameraSelectionId(): string {
-        return `${this.elementId}__camera_selection`;
+        return PublicUiElementIdAndClasses.CAMERA_SELECTION_SELECT_ID;
     }
 
     private getCameraPermissionButtonId(): string {
-        return `${this.elementId}__camera_permission_button`;
+        return PublicUiElementIdAndClasses.CAMERA_PERMISSION_BUTTON_ID;
     }
 
     private getCameraScanRegion(): HTMLElement {
@@ -1115,6 +1138,11 @@ export class Html5QrcodeScanner {
     private getFileScanRegion(): HTMLElement {
         return document.getElementById(
             this.getDashboardSectionFileScanRegionId())!;
+    }
+
+    private getFileScanInputButton(): HTMLButtonElement {
+        return <HTMLButtonElement>document.getElementById(
+            this.getFileScanButtonId())!;
     }
 
     private getFileScanInput(): HTMLInputElement {

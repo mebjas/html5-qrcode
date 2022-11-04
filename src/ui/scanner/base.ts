@@ -8,69 +8,68 @@
  * http://www.denso-wave.com/qrcode/faqpatent-e.html
  */
 
-const ALL_ELEMENT_CLASS_NAME = "html5-qrcode-element";
-const BUTTON_CLASS_NAME = "html5-qrcode-button";
-const SELECT_CLASS_NAME = "html5-qrcode-select";
-const OPTION_CLASS_NAME = "html5-qrcode-option";
-const INPUT_FILE_CLASS_NAME = "html5-qrcode-input-file";
-const ANCHOR_CLASS_NAME = "html5-qrcode-anchor";
+/**
+ * Id and classes of UI elements, for developers to configure the theme of
+ * end to end scanner using css.
+ */
+export class PublicUiElementIdAndClasses {
+    //#region Public list of element IDs for major UI elements.
 
+    /** Class name added to all major UI elements used in scanner. */
+    static ALL_ELEMENT_CLASS = "html5-qrcode-element";
+
+    /** Id of the camera permission button. */
+    static CAMERA_PERMISSION_BUTTON_ID = "html5-qrcode-button-camera-permission";
+
+    /** Id of the camera start button. */
+    static CAMERA_START_BUTTON_ID = "html5-qrcode-button-camera-start";
+
+    /** Id of the camera stop button. */
+    static CAMERA_STOP_BUTTON_ID = "html5-qrcode-button-camera-stop";
+
+    /** Id of the torch button. */
+    static TORCH_BUTTON_ID = "html5-qrcode-button-torch";
+
+    /** Id of the select element used for camera selection. */
+    static CAMERA_SELECTION_SELECT_ID = "html5-qrcode-select-camera";
+
+    /** Id of the button used for file selection. */
+    static FILE_SELECTION_BUTTON_ID = "html5-qrcode-button-file-selection";
+
+    /**
+     * Id of the anchor {@code <a>} element used for swapping between file scan
+     * and camera scan.
+     */
+    static SCAN_TYPE_CHANGE_ANCHOR_ID = "html5-qrcode-anchor-scan-type-change";
+
+    //#endregion
+
+    //#region List of classes for specific use-cases.
+
+    /** Torch button class when torch is ON. */ 
+    static TORCH_BUTTON_CLASS_TORCH_ON = "html5-qrcode-button-torch-on";
+
+    /** Torch button class when torch is OFF. */ 
+    static TORCH_BUTTON_CLASS_TORCH_OFF = "html5-qrcode-button-torch-off";
+
+    //#endregion
+}
+
+/**
+ * Factory class for creating different base UI elements used by the scanner.
+ */
 export class BaseUiElementFactory {
     /**
-     * Creates bare bone {@link HTMLButtonElement} to be used for all buttons.
+     * Creates {@link HTMLElement} of given {@param elementType}.
+     * 
+     * @param elementType Type of element to create, example 
      */
-    public static createButton(): HTMLButtonElement {
-        let button = document.createElement("button");
-        button.classList.add(ALL_ELEMENT_CLASS_NAME);
-        button.classList.add(BUTTON_CLASS_NAME);
+    public static createElement<Type extends HTMLElement>(
+        elementType: string, elementId: string): Type {
 
-        return button;
-    }
-
-    /**
-     * Creates bare bone {@link HTMLOptionElement} element.
-     */
-     public static createSelect(): HTMLSelectElement {
-        let select = document.createElement("select");
-        select.classList.add(ALL_ELEMENT_CLASS_NAME);
-        select.classList.add(SELECT_CLASS_NAME);
-
-        return select;
-    }
-
-    /**
-     * Creates bare bone {@link HTMLOptionElement} element.
-     */
-    public static createOption(): HTMLOptionElement {
-        let option = document.createElement("option");
-        option.classList.add(ALL_ELEMENT_CLASS_NAME);
-        option.classList.add(OPTION_CLASS_NAME);
-
-        return option;
-    }
-
-
-    /**
-     * Creates bare bone {@link HTMLInputElement} element.
-     */
-    public static createInputFile(): HTMLInputElement {
-        let inputFile = document.createElement("input");
-        inputFile.type = "file";
-        inputFile.classList.add(ALL_ELEMENT_CLASS_NAME);
-        inputFile.classList.add(INPUT_FILE_CLASS_NAME);
-
-        return inputFile;
-    }
-
-    /**
-     * Creates bare bone {@link HTMLAnchorElement} element.
-     */
-    public static createAnchor(): HTMLAnchorElement {
-        let anchor = document.createElement("a");
-        anchor.type = "file";
-        anchor.classList.add(ALL_ELEMENT_CLASS_NAME);
-        anchor.classList.add(ANCHOR_CLASS_NAME);
-
-        return anchor;
+        let element: Type = <Type>(document.createElement(elementType));
+        element.id = elementId;
+        element.classList.add(PublicUiElementIdAndClasses.ALL_ELEMENT_CLASS);
+        return element;
     }
 }

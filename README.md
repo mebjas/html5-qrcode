@@ -437,6 +437,21 @@ interface Html5QrcodeConfigs {
    * Array of formats to support of type {@type Html5QrcodeSupportedFormats}.
    */
   formatsToSupport: Array<Html5QrcodeSupportedFormats> | undefined;
+
+
+  /**
+   * {@class BarcodeDetector} is being implemented by browsers at the moment.
+   * It has very limited browser support but as it gets available it could
+   * enable faster native code scanning experience.
+   * 
+   * Set this flag to true, to enable using {@class BarcodeDetector} if
+   * supported. This is false by default.
+   * 
+   * Documentations:
+   *  - https://developer.mozilla.org/en-US/docs/Web/API/BarcodeDetector
+   *  - https://web.dev/shape-detection/#barcodedetector
+   */
+  useBarCodeDetectorIfSupported?: boolean | undefined;
 }
 
 /** Configuration for creating {@class Html5Qrcode}. */

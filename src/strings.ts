@@ -139,6 +139,10 @@ export class Html5QrcodeScannerStrings {
     public static selectCamera(): string {
         return "Select Camera";
     }
+
+    public static fileSelectionLabel(): string {
+        return "Select Image";
+    }
 }
 
 /** Strings used in {@class LibraryInfoDiv} */

@@ -1,5 +1,57 @@
 ### Version 2.2.7
-TBD
+
+#### Add support for custom CSS
+Developer / User Story: As a developer I can write custom CSS for `Html5QrcodeScanner`.
+
+Feature request: [Issue#389](https://github.com/mebjas/html5-qrcode/issues/389)
+
+List of CSS class and IDs added.
+
+1. All key elements will have a common CSS class `html5-qrcode-element`. This way developers can customise element by element. For example:
+
+```css
+button.html5-qrcode-element {
+    color: 'red' !important,
+    border: '1px solid red' !important
+}
+```
+
+Key elements are:
+-    Request camera permission button.
+-    "Scan and image file" vs "Scan using camera directly" link.
+-    "File selection" input ('file')
+-    Start or Stop camera button.
+-    Camera selection Select element
+-    Torch button
+
+2. key elements will have specific IDs defined in `src/ui/scanner/base.ts`. This can be used to customise per elements.
+
+
+##### TODOs
+-   [ ] Document in a blog post
+-   [ ] Add pointer in qrcode.minhazav.dev
+-   [ ] Add pointer in Readme
+
+#### Graduate `useBarCodeDetectorIfSupported` to `Html5QrcodeConfigs`.
+`useBarCodeDetectorIfSupported` was tested as an experimental configuration for
+a long time and has proven to be very efficient and well supported. It has been
+tested in [ScanApp](https://scanapp.org) for quiet some time.
+
+Considering this experimental API is not well documented, it makes it hard for
+folks to discover it. By graduating this configuration to `Html5QrcodeConfigs` I
+hope to make it more discoverable.
+
+In this version the `ExperimentalFeaturesConfig#useBarCodeDetectorIfSupported`
+has been marked deprecated but not removed due to backwards compatibility
+reasons. Users can set either of them but `Html5QrcodeConfigs` one will take
+precedence if set.
+
+Once further support is added to browsers, this can be set as true by default.
+
+##### TODOS
+-    [ ] Update documentation on readme.
+-    [ ] Update documentation on [qrcode.minhazav.dev](https://qrcode.minhazav.dev).
+-    [ ] Publish article around this.
 
 ### Version 2.2.5 & Version 2.2.6
 

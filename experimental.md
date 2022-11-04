@@ -6,15 +6,16 @@ library. In future, based on the support level and compatibility, some of
 these features will get upgraded to general feature list.
 
 ## Using experimental native BarcodeDetector API
+> **Note** This config has now been graduated to `Html5QrcodeConfigs` and
+deprecated from experimental config.
+
 Turning on this flag allows using native [BarcodeDetector](https://developer.mozilla.org/en-US/docs/Web/API/BarcodeDetector)
 api now being introduced in web browsers for code scanning instead of `ZXing`
 library we use officially.
 
 ### How to turn this on
-It can be turned on using new config called `useBarCodeDetectorIfSupported`
-added to `experimentalFeatures` config group. It's off (`value = false`) by
-default. If set to on (`value = true`) and the `BarcodeDetector` is supported
-by the browser, it'll be used for scanning all the kind of 1d and 2d codes.
+Setting `useBarCodeDetectorIfSupported` to `true` in `Html5QrcodeConfigs` will
+enable this option.
 
 #### Html5Qrcode class
 
@@ -24,10 +25,7 @@ function onScanSuccess(decodedText, decodedResult) {
 }
 
 let html5qrcode = new Html5Qrcode("reader", {
-    // Use this flag to turn on the feature.
-    experimentalFeatures: {
-        useBarCodeDetectorIfSupported: false
-    }
+    useBarCodeDetectorIfSupported: false
 });
 
 const scanConfig = { fps: 10, qrbox: 250 };
@@ -47,10 +45,7 @@ let html5QrcodeScanner = new Html5QrcodeScanner(
     { 
         fps: 10,
         qrbox: 250,
-        // Use this flag to turn on the feature.
-        experimentalFeatures: {
-            useBarCodeDetectorIfSupported: false
-        }
+        useBarCodeDetectorIfSupported: false
     });
 html5QrcodeScanner.render(onScanSuccess);
 ```
