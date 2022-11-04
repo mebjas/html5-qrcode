@@ -1,3 +1,22 @@
+### Version 2.2.8
+
+#### Custom camera labels when not available.
+In certain browsers as well as cases like Android Webview it looks like camera
+name is not returned by the browser. In such cases the camera selection has
+empty named options.
+
+To make the UX better, the library will give custom names to the cameras.
+
+-   Github Issue: [Issue#578](https://github.com/mebjas/html5-qrcode/issues/578)
+
+For example in Duck Duck Go browser which has this behavior, it will look like
+this
+
+| Before selection | After selection |
+| --- | --- |
+| ![Screenshot_20221105-005544](https://user-images.githubusercontent.com/3007365/200032567-eb50b4f0-e25f-4bdb-a233-fcbb906122aa.png) | ![Screenshot_20221105-005550](https://user-images.githubusercontent.com/3007365/200032557-21679229-3d21-4212-a22f-1f2558b6f6b6.png) |
+
+
 ### Version 2.2.7
 
 #### Add support for custom CSS

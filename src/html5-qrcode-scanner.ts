@@ -712,9 +712,19 @@ export class Html5QrcodeScanner {
                 = `${selectCameraString} (${cameras.length})  `;
         }
         const options = [];
+        let anonymousCameraId = 1;
         for (const camera of cameras) {
             const value = camera.id;
-            const name = camera.label == null ? value : camera.label;
+            let name = camera.label == null ? value : camera.label;
+            // If no name is returned by the browser, replace it with custom
+            // camera label with a count.
+            if (!name || name === "") {
+                name = [
+                    Html5QrcodeScannerStrings.anonymousCameraPrefix(),
+                    anonymousCameraId++
+                    ].join(" ");
+            }
+
             const option = document.createElement("option");
             option.value = value;
             option.innerText = name;
