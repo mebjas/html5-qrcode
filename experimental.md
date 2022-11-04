@@ -6,8 +6,8 @@ library. In future, based on the support level and compatibility, some of
 these features will get upgraded to general feature list.
 
 ## Using experimental native BarcodeDetector API
-> **Note** This config has now been graduated to `Html5QrcodeConfigs` and
-deprecated from experimental config.
+
+> **Note** This config has now been graduated to `Html5QrcodeConfigs` and deprecated from experimental config.
 
 Turning on this flag allows using native [BarcodeDetector](https://developer.mozilla.org/en-US/docs/Web/API/BarcodeDetector)
 api now being introduced in web browsers for code scanning instead of `ZXing`
