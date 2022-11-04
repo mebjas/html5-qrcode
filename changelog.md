@@ -54,11 +54,6 @@ precedence if set.
 
 Once further support is added to browsers, this can be set as true by default.
 
-##### TODOS
--    [ ] Update documentation on readme.
--    [ ] Update documentation on [qrcode.minhazav.dev](https://qrcode.minhazav.dev).
--    [ ] Publish article around this.
-
 ### Version 2.2.5 & Version 2.2.6
 
 > Small minification fix in Version 2.2.6.
