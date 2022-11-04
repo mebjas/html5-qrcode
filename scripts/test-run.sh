@@ -9,5 +9,6 @@ mocha -r tsconfig-paths/register \
     output/tests/**/*.test.js \
     output/tests/tests/ui/scanner/*.test.js
 
+# Cleanup.
 echo 'Cleaning up test artifacts'
 rm -Rf ./output

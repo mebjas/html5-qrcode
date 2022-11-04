@@ -25,6 +25,7 @@ function onScanSuccess(decodedText, decodedResult) {
 }
 
 let html5qrcode = new Html5Qrcode("reader", {
+    // Use this flag to turn on the feature.
     useBarCodeDetectorIfSupported: false
 });
 
@@ -45,6 +46,7 @@ let html5QrcodeScanner = new Html5QrcodeScanner(
     { 
         fps: 10,
         qrbox: 250,
+        // Use this flag to turn on the feature.
         useBarCodeDetectorIfSupported: false
     });
 html5QrcodeScanner.render(onScanSuccess);
