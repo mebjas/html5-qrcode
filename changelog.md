@@ -32,6 +32,12 @@ Key elements are:
 -   [ ] Add pointer in qrcode.minhazav.dev
 -   [ ] Add pointer in Readme
 
+#### Change file selection UI from `input` to `button`
+Modified the UI a little to hide the file selection as input and replace with
+custom button and javascript based solution.
+
+One motivation here is this will allow more uniform style for the widget.
+
 #### Graduate `useBarCodeDetectorIfSupported` to `Html5QrcodeConfigs`.
 `useBarCodeDetectorIfSupported` was tested as an experimental configuration for
 a long time and has proven to be very efficient and well supported. It has been
