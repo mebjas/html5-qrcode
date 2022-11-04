@@ -64,12 +64,12 @@ export class FileSelectionUi {
         fileScanLabel.appendChild(this.fileScanInput);
         
         let $this = this;
+        /*eslint complexity: ["error", 5]*/
         this.fileScanInput.addEventListener("change", (e: Event) => {
-            let target: HTMLInputElement = e.target as HTMLInputElement;
-            if (e == null || target == null) {
+            if (e == null || e.target == null) {
                 return;
             }
-            
+            let target: HTMLInputElement = e.target as HTMLInputElement;
             if (target.files && target.files.length === 0) {
                 return;
             }
@@ -126,7 +126,7 @@ export class FileSelectionUi {
     }
 
     private getFileScanInputId(): string {
-        return `html5-qrcode-private-filescan-input`;
+        return "html5-qrcode-private-filescan-input";
     }
 
     /**

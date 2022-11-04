@@ -1010,6 +1010,7 @@ export class Html5Qrcode {
      * Returns {@code true} if {@code useBarCodeDetectorIfSupported} is
      * enabled in the config.
      */
+    /*eslint complexity: ["error", 10]*/
     private getUseBarCodeDetectorIfSupported(
         config: Html5QrcodeConfigs | undefined) : boolean {
         if (isNullOrUndefined(config)) {
