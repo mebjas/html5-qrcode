@@ -25,16 +25,20 @@ import { BarcodeDetectorDelegate } from "./native-bar-code-detector";
  */
 export class Html5QrcodeShim implements QrcodeDecoderAsync {
     
-    private verbose: boolean;
-    private decoder: QrcodeDecoderAsync;
+    private readonly verbose: boolean;
+    private readonly decoder: QrcodeDecoderAsync;
+    private readonly backupDecoder: QrcodeDecoderAsync | undefined;
 
     private readonly EXECUTIONS_TO_REPORT_PERFORMANCE = 100;
     private executions: number = 0;
     private executionResults: Array<number> = [];
 
+    private usedPrimaryDecoderInLastScan = false;
+
     public constructor(
         requestedFormats: Array<Html5QrcodeSupportedFormats>,
         useBarCodeDetectorIfSupported: boolean,
+        useBackupDecoder: boolean,
         verbose: boolean,
         logger: Logger) {
         this.verbose = verbose;
@@ -44,16 +48,24 @@ export class Html5QrcodeShim implements QrcodeDecoderAsync {
                 && BarcodeDetectorDelegate.isSupported()) {
             this.decoder = new BarcodeDetectorDelegate(
                 requestedFormats, verbose, logger);
+            if (useBackupDecoder) {
+                this.backupDecoder = new ZXingHtml5QrcodeDecoder(
+                    requestedFormats, verbose, logger);
+            }
         } else {
             this.decoder = new ZXingHtml5QrcodeDecoder(
                 requestedFormats, verbose, logger);
+            if (useBackupDecoder && BarcodeDetectorDelegate.isSupported()) {
+                this.backupDecoder = new BarcodeDetectorDelegate(
+                    requestedFormats, verbose, logger);
+            }
         }
     }
 
     async decodeAsync(canvas: HTMLCanvasElement): Promise<QrcodeResult> {
         let start = performance.now();
         try {
-            return await this.decoder.decodeAsync(canvas);
+            return await this.getDecoder().decodeAsync(canvas);
         } finally {
             if (this.verbose) {
                 let executionTime = performance.now() - start;
@@ -62,6 +74,20 @@ export class Html5QrcodeShim implements QrcodeDecoderAsync {
                 this.possiblyFlushPerformanceReport();
             }
         }
+    }
+
+    private getDecoder(): QrcodeDecoderAsync {
+        // Only primary exists.
+        if (!this.backupDecoder) {
+            return this.decoder;
+        }
+
+        if (this.usedPrimaryDecoderInLastScan === true) {
+            this.usedPrimaryDecoderInLastScan = false;
+            return this.backupDecoder;
+        }
+        this.usedPrimaryDecoderInLastScan = true;
+        return this.decoder;
     }
 
     // Dumps mean decoding latency to console for last

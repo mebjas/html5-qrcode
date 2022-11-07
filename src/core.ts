@@ -84,7 +84,7 @@ export enum Html5QrcodeScanType {
 export class Html5QrcodeConstants {
     static GITHUB_PROJECT_URL: string
         = "https://github.com/mebjas/html5-qrcode";
-    static SCAN_DEFAULT_FPS = 2;
+    static SCAN_DEFAULT_FPS = 10;
     static DEFAULT_DISABLE_FLIP = false;
     static DEFAULT_REMEMBER_LAST_CAMERA_USED = true;
     static DEFAULT_SUPPORTED_SCAN_TYPE = [

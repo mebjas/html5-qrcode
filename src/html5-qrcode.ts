@@ -87,6 +87,10 @@ export interface Html5QrcodeConfigs {
      */
     useBarCodeDetectorIfSupported?: boolean | undefined;
 
+    // Will use both zxing and barcode detector in this case.
+    // In alternative fashion.
+    useBothDecoders?: boolean | undefined;
+
     /**
      * Config for experimental features.
      * 
@@ -307,11 +311,14 @@ export class Html5Qrcode {
             this.verbose = configObject.verbose === true;
             experimentalFeatureConfig = configObject.experimentalFeatures;
         }
+
+        let useBackupDecoder = configObject?.useBothDecoders !== false;
         
         this.logger = new BaseLoggger(this.verbose);
         this.qrcode = new Html5QrcodeShim(
             this.getSupportedFormats(configOrVerbosityFlag),
             this.getUseBarCodeDetectorIfSupported(configObject),
+            useBackupDecoder, 
             this.verbose,
             this.logger);
 
@@ -1013,26 +1020,26 @@ export class Html5Qrcode {
     /*eslint complexity: ["error", 10]*/
     private getUseBarCodeDetectorIfSupported(
         config: Html5QrcodeConfigs | undefined) : boolean {
+        let defaultValue = true;
         if (isNullOrUndefined(config)) {
-            return false;
+            return defaultValue;
         }
 
         if (!isNullOrUndefined(config!.useBarCodeDetectorIfSupported)) {
-            // Default value is false.
-            return config!.useBarCodeDetectorIfSupported === true;
+            return config!.useBarCodeDetectorIfSupported !== (!defaultValue);
         }
 
         if (isNullOrUndefined(config!.experimentalFeatures)) {
-            return false;
+            return defaultValue;
         }
 
         let experimentalFeatures = config!.experimentalFeatures!;
         if (isNullOrUndefined(
             experimentalFeatures.useBarCodeDetectorIfSupported)) {
-            return false;
+            return defaultValue;
         }
 
-        return experimentalFeatures.useBarCodeDetectorIfSupported === true;
+        return experimentalFeatures.useBarCodeDetectorIfSupported !== (!defaultValue);
     }
 
     /**
