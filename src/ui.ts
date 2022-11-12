@@ -30,15 +30,20 @@ class LibraryInfoDiv {
         this.infoDiv.style.zIndex = "2";
         this.infoDiv.style.display = "none";
         this.infoDiv.style.padding = "5pt";
-        this.infoDiv.style.border = "1px solid silver";
+        this.infoDiv.style.border = "1px solid #171717";
         this.infoDiv.style.fontSize = "10pt";
-        this.infoDiv.style.background = "rgb(248 248 248)";
+        this.infoDiv.style.background = "rgb(0 0 0 / 69%)";
+        this.infoDiv.style.borderRadius = "5px";
+        this.infoDiv.style.textAlign = "center";
+        this.infoDiv.style.fontWeight = "400";
+        this.infoDiv.style.color = "white";
 
-        this.infoDiv.innerText = LibraryInfoStrings.builtUsing();
+        this.infoDiv.innerText = LibraryInfoStrings.poweredBy();
         const projectLink = document.createElement("a");
-        projectLink.innerText = "html5-qrcode";
-        projectLink.href = "https://github.com/mebjas/html5-qrcode";
+        projectLink.innerText = "ScanApp";
+        projectLink.href = "https://scanapp.org";
         projectLink.target = "new";
+        projectLink.style.color = "white";
         this.infoDiv.appendChild(projectLink);
 
         const breakElemFirst = document.createElement("br");
@@ -50,6 +55,7 @@ class LibraryInfoDiv {
         reportIssueLink.innerText = LibraryInfoStrings.reportIssues();
         reportIssueLink.href = "https://github.com/mebjas/html5-qrcode/issues";
         reportIssueLink.target = "new";
+        reportIssueLink.style.color = "white";
         this.infoDiv.appendChild(reportIssueLink);
 
         parent.appendChild(this.infoDiv);

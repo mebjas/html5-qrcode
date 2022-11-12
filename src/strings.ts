@@ -156,13 +156,21 @@ export class Html5QrcodeScannerStrings {
     public static anonymousCameraPrefix(): string {
         return "Anonymous Camera";
     }
+
+    public static dragAndDropMessage(): string {
+        return "Or drop an image to scan";
+    }
+
+    public static dragAndDropMessageOnlyImages(): string {
+        return "Or drop an image to scan (other files not supported)";
+    }
 }
 
 /** Strings used in {@class LibraryInfoDiv} */
 export class LibraryInfoStrings {
 
-    public static builtUsing(): string {
-        return "Built using ";
+    public static poweredBy(): string {
+        return "Powered by ";
     }
 
     public static reportIssues(): string {
