@@ -3485,21 +3485,96 @@
             return this.decodeBitmap(binaryBitmap);
         }
         /**
+         * Returns true if media element is indeed a {@link HtmlVideoElement}.
+         */
+        _isHTMLVideoElement(mediaElement) {
+            const potentialVideo = mediaElement;
+            return potentialVideo.videoWidth !== 0;
+        }
+        /**
+         * Overwriting this allows you to manipulate the next frame in anyway
+         * you want before decode.
+         */
+        drawFrameOnCanvas(
+            srcElement, dimensions, canvasElementContext) {
+            if (!dimensions) {
+                dimensions = {
+                    sx: 0,
+                    sy: 0,
+                    sWidth: srcElement.videoWidth,
+                    sHeight: srcElement.videoHeight,
+                    dx: 0,
+                    dy: 0,
+                    dWidth: srcElement.videoWidth,
+                    dHeight: srcElement.videoHeight};
+            }
+            if (!canvasElementContext) {
+                canvasElementContext = this.captureCanvasContext;
+            }
+            canvasElementContext.drawImage(
+                srcElement,
+                dimensions.sx,
+                dimensions.sy,
+                dimensions.sWidth,
+                dimensions.sHeight,
+                dimensions.dx,
+                dimensions.dy,
+                dimensions.dWidth,
+                dimensions.dHeight);
+        }
+        /**
+         * Ovewriting this allows you to manipulate the snapshot image in anyway
+         *  you want before decode.
+         */
+        drawImageOnCanvas(
+            srcElement,
+            dimensions,
+            canvasElementContext = this.captureCanvasContext) {
+            if (!dimensions) {
+                dimensions = {
+                    sx: 0,
+                    sy: 0,
+                    sWidth: srcElement.naturalWidth,
+                    sHeight: srcElement.naturalHeight,
+                    dx: 0,
+                    dy: 0,
+                    dWidth: srcElement.naturalWidth,
+                    dHeight: srcElement.naturalHeight
+                };
+            }
+            if (!canvasElementContext) {
+                canvasElementContext = this.captureCanvasContext;
+            }
+            canvasElementContext.drawImage(
+                srcElement,
+                dimensions.sx,
+                dimensions.sy,
+                dimensions.sWidth,
+                dimensions.sHeight,
+                dimensions.dx,
+                dimensions.dy,
+                dimensions.dWidth,
+                dimensions.dHeight);
+        }
+        /**
          * Creates a binaryBitmap based in some image source.
          *
          * @param mediaElement HTML element containing drawable image source.
          */
         createBinaryBitmap(mediaElement) {
             const ctx = this.getCaptureCanvasContext(mediaElement);
-            this.drawImageOnCanvas(ctx, mediaElement);
+            if (this._isHTMLVideoElement(mediaElement)) {
+                this.drawFrameOnCanvas(mediaElement);
+            } else {
+                this.drawImageOnCanvas(mediaElement);
+            }
             const canvas = this.getCaptureCanvas(mediaElement);
             const luminanceSource = new HTMLCanvasElementLuminanceSource(canvas);
             const hybridBinarizer = new HybridBinarizer(luminanceSource);
+
             return new BinaryBitmap(hybridBinarizer);
         }
-        /**
-         *
-         */
+
         getCaptureCanvasContext(mediaElement) {
             if (!this.captureCanvasContext) {
                 const elem = this.getCaptureCanvas(mediaElement);
@@ -3508,21 +3583,12 @@
             }
             return this.captureCanvasContext;
         }
-        /**
-         *
-         */
         getCaptureCanvas(mediaElement) {
             if (!this.captureCanvas) {
                 const elem = this.createCaptureCanvas(mediaElement);
                 this.captureCanvas = elem;
             }
             return this.captureCanvas;
-        }
-        /**
-         * Ovewriting this allows you to manipulate the snapshot image in anyway you want before decode.
-         */
-        drawImageOnCanvas(canvasElementContext, srcElement) {
-            canvasElementContext.drawImage(srcElement, 0, 0);
         }
         /**
          * Call the encapsulated readers decode
@@ -8826,7 +8892,7 @@
                 if (possibleFormats.indexOf(BarcodeFormat$1.EAN_13) > -1) {
                     readers.push(new EAN13Reader());
                 }
-                else if (possibleFormats.indexOf(BarcodeFormat$1.UPC_A) > -1) {
+                if (possibleFormats.indexOf(BarcodeFormat$1.UPC_A) > -1) {
                     readers.push(new UPCAReader());
                 }
                 if (possibleFormats.indexOf(BarcodeFormat$1.EAN_8) > -1) {
@@ -8838,7 +8904,7 @@
             }
             if (readers.length === 0) {
                 readers.push(new EAN13Reader());
-                // UPC-A is covered by EAN-13
+                readers.push(new UPCAReader());
                 readers.push(new EAN8Reader());
                 readers.push(new UPCEReader());
             }
@@ -8869,7 +8935,12 @@
                     if (ean13MayBeUPCA && canReturnUPCA) {
                         const rawBytes = result.getRawBytes();
                         // Transfer the metadata across
-                        const resultUPCA = new Result(result.getText().substring(1), rawBytes, rawBytes.length, result.getResultPoints(), BarcodeFormat$1.UPC_A);
+                        const resultUPCA = new Result(
+                            result.getText().substring(1),
+                            rawBytes,
+                            (rawBytes ? rawBytes.length : null),
+                            result.getResultPoints(),
+                            BarcodeFormat$1.UPC_A);
                         resultUPCA.putAllMetadata(result.getResultMetadata());
                         return resultUPCA;
                     }
@@ -18351,6 +18422,9 @@
             return invalidRowCounts;
         }
         adjustRowNumbers(barcodeColumn, codewordsRow, codewords) {
+            if (!this.detectionResultColumns[barcodeColumn - 1]) {
+                return;
+            }
             let codeword = codewords[codewordsRow];
             let previousColumnCodewords = this.detectionResultColumns[barcodeColumn - 1].getCodewords();
             let nextColumnCodewords = previousColumnCodewords;
@@ -24144,6 +24218,7 @@
         }
     }
 
+    exports.AbstractExpandedDecoder = AbstractExpandedDecoder;
     exports.ArgumentException = ArgumentException;
     exports.ArithmeticException = ArithmeticException;
     exports.AztecCode = AztecCode;
@@ -24242,6 +24317,7 @@
     exports.ZXingStringBuilder = StringBuilder;
     exports.ZXingStringEncoding = StringEncoding;
     exports.ZXingSystem = System;
+    exports.createAbstractExpandedDecoder = createDecoder;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 
