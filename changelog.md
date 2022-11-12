@@ -1,3 +1,8 @@
+### Version 2.3.0
+
+-    Added support for drag and drop of image in file based scanner.
+-    Info UI updated.
+
 ### Version 2.2.8
 
 #### Custom camera labels when not available.
