@@ -22,16 +22,24 @@ describe("BaseUiElementFactory#createElement()", () => {
     it("Creates element with expected ID", () => {
         const expectedId = "test-id";
         let button = BaseUiElementFactory.createElement<HTMLButtonElement>(
-            "select", expectedId);
+            "button", expectedId);
         expect(button.id).eq(expectedId);
     });
 
     it("Creates element with common class", () => {
         let button = BaseUiElementFactory.createElement<HTMLButtonElement>(
-            "select", "test-id");
+            "button", "test-id");
         let hasClass = button.classList.contains(
             PublicUiElementIdAndClasses.ALL_ELEMENT_CLASS);
 
         expect(hasClass).to.be.true;
+    });
+
+    it("Creates button element with button type attribute", () => {
+        let button = BaseUiElementFactory.createElement<HTMLButtonElement>(
+            "button", "test-id");
+        let typeAttributeValue = button.getAttribute("type");
+
+        expect(typeAttributeValue).eq("button");
     });
 });
