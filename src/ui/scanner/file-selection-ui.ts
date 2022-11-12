@@ -108,6 +108,7 @@ export class FileSelectionUi {
             event.preventDefault();
         });
 
+        /*eslint complexity: ["error", 10]*/
         this.fileBasedScanRegion.addEventListener("drop", function(event) {
             event.stopPropagation();
             event.preventDefault();
@@ -118,12 +119,15 @@ export class FileSelectionUi {
             var dataTransfer = event.dataTransfer;
             if (dataTransfer) {
                 let files = dataTransfer.files;
-                if (files.length == 0) {
+                if (!files || files.length === 0) {
                     return;
                 }
                 let isAnyFileImage = false;
                 for (let i = 0; i < files.length; ++i) {
-                    let file = files[i];
+                    let file = files.item(i);
+                    if (!file) {
+                        continue;
+                    }
                     let imageType = /image.*/;
 
                     // Only process images.
@@ -195,6 +199,7 @@ export class FileSelectionUi {
         return "6px dashed #ebebeb";
     }
 
+    /** Border when a file is being dragged over the file scan region. */
     private fileBasedScanRegionActiveBorder() {
         return "6px dashed rgb(153 151 151)";
     }
