@@ -1,3 +1,7 @@
+### Version 2.3.1
+-   Improved support for UPC types - by [Breno1288](https://github.com/Breno1288), forked from PR - [pull#501](https://github.com/mebjas/html5-qrcode/pull/501)
+-   Fix form submission in Firefox issue - [Discussion#413](https://github.com/mebjas/html5-qrcode/discussions/413#discussioncomment-2124480), forked from PR - by [Joggel72](https://github.com/Joggel72), [pull#431](https://github.com/mebjas/html5-qrcode/pull/431)
+
 ### Version 2.3.0
 
 -    Added support for drag and drop of image in file based scanner.
