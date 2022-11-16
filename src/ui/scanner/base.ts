@@ -71,7 +71,7 @@ export class BaseUiElementFactory {
         element.id = elementId;
         element.classList.add(PublicUiElementIdAndClasses.ALL_ELEMENT_CLASS);
         if (elementType === "button") {
-            element.setAttribute("type", "button")
+            element.setAttribute("type", "button");
         }
         return element;
     }
