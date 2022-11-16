@@ -42,4 +42,12 @@ describe("BaseUiElementFactory#createElement()", () => {
 
         expect(typeAttributeValue).eq("button");
     });
+
+    it("Creates select element without type attribute", () => {
+        let select = BaseUiElementFactory.createElement<HTMLSelectElement>(
+            "select", "test-id");
+        let typeAttributeValue = select.getAttribute("type");
+
+        expect(typeAttributeValue).to.be.null;
+    });
 });
