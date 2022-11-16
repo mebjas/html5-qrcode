@@ -75,6 +75,8 @@ export class ZXingHtml5QrcodeDecoder implements QrcodeDecoderAsync {
         const formats = this.createZXingFormats(requestedFormats);
         const hints = new Map();
         hints.set(ZXing.DecodeHintType.POSSIBLE_FORMATS, formats);
+        // TODO(minhazav): Make this configurable by developers.
+        hints.set(ZXing.DecodeHintType.TRY_HARDER, false);
         this.hints = hints;
     }
 

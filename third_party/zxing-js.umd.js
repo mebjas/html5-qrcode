@@ -4,20 +4,25 @@
     (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.ZXing = {}));
 }(this, (function (exports) { 'use strict';
 
-    /*! *****************************************************************************
-    Copyright (c) Microsoft Corporation. All rights reserved.
-    Licensed under the Apache License, Version 2.0 (the "License"); you may not use
-    this file except in compliance with the License. You may obtain a copy of the
-    License at http://www.apache.org/licenses/LICENSE-2.0
+    function isNullOrUndefined(obj) {
+        return obj === null || obj === undefined;
+    }
 
-    THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-    KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
-    WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
-    MERCHANTABLITY OR NON-INFRINGEMENT.
-
-    See the Apache Version 2.0 License for specific language governing permissions
-    and limitations under the License.
-    ***************************************************************************** */
+    /*
+     * Copyright 2008 ZXing authors
+     *
+     * Licensed under the Apache License, Version 2.0 (the "License");
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     *      http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */
     /* global Reflect, Promise */
 
     var extendStatics = Object.setPrototypeOf ||
@@ -42,10 +47,6 @@
         var captureStackTrace = Error.captureStackTrace;
         captureStackTrace && captureStackTrace(target, fn);
     }
-
-
-
-
 
     var CustomError = (function (_super) {
         __extends(CustomError, _super);
@@ -556,39 +557,12 @@
     Integer.MIN_VALUE_32_BITS = -2147483648;
     Integer.MAX_VALUE = Number.MAX_SAFE_INTEGER;
 
-    /*
-     * Copyright 2007 ZXing authors
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
     /**
      * <p>A simple, fast array of bits, represented compactly by an array of ints internally.</p>
      *
      * @author Sean Owen
      */
     class BitArray /*implements Cloneable*/ {
-        // public constructor() {
-        //   this.size = 0
-        //   this.bits = new Int32Array(1)
-        // }
-        // public constructor(size?: number /*int*/) {
-        //   if (undefined === size) {
-        //     this.size = 0
-        //   } else {
-        //     this.size = size
-        //   }
-        //   this.bits = this.makeArray(size)
-        // }
         // For testing only
         constructor(size /*int*/, bits) {
             if (undefined === size) {
@@ -743,6 +717,7 @@
          * @param start start of range, inclusive.
          * @param end end of range, exclusive
          * @param value if true, checks that bits in range are set, otherwise checks that they are not set
+         * 
          * @return true iff all bits are set or not set in range, according to value argument
          * @throws IllegalArgumentException if end is less than start or the range is not contained in the array
          */
@@ -1019,21 +994,6 @@
     }
     FormatException.kind = 'FormatException';
 
-    /*
-     * Copyright 2008 ZXing authors
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
     /*import java.util.HashMap;*/
     /*import java.util.Map;*/
     var CharacterSetValueIdentifiers;
@@ -3485,21 +3445,96 @@
             return this.decodeBitmap(binaryBitmap);
         }
         /**
+         * Returns true if media element is indeed a {@link HtmlVideoElement}.
+         */
+        _isHTMLVideoElement(mediaElement) {
+            const potentialVideo = mediaElement;
+            return potentialVideo.videoWidth !== 0;
+        }
+        /**
+         * Overwriting this allows you to manipulate the next frame in anyway
+         * you want before decode.
+         */
+        drawFrameOnCanvas(
+            srcElement, dimensions, canvasElementContext) {
+            if (!dimensions) {
+                dimensions = {
+                    sx: 0,
+                    sy: 0,
+                    sWidth: srcElement.videoWidth,
+                    sHeight: srcElement.videoHeight,
+                    dx: 0,
+                    dy: 0,
+                    dWidth: srcElement.videoWidth,
+                    dHeight: srcElement.videoHeight};
+            }
+            if (!canvasElementContext) {
+                canvasElementContext = this.captureCanvasContext;
+            }
+            canvasElementContext.drawImage(
+                srcElement,
+                dimensions.sx,
+                dimensions.sy,
+                dimensions.sWidth,
+                dimensions.sHeight,
+                dimensions.dx,
+                dimensions.dy,
+                dimensions.dWidth,
+                dimensions.dHeight);
+        }
+        /**
+         * Ovewriting this allows you to manipulate the snapshot image in anyway
+         *  you want before decode.
+         */
+        drawImageOnCanvas(
+            srcElement,
+            dimensions,
+            canvasElementContext = this.captureCanvasContext) {
+            if (!dimensions) {
+                dimensions = {
+                    sx: 0,
+                    sy: 0,
+                    sWidth: srcElement.naturalWidth,
+                    sHeight: srcElement.naturalHeight,
+                    dx: 0,
+                    dy: 0,
+                    dWidth: srcElement.naturalWidth,
+                    dHeight: srcElement.naturalHeight
+                };
+            }
+            if (!canvasElementContext) {
+                canvasElementContext = this.captureCanvasContext;
+            }
+            canvasElementContext.drawImage(
+                srcElement,
+                dimensions.sx,
+                dimensions.sy,
+                dimensions.sWidth,
+                dimensions.sHeight,
+                dimensions.dx,
+                dimensions.dy,
+                dimensions.dWidth,
+                dimensions.dHeight);
+        }
+        /**
          * Creates a binaryBitmap based in some image source.
          *
          * @param mediaElement HTML element containing drawable image source.
          */
         createBinaryBitmap(mediaElement) {
             const ctx = this.getCaptureCanvasContext(mediaElement);
-            this.drawImageOnCanvas(ctx, mediaElement);
+            if (this._isHTMLVideoElement(mediaElement)) {
+                this.drawFrameOnCanvas(mediaElement);
+            } else {
+                this.drawImageOnCanvas(mediaElement);
+            }
             const canvas = this.getCaptureCanvas(mediaElement);
             const luminanceSource = new HTMLCanvasElementLuminanceSource(canvas);
             const hybridBinarizer = new HybridBinarizer(luminanceSource);
+
             return new BinaryBitmap(hybridBinarizer);
         }
-        /**
-         *
-         */
+
         getCaptureCanvasContext(mediaElement) {
             if (!this.captureCanvasContext) {
                 const elem = this.getCaptureCanvas(mediaElement);
@@ -3508,21 +3543,12 @@
             }
             return this.captureCanvasContext;
         }
-        /**
-         *
-         */
         getCaptureCanvas(mediaElement) {
             if (!this.captureCanvas) {
                 const elem = this.createCaptureCanvas(mediaElement);
                 this.captureCanvas = elem;
             }
             return this.captureCanvas;
-        }
-        /**
-         * Ovewriting this allows you to manipulate the snapshot image in anyway you want before decode.
-         */
-        drawImageOnCanvas(canvasElementContext, srcElement) {
-            canvasElementContext.drawImage(srcElement, 0, 0);
         }
         /**
          * Call the encapsulated readers decode
@@ -3858,21 +3884,6 @@
     })(BarcodeFormat || (BarcodeFormat = {}));
     var BarcodeFormat$1 = BarcodeFormat;
 
-    /*
-     * Copyright 2008 ZXing authors
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
     /*namespace com.google.zxing {*/
     /**
      * Represents some type of metadata about the result of the decoding that the decoder
@@ -6478,21 +6489,6 @@
         }
     }
 
-    /*
-     * Copyright 2008 ZXing authors
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
     /**
      * Encapsulates functionality and implementation that is common to all families
      * of one-dimensional barcodes.
@@ -6727,21 +6723,6 @@
         }
     }
 
-    /*
-     * Copyright 2008 ZXing authors
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
     /**
      * <p>Decodes Code 128 barcodes.</p>
      *
@@ -7215,21 +7196,6 @@
     Code128Reader.CODE_START_C = 105;
     Code128Reader.CODE_STOP = 106;
 
-    /*
-     * Copyright 2008 ZXing authors
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
     /**
      * <p>Decodes Code 39 barcodes. Supports "Full ASCII Code 39" if USE_CODE_39_EXTENDED_MODE is set.</p>
      *
@@ -7518,21 +7484,6 @@
     ];
     Code39Reader.ASTERISK_ENCODING = 0x094;
 
-    /*
-     * Copyright 2008 ZXing authors
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
     /**
      * <p>Decodes ITF barcodes.</p>
      *
@@ -7844,21 +7795,6 @@
         Int32Array.from([1, 1, 3]) // 3x
     ];
 
-    /*
-     * Copyright 2008 ZXing authors
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
     /**
      * <p>Encapsulates functionality and implementation that is common to UPC and EAN families
      * of one-dimensional barcodes.</p>
@@ -7872,15 +7808,7 @@
             super(...arguments);
             this.decodeRowStringBuffer = '';
         }
-        // private final UPCEANExtensionSupport extensionReader;
-        // private final EANManufacturerOrgSupport eanManSupport;
-        /*
-        protected UPCEANReader() {
-            decodeRowStringBuffer = new StringBuilder(20);
-            extensionReader = new UPCEANExtensionSupport();
-            eanManSupport = new EANManufacturerOrgSupport();
-        }
-        */
+
         static findStartGuardPattern(row) {
             let foundStart = false;
             let startRange;
@@ -8036,21 +7964,6 @@
         Int32Array.from([3, 1, 1, 2]),
     ];
 
-    /*
-     * Copyright (C) 2010 ZXing authors
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
     /**
      * @see UPCEANExtension2Support
      */
@@ -8085,7 +7998,11 @@
             let rowOffset = startRange[1];
             let lgPatternFound = 0;
             for (let x = 0; x < 5 && rowOffset < end; x++) {
-                let bestMatch = AbstractUPCEANReader.decodeDigit(row, counters, rowOffset, AbstractUPCEANReader.L_AND_G_PATTERNS);
+                let bestMatch = AbstractUPCEANReader.decodeDigit(
+                    row,
+                    counters,
+                    rowOffset,
+                    AbstractUPCEANReader.L_AND_G_PATTERNS);
                 resultString += String.fromCharCode(('0'.charCodeAt(0) + bestMatch % 10));
                 for (let counter of counters) {
                     rowOffset += counter;
@@ -8175,21 +8092,6 @@
         }
     }
 
-    /*
-     * Copyright (C) 2012 ZXing authors
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
     /**
      * @see UPCEANExtension5Support
      */
@@ -8253,24 +8155,14 @@
         }
     }
 
-    /*
-     * Copyright (C) 2010 ZXing authors
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
     class UPCEANExtensionSupport {
         static decodeRow(rowNumber, row, rowOffset) {
-            let extensionStartRange = AbstractUPCEANReader.findGuardPattern(row, rowOffset, false, this.EXTENSION_START_PATTERN, new Int32Array(this.EXTENSION_START_PATTERN.length).fill(0));
+            let extensionStartRange = AbstractUPCEANReader.findGuardPattern(
+                row,
+                rowOffset,
+                false,
+                this.EXTENSION_START_PATTERN,
+                new Int32Array(this.EXTENSION_START_PATTERN.length).fill(0));
             try {
                 // return null;
                 let fiveSupport = new UPCEANExtension5Support();
@@ -8285,21 +8177,6 @@
     }
     UPCEANExtensionSupport.EXTENSION_START_PATTERN = Int32Array.from([1, 1, 2]);
 
-    /*
-     * Copyright 2008 ZXing authors
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
     /**
      * <p>Encapsulates functionality and implementation that is common to UPC and EAN families
      * of one-dimensional barcodes.</p>
@@ -8336,7 +8213,7 @@
                 const resultPoint = new ResultPoint(endStart, rowNumber);
                 resultPointCallback.foundPossibleResultPoint(resultPoint);
             }
-            let endRange = UPCEANReader.decodeEnd(row, endStart);
+            let endRange = this.decodeEnd(row, endStart);
             if (resultPointCallback != null) {
                 const resultPoint = new ResultPoint((endRange[0] + endRange[1]) / 2.0, rowNumber);
                 resultPointCallback.foundPossibleResultPoint(resultPoint);
@@ -8369,8 +8246,7 @@
                 decodeResult.addResultPoints(extensionResult.getResultPoints());
                 extensionLength = extensionResult.getText().length;
             }
-            catch (err) {
-            }
+            catch (ignoreError) {}
             let allowedExtensions = hints == null ? null : hints.get(DecodeHintType$1.ALLOWED_EAN_EXTENSIONS);
             if (allowedExtensions != null) {
                 let valid = false;
@@ -8384,8 +8260,12 @@
                     throw new NotFoundException();
                 }
             }
-            if (format === BarcodeFormat$1.EAN_13 || format === BarcodeFormat$1.UPC_A) ;
             return decodeResult;
+        }
+        decodeEnd(row, endStart) {
+            return UPCEANReader.findGuardPattern(
+                row, endStart, false, UPCEANReader.START_END_PATTERN,
+                new Int32Array(UPCEANReader.START_END_PATTERN.length).fill(0));
         }
         static checkChecksum(s) {
             return UPCEANReader.checkStandardUPCEANChecksum(s);
@@ -8417,26 +8297,8 @@
             }
             return (1000 - sum) % 10;
         }
-        static decodeEnd(row, endStart) {
-            return UPCEANReader.findGuardPattern(row, endStart, false, UPCEANReader.START_END_PATTERN, new Int32Array(UPCEANReader.START_END_PATTERN.length).fill(0));
-        }
     }
 
-    /*
-     * Copyright 2008 ZXing authors
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
     /**
      * <p>Implements decoding of the EAN-13 format.</p>
      *
@@ -8469,7 +8331,12 @@
                 }
             }
             resultString = EAN13Reader.determineFirstDigit(resultString, lgPatternFound);
-            let middleRange = UPCEANReader.findGuardPattern(row, rowOffset, true, UPCEANReader.MIDDLE_PATTERN, new Int32Array(UPCEANReader.MIDDLE_PATTERN.length).fill(0));
+            let middleRange = UPCEANReader.findGuardPattern(
+                row,
+                rowOffset,
+                true,
+                UPCEANReader.MIDDLE_PATTERN,
+                new Int32Array(UPCEANReader.MIDDLE_PATTERN.length).fill(0));
             rowOffset = middleRange[1];
             for (let x = 0; x < 6 && rowOffset < end; x++) {
                 let bestMatch = UPCEANReader.decodeDigit(row, counters, rowOffset, UPCEANReader.L_PATTERNS);
@@ -8495,21 +8362,6 @@
     }
     EAN13Reader.FIRST_DIGIT_ENCODINGS = [0x00, 0x0B, 0x0D, 0xE, 0x13, 0x19, 0x1C, 0x15, 0x16, 0x1A];
 
-    /*
-     * Copyright 2008 ZXing authors
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
     /**
      * <p>Implements decoding of the EAN-8 format.</p>
      *
@@ -8551,21 +8403,6 @@
         }
     }
 
-    /*
-     * Copyright 2008 ZXing authors
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
     /**
      * Encapsulates functionality and implementation that is common to all families
      * of one-dimensional barcodes.
@@ -8618,26 +8455,6 @@
         }
     }
 
-    /*
-     * Copyright 2008 ZXing authors
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
-    // package com.google.zxing.oned;
-    // import com.google.zxing.BarcodeFormat;
-    // import com.google.zxing.FormatException;
-    // import com.google.zxing.NotFoundException;
-    // import com.google.zxing.common.BitArray;
     /**
      * <p>Implements decoding of the UPC-E format.</p>
      * <p><a href="http://www.barcodeisland.com/upce.phtml">This</a> is a great reference for
@@ -8668,24 +8485,27 @@
             let rowOffset = startRange[1];
             let lgPatternFound = 0;
             for (let x = 0; x < 6 && rowOffset < end; x++) {
-                const bestMatch = UPCEReader.decodeDigit(row, counters, rowOffset, UPCEReader.L_AND_G_PATTERNS);
-                result += String.fromCharCode(('0'.charCodeAt(0) + bestMatch % 10));
+                const bestMatch = UPCEReader.decodeDigit(
+                    row, counters, rowOffset, UPCEReader.L_AND_G_PATTERNS);
+                result += String.fromCharCode(('0'.charCodeAt(0) + (bestMatch % 10)));
                 for (let counter of counters) {
                     rowOffset += counter;
                 }
                 if (bestMatch >= 10) {
-                    lgPatternFound |= 1 << (5 - x);
+                    lgPatternFound |= (1 << (5 - x));
                 }
             }
-            UPCEReader.determineNumSysAndCheckDigit(new StringBuilder(result), lgPatternFound);
-            return rowOffset;
+            let resultString = UPCEReader.determineNumSysAndCheckDigit(
+                result, lgPatternFound);
+            return {rowOffset, resultString};
         }
         /**
          * @throws NotFoundException
          */
         // @Override
         decodeEnd(row, endStart) {
-            return UPCEReader.findGuardPatternWithoutCounters(row, endStart, true, UPCEReader.MIDDLE_END_PATTERN);
+            return UPCEReader.findGuardPatternWithoutCounters(
+                row, endStart, true, UPCEReader.MIDDLE_END_PATTERN);
         }
         /**
          * @throws FormatException
@@ -8701,9 +8521,9 @@
             for (let numSys = 0; numSys <= 1; numSys++) {
                 for (let d = 0; d < 10; d++) {
                     if (lgPatternFound === this.NUMSYS_AND_CHECK_DIGIT_PATTERNS[numSys][d]) {
-                        resultString.insert(0, /*(char)*/ ('0' + numSys));
-                        resultString.append(/*(char)*/ ('0' + d));
-                        return;
+                        let prefix = String.fromCharCode('0'.charCodeAt(0) + numSys);
+                        let suffix = String.fromCharCode('0'.charCodeAt(0) + d);
+                        return prefix + resultString + suffix;
                     }
                 }
             }
@@ -8792,24 +8612,9 @@
      */
     UPCEReader.NUMSYS_AND_CHECK_DIGIT_PATTERNS = [
         Int32Array.from([0x38, 0x34, 0x32, 0x31, 0x2C, 0x26, 0x23, 0x2A, 0x29, 0x25]),
-        Int32Array.from([0x07, 0x0B, 0x0D, 0x0E, 0x13, 0x19, 0x1C, 0x15, 0x16, 0x1]),
+        Int32Array.from([0x07, 0x0B, 0x0D, 0x0E, 0x13, 0x19, 0x1C, 0x15, 0x16, 0x1A]),
     ];
 
-    /*
-     * Copyright 2008 ZXing authors
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
     /**
      * <p>A reader that can read all available UPC/EAN formats. If a caller wants to try to
      * read all such formats, it is most efficient to use this implementation rather than invoke
@@ -8822,11 +8627,11 @@
             super();
             let possibleFormats = hints == null ? null : hints.get(DecodeHintType$1.POSSIBLE_FORMATS);
             let readers = [];
-            if (possibleFormats != null) {
+            if (!isNullOrUndefined(possibleFormats)) {
                 if (possibleFormats.indexOf(BarcodeFormat$1.EAN_13) > -1) {
                     readers.push(new EAN13Reader());
                 }
-                else if (possibleFormats.indexOf(BarcodeFormat$1.UPC_A) > -1) {
+                if (possibleFormats.indexOf(BarcodeFormat$1.UPC_A) > -1) {
                     readers.push(new UPCAReader());
                 }
                 if (possibleFormats.indexOf(BarcodeFormat$1.EAN_8) > -1) {
@@ -8835,10 +8640,10 @@
                 if (possibleFormats.indexOf(BarcodeFormat$1.UPC_E) > -1) {
                     readers.push(new UPCEReader());
                 }
-            }
-            if (readers.length === 0) {
+            } else {
+                // No hints provided.
                 readers.push(new EAN13Reader());
-                // UPC-A is covered by EAN-13
+                readers.push(new UPCAReader());
                 readers.push(new EAN8Reader());
                 readers.push(new UPCEReader());
             }
@@ -8869,7 +8674,12 @@
                     if (ean13MayBeUPCA && canReturnUPCA) {
                         const rawBytes = result.getRawBytes();
                         // Transfer the metadata across
-                        const resultUPCA = new Result(result.getText().substring(1), rawBytes, rawBytes.length, result.getResultPoints(), BarcodeFormat$1.UPC_A);
+                        const resultUPCA = new Result(
+                            result.getText().substring(1),
+                            rawBytes,
+                            (rawBytes ? rawBytes.length : null),
+                            result.getResultPoints(),
+                            BarcodeFormat$1.UPC_A);
                         resultUPCA.putAllMetadata(result.getResultMetadata());
                         return resultUPCA;
                     }
@@ -11315,21 +11125,6 @@
         Int32Array.from([1, 3, 9, 1]),
     ];
 
-    /*
-     * Copyright 2008 ZXing authors
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
     /**
      * @author Daniel Switkin <dswitkin@google.com>
      * @author Sean Owen
@@ -11369,8 +11164,8 @@
                 if (possibleFormats.includes(BarcodeFormat$1.RSS_EXPANDED)) {
                     this.readers.push(new RSSExpandedReader(this.verbose));
                 }
-            }
-            if (this.readers.length === 0) {
+            } else {
+                // Case when no hints were provided -> add all.
                 this.readers.push(new MultiFormatUPCEANReader(hints));
                 this.readers.push(new Code39Reader());
                 // this.readers.push(new CodaBarReader());
@@ -11984,21 +11779,6 @@
         }
     }
 
-    /*
-     * Copyright 2008 ZXing authors
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
     /**
      * <p>Encapsulates a block of data within a Data Matrix Code. Data Matrix Codes may split their data into
      * multiple blocks, each of which is a unit of data and error-correction codewords. Each
@@ -12184,21 +11964,6 @@
         }
     }
 
-    /*
-     * Copyright 2008 ZXing authors
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
     var Mode;
     (function (Mode) {
         Mode[Mode["PAD_ENCODE"] = 0] = "PAD_ENCODE";
@@ -12775,21 +12540,6 @@
         }
     }
 
-    /*
-     * Copyright 2008 ZXing authors
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
     /**
      * <p>Encapsulates logic that can detect a Data Matrix Code in an image, even if the Data Matrix Code
      * is rotated or skewed, or partially obscured.</p>
@@ -18351,6 +18101,9 @@
             return invalidRowCounts;
         }
         adjustRowNumbers(barcodeColumn, codewordsRow, codewords) {
+            if (!this.detectionResultColumns[barcodeColumn - 1]) {
+                return;
+            }
             let codeword = codewords[codewordsRow];
             let previousColumnCodewords = this.detectionResultColumns[barcodeColumn - 1].getCodewords();
             let nextColumnCodewords = previousColumnCodewords;
@@ -20766,24 +20519,26 @@
          */
         setHints(hints) {
             this.hints = hints;
-            const tryHarder = hints !== null && hints !== undefined && undefined !== hints.get(DecodeHintType$1.TRY_HARDER);
-            /*@SuppressWarnings("unchecked")*/
-            const formats = hints === null || hints === undefined ? null : hints.get(DecodeHintType$1.POSSIBLE_FORMATS);
+            const tryHarder = !isNullOrUndefined(hints)
+                && hints.get(DecodeHintType$1.TRY_HARDER) === true;
+            const formats = isNullOrUndefined(hints) ? null : hints.get(DecodeHintType$1.POSSIBLE_FORMATS);
             const readers = new Array();
-            if (formats !== null && formats !== undefined) {
-                const addOneDReader = formats.some(f => f === BarcodeFormat$1.UPC_A ||
-                    f === BarcodeFormat$1.UPC_E ||
-                    f === BarcodeFormat$1.EAN_13 ||
-                    f === BarcodeFormat$1.EAN_8 ||
-                    f === BarcodeFormat$1.CODABAR ||
-                    f === BarcodeFormat$1.CODE_39 ||
-                    f === BarcodeFormat$1.CODE_93 ||
-                    f === BarcodeFormat$1.CODE_128 ||
-                    f === BarcodeFormat$1.ITF ||
-                    f === BarcodeFormat$1.RSS_14 ||
-                    f === BarcodeFormat$1.RSS_EXPANDED);
+            if (!isNullOrUndefined(formats)) {
+                const addOneDReader = formats.some(f => {
+                    return (
+                        f === BarcodeFormat$1.UPC_A ||
+                        f === BarcodeFormat$1.UPC_E ||
+                        f === BarcodeFormat$1.EAN_13 ||
+                        f === BarcodeFormat$1.EAN_8 ||
+                        f === BarcodeFormat$1.CODABAR ||
+                        f === BarcodeFormat$1.CODE_39 ||
+                        f === BarcodeFormat$1.CODE_93 ||
+                        f === BarcodeFormat$1.CODE_128 ||
+                        f === BarcodeFormat$1.ITF ||
+                        f === BarcodeFormat$1.RSS_14 ||
+                        f === BarcodeFormat$1.RSS_EXPANDED);
+                });
                 // Put 1D readers upfront in "normal" mode
-                // TYPESCRIPTPORT: TODO: uncomment below as they are ported
                 if (addOneDReader && !tryHarder) {
                     readers.push(new MultiFormatOneDReader(hints, this.verbose));
                 }
@@ -20992,21 +20747,6 @@
     })(EncodeHintType || (EncodeHintType = {}));
     var EncodeHintType$1 = EncodeHintType;
 
-    /*
-     * Copyright 2008 ZXing authors
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
     /**
      * <p>Implements Reed-Solomon encoding, as the name implies.</p>
      *
@@ -21082,21 +20822,6 @@
         }
     }
 
-    /*
-     * Copyright 2008 ZXing authors
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
     /**
      * @author Satoru Takabayashi
      * @author Daniel Switkin
@@ -21292,21 +21017,6 @@
     MaskUtil.N3 = 40;
     MaskUtil.N4 = 10;
 
-    /*
-     * Copyright 2008 ZXing authors
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
     /**
      * JAVAPORT: The original code was a 2D array of ints, but since it only ever gets assigned
      * -1, 0, and 1, I'm going to use less memory and go with bytes.
@@ -21399,21 +21109,6 @@
         }
     }
 
-    /*
-     * Copyright 2008 ZXing authors
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
     /**
      * @author satorux@google.com (Satoru Takabayashi) - creator
      * @author dswitkin@google.com (Daniel Switkin) - ported from C++
@@ -21488,21 +21183,6 @@
     }
     WriterException.kind = 'WriterException';
 
-    /*
-     * Copyright 2008 ZXing authors
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
     /**
      * @author satorux@google.com (Satoru Takabayashi) - creator
      * @author dswitkin@google.com (Daniel Switkin) - ported from C++
@@ -21910,21 +21590,6 @@
     MatrixUtil.TYPE_INFO_POLY = 0x537;
     MatrixUtil.TYPE_INFO_MASK_PATTERN = 0x5412;
 
-    /*
-     * Copyright 2008 ZXing authors
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
     /*namespace com.google.zxing.qrcode.encoder {*/
     class BlockPair {
         constructor(dataBytes, errorCorrectionBytes) {
@@ -21939,21 +21604,6 @@
         }
     }
 
-    /*
-     * Copyright 2008 ZXing authors
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
     /*import java.io.UnsupportedEncodingException;*/
     /*import java.util.ArrayList;*/
     /*import java.util.Collection;*/
@@ -22588,21 +22238,6 @@
      */
     BrowserQRCodeSvgWriter.SVG_NS = 'http://www.w3.org/2000/svg';
 
-    /*
-     * Copyright 2008 ZXing authors
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
     /*import java.util.Map;*/
     /**
      * This object renders a QR Code as a BitMatrix 2D array of greyscale values.
@@ -22673,21 +22308,6 @@
     }
     QRCodeWriter.QUIET_ZONE_SIZE = 4;
 
-    /*
-     * Copyright 2008 ZXing authors
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
     /*import java.util.Map;*/
     /**
      * This is a factory class which finds the appropriate Writer subclass for the BarcodeFormat
@@ -24144,6 +23764,7 @@
         }
     }
 
+    exports.AbstractExpandedDecoder = AbstractExpandedDecoder;
     exports.ArgumentException = ArgumentException;
     exports.ArithmeticException = ArithmeticException;
     exports.AztecCode = AztecCode;
@@ -24242,6 +23863,7 @@
     exports.ZXingStringBuilder = StringBuilder;
     exports.ZXingStringEncoding = StringEncoding;
     exports.ZXingSystem = System;
+    exports.createAbstractExpandedDecoder = createDecoder;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 
