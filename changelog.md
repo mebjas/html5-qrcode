@@ -1,3 +1,9 @@
+### Version 2.3.1
+-   Improved support for UPC types - by [Breno1288](https://github.com/Breno1288), forked from PR - [pull#501](https://github.com/mebjas/html5-qrcode/pull/501)
+-   Fix form submission in Firefox issue - [Discussion#413](https://github.com/mebjas/html5-qrcode/discussions/413#discussioncomment-2124480) by [Joggel72](https://github.com/Joggel72), forked from PR - [pull#431](https://github.com/mebjas/html5-qrcode/pull/431)
+-   Fix support for UPC-E as called out in several bugs - [parent issue#605](https://github.com/mebjas/html5-qrcode/issues/605)
+-   Add `willReadFrequently` attribute to canvas context for camera scan as per Google Chrome recommendation.
+
 ### Version 2.3.0
 
 -    Added support for drag and drop of image in file based scanner.

@@ -1174,11 +1174,17 @@ export class Html5Qrcode {
  
         const canvasElement = this.createCanvasElement(
             qrRegion.width, qrRegion.height);
+        // Tell user agent that this canvas will be read frequently.
+        // More info:
+        // https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently
+        const contextAttributes: any = { willReadFrequently: true };
+        // Casting canvas to any, as Microsoft's interface definition hasn't
+        // caught up with latest definition for 'CanvasRenderingContext2DSettings'.
         const context: CanvasRenderingContext2D
-             = canvasElement.getContext("2d")!;
+            = (<any>canvasElement).getContext("2d", contextAttributes)!;
         context.canvas.width = qrRegion.width;
         context.canvas.height = qrRegion.height;
- 
+
         // Insert the canvas
         this.element!.append(canvasElement);
         if (shouldShadingBeApplied) {

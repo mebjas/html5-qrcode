@@ -70,6 +70,9 @@ export class BaseUiElementFactory {
         let element: Type = <Type>(document.createElement(elementType));
         element.id = elementId;
         element.classList.add(PublicUiElementIdAndClasses.ALL_ELEMENT_CLASS);
+        if (elementType === "button") {
+            element.setAttribute("type", "button");
+        }
         return element;
     }
 }

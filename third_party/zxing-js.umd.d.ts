@@ -18,7 +18,8 @@ declare class MultiFormatReader {
 }
 
 export declare enum DecodeHintType {
-    POSSIBLE_FORMATS = 2
+    POSSIBLE_FORMATS = 2,
+    TRY_HARDER = 3
 }
 
 export declare enum BarcodeFormat {
