@@ -1040,6 +1040,8 @@ You can contribute to the project in several ways:
 
 This project would not be possible without all of our fantastic contributors and [sponsors](https://github.com/sponsors/mebjas). If you'd like to support the maintenance and upkeep of this project you can [donate via GitHub Sponsors](https://github.com/sponsors/mebjas).
 
+**Sponsor the project for priortising feature requests / bugs relevant to you**. (Depends on scope of ask and bandwidth of the contributors).
+
 <!-- sponsors -->
 <a href="https://github.com/bujjivadu"><img src="https://github.com/bujjivadu.png" width="40px" alt="" /></a>
 <a href="https://github.com/ben-gy"><img src="https://github.com/ben-gy.png" width="40px" alt="" /></a>
@@ -1048,8 +1050,12 @@ This project would not be possible without all of our fantastic contributors and
 And huge thanks to following organizations for non monitery sponsorships
 
 <!-- sponsors -->
-<a href="https://scanapp.org"><img src="https://scanapp.org/assets/svg/scanapp.svg" height="60px" alt="" /></a>
-<a href="https://www.browserstack.com"><img src="https://www.browserstack.com/images/layout/browserstack-logo-600x315.png" height="100px" alt="" /></a>
+<div>
+	<a href="https://scanapp.org"><img src="https://scanapp.org/assets/svg/scanapp.svg" height="60px" alt="" /></a>
+</div>
+<div>
+	<a href="https://www.browserstack.com"><img src="https://www.browserstack.com/images/layout/browserstack-logo-600x315.png" height="100px" alt="" /></a>
+</div>
 <!-- sponsors -->
 
 ## Credits
