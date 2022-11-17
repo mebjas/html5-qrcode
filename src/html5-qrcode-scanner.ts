@@ -704,7 +704,7 @@ export class Html5QrcodeScanner {
                 "select", this.getCameraSelectionId());
         if (numCameras === 1) {
             // If only one camera is found, don't show camera selection.
-            cameraSelectionSelect.style.display = "none";
+            cameraSelectionContainer.style.display = "none";
         } else {
             // Otherwise, show the number of cameras found as well.
             const selectCameraString = Html5QrcodeScannerStrings.selectCamera();
