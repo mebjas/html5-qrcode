@@ -1043,8 +1043,9 @@ This project would not be possible without all of our fantastic contributors and
 **Sponsor the project for priortising feature requests / bugs relevant to you**. (Depends on scope of ask and bandwidth of the contributors).
 
 <!-- sponsors -->
-<a href="https://github.com/bujjivadu"><img src="https://github.com/bujjivadu.png" width="40px" alt="" /></a>
-<a href="https://github.com/ben-gy"><img src="https://github.com/ben-gy.png" width="40px" alt="" /></a>
+<a href="https://github.com/webauthor"><img src="https://github.com/webauthor.png" width="40px" alt="webauthor@"></a>
+<a href="https://github.com/ben-gy"><img src="https://github.com/ben-gy.png" width="40px" alt="ben-gy" /></a>
+<a href="https://github.com/bujjivadu"><img src="https://github.com/bujjivadu.png" width="40px" alt="bujjivadu" /></a>
 <!-- sponsors -->
 
 And huge thanks to following organizations for non monitery sponsorships
