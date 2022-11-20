@@ -428,6 +428,8 @@ export class Html5Qrcode {
                 }
             };
 
+
+            // TODO(minhazav): Flatten this flow.
             CameraFactory.failIfNotSupported().then((factory) => {
                 factory.create(videoConstraints).then((camera) => {
                     return camera.render(
@@ -512,7 +514,7 @@ export class Html5Qrcode {
         this.renderedCamera.resume(() => {
             // Transition state, when the video playback has resumed.
             transitionToScanning();
-        })
+        });
     }
 
     /**
@@ -560,6 +562,7 @@ export class Html5Qrcode {
 
             if ($this.element) {
                 $this.element.removeChild($this.canvasElement!);
+                $this.canvasElement = null;
             }
 
             removeQrRegion();

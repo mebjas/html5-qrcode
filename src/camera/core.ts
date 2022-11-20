@@ -5,13 +5,13 @@
  * @author mebjas <minhazav@gmail.com>
  */
 
-/** Camera Device interface. */
+/** Camera device interface. */
 export interface CameraDevice {
   id: string;
   label: string;
 }
 
-/** Type for callback called when surface is ready. */
+/** Type for callback called when camera surface is ready. */
 export type OnRenderSurfaceReady
   = (viewfinderWidth: number, viewfinderHeight: number) => void;
 
@@ -37,7 +37,6 @@ export interface RenderedCamera {
    * @throws error if method is called when scanner is not in scanning state.
    */
   pause(): void;
-
 
   /**
    * Resumes the camera feed, if it's in paused state.
@@ -133,4 +132,4 @@ export interface Camera {
     options: CameraRenderingOptions,
     callbacks: RenderingCallbacks)
     : Promise<RenderedCamera>;
-};
+}

@@ -30,4 +30,4 @@ export class CameraFactory {
         : Promise<Camera> {
         return CameraImpl.create(videoConstraints);
     }
-};
+}

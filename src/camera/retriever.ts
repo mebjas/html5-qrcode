@@ -23,20 +23,24 @@ export class CameraRetriever {
             return CameraRetriever.getCamerasFromMediaStreamTrack();
         }
 
-        // This can potentially happen if the page is loaded without SSL.
-        const isHttpsOrLocalhost = (): boolean => {
-            if (location.protocol === "https:") {
-                return true;
-            }
-            const host = location.host.split(":")[0];
-            return host === "127.0.0.1" || host === "localhost";
-        }
+        return CameraRetriever.rejectWithError();
+    }
 
+    private static rejectWithError(): Promise<Array<CameraDevice>> {
+        // This can potentially happen if the page is loaded without SSL.
         let errorMessage = Html5QrcodeStrings.unableToQuerySupportedDevices();
-        if (!isHttpsOrLocalhost()) {
+        if (!CameraRetriever.isHttpsOrLocalhost()) {
             errorMessage = Html5QrcodeStrings.insecureContextCameraQueryError();
         }
         return Promise.reject(errorMessage);
+    }
+
+    private static isHttpsOrLocalhost(): boolean {
+        if (location.protocol === "https:") {
+            return true;
+        }
+        const host = location.host.split(":")[0];
+        return host === "127.0.0.1" || host === "localhost";
     }
 
     private static async getCamerasFromMediaDevices(): Promise<Array<CameraDevice>> {

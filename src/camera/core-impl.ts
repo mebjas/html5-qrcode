@@ -25,7 +25,6 @@ class RenderedCameraImpl implements RenderedCamera {
     private constructor(
         parentElement: HTMLElement,
         mediaStream: MediaStream,
-        // options: CameraRenderingOptions,
         callbacks: RenderingCallbacks) {
         this.parentElement = parentElement;
         this.mediaStream = mediaStream;
@@ -50,11 +49,11 @@ class RenderedCameraImpl implements RenderedCamera {
     private setupSurface() {
         this.surface.onabort = () => {
             throw "RenderedCameraImpl video surface onabort() called";
-        }
+        };
 
         this.surface.onerror = () => {
             throw "RenderedCameraImpl video surface onerror() called";
-        }
+        };
 
         this.surface.addEventListener("playing", () => this.onVideoStart());
         this.surface.srcObject = this.mediaStream;
@@ -75,19 +74,13 @@ class RenderedCameraImpl implements RenderedCamera {
         callbacks: RenderingCallbacks)
         : Promise<RenderedCamera> {
         let renderedCamera = new RenderedCameraImpl(
-            // parentElement, mediaStream, options, callbacks);
             parentElement, mediaStream, callbacks);
         if (options.aspectRatio) {
             let aspectRatioConstraint = {
                 aspectRatio: options.aspectRatio!
             };
-            let tracks = mediaStream.getVideoTracks();
-            if (!tracks || tracks.length < 1) {
-                throw "Unable to get video tracks from mediaStream";
-            }
-
-            let track = tracks[0];
-            await track.applyConstraints(aspectRatioConstraint);
+            await renderedCamera.getFirstTrackOrFail().applyConstraints(
+                aspectRatioConstraint);
         }
 
         renderedCamera.setupSurface();
@@ -98,6 +91,16 @@ class RenderedCameraImpl implements RenderedCamera {
         if (this.isClosed) {
             throw "The RenderedCamera has already been closed.";
         }
+    }
+
+    private getFirstTrackOrFail(): MediaStreamTrack {
+        this.failIfClosed();
+
+        if (this.mediaStream.getVideoTracks().length === 0) {
+            throw "No video tracks found";
+        }
+
+        return this.mediaStream.getVideoTracks()[0];
     }
 
     //#region Public APIs.
@@ -132,38 +135,20 @@ class RenderedCameraImpl implements RenderedCamera {
     }
 
     public getRunningTrackCapabilities(): MediaTrackCapabilities {
-        this.failIfClosed();
-        if (this.mediaStream.getVideoTracks().length === 0) {
-            throw "No video tracks found";
-        }
-
-        const firstVideoTrack = this.mediaStream.getVideoTracks()[0];
-        return firstVideoTrack.getCapabilities();
+        return this.getFirstTrackOrFail().getCapabilities();
     }
 
     public getRunningTrackSettings(): MediaTrackSettings {
-        this.failIfClosed();
-        if (this.mediaStream.getVideoTracks().length === 0) {
-            throw "No video tracks found";
-        }
-
-        const firstVideoTrack = this.mediaStream.getVideoTracks()[0];
-        return firstVideoTrack.getSettings();
+        return this.getFirstTrackOrFail().getSettings();
     }
 
     public async applyVideoConstraints(constraints: MediaTrackConstraints)
         : Promise<void> {
-        this.failIfClosed();
-        if (this.mediaStream.getVideoTracks().length === 0) {
-            throw "No video tracks found";
-        }
-
         if ("aspectRatio" in constraints) {
             throw "Changing 'aspectRatio' in run-time is not yet supported.";
         }
 
-        const firstVideoTrack = this.mediaStream.getVideoTracks()[0];
-        return firstVideoTrack.applyConstraints(constraints);
+        return this.getFirstTrackOrFail().applyConstraints(constraints);
     }
 
     public close(): Promise<void> {
