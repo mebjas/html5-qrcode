@@ -30,6 +30,7 @@ export class CameraSelectionUi {
         this.options = [];        
     }
 
+    /*eslint complexity: ["error", 10]*/
     private render(
         parentElement: HTMLElement,
         cameras: Array<CameraDevice>) {

@@ -281,15 +281,11 @@ export class Html5QrcodeScanner {
      * @throws error if method is called when scanner is not in scanning state.
      */
     public pause(shouldPauseVideo?: boolean) {
-        if (!this.html5Qrcode) {
-            throw "Code scanner not initialized.";
-        }
-
         if (isNullOrUndefined(shouldPauseVideo) || shouldPauseVideo !== true) {
             shouldPauseVideo = false;
         }
 
-        this.html5Qrcode.pause(shouldPauseVideo);
+        this.getHtml5QrcodeOrFail().pause(shouldPauseVideo);
     }
     
     /**
@@ -307,11 +303,7 @@ export class Html5QrcodeScanner {
      * @throws error if method is called when scanner is not in paused state.
      */
     public resume() {
-        if (!this.html5Qrcode) {
-            throw "Code scanner not initialized.";
-        }
-
-        this.html5Qrcode.resume();
+        this.getHtml5QrcodeOrFail().resume();
     }
 
     /**
@@ -320,11 +312,7 @@ export class Html5QrcodeScanner {
      * @returns state of type {@enum Html5QrcodeScannerState}.
      */
     public getState(): Html5QrcodeScannerState {
-        if (!this.html5Qrcode) {
-            throw "Code scanner not initialized.";
-        }
-
-        return this.html5Qrcode.getState();
+       return this.getHtml5QrcodeOrFail().getState();
     }
 
     /**
@@ -391,8 +379,7 @@ export class Html5QrcodeScanner {
      * @throws error if the scanning is not in running state.
      */
     public getRunningTrackCapabilities(): MediaTrackCapabilities {
-        this.failIfNotInitialized();
-        return this.html5Qrcode!.getRunningTrackCapabilities();
+        return this.getHtml5QrcodeOrFail().getRunningTrackCapabilities();
     }
 
     /**
@@ -409,8 +396,7 @@ export class Html5QrcodeScanner {
      * @throws error if the scanning is not in running state.
      */
     public getRunningTrackSettings(): MediaTrackSettings {
-        this.failIfNotInitialized();
-        return this.html5Qrcode!.getRunningTrackSettings();
+        return this.getHtml5QrcodeOrFail().getRunningTrackSettings();
     }
 
     /**
@@ -429,16 +415,16 @@ export class Html5QrcodeScanner {
      */
     public applyVideoConstraints(videoConstaints: MediaTrackConstraints)
         : Promise<void> {
-        this.failIfNotInitialized();
-        return this.html5Qrcode!.applyVideoConstraints(videoConstaints);
+        return this.getHtml5QrcodeOrFail().applyVideoConstraints(videoConstaints);
     }
     //#endregion
 
     //#region Private methods
-    private failIfNotInitialized() {
+    private getHtml5QrcodeOrFail() {
         if (!this.html5Qrcode) {
             throw "Code scanner not initialized.";
         }
+        return this.html5Qrcode!;
     }
 
     private createConfig(config: Html5QrcodeScannerConfig | undefined)

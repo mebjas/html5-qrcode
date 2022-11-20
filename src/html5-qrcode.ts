@@ -748,8 +748,7 @@ export class Html5Qrcode {
      * @throws error if the scanning is not in running state.
      */
     public getRunningTrackCapabilities(): MediaTrackCapabilities {
-        return this.failIfInvalidState().renderedCamera!
-            .getRunningTrackCapabilities();
+        return this.getRenderedCameraOrFail().getRunningTrackCapabilities();
     }
 
     /**
@@ -764,8 +763,7 @@ export class Html5Qrcode {
      * @throws error if the scanning is not in running state.
      */
     public getRunningTrackSettings(): MediaTrackSettings {
-        return this.failIfInvalidState().renderedCamera!
-            .getRunningTrackSettings();
+        return this.getRenderedCameraOrFail().getRunningTrackSettings();
     }
 
     /**
@@ -774,7 +772,7 @@ export class Html5Qrcode {
      * @throws error if the scanning is not in running state.
      */
      public getRunningTrackCameraCapabilities(): CameraCapabilities {
-        return this.failIfInvalidState().renderedCamera!.getCapabilities();
+        return this.getRenderedCameraOrFail().getCapabilities();
     }
 
     /**
@@ -800,17 +798,17 @@ export class Html5Qrcode {
             throw "invalid videoConstaints passed, check logs for more details";
         }
 
-        return this.failIfInvalidState().renderedCamera!.applyVideoConstraints(
+        return this.getRenderedCameraOrFail().applyVideoConstraints(
             videoConstaints);
     }
 
     //#region Private methods.
-    private failIfInvalidState() {
+    private getRenderedCameraOrFail() {
         if (this.renderedCamera == null) {
             throw "Scanning is not in running state, call this API only when"
                 + " QR code scanning using camera is in running state.";
         }
-        return this;
+        return this.renderedCamera!;
     }
 
     /**
