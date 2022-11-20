@@ -13,6 +13,7 @@
 
 import {
     QrcodeResult,
+    QrcodeResultDebugData,
     QrcodeResultFormat,
     Html5QrcodeSupportedFormats,
     QrcodeDecoderAsync,
@@ -142,7 +143,8 @@ interface BarcodeDetectorResult {
         return {
             text: largestBarcode.rawValue,
             format: QrcodeResultFormat.create(
-                this.toHtml5QrcodeSupportedFormats(largestBarcode.format))
+                this.toHtml5QrcodeSupportedFormats(largestBarcode.format)),
+            debugData: this.createDebugData()
         };
     }
 
@@ -194,5 +196,9 @@ interface BarcodeDetectorResult {
             result.set(value, key);
         });
         return result;
+    }
+
+    private createDebugData(): QrcodeResultDebugData {
+        return { decoderName: "BarcodeDetector" };
     }
 }

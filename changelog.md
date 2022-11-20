@@ -1,3 +1,11 @@
+### Version 2.3.2
+
+#### Features or bug fixes.
+-   Hide margin of parent container when camera selection UI is hidden (if only 1 camera is found.) - [Issue#599](https://github.com/mebjas/html5-qrcode/issues/599), [PR#607](https://github.com/mebjas/html5-qrcode/pull/607) by [adamwolf@](https://github.com/adamwolf).
+
+#### Tech debts
+-    Refactored the camera components out of `src/html5-qrcode.ts`
+
 ### Version 2.3.1
 -   Improved support for UPC types - by [Breno1288](https://github.com/Breno1288), forked from PR - [pull#501](https://github.com/mebjas/html5-qrcode/pull/501)
 -   Fix form submission in Firefox issue - [Discussion#413](https://github.com/mebjas/html5-qrcode/discussions/413#discussioncomment-2124480) by [Joggel72](https://github.com/Joggel72), forked from PR - [pull#431](https://github.com/mebjas/html5-qrcode/pull/431)
