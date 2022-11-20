@@ -118,7 +118,7 @@ class RenderedCameraImpl implements RenderedCamera {
             // re-scanned.
             setTimeout(onResumeCallback, 200);
             $this.surface.removeEventListener("playing", onVideoResume);
-        }
+        };
 
         this.surface.addEventListener("playing", onVideoResume);
         this.surface.play();

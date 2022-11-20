@@ -52,7 +52,7 @@ export class CameraRetriever {
                 track.stop();
                 stream.removeTrack(track);
             }
-        }
+        };
         // This should trigger the permission flow if required.
         let mediaStream = await navigator.mediaDevices.getUserMedia(
             { audio: false, video: true });
