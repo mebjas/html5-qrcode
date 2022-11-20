@@ -19,7 +19,10 @@ import {
     BaseLoggger,
     Logger,
     isNullOrUndefined,
+    clip,
 } from "./core";
+
+import { CameraCapabilities } from "./camera/core";
 
 import { CameraDevice } from "./camera/core";
 
@@ -70,9 +73,8 @@ import {
     PublicUiElementIdAndClasses
 } from "./ui/scanner/base";
 
-import {
-    CameraSelectionUi
-} from "./ui/scanner/camera-selection-ui";
+import { CameraSelectionUi } from "./ui/scanner/camera-selection-ui";
+import { CameraZoomUi } from "./ui/scanner/camera-zoom-ui";
 
 /**
  * Different states of QR Code Scanner.
@@ -129,9 +131,16 @@ interface Html5QrcodeScannerConfig
      * If {@code true} the rendered UI will have slider to zoom camera based on
      * device + browser support.
      * 
-     * Note: default value is {@code true}.
+     * Note: default value is {@code false}.
      */
     showZoomSliderIfSupported?: boolean | undefined;
+
+    /**
+     * Default zoom value if supported.
+     * 
+     * Note: default value is 1x.
+     */
+    defaultZoomValueIfSupported?: number | undefined;
 }
 
 function toHtml5QrcodeCameraScanConfig(config: Html5QrcodeScannerConfig)
@@ -382,11 +391,8 @@ export class Html5QrcodeScanner {
      * @throws error if the scanning is not in running state.
      */
     public getRunningTrackCapabilities(): MediaTrackCapabilities {
-        if (!this.html5Qrcode) {
-            throw "Code scanner not initialized.";
-        }
-
-        return this.html5Qrcode.getRunningTrackCapabilities();
+        this.failIfNotInitialized();
+        return this.html5Qrcode!.getRunningTrackCapabilities();
     }
 
     /**
@@ -403,11 +409,8 @@ export class Html5QrcodeScanner {
      * @throws error if the scanning is not in running state.
      */
     public getRunningTrackSettings(): MediaTrackSettings {
-        if (!this.html5Qrcode) {
-            throw "Code scanner not initialized.";
-        }
-
-        return this.html5Qrcode.getRunningTrackSettings();
+        this.failIfNotInitialized();
+        return this.html5Qrcode!.getRunningTrackSettings();
     }
 
     /**
@@ -426,15 +429,18 @@ export class Html5QrcodeScanner {
      */
     public applyVideoConstraints(videoConstaints: MediaTrackConstraints)
         : Promise<void> {
-        if (!this.html5Qrcode) {
-            throw "Code scanner not initialized.";
-        }
-
-        return this.html5Qrcode.applyVideoConstraints(videoConstaints);
+        this.failIfNotInitialized();
+        return this.html5Qrcode!.applyVideoConstraints(videoConstaints);
     }
     //#endregion
 
     //#region Private methods
+    private failIfNotInitialized() {
+        if (!this.html5Qrcode) {
+            throw "Code scanner not initialized.";
+        }
+    }
+
     private createConfig(config: Html5QrcodeScannerConfig | undefined)
         : Html5QrcodeScannerConfig {
         if (config) {
@@ -707,6 +713,36 @@ export class Html5QrcodeScanner {
         const scpCameraScanRegion = document.getElementById(
             this.getDashboardSectionCameraScanRegionId())!;
         scpCameraScanRegion.style.textAlign = "center";
+
+        // Hide by default.
+        let cameraZoomUi: CameraZoomUi = CameraZoomUi.create(
+            scpCameraScanRegion, /* renderOnCreate= */ false);
+        const renderCameraZoomUiIfSupported
+            = (cameraCapabilities: CameraCapabilities) => {
+            let zoomCapability = cameraCapabilities.zoomFeature();
+            if (!zoomCapability.isSupported()) {
+                return;
+            }
+
+            // Supported.
+            cameraZoomUi.setOnCameraZoomValueChangeCallback((zoomValue) => {
+                zoomCapability.apply(zoomValue);
+            });
+            let defaultZoom = 1;
+            if (this.config.defaultZoomValueIfSupported) {
+                defaultZoom = this.config.defaultZoomValueIfSupported;
+            }
+            defaultZoom = clip(
+                defaultZoom, zoomCapability.min(), zoomCapability.max());
+            cameraZoomUi.setValues(
+                zoomCapability.min(),
+                zoomCapability.max(),
+                defaultZoom,
+                zoomCapability.step(),
+            );
+            cameraZoomUi.show();
+        };
+
         let cameraSelectUi: CameraSelectionUi = CameraSelectionUi.create(
             scpCameraScanRegion, cameras);
 
@@ -730,6 +766,7 @@ export class Html5QrcodeScanner {
 
         // Optional torch button support.
         const torchButton = TorchButton.create(
+            cameraActionContainer,
             $this.html5Qrcode!,
             {display: "none", marginLeft: "5px"},
             // Callback in case of torch action failure.
@@ -739,17 +776,15 @@ export class Html5QrcodeScanner {
                     Html5QrcodeScannerStatus.STATUS_WARNING);
             }
         );
-        const cameraActionTorchButton = torchButton.getTorchButton();
-        cameraActionContainer.appendChild(cameraActionTorchButton);
 
         const showTorchButtonIfSupported = (settings: MediaTrackSettings) => {
             if (!TorchUtils.isTorchSupported(settings)) {
                 // Torch not supported, ignore.
-                cameraActionTorchButton.style.display = "none";
+                torchButton.hide();
                 return;
             }
 
-            cameraActionTorchButton.style.display = "inline-block";
+            torchButton.show();
         };
 
         scpCameraScanRegion.appendChild(cameraActionContainer);
@@ -800,6 +835,11 @@ export class Html5QrcodeScanner {
                         showTorchButtonIfSupported(
                             $this.html5Qrcode!.getRunningTrackSettings());
                     }
+
+                    if (this.config.showZoomSliderIfSupported === true) {
+                        renderCameraZoomUiIfSupported(
+                            $this.html5Qrcode!.getRunningTrackCameraCapabilities());
+                    }
                 })
                 .catch((error) => {
                     $this.showHideScanTypeSwapLink(true);
@@ -834,7 +874,9 @@ export class Html5QrcodeScanner {
                     cameraActionStartButton.style.display = "inline-block";
                     // Reset torch state.
                     torchButton.reset();
-                    cameraActionTorchButton.style.display = "none";
+                    torchButton.hide();
+                    cameraZoomUi.removeOnCameraZoomValueChangeCallback();
+                    cameraZoomUi.hide();
                     $this.insertCameraScanImageToScanRegion();
                 }).catch((error) => {
                     cameraActionStopButton.disabled = false;

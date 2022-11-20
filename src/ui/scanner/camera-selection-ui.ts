@@ -23,16 +23,11 @@ export class CameraSelectionUi {
     private readonly selectElement: HTMLSelectElement;
     private readonly options: Array<HTMLOptionElement>;
 
-    private constructor(
-        parentElement: HTMLElement,
-        cameras: Array<CameraDevice>) {
-
+    private constructor() {
         this.selectElement = BaseUiElementFactory
             .createElement<HTMLSelectElement>(
             "select", this.getCameraSelectionId());
-        this.options = [];
-        
-        this.render(parentElement, cameras);
+        this.options = [];        
     }
 
     private render(
@@ -114,6 +109,8 @@ export class CameraSelectionUi {
     public static create(
         parentElement: HTMLElement,
         cameras: Array<CameraDevice>): CameraSelectionUi {
-        return new CameraSelectionUi(parentElement, cameras);
+        let cameraSelectUi = new CameraSelectionUi();
+        cameraSelectUi.render(parentElement, cameras);
+        return cameraSelectUi;
     }
 }

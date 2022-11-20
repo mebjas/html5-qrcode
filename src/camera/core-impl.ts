@@ -7,10 +7,90 @@
 
 import {
     Camera,
+    CameraCapabilities,
+    CameraCapability,
     CameraRenderingOptions,
     RenderedCamera,
     RenderingCallbacks
 } from "./core";
+
+/** Interface for a range value. */
+interface RangeValue {
+    min: number;
+    max: number;
+    step: number;
+}
+
+/** Abstract camera capability class. */
+abstract class AbstractCameraCapability implements CameraCapability {
+    protected readonly name: string;
+    protected readonly track: MediaStreamTrack;
+
+    constructor(name: string, track: MediaStreamTrack) {
+        this.name = name;
+        this.track = track;
+    }
+
+    public isSupported(): boolean {
+        return this.name in this.track.getCapabilities();
+    }
+
+    public min(): number {
+        return this.getCapabilities().min;
+    }
+
+    public max(): number {
+        return this.getCapabilities().max;
+    }
+
+    public step(): number {
+        return this.getCapabilities().step;
+    }
+
+    public apply(value: number): Promise<void> {
+        let constraint: any = {};
+        constraint[this.name] = value;
+        let constraints = {advanced: [ constraint ]};
+        return this.track.applyConstraints(constraints);
+    }
+
+    private getCapabilities(): RangeValue {
+        this.failIfNotSupported();
+        let capabilities: any = this.track.getCapabilities();
+        let capability: any = capabilities[this.name];
+        return {
+            min: capability.min,
+            max: capability.max,
+            step: capability.step,
+        };
+    }
+
+    private failIfNotSupported() {
+        if (!this.isSupported()) {
+            throw new Error(`${this.name} capability not supported`);
+        }
+    }
+}
+
+/** Zoom capability of a camera. */
+class ZoomCamera extends AbstractCameraCapability {
+    constructor(track: MediaStreamTrack) {
+        super("zoom", track);
+    }
+}
+
+/** Implementation of {@link CameraCapabilities}. */
+class CameraCapabilitiesImpl implements CameraCapabilities {
+    private readonly track: MediaStreamTrack;
+    
+    constructor(track: MediaStreamTrack) {
+        this.track = track;
+    }
+
+    zoomFeature(): CameraCapability {
+        return new ZoomCamera(this.track);
+    }
+}
 
 /** Implementation of {@link RenderedCamera}. */
 class RenderedCameraImpl implements RenderedCamera {
@@ -55,16 +135,16 @@ class RenderedCameraImpl implements RenderedCamera {
             throw "RenderedCameraImpl video surface onerror() called";
         };
 
-        this.surface.addEventListener("playing", () => this.onVideoStart());
+        let onVideoStart = () => {
+            const videoWidth = this.surface.clientWidth;
+            const videoHeight = this.surface.clientHeight;
+            this.callbacks.onRenderSurfaceReady(videoWidth, videoHeight);
+            this.surface.removeEventListener("playing", onVideoStart);
+        };
+
+        this.surface.addEventListener("playing", onVideoStart);
         this.surface.srcObject = this.mediaStream;
         this.surface.play();
-    }
-
-    private onVideoStart() {
-        const videoWidth = this.surface.clientWidth;
-        const videoHeight = this.surface.clientHeight;
-        this.callbacks.onRenderSurfaceReady(videoWidth, videoHeight);
-        this.surface.removeEventListener("playing", this.onVideoStart);
     }
 
     static async create(
@@ -176,6 +256,10 @@ class RenderedCameraImpl implements RenderedCamera {
     
             
         });
+    }
+
+    getCapabilities(): CameraCapabilities {
+        return new CameraCapabilitiesImpl(this.getFirstTrackOrFail());
     }
     //#endregion
 }

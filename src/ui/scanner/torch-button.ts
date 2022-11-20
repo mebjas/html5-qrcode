@@ -135,6 +135,7 @@ export class TorchButton {
      * @returns Button for controlling torch.
      */
     public static create(
+        parentElement: HTMLElement,
         html5Qrcode: Html5Qrcode,
         torchButtonOptions: TorchButtonOptions,
         onTorchActionFailureCallback: OnTorchActionFailureCallback)
@@ -165,6 +166,8 @@ export class TorchButton {
                     PublicUiElementIdAndClasses.TORCH_BUTTON_CLASS_TORCH_OFF);
             }
         });
+
+        parentElement.appendChild(torchButton);
         return new TorchButton(torchButton, torchController);
     }
 
@@ -180,6 +183,14 @@ export class TorchButton {
     /** Returns the torch button. */
     public getTorchButton(): HTMLButtonElement {
         return this.torchButton;
+    }
+
+    public hide() {
+        this.torchButton.style.display = "none";
+    }
+
+    public show() {
+        this.torchButton.style.display = "inline-block";
     }
 
     /**

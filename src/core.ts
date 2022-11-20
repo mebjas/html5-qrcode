@@ -320,4 +320,16 @@ export class BaseLoggger implements Logger {
 export function isNullOrUndefined(obj?: any) {
     return (typeof obj === "undefined") || obj === null;
 }
+
+/** Clips the {@code value} between {@code minValue} and {@code maxValue}. */
+export function clip(value: number, minValue: number, maxValue: number) {
+    if (value > maxValue) {
+        return maxValue;
+    }
+    if (value < minValue) {
+        return minValue;
+    }
+
+    return value;
+}
 //#endregion

@@ -36,6 +36,9 @@ export class PublicUiElementIdAndClasses {
     /** Id of the button used for file selection. */
     static FILE_SELECTION_BUTTON_ID = "html5-qrcode-button-file-selection";
 
+    /** Id of the range input for zoom. */
+    static ZOOM_SLIDER_ID = "html5-qrcode-input-range-zoom";
+
     /**
      * Id of the anchor {@code <a>} element used for swapping between file scan
      * and camera scan.
