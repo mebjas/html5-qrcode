@@ -16,11 +16,12 @@ import {
     Html5QrcodeResult,
     Html5QrcodeError,
     Html5QrcodeErrorFactory,
-    CameraDevice,
     BaseLoggger,
     Logger,
     isNullOrUndefined,
 } from "./core";
+
+import { CameraDevice } from "./camera/core";
 
 import {
     Html5Qrcode,
@@ -47,8 +48,8 @@ import {
 } from "./ui";
 
 import {
-  CameraManager
-} from "./camera";
+  CameraPermissions
+} from "./camera/permissions";
 
 import { Html5QrcodeScannerState } from "./state-manager";
 
@@ -601,7 +602,7 @@ export class Html5QrcodeScanner {
         // is camera.
         if (ScanTypeSelector.isCameraScanType(this.currentScanType)
             && this.persistedDataManager.hasCameraPermissions()) {
-            CameraManager.hasCameraPermissions().then(
+            CameraPermissions.hasPermissions().then(
                 (hasPermissions: boolean) => {
                 if (hasPermissions) {
                     $this.createCameraListUi(
@@ -948,7 +949,7 @@ export class Html5QrcodeScanner {
     private startCameraScanIfPermissionExistsOnSwap() {
         const $this = this;
         if (this.persistedDataManager.hasCameraPermissions()) {
-            CameraManager.hasCameraPermissions().then(
+            CameraPermissions.hasPermissions().then(
                 (hasPermissions: boolean) => {
                 if (hasPermissions) {
                     // Start feed.

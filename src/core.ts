@@ -140,6 +140,13 @@ export class QrcodeResultFormat {
     }
 }
 
+/** Data class for QR code result used for debugging. */
+export interface QrcodeResultDebugData {
+
+    /** Name of the decoder that was used for decoding. */
+    decoderName?: string;
+}
+
 /**
  * Detailed scan result.
  */
@@ -165,6 +172,9 @@ export interface QrcodeResult {
      * Note: this is experimental, and not fully supported.
      */
     decodedTextType?: DecodedTextType;
+
+    /** Data class for QR code result used for debugging. */
+    debugData?: QrcodeResultDebugData;
 }
 
 /**
@@ -239,12 +249,6 @@ export type QrcodeSuccessCallback
  */
 export type QrcodeErrorCallback
     = (errorMessage: string, error: Html5QrcodeError) => void;
-
-/** Camera Device interface. */
-export interface CameraDevice {
-    id: string;
-    label: string;
-}
 
 /** Code decoder interface. */
 export interface QrcodeDecoderAsync {

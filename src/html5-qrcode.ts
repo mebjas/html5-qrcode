@@ -13,7 +13,6 @@
  */
 
 import {
-    CameraDevice,
     QrcodeErrorCallback,
     QrcodeSuccessCallback,
     Logger,
@@ -32,6 +31,14 @@ import {
 import { Html5QrcodeStrings } from "./strings";
 import { VideoConstraintsUtil } from "./utils";
 import { Html5QrcodeShim } from "./code-decoder";
+import { CameraFactory } from "./camera/factories";
+import {
+    CameraDevice,
+    CameraRenderingOptions,
+    RenderedCamera,
+    RenderingCallbacks
+} from "./camera/core";
+import { CameraRetriever } from "./camera/retriever";
 import { ExperimentalFeaturesConfig } from "./experimental-features";
 import {
     StateManagerProxy,
@@ -252,7 +259,7 @@ export class Html5Qrcode {
     private shouldScan: boolean;
 
     // Nullable elements
-    // TODO(mebjas): Reduce the statefulness of this mammoth class, by splitting
+    // TODO(mebjas): Reduce the state-fulness of this mammoth class, by splitting
     // into independent classes for better separation of concerns and reducing
     // error prone nature of a large stateful class.
     private element: HTMLElement | null = null;
@@ -261,9 +268,9 @@ export class Html5Qrcode {
     private hasBorderShaders: boolean | null = null;
     private borderShaders: Array<HTMLElement> | null = null;
     private qrMatch: boolean | null = null;
-    private videoElement: HTMLVideoElement | null = null;
+    private renderedCamera: RenderedCamera | null = null;
+
     private foreverScanTimeout: any;
-    private localMediaStream: MediaStream | null = null;
     private qrRegion: QrcodeRegionBounds | null = null;
     private context: CanvasRenderingContext2D | null = null;
     private lastScanImageFile: string | null = null;
@@ -316,14 +323,13 @@ export class Html5Qrcode {
             this.logger);
 
         this.foreverScanTimeout;
-        this.localMediaStream;
         this.shouldScan = true;
         this.stateManagerProxy = StateManagerFactory.create();
     }
 
     //#region start()
     /**
-     * Start scanning QR codes or barcodes for a given camera.
+     * Start scanning QR codes or bar codes for a given camera.
      * 
      * @param cameraIdOrConfig Identifier of the camera, it can either be the
      *  camera id retrieved from {@code Html5Qrcode#getCameras()} method or
@@ -354,8 +360,12 @@ export class Html5Qrcode {
             throw "qrCodeSuccessCallback is required and should be a function.";
         }
 
-        if (!qrCodeErrorCallback) {
-            qrCodeErrorCallback = this.verbose ? this.logger.log : () => {};
+        let qrCodeErrorCallbackInternal: QrcodeErrorCallback;
+        if (qrCodeErrorCallback) {
+            qrCodeErrorCallbackInternal = qrCodeErrorCallback;
+        } else {
+            qrCodeErrorCallbackInternal
+                = this.verbose ? this.logger.log : () => {};
         }
 
         const internalConfig = InternalHtml5QrcodeConfig.create(
@@ -377,7 +387,6 @@ export class Html5Qrcode {
         const areVideoConstraintsEnabled = videoConstraintsAvailableAndValid;
 
         // qr shaded box
-        const isShadedBoxEnabled = internalConfig.isShadedBoxEnabled();
         const element = document.getElementById(this.elementId)!;
         const rootElementWidth = element.clientWidth
             ? element.clientWidth : Constants.DEFAULT_WIDTH;
@@ -398,39 +407,47 @@ export class Html5Qrcode {
                 reject("videoConstraints should be defined");
                 return;
             }
-            if (navigator.mediaDevices) {
-                // Ignore all other video constraints if the videoConstraints
-                // is passed.
-                navigator.mediaDevices.getUserMedia(
-                    {
-                        audio: false,
-                        video: videoConstraints
-                    }).then((stream) => {
-                        $this.onMediaStreamReceived(
-                            stream,
-                            internalConfig,
-                            areVideoConstraintsEnabled,
-                            rootElementWidth,
-                            qrCodeSuccessCallback,
-                            qrCodeErrorCallback!)
-                            .then((_) => {
-                                toScanningStateChangeTransaction.execute();
-                                $this.isScanning = true;
-                                resolve(/* Void */ null);
-                            })
-                            .catch((error) => {
-                                toScanningStateChangeTransaction.cancel();
-                                reject(error);
-                            });
-                    })
-                    .catch((error) => {
-                        toScanningStateChangeTransaction.cancel();
-                        reject(Html5QrcodeStrings.errorGettingUserMedia(error));
-                    });
-            } else {
+
+            let cameraRenderingOptions: CameraRenderingOptions = {};
+            if (!areVideoConstraintsEnabled || internalConfig.aspectRatio) {
+                cameraRenderingOptions.aspectRatio = internalConfig.aspectRatio;
+            }
+
+            let renderingCallbacks: RenderingCallbacks = {
+                onRenderSurfaceReady: (viewfinderWidth, viewfinderHeight) => {
+                    $this.setupUi(
+                        viewfinderWidth, viewfinderHeight, internalConfig);
+
+                    $this.isScanning = true;
+                    $this.foreverScan(
+                        internalConfig,
+                        qrCodeSuccessCallback,
+                        qrCodeErrorCallbackInternal!);
+
+                    toScanningStateChangeTransaction.execute();
+                }
+            };
+
+            CameraFactory.failIfNotSupported().then((factory) => {
+                factory.create(videoConstraints).then((camera) => {
+                    return camera.render(
+                        this.element!, cameraRenderingOptions, renderingCallbacks)
+                        .then((renderedCamera) => {
+                            $this.renderedCamera = renderedCamera;
+                            resolve(/* Void */ null);
+                        })
+                        .catch((error) => {
+                            toScanningStateChangeTransaction.cancel();
+                            reject(error);
+                        });
+                }).catch((error) => {
+                    toScanningStateChangeTransaction.cancel();
+                    reject(Html5QrcodeStrings.errorGettingUserMedia(error));
+                });
+            }).catch((_) => {
                 toScanningStateChangeTransaction.cancel();
                 reject(Html5QrcodeStrings.cameraStreamingNotSupported());
-            }
+            });
         });
     }
     //#endregion
@@ -455,8 +472,8 @@ export class Html5Qrcode {
             shouldPauseVideo = false;
         }
 
-        if (shouldPauseVideo && this.videoElement) {
-            this.videoElement.pause();
+        if (shouldPauseVideo && this.renderedCamera) {
+            this.renderedCamera.pause();
         }
     }
 
@@ -477,8 +494,8 @@ export class Html5Qrcode {
             throw "Cannot result, scanner is not paused.";
         }
 
-        if (!this.videoElement) {
-            throw "VideoElement doesn't exist while trying resume()";
+        if (!this.renderedCamera) {
+            throw "renderedCamera doesn't exist while trying resume()";
         }
 
         const $this = this;
@@ -488,21 +505,14 @@ export class Html5Qrcode {
             $this.hidePausedState();
         }
 
-        let isVideoPaused = this.videoElement.paused;
-        if (!isVideoPaused) {
+        if (!this.renderedCamera.isPaused()) {
             transitionToScanning();
             return;
         }
-
-        // Transition state, when the video playback has resumed
-        // in case it was paused.
-        const onVideoResume = () => {
-            // Transition after 300ms to avoid the previous canvas frame being rescanned.
-            setTimeout(transitionToScanning, 200);
-            $this.videoElement?.removeEventListener("playing", onVideoResume);
-        }
-        this.videoElement.addEventListener("playing", onVideoResume);
-        this.videoElement.play();
+        this.renderedCamera.resume(() => {
+            // Transition state, when the video playback has resumed.
+            transitionToScanning();
+        })
     }
 
     /**
@@ -544,45 +554,26 @@ export class Html5Qrcode {
             }
          };
 
-        return new Promise((resolve, _) => {
-            const onAllTracksClosed = () => {
-                this.localMediaStream = null;
-                if (this.element) {
-                    this.element.removeChild(this.videoElement!);
-                    this.element.removeChild(this.canvasElement!);
-                }
+        let $this = this;
+        return this.renderedCamera!.close().then(() => {
+            $this.renderedCamera = null;
 
-                removeQrRegion();
-                if (this.qrRegion) {
-                    this.qrRegion = null;
-                }
-                if (this.context) {
-                    this.context = null;
-                }
-
-                toStoppedStateTransaction.execute();
-                this.hidePausedState();
-                this.isScanning = false;
-                resolve();
-            };
-
-            if (!this.localMediaStream) {
-                onAllTracksClosed();
+            if ($this.element) {
+                $this.element.removeChild($this.canvasElement!);
             }
 
-            const tracksToClose
-                = this.localMediaStream!.getVideoTracks().length;
-            var tracksClosed = 0;
+            removeQrRegion();
+            if ($this.qrRegion) {
+                $this.qrRegion = null;
+            }
+            if ($this.context) {
+                $this.context = null;
+            }
 
-            this.localMediaStream!.getVideoTracks().forEach((videoTrack) => {
-                this.localMediaStream!.removeTrack(videoTrack);
-                videoTrack.stop();
-                ++tracksClosed;
-
-                if (tracksClosed >= tracksToClose) {
-                    onAllTracksClosed();
-                }
-            });
+            toStoppedStateTransaction.execute();
+            $this.hidePausedState();
+            $this.isScanning = false;
+            return Promise.resolve();
         });
     }
     //#endregion
@@ -737,36 +728,9 @@ export class Html5Qrcode {
         this.clearElement();
     }
 
-    /**
-     * Returns a Promise with list of all cameras supported by the device.
-     *
-     * @returns a Promise with list of {@code CameraDevice}.
-     */
+    /** Returns list of {@link CameraDevice} supported by the device. */
     public static getCameras(): Promise<Array<CameraDevice>> {
-        if (navigator.mediaDevices) {
-            return Html5Qrcode.getCamerasFromMediaDevices();
-        }
-        
-        // Using deprecated api to support really old browsers.
-        var mst = <any>MediaStreamTrack;
-        if (MediaStreamTrack && mst.getSources) {
-            return Html5Qrcode.getCamerasFromMediaStreamTrack();
-        }
-
-        // This can potentially happen if the page is loaded without SSL.
-        const isHttpsOrLocalhost = (): boolean => {
-            if (location.protocol === "https:") {
-                return true;
-            }
-            const host = location.host.split(":")[0];
-            return host === "127.0.0.1" || host === "localhost";
-        }
-
-        let errorMessage = Html5QrcodeStrings.unableToQuerySupportedDevices();
-        if (!isHttpsOrLocalhost()) {
-            errorMessage = Html5QrcodeStrings.insecureContextCameraQueryError();
-        }
-        return Promise.reject(errorMessage);
+        return CameraRetriever.retrieve();
     }
 
     /**
@@ -781,17 +745,12 @@ export class Html5Qrcode {
      * @throws error if the scanning is not in running state.
      */
     public getRunningTrackCapabilities(): MediaTrackCapabilities {
-        if (this.localMediaStream == null) {
+        if (this.renderedCamera == null) {
             throw "Scanning is not in running state, call this API only when"
                 + " QR code scanning using camera is in running state.";
         }
 
-        if (this.localMediaStream.getVideoTracks().length === 0) {
-            throw "No video tracks found";
-        }
-
-        const videoTrack = this.localMediaStream.getVideoTracks()[0];
-        return videoTrack.getCapabilities();
+        return this.renderedCamera.getRunningTrackCapabilities();
     }
 
     /**
@@ -807,17 +766,12 @@ export class Html5Qrcode {
      * @throws error if the scanning is not in running state.
      */
     public getRunningTrackSettings(): MediaTrackSettings {
-        if (this.localMediaStream == null) {
+        if (this.renderedCamera == null) {
             throw "Scanning is not in running state, call this API only when"
                 + " QR code scanning using camera is in running state.";
         }
 
-        if (this.localMediaStream.getVideoTracks().length === 0) {
-            throw "No video tracks found";
-        }
-
-        const videoTrack = this.localMediaStream.getVideoTracks()[0];
-        return videoTrack.getSettings();
+        return this.renderedCamera.getRunningTrackSettings();
     }
 
     /**
@@ -843,96 +797,13 @@ export class Html5Qrcode {
             throw "invalid videoConstaints passed, check logs for more details";
         }
 
-        if (this.localMediaStream === null) {
+        if (this.renderedCamera === null) {
             throw "Scanning is not in running state, call this API only when"
                 + " QR code scanning using camera is in running state.";
         }
 
-        if (this.localMediaStream.getVideoTracks().length === 0) {
-            throw "No video tracks found";
-        }
-
-        return new Promise((resolve, reject) => {
-            if ("aspectRatio" in videoConstaints) {
-                reject("Chaning 'aspectRatio' in run-time is not yet "
-                    + "supported.");
-                return;
-            }
-            const videoTrack = this.localMediaStream!.getVideoTracks()[0];
-            // TODO(mebjas): This can be simplified to just return the promise
-            // directly.
-            videoTrack.applyConstraints(videoConstaints)
-                .then((_) => {
-                    resolve(_);
-                })
-                .catch((error) => {
-                    reject(error);
-                });
-        });
+        return this.renderedCamera.applyVideoConstraints(videoConstaints);
     }
-    
-    //#region Private methods for getting cameras.
-    private static getCamerasFromMediaDevices(): Promise<Array<CameraDevice>> {
-        return new Promise((resolve, reject) => {
-            navigator.mediaDevices.getUserMedia(
-                { audio: false, video: true })
-                .then((stream) => {
-                    // hacky approach to close any active stream if they are
-                    // active.
-                    const closeActiveStreams = (stream: MediaStream) => {
-                        const tracks = stream.getVideoTracks();
-                        for (const track of tracks) {
-                            track.enabled = false;
-                            track.stop();
-                            stream.removeTrack(track);
-                        }
-                    }
-
-                    navigator.mediaDevices.enumerateDevices()
-                        .then((devices) => {
-                            const results = [];
-                            for (const device of devices) {
-                                if (device.kind === "videoinput") {
-                                    results.push({
-                                        id: device.deviceId,
-                                        label: device.label
-                                    });
-                                }
-                            }
-                            closeActiveStreams(stream);
-                            resolve(results);
-                        })
-                        .catch((err) => {
-                            reject(`${err.name} : ${err.message}`);
-                        });
-                })
-                .catch((err) => {
-                    reject(`${err.name} : ${err.message}`);
-                });
-        });
-    }
-
-    private static getCamerasFromMediaStreamTrack(): Promise<Array<CameraDevice>> {
-        return new Promise((resolve, _) => {
-            const callback = (sourceInfos: Array<any>) => {
-                const results = [];
-                for (const sourceInfo of sourceInfos) {
-                    if (sourceInfo.kind === "video") {
-                        results.push({
-                            id: sourceInfo.id,
-                            label: sourceInfo.label
-                        });
-                    }
-                }
-                resolve(results);
-            }
-
-            var mst = <any>MediaStreamTrack;
-            mst.getSources(callback);
-        });
-    }
-    //#endregion
-
     //#region Private methods.
 
     /**
@@ -1260,12 +1131,12 @@ export class Html5Qrcode {
             return;
         }
 
-        if (!this.localMediaStream) {
+        if (!this.renderedCamera) {
             return;
         }
         // There is difference in size of rendered video and one that is
         // considered by the canvas. Need to account for scaling factor.
-        const videoElement = this.videoElement!;
+        const videoElement = this.renderedCamera!.getSurface();
         const widthRatio
             = videoElement.videoWidth / videoElement.clientWidth;
         const heightRatio
@@ -1321,67 +1192,6 @@ export class Html5Qrcode {
                     "Error happend while scanning context", error);
                 triggerNextScan();
             });        
-    }
-
-    /**
-     * Success callback when user media (Camera) is attached.
-     */
-    private onMediaStreamReceived(
-        mediaStream: MediaStream,
-        internalConfig: InternalHtml5QrcodeConfig,
-        areVideoConstraintsEnabled: boolean,
-        clientWidth: number,
-        qrCodeSuccessCallback: QrcodeSuccessCallback,
-        qrCodeErrorCallback: QrcodeErrorCallback): Promise<null> {
-        const $this = this;
-        return new Promise((resolve, reject) => {
-            const setupVideo = () => {
-                const videoElement = this.createVideoElement(clientWidth);
-                $this.element!.append(videoElement);
-                // Attach listeners to video.
-                videoElement.onabort = reject;
-                videoElement.onerror = reject;
-
-                const onVideoStart = () => {
-                    const videoWidth = videoElement.clientWidth;
-                    const videoHeight = videoElement.clientHeight;
-                    $this.setupUi(videoWidth, videoHeight, internalConfig);
-                    // start scanning after video feed has started
-                    $this.foreverScan(
-                        internalConfig,
-                        qrCodeSuccessCallback,
-                        qrCodeErrorCallback);
-                    videoElement.removeEventListener("playing", onVideoStart);
-                    resolve(/* void */ null);
-                }
-                videoElement.addEventListener("playing", onVideoStart);
-                videoElement.srcObject = mediaStream;
-                videoElement.play();
-
-                // Set state
-                $this.videoElement = videoElement;
-            }
-
-            $this.localMediaStream = mediaStream;
-            // If videoConstraints is passed, ignore all other configs.
-            if (areVideoConstraintsEnabled || !internalConfig.aspectRatio) {
-                setupVideo();
-            } else {
-                const constraints = {
-                    aspectRatio : internalConfig.aspectRatio
-                }
-                const track = mediaStream.getVideoTracks()[0];
-                track.applyConstraints(constraints)
-                    .then((_) => setupVideo())
-                    .catch((error) => {
-                        $this.logger.logErrors(
-                            ["[Html5Qrcode] Constriants could not "
-                                + "be satisfied, ignoring constraints",
-                            error]);
-                        setupVideo();
-                    });
-            }
-        });
     }
 
     private createVideoConstraints(
@@ -1531,16 +1341,6 @@ export class Html5Qrcode {
         if (element) {
             element.innerHTML = "";
         }
-    }
-
-    private createVideoElement(width: number): HTMLVideoElement {
-        const videoElement = document.createElement("video");
-        videoElement.style.width = `${width}px`;
-        videoElement.style.display = "block";
-        videoElement.muted = true;
-        videoElement.setAttribute("muted", "true");
-        (<any>videoElement).playsInline = true;
-        return videoElement;
     }
 
     private possiblyUpdateShaders(qrMatch: boolean) {
