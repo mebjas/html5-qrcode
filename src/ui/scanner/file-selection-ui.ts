@@ -27,7 +27,7 @@ export class FileSelectionUi {
     private readonly fileSelectionButton: HTMLButtonElement;
 
     /** Creates object and renders. */
-    constructor(
+    private constructor(
         parentElement: HTMLDivElement,
         showOnRender: boolean,
         onFileSelected: OnFileSelected) {

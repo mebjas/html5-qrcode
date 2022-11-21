@@ -34,6 +34,7 @@ import { Html5QrcodeShim } from "./code-decoder";
 import { CameraFactory } from "./camera/factories";
 import {
     CameraDevice,
+    CameraCapabilities,
     CameraRenderingOptions,
     RenderedCamera,
     RenderingCallbacks
@@ -397,7 +398,8 @@ export class Html5Qrcode {
 
         const $this = this;
         const toScanningStateChangeTransaction: StateManagerTransaction
-            = this.stateManagerProxy.startTransition(Html5QrcodeScannerState.SCANNING);
+            = this.stateManagerProxy.startTransition(
+                Html5QrcodeScannerState.SCANNING);
         return new Promise((resolve, reject) => {
             const videoConstraints = areVideoConstraintsEnabled
                     ? internalConfig.videoConstraints
@@ -423,8 +425,6 @@ export class Html5Qrcode {
                         internalConfig,
                         qrCodeSuccessCallback,
                         qrCodeErrorCallbackInternal!);
-
-                    toScanningStateChangeTransaction.execute();
                 }
             };
 
@@ -436,6 +436,7 @@ export class Html5Qrcode {
                         this.element!, cameraRenderingOptions, renderingCallbacks)
                         .then((renderedCamera) => {
                             $this.renderedCamera = renderedCamera;
+                            toScanningStateChangeTransaction.execute();
                             resolve(/* Void */ null);
                         })
                         .catch((error) => {
@@ -744,16 +745,10 @@ export class Html5Qrcode {
      * Important:
      *  1. Must be called only if the camera based scanning is in progress.
      *
-     * @returns the capabilities of a running video track.
      * @throws error if the scanning is not in running state.
      */
     public getRunningTrackCapabilities(): MediaTrackCapabilities {
-        if (this.renderedCamera == null) {
-            throw "Scanning is not in running state, call this API only when"
-                + " QR code scanning using camera is in running state.";
-        }
-
-        return this.renderedCamera.getRunningTrackCapabilities();
+        return this.getRenderedCameraOrFail().getRunningTrackCapabilities();
     }
 
     /**
@@ -765,16 +760,21 @@ export class Html5Qrcode {
      * Important:
      *  1. Must be called only if the camera based scanning is in progress.
      *
-     * @returns the supported settings of the running video track.
      * @throws error if the scanning is not in running state.
      */
     public getRunningTrackSettings(): MediaTrackSettings {
-        if (this.renderedCamera == null) {
-            throw "Scanning is not in running state, call this API only when"
-                + " QR code scanning using camera is in running state.";
-        }
+        return this.getRenderedCameraOrFail().getRunningTrackSettings();
+    }
 
-        return this.renderedCamera.getRunningTrackSettings();
+    /**
+     * Returns {@link CameraCapabilities} of the running video track.
+     * 
+     * TODO(minhazav): Document this API, currently hidden.
+     *
+     * @throws error if the scanning is not in running state.
+     */
+    public getRunningTrackCameraCapabilities(): CameraCapabilities {
+        return this.getRenderedCameraOrFail().getCapabilities();
     }
 
     /**
@@ -800,14 +800,18 @@ export class Html5Qrcode {
             throw "invalid videoConstaints passed, check logs for more details";
         }
 
-        if (this.renderedCamera === null) {
+        return this.getRenderedCameraOrFail().applyVideoConstraints(
+            videoConstaints);
+    }
+
+    //#region Private methods.
+    private getRenderedCameraOrFail() {
+        if (this.renderedCamera == null) {
             throw "Scanning is not in running state, call this API only when"
                 + " QR code scanning using camera is in running state.";
         }
-
-        return this.renderedCamera.applyVideoConstraints(videoConstaints);
+        return this.renderedCamera!;
     }
-    //#region Private methods.
 
     /**
      * Construct list of supported formats and returns based on input args.
@@ -1012,7 +1016,6 @@ export class Html5Qrcode {
         viewfinderWidth: number,
         viewfinderHeight: number,
         internalConfig: InternalHtml5QrcodeConfig): void {
-
         // Validate before insertion
         if (internalConfig.isShadedBoxEnabled()) {
             this.validateQrboxSize(
@@ -1194,7 +1197,7 @@ export class Html5Qrcode {
                 this.logger.logError(
                     "Error happend while scanning context", error);
                 triggerNextScan();
-            });        
+            });
     }
 
     private createVideoConstraints(

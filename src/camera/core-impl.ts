@@ -7,10 +7,126 @@
 
 import {
     Camera,
+    CameraCapabilities,
+    CameraCapability,
+    RangeCameraCapability,
     CameraRenderingOptions,
     RenderedCamera,
-    RenderingCallbacks
+    RenderingCallbacks,
+    BooleanCameraCapability
 } from "./core";
+
+/** Interface for a range value. */
+interface RangeValue {
+    min: number;
+    max: number;
+    step: number;
+}
+
+/** Abstract camera capability class. */
+abstract class AbstractCameraCapability<T> implements CameraCapability<T> {
+    protected readonly name: string;
+    protected readonly track: MediaStreamTrack;
+
+    constructor(name: string, track: MediaStreamTrack) {
+        this.name = name;
+        this.track = track;
+    }
+
+    public isSupported(): boolean {
+        return this.name in this.track.getCapabilities();
+    }
+
+    public apply(value: T): Promise<void> {
+        let constraint: any = {};
+        constraint[this.name] = value;
+        let constraints = { advanced: [ constraint ] };
+        return this.track.applyConstraints(constraints);
+    }
+
+    public value(): T | null {
+        let settings: any = this.track.getSettings();
+        if (this.name in settings) {
+            let settingValue = settings[this.name];
+            return settingValue;
+        }
+
+        return null;
+    }
+}
+
+abstract class AbstractRangeCameraCapability extends AbstractCameraCapability<number> {
+    constructor(name: string, track: MediaStreamTrack) {
+       super(name, track);
+    }
+
+    public min(): number {
+        return this.getCapabilities().min;
+    }
+
+    public max(): number {
+        return this.getCapabilities().max;
+    }
+
+    public step(): number {
+        return this.getCapabilities().step;
+    }
+
+    public apply(value: number): Promise<void> {
+        let constraint: any = {};
+        constraint[this.name] = value;
+        let constraints = {advanced: [ constraint ]};
+        return this.track.applyConstraints(constraints);
+    }
+
+    private getCapabilities(): RangeValue {
+        this.failIfNotSupported();
+        let capabilities: any = this.track.getCapabilities();
+        let capability: any = capabilities[this.name];
+        return {
+            min: capability.min,
+            max: capability.max,
+            step: capability.step,
+        };
+    }
+
+    private failIfNotSupported() {
+        if (!this.isSupported()) {
+            throw new Error(`${this.name} capability not supported`);
+        }
+    }
+}
+
+/** Zoom feature. */
+class ZoomFeatureImpl extends AbstractRangeCameraCapability {
+    constructor(track: MediaStreamTrack) {
+        super("zoom", track);
+    }
+}
+
+/** Torch feature. */
+class TorchFeatureImpl extends AbstractCameraCapability<boolean> {
+    constructor(track: MediaStreamTrack) {
+        super("torch", track);
+    }
+}
+
+/** Implementation of {@link CameraCapabilities}. */
+class CameraCapabilitiesImpl implements CameraCapabilities {
+    private readonly track: MediaStreamTrack;
+    
+    constructor(track: MediaStreamTrack) {
+        this.track = track;
+    }
+
+    zoomFeature(): RangeCameraCapability {
+        return new ZoomFeatureImpl(this.track);
+    }
+
+    torchFeature(): BooleanCameraCapability {
+        return new TorchFeatureImpl(this.track);
+    }
+}
 
 /** Implementation of {@link RenderedCamera}. */
 class RenderedCameraImpl implements RenderedCamera {
@@ -55,16 +171,16 @@ class RenderedCameraImpl implements RenderedCamera {
             throw "RenderedCameraImpl video surface onerror() called";
         };
 
-        this.surface.addEventListener("playing", () => this.onVideoStart());
+        let onVideoStart = () => {
+            const videoWidth = this.surface.clientWidth;
+            const videoHeight = this.surface.clientHeight;
+            this.callbacks.onRenderSurfaceReady(videoWidth, videoHeight);
+            this.surface.removeEventListener("playing", onVideoStart);
+        };
+
+        this.surface.addEventListener("playing", onVideoStart);
         this.surface.srcObject = this.mediaStream;
         this.surface.play();
-    }
-
-    private onVideoStart() {
-        const videoWidth = this.surface.clientWidth;
-        const videoHeight = this.surface.clientHeight;
-        this.callbacks.onRenderSurfaceReady(videoWidth, videoHeight);
-        this.surface.removeEventListener("playing", this.onVideoStart);
     }
 
     static async create(
@@ -176,6 +292,10 @@ class RenderedCameraImpl implements RenderedCamera {
     
             
         });
+    }
+
+    getCapabilities(): CameraCapabilities {
+        return new CameraCapabilitiesImpl(this.getFirstTrackOrFail());
     }
     //#endregion
 }

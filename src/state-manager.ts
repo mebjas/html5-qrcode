@@ -115,7 +115,7 @@ class StateManagerImpl implements StateManager, StateManagerTransaction {
     private failIfTransitionOngoing() {
         if (this.onGoingTransactionNewState 
             !== Html5QrcodeScannerState.UNKNOWN) {
-            throw "Cannnot transition to a new state, already under transition"; 
+            throw "Cannot transition to a new state, already under transition"; 
          }
     }
 

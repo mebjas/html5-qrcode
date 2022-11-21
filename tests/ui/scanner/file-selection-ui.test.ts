@@ -4,10 +4,7 @@ import {
     FileSelectionUi,
     OnFileSelected
 } from "../../../src/ui/scanner/file-selection-ui";
-import { 
-    PublicUiElementIdAndClasses,
-    BaseUiElementFactory
-} from "../../../src/ui/scanner/base";
+import { PublicUiElementIdAndClasses } from "../../../src/ui/scanner/base";
 
 describe("FileSelectionUi#constructor()", () => {
 

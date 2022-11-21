@@ -3,6 +3,29 @@
 #### Features or bug fixes.
 -   Hide margin of parent container when camera selection UI is hidden (if only 1 camera is found.) - [Issue#599](https://github.com/mebjas/html5-qrcode/issues/599), [PR#607](https://github.com/mebjas/html5-qrcode/pull/607) by [adamwolf@](https://github.com/adamwolf).
 
+**Support for zoom slider in `Html5QrcodeScanner`.**
+Added basic support for zoom feature under configuration flag (not enabled by default). This was raised in issue [issue#330](https://github.com/mebjas/html5-qrcode/issues/330).This should help address some focus issues raised so far.
+
+Not supported on Safari or any IOS browser though!
+
+How to use
+
+```js
+let html5QrcodeScanner = new Html5QrcodeScanner(
+    "reader", 
+    { 
+        fps: 10,
+        qrbox: qrboxFunction,
+        useBarCodeDetectorIfSupported: true,
+        rememberLastUsedCamera: true,
+        aspectRatio: 4/3,
+        showTorchButtonIfSupported: true,
+        showZoomSliderIfSupported: true,
+        defaultZoomValueIfSupported: 2
+        // ^ this means by default camera will load at 2x zoom.
+    });
+```
+
 #### Tech debts
 -    Refactored the camera components out of `src/html5-qrcode.ts`
 

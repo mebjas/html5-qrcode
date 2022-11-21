@@ -164,6 +164,11 @@ export class Html5QrcodeScannerStrings {
     public static dragAndDropMessageOnlyImages(): string {
         return "Or drop an image to scan (other files not supported)";
     }
+
+    /** Value for zoom. */
+    public static zoom(): string {
+        return "zoom";
+    }
 }
 
 /** Strings used in {@class LibraryInfoDiv} */

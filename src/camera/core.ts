@@ -11,6 +11,46 @@ export interface CameraDevice {
   label: string;
 }
 
+//#region Features
+/** Generic capability of camera. */
+export interface CameraCapability<T> {
+  /** Returns {@code true} if the capability is supported by the camera. */
+  isSupported(): boolean;
+
+  /** Apply the {@code value} to camera for this capability. */
+  apply(value: T): Promise<void>;
+
+  /** Returns current value of this capability. */
+  value(): T | null;
+}
+
+/** Capability of the camera that has range. */
+export interface RangeCameraCapability extends CameraCapability<number> {  
+  /** Min value allowed for this capability. */
+  min(): number;
+
+  /** Max value allowed for this capability. */
+  max(): number;
+
+  /** Steps allowed for this capability. */
+  step(): number;
+}
+
+/** Capability of camera that is boolean in nature. */
+export interface BooleanCameraCapability extends CameraCapability<boolean> {}  
+
+/** Class exposing different capabilities of camera. */
+export interface CameraCapabilities {
+
+  /** Zoom capability of the camera. */
+  zoomFeature(): RangeCameraCapability;
+
+  /** Torch capability of the camera. */
+  torchFeature(): BooleanCameraCapability;
+}
+
+//#endregion
+
 /** Type for callback called when camera surface is ready. */
 export type OnRenderSurfaceReady
   = (viewfinderWidth: number, viewfinderHeight: number) => void;
@@ -102,6 +142,11 @@ export interface RenderedCamera {
    * @throws error if {@link RenderedCamera} instance is already closed.
    */
   applyVideoConstraints(constraints: MediaTrackConstraints): Promise<void>;
+
+  /**
+   * Returns all capabilities of the camera.
+   */
+  getCapabilities(): CameraCapabilities;
 }
 
 /** Options for rendering camera feed. */
