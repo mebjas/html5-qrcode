@@ -58,10 +58,7 @@ import { Html5QrcodeScannerState } from "./state-manager";
 
 import { ScanTypeSelector } from "./ui/scanner/scan-type-selector";
 
-import {
-    TorchButton,
-    TorchUtils
-} from "./ui/scanner/torch-button";
+import { TorchButton } from "./ui/scanner/torch-button";
 
 import {
     FileSelectionUi,
@@ -755,25 +752,30 @@ export class Html5QrcodeScanner {
         cameraActionContainer.appendChild(cameraActionStopButton);
 
         // Optional torch button support.
-        const torchButton = TorchButton.create(
-            cameraActionContainer,
-            $this.html5Qrcode!,
-            {display: "none", marginLeft: "5px"},
-            // Callback in case of torch action failure.
-            (errorMessage) => {
-                $this.setHeaderMessage(
-                    errorMessage,
-                    Html5QrcodeScannerStatus.STATUS_WARNING);
-            }
-        );
-
-        const showTorchButtonIfSupported = (settings: MediaTrackSettings) => {
-            if (!TorchUtils.isTorchSupported(settings)) {
+        let torchButton: TorchButton;
+        const createAndShowTorchButtonIfSupported
+            = (cameraCapabilities: CameraCapabilities) => {
+            if (!cameraCapabilities.torchFeature().isSupported()) {
                 // Torch not supported, ignore.
-                torchButton.hide();
+                if (torchButton) {
+                    torchButton.hide();
+                }
                 return;
             }
 
+            if (!torchButton) {
+                torchButton = TorchButton.create(
+                    cameraActionContainer,
+                    cameraCapabilities.torchFeature(),
+                    { display: "none", marginLeft: "5px" },
+                    // Callback in case of torch action failure.
+                    (errorMessage) => {
+                        $this.setHeaderMessage(
+                            errorMessage,
+                            Html5QrcodeScannerStatus.STATUS_WARNING);
+                    }
+                );
+            }
             torchButton.show();
         };
 
@@ -820,15 +822,16 @@ export class Html5QrcodeScanner {
                     cameraActionStopButton.style.display = "inline-block";
                     resetCameraActionStartButton(/* shouldShow= */ false);
 
+                    const cameraCapabilities
+                        = $this.html5Qrcode!.getRunningTrackCameraCapabilities();
+
                     // Show torch button if needed.
                     if (this.config.showTorchButtonIfSupported === true) {
-                        showTorchButtonIfSupported(
-                            $this.html5Qrcode!.getRunningTrackSettings());
+                        createAndShowTorchButtonIfSupported(cameraCapabilities);
                     }
-
+                    // Show zoom slider if needed.
                     if (this.config.showZoomSliderIfSupported === true) {
-                        renderCameraZoomUiIfSupported(
-                            $this.html5Qrcode!.getRunningTrackCameraCapabilities());
+                        renderCameraZoomUiIfSupported(cameraCapabilities);
                     }
                 })
                 .catch((error) => {
@@ -863,8 +866,10 @@ export class Html5QrcodeScanner {
                     cameraActionStopButton.style.display = "none";
                     cameraActionStartButton.style.display = "inline-block";
                     // Reset torch state.
-                    torchButton.reset();
-                    torchButton.hide();
+                    if (torchButton) {
+                        torchButton.reset();
+                        torchButton.hide();
+                    }
                     cameraZoomUi.removeOnCameraZoomValueChangeCallback();
                     cameraZoomUi.hide();
                     $this.insertCameraScanImageToScanRegion();

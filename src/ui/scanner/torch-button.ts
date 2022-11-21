@@ -8,8 +8,8 @@
  * http://www.denso-wave.com/qrcode/faqpatent-e.html
  */
 
-import {Html5QrcodeScannerStrings} from "../../strings";
-import {Html5Qrcode} from "../../html5-qrcode";
+import { BooleanCameraCapability } from "../../camera/core";
+import { Html5QrcodeScannerStrings } from "../../strings";
 import {
     BaseUiElementFactory,
     PublicUiElementIdAndClasses
@@ -20,21 +20,28 @@ import {
  */
 export type OnTorchActionFailureCallback = (failureMessage: string) => void;
 
+/** Interface for controlling torch button. */
+interface TorchButtonController {
+    disable(): void;
+    enable(): void;
+    setText(text: string): void;
+}
+
 /** Controller class for handling torch / flash. */
 class TorchController {
-    private readonly html5Qrcode: Html5Qrcode;
-    private readonly buttonElement: HTMLButtonElement;
+    private readonly torchCapability: BooleanCameraCapability;
+    private readonly buttonController: TorchButtonController;
     private readonly onTorchActionFailureCallback: OnTorchActionFailureCallback;
     
     // Mutable states.
     private isTorchOn: boolean = false;
 
     constructor(
-        html5Qrcode: Html5Qrcode,
-        buttonElement: HTMLButtonElement,
+        torchCapability: BooleanCameraCapability,
+        buttonController: TorchButtonController,
         onTorchActionFailureCallback: OnTorchActionFailureCallback) {
-        this.html5Qrcode = html5Qrcode;
-        this.buttonElement = buttonElement;
+        this.torchCapability = torchCapability;
+        this.buttonController = buttonController;
         this.onTorchActionFailureCallback = onTorchActionFailureCallback;
     }
 
@@ -52,47 +59,33 @@ class TorchController {
      * @returns Promise that finishes when the async action is done.
      */
     public async flipState(): Promise<void> {
-        this.buttonElement.disabled = true;
+        this.buttonController.disable();
         let isTorchOnExpected = !this.isTorchOn;
-        // Following constraint is used to set torch when camera feed is active
-        // on supported devices. Likely only supported on Chrome on Android.
-
-        // @ts-ignore : 'torch' doesn't seem to be supported as a first
-        // class citizen in 'MediaTrackConstraints' implicitly.
-        let constraints: MediaTrackConstraints = {
-            "torch": isTorchOnExpected,
-            "advanced": [{
-                // @ts-ignore
-                "torch": isTorchOnExpected
-                }]};
-
         try {
-            await this.html5Qrcode.applyVideoConstraints(constraints);
-            let settings = this.html5Qrcode.getRunningTrackSettings();
-            this.updateUiBasedOnLatestSettings(settings, isTorchOnExpected);
+            await this.torchCapability.apply(isTorchOnExpected);
+            this.updateUiBasedOnLatestSettings(
+                this.torchCapability.value()!, isTorchOnExpected);
         } catch (error) {
             this.propagateFailure(isTorchOnExpected, error);
-            this.buttonElement.disabled = false;
+            this.buttonController.enable();
         }
     }
 
     private updateUiBasedOnLatestSettings(
-        settings: MediaTrackSettings,
+        isTorchOn: boolean,
         isTorchOnExpected: boolean) {
-        // @ts-ignore
-        if (settings.torch === isTorchOnExpected) {
+        if (isTorchOn === isTorchOnExpected) {
             // Action succeeded, flip the state.
-            this.buttonElement.innerText
-                = isTorchOnExpected
+            this.buttonController.setText(isTorchOnExpected
                     ? Html5QrcodeScannerStrings.torchOffButton()
-                    : Html5QrcodeScannerStrings.torchOnButton();
+                    : Html5QrcodeScannerStrings.torchOnButton());
             this.isTorchOn = isTorchOnExpected;
         } else {
             // Torch didn't get set as expected.
             // Show warning.
             this.propagateFailure(isTorchOnExpected);
         }
-        this.buttonElement.disabled = false;
+        this.buttonController.enable();
     }
 
     private propagateFailure(
@@ -122,62 +115,48 @@ export interface TorchButtonOptions {
     marginLeft: string;
 }
 
-/**
- * Helper class for creating Torch UI component.
- */
-export class TorchButton {
-    /**
-     * Factory method for creating torch button.
-     * 
-     * @param html5Qrcode instace of {@code Html5Qrcode}.
-     * @param onTorchActionFailureCallback callback to be called in case of
-     *  torch action failure.
-     * @returns Button for controlling torch.
-     */
-    public static create(
-        parentElement: HTMLElement,
-        html5Qrcode: Html5Qrcode,
-        torchButtonOptions: TorchButtonOptions,
-        onTorchActionFailureCallback: OnTorchActionFailureCallback)
-        : TorchButton {
-        let torchButton = BaseUiElementFactory.createElement<HTMLButtonElement>(
-            "button", PublicUiElementIdAndClasses.TORCH_BUTTON_ID);
-
-        let torchController = new TorchController(
-            html5Qrcode,
-            torchButton,
-            onTorchActionFailureCallback);
-        torchButton.innerText
-            = Html5QrcodeScannerStrings.torchOnButton();
-        torchButton.style.display = torchButtonOptions.display;
-        torchButton.style.marginLeft = torchButtonOptions.marginLeft;
-
-        torchButton.addEventListener("click", async (_) => {
-            await torchController.flipState();
-            if (torchController.isTorchEnabled()) {
-                torchButton.classList.remove(
-                    PublicUiElementIdAndClasses.TORCH_BUTTON_CLASS_TORCH_OFF);
-                torchButton.classList.add(
-                    PublicUiElementIdAndClasses.TORCH_BUTTON_CLASS_TORCH_ON);  
-            } else {
-                torchButton.classList.remove(
-                    PublicUiElementIdAndClasses.TORCH_BUTTON_CLASS_TORCH_ON);
-                torchButton.classList.add(
-                    PublicUiElementIdAndClasses.TORCH_BUTTON_CLASS_TORCH_OFF);
-            }
-        });
-
-        parentElement.appendChild(torchButton);
-        return new TorchButton(torchButton, torchController);
-    }
-
+/** Helper class for creating Torch UI component. */
+export class TorchButton implements TorchButtonController {
     private readonly torchButton: HTMLButtonElement;
     private readonly torchController: TorchController;
     
     private constructor(
-        torchButton: HTMLButtonElement, torchController: TorchController) {
-        this.torchButton = torchButton;
-        this.torchController = torchController;
+        torchCapability: BooleanCameraCapability,
+        onTorchActionFailureCallback: OnTorchActionFailureCallback) {
+        this.torchButton
+            = BaseUiElementFactory.createElement<HTMLButtonElement>(
+            "button", PublicUiElementIdAndClasses.TORCH_BUTTON_ID);
+
+        this.torchController = new TorchController(
+            torchCapability,
+            /* buttonController= */ this,
+            onTorchActionFailureCallback);
+    }
+
+    private render(
+        parentElement: HTMLElement, torchButtonOptions: TorchButtonOptions) {
+        this.torchButton.innerText
+            = Html5QrcodeScannerStrings.torchOnButton();
+        this.torchButton.style.display = torchButtonOptions.display;
+        this.torchButton.style.marginLeft = torchButtonOptions.marginLeft;
+
+        let $this = this;
+        this.torchButton.addEventListener("click", async (_) => {
+            await $this.torchController.flipState();
+            if ($this.torchController.isTorchEnabled()) {
+                $this.torchButton.classList.remove(
+                    PublicUiElementIdAndClasses.TORCH_BUTTON_CLASS_TORCH_OFF);
+                $this.torchButton.classList.add(
+                    PublicUiElementIdAndClasses.TORCH_BUTTON_CLASS_TORCH_ON);  
+            } else {
+                $this.torchButton.classList.remove(
+                    PublicUiElementIdAndClasses.TORCH_BUTTON_CLASS_TORCH_ON);
+                $this.torchButton.classList.add(
+                    PublicUiElementIdAndClasses.TORCH_BUTTON_CLASS_TORCH_OFF);
+            }
+    });
+
+        parentElement.appendChild(this.torchButton);
     }
 
     /** Returns the torch button. */
@@ -193,6 +172,18 @@ export class TorchButton {
         this.torchButton.style.display = "inline-block";
     }
 
+    disable(): void {
+        this.torchButton.disabled = true;
+    }
+
+    enable(): void {
+        this.torchButton.disabled = false;
+    }
+
+    setText(text: string): void {
+        this.torchButton.innerText = text;
+    }
+
     /**
      * Resets the state.
      * 
@@ -202,18 +193,25 @@ export class TorchButton {
         this.torchButton.innerText = Html5QrcodeScannerStrings.torchOnButton();
         this.torchController.reset();
     }
-}
 
-/** Util classes for torch related features. */
-export class TorchUtils {
     /**
-     * Returns {@code true} if torch is supported on the given device + browser
-     * for the running camera (based on the input media track settings).
+     * Factory method for creating torch button.
      * 
-     * @param mediaTrackSettings settings for running video track.
+     * @param parentElement parent HTML element to render torch button into
+     * @param torchCapability torch capability of the camera
+     * @param torchButtonOptions options for creating torch
+     * @param onTorchActionFailureCallback callback to be called in case of
+     *  torch action failure.
      */
-    public static isTorchSupported(mediaTrackSettings: MediaTrackSettings)
-        : boolean {
-        return "torch" in mediaTrackSettings;
+     public static create(
+        parentElement: HTMLElement,
+        torchCapability: BooleanCameraCapability,
+        torchButtonOptions: TorchButtonOptions,
+        onTorchActionFailureCallback: OnTorchActionFailureCallback)
+        : TorchButton {
+        let button = new TorchButton(
+            torchCapability, onTorchActionFailureCallback);
+        button.render(parentElement, torchButtonOptions);
+        return button;
     }
 }

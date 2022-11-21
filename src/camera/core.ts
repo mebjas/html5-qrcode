@@ -12,11 +12,20 @@ export interface CameraDevice {
 }
 
 //#region Features
-/** Capability of the camera. */
-export interface CameraCapability {
+/** Generic capability of camera. */
+export interface CameraCapability<T> {
   /** Returns {@code true} if the capability is supported by the camera. */
   isSupported(): boolean;
 
+  /** Apply the {@code value} to camera for this capability. */
+  apply(value: T): Promise<void>;
+
+  /** Returns current value of this capability. */
+  value(): T | null;
+}
+
+/** Capability of the camera that has range. */
+export interface RangeCameraCapability extends CameraCapability<number> {  
   /** Min value allowed for this capability. */
   min(): number;
 
@@ -25,16 +34,19 @@ export interface CameraCapability {
 
   /** Steps allowed for this capability. */
   step(): number;
-
-  /** Apply the {@code value} to camera for this capability. */
-  apply(value: number): Promise<void>;
 }
+
+/** Capability of camera that is boolean in nature. */
+export interface BooleanCameraCapability extends CameraCapability<boolean> {}  
 
 /** Class exposing different capabilities of camera. */
 export interface CameraCapabilities {
 
-  /** Zoom capability of camera. */
-  zoomFeature(): CameraCapability;
+  /** Zoom capability of the camera. */
+  zoomFeature(): RangeCameraCapability;
+
+  /** Torch capability of the camera. */
+  torchFeature(): BooleanCameraCapability;
 }
 
 //#endregion

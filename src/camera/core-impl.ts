@@ -9,9 +9,11 @@ import {
     Camera,
     CameraCapabilities,
     CameraCapability,
+    RangeCameraCapability,
     CameraRenderingOptions,
     RenderedCamera,
-    RenderingCallbacks
+    RenderingCallbacks,
+    BooleanCameraCapability
 } from "./core";
 
 /** Interface for a range value. */
@@ -22,7 +24,7 @@ interface RangeValue {
 }
 
 /** Abstract camera capability class. */
-abstract class AbstractCameraCapability implements CameraCapability {
+abstract class AbstractCameraCapability<T> implements CameraCapability<T> {
     protected readonly name: string;
     protected readonly track: MediaStreamTrack;
 
@@ -33,6 +35,29 @@ abstract class AbstractCameraCapability implements CameraCapability {
 
     public isSupported(): boolean {
         return this.name in this.track.getCapabilities();
+    }
+
+    public apply(value: T): Promise<void> {
+        let constraint: any = {};
+        constraint[this.name] = value;
+        let constraints = { advanced: [ constraint ] };
+        return this.track.applyConstraints(constraints);
+    }
+
+    public value(): T | null {
+        let settings: any = this.track.getSettings();
+        if (this.name in settings) {
+            let settingValue = settings[this.name];
+            return settingValue;
+        }
+
+        return null;
+    }
+}
+
+abstract class AbstractRangeCameraCapability extends AbstractCameraCapability<number> {
+    constructor(name: string, track: MediaStreamTrack) {
+       super(name, track);
     }
 
     public min(): number {
@@ -72,10 +97,17 @@ abstract class AbstractCameraCapability implements CameraCapability {
     }
 }
 
-/** Zoom capability of a camera. */
-class ZoomCamera extends AbstractCameraCapability {
+/** Zoom feature. */
+class ZoomFeatureImpl extends AbstractRangeCameraCapability {
     constructor(track: MediaStreamTrack) {
         super("zoom", track);
+    }
+}
+
+/** Torch feature. */
+class TorchFeatureImpl extends AbstractCameraCapability<boolean> {
+    constructor(track: MediaStreamTrack) {
+        super("torch", track);
     }
 }
 
@@ -87,8 +119,12 @@ class CameraCapabilitiesImpl implements CameraCapabilities {
         this.track = track;
     }
 
-    zoomFeature(): CameraCapability {
-        return new ZoomCamera(this.track);
+    zoomFeature(): RangeCameraCapability {
+        return new ZoomFeatureImpl(this.track);
+    }
+
+    torchFeature(): BooleanCameraCapability {
+        return new TorchFeatureImpl(this.track);
     }
 }
 
