@@ -9,7 +9,8 @@ import {
     DecodedTextType,
     Html5QrcodeErrorFactory,
     Html5QrcodeErrorTypes,
-    isNullOrUndefined
+    isNullOrUndefined,
+    clip
 } from "../src/core";
 
 describe("isValidHtml5QrcodeSupportedFormats function", () => {
@@ -88,5 +89,19 @@ describe("isNullOrUndefined function", () => {
         expect(isNullOrUndefined(0)).to.be.false;
         expect(isNullOrUndefined(-1)).to.be.false;
         expect(isNullOrUndefined("undefined")).to.be.false;
+    });
+});
+
+describe("clip function", () => {
+    it("in range, returns the value", () => {
+        expect(clip(5, 0, 10)).eq(5);
+    });
+
+    it("below min, returns the min value", () => {
+        expect(clip(-5, 0, 10)).eq(0);
+    });
+
+    it("above max, return the max value", () => {
+        expect(clip(11, 0, 10)).eq(10);
     });
 });

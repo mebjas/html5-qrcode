@@ -132,6 +132,8 @@ interface Html5QrcodeScannerConfig
      * device + browser support.
      * 
      * Note: default value is {@code false}.
+     * 
+     * TODO(minhazav): Document this API, currently hidden.
      */
     showZoomSliderIfSupported?: boolean | undefined;
 
@@ -139,6 +141,8 @@ interface Html5QrcodeScannerConfig
      * Default zoom value if supported.
      * 
      * Note: default value is 1x.
+     * 
+     * TODO(minhazav): Document this API, currently hidden.
      */
     defaultZoomValueIfSupported?: number | undefined;
 }
@@ -608,6 +612,7 @@ export class Html5QrcodeScanner {
             && this.persistedDataManager.hasCameraPermissions()) {
             CameraPermissions.hasPermissions().then(
                 (hasPermissions: boolean) => {
+                console.log(`CameraPermissions.hasPermissions(): ${hasPermissions}`);
                 if (hasPermissions) {
                     $this.createCameraListUi(
                         scpCameraScanRegion, requestPermissionContainer);

@@ -768,10 +768,12 @@ export class Html5Qrcode {
 
     /**
      * Returns {@link CameraCapabilities} of the running video track.
+     * 
+     * TODO(minhazav): Document this API, currently hidden.
      *
      * @throws error if the scanning is not in running state.
      */
-     public getRunningTrackCameraCapabilities(): CameraCapabilities {
+    public getRunningTrackCameraCapabilities(): CameraCapabilities {
         return this.getRenderedCameraOrFail().getCapabilities();
     }
 

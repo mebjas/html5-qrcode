@@ -1,7 +1,7 @@
 import { expect } from "chai";
 
 import { Html5QrcodeScanType } from "../../../src/core";
-import { ScanTypeSelector } from "../../../src/ui/scanner/scan-type-selector"
+import { ScanTypeSelector } from "../../../src/ui/scanner/scan-type-selector";
 
 describe("ScanTypeSelector#getDefaultScanType()", () => {
     it("Camera + File returns camera", () => {
