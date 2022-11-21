@@ -612,7 +612,6 @@ export class Html5QrcodeScanner {
             && this.persistedDataManager.hasCameraPermissions()) {
             CameraPermissions.hasPermissions().then(
                 (hasPermissions: boolean) => {
-                console.log(`CameraPermissions.hasPermissions(): ${hasPermissions}`);
                 if (hasPermissions) {
                     $this.createCameraListUi(
                         scpCameraScanRegion, requestPermissionContainer);
