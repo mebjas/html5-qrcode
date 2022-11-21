@@ -33,11 +33,8 @@ describe("TorchButton#create()", () => {
     let options = { display: "inline-block", marginLeft: "10px" };
 
     before(() => {
-        let elementId = "test-id";
         parentElement = document.createElement("div");
-        parentElement.id = elementId;
         document.body.appendChild(parentElement);
-
         torchCapability = new FakeTorchCapability(true);
     });
 
