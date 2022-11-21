@@ -22,21 +22,26 @@ export class CameraSelectionUi {
 
     private readonly selectElement: HTMLSelectElement;
     private readonly options: Array<HTMLOptionElement>;
+    private readonly cameras: Array<CameraDevice>;
 
-    private constructor() {
+    private constructor(cameras: Array<CameraDevice>) {
         this.selectElement = BaseUiElementFactory
             .createElement<HTMLSelectElement>(
-            "select", this.getCameraSelectionId());
+            "select",
+            PublicUiElementIdAndClasses.CAMERA_SELECTION_SELECT_ID);
+        this.cameras = cameras;
         this.options = [];        
     }
 
     /*eslint complexity: ["error", 10]*/
     private render(
-        parentElement: HTMLElement,
-        cameras: Array<CameraDevice>) {
+        parentElement: HTMLElement) {
         const cameraSelectionContainer = document.createElement("span");
         cameraSelectionContainer.style.marginRight = "10px";
-        const numCameras = cameras.length;
+        const numCameras = this.cameras.length;
+        if (numCameras == 0) {
+            throw new Error("No cameras found");
+        }
         if (numCameras === 1) {
             // If only one camera is found, don't show camera selection.
             cameraSelectionContainer.style.display = "none";
@@ -44,12 +49,12 @@ export class CameraSelectionUi {
             // Otherwise, show the number of cameras found as well.
             const selectCameraString = Html5QrcodeScannerStrings.selectCamera();
             cameraSelectionContainer.innerText
-                = `${selectCameraString} (${cameras.length})  `;
+                = `${selectCameraString} (${this.cameras.length})  `;
         }
 
         let anonymousCameraId = 1;
 
-        for (const camera of cameras) {
+        for (const camera of this.cameras) {
             const value = camera.id;
             let name = camera.label == null ? value : camera.label;
             // If no name is returned by the browser, replace it with custom
@@ -71,13 +76,13 @@ export class CameraSelectionUi {
         parentElement.appendChild(cameraSelectionContainer);
     }
 
-    private getCameraSelectionId(): string {
-        return PublicUiElementIdAndClasses.CAMERA_SELECTION_SELECT_ID;
-    }
-
     //#region Public APIs
     public disable() {
         this.selectElement.disabled = true;
+    }
+
+    public isDisabled() {
+        return this.selectElement.disabled === true;
     }
 
     public enable() {
@@ -98,11 +103,18 @@ export class CameraSelectionUi {
     }
 
     public setValue(value: string) {
+        if (!this.hasValue(value)) {
+            throw new Error(`${value} is not present in the camera list.`);
+        }
         this.selectElement.value = value;
     }
 
     public hasSingleItem() {
-        return this.options.length === 1;
+        return this.cameras.length === 1;
+    }
+
+    public numCameras() {
+        return this.cameras.length;
     }
     //#endregion
 
@@ -110,8 +122,8 @@ export class CameraSelectionUi {
     public static create(
         parentElement: HTMLElement,
         cameras: Array<CameraDevice>): CameraSelectionUi {
-        let cameraSelectUi = new CameraSelectionUi();
-        cameraSelectUi.render(parentElement, cameras);
+        let cameraSelectUi = new CameraSelectionUi(cameras);
+        cameraSelectUi.render(parentElement);
         return cameraSelectUi;
     }
 }
