@@ -554,7 +554,7 @@ interface Html5QrcodeScannerConfig
    *    - [SCAN_TYPE_FILE] - Only file based scan supported.
    *  - Setting wrong values or multiple values will fail.
    */
-  supportedScanTypes: Array<Html5QrcodeScanType> | [];
+  supportedScanTypes?: Array<Html5QrcodeScanType> | [];
 
   /**
    * If {@code true} the rendered UI will have button to turn flash on or off 

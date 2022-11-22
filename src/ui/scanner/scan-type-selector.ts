@@ -17,7 +17,7 @@ import {
 export class ScanTypeSelector {
     private supportedScanTypes: Array<Html5QrcodeScanType>;
 
-    constructor(supportedScanTypes: Array<Html5QrcodeScanType> | []) {
+    constructor(supportedScanTypes?: Array<Html5QrcodeScanType> | []) {
         this.supportedScanTypes = this.validateAndReturnScanTypes(
             supportedScanTypes);
     }
