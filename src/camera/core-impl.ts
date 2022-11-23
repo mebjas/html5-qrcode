@@ -34,6 +34,12 @@ abstract class AbstractCameraCapability<T> implements CameraCapability<T> {
     }
 
     public isSupported(): boolean {
+        // TODO(minhazav): Figure out fallback for getCapabilities()
+        // in firefox.
+        // https://developer.mozilla.org/en-US/docs/Web/API/Media_Capture_and_Streams_API/Constraints
+        if (!this.track.getCapabilities) {
+            return false;
+        }
         return this.name in this.track.getCapabilities();
     }
 

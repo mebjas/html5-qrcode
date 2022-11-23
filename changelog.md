@@ -1,3 +1,6 @@
+### Version 2.3.3
+Quick fix for - [issue#621](https://github.com/mebjas/html5-qrcode/issues/621). With this zoom & torch is not supported in firefox for now.
+
 ### Version 2.3.2
 
 #### Features or bug fixes.
