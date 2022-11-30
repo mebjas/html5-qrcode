@@ -59,36 +59,27 @@ export class Html5QrcodeShim implements RobustQrcodeDecoderAsync {
     }
 
     async decodeAsync(canvas: HTMLCanvasElement): Promise<QrcodeResult> {
-        let start = performance.now();
+        let startTime = performance.now();
         try {
             return await this.getDecoder().decodeAsync(canvas);
         } finally {
-            if (this.verbose) {
-                let executionTime = performance.now() - start;
-                this.executionResults.push(executionTime);
-                this.executions++;
-                this.possiblyFlushPerformanceReport();
-            }
+            this.possiblyLogPerformance(startTime);
         }
     }
 
     async decodeRobustlyAsync(canvas: HTMLCanvasElement)
         : Promise<QrcodeResult> {
-        let start = performance.now();
+        let startTime = performance.now();
         try {
             return await this.primaryDecoder.decodeAsync(canvas);
         } catch(error) {
             if (this.secondaryDecoder) {
+                // Try fallback.
                 return this.secondaryDecoder.decodeAsync(canvas);
             }
             throw error;
         } finally {
-            if (this.verbose) {
-                let executionTime = performance.now() - start;
-                this.executionResults.push(executionTime);
-                this.executions++;
-                this.possiblyFlushPerformanceReport();
-            }
+            this.possiblyLogPerformance(startTime);
         }
     }
 
@@ -103,6 +94,16 @@ export class Html5QrcodeShim implements RobustQrcodeDecoderAsync {
         }
         this.wasPrimaryDecoderUsedInLastDecode = false;
         return this.secondaryDecoder;
+    }
+
+    private possiblyLogPerformance(startTime: number) {
+        if (!this.verbose) {
+            return;
+        }
+        let executionTime = performance.now() - startTime;
+        this.executionResults.push(executionTime);
+        this.executions++;
+        this.possiblyFlushPerformanceReport();
     }
 
     // Dumps mean decoding latency to console for last

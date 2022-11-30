@@ -7,50 +7,7 @@ these features will get upgraded to general feature list.
 
 ## Using experimental native BarcodeDetector API
 
-> **Note** This config has now been graduated to `Html5QrcodeConfigs` and deprecated from experimental config.
-
-Turning on this flag allows using native [BarcodeDetector](https://developer.mozilla.org/en-US/docs/Web/API/BarcodeDetector)
-api now being introduced in web browsers for code scanning instead of `ZXing`
-library we use officially.
-
-### How to turn this on
-Setting `useBarCodeDetectorIfSupported` to `true` in `Html5QrcodeConfigs` will
-enable this option.
-
-#### Html5Qrcode class
-
-```js
-function onScanSuccess(decodedText, decodedResult) {
-    /** Handle success condition. */
-}
-
-let html5qrcode = new Html5Qrcode("reader", {
-    // Use this flag to turn on the feature.
-    useBarCodeDetectorIfSupported: false
-});
-
-const scanConfig = { fps: 10, qrbox: 250 };
-// If you want to prefer front camera
-html5qrcode.start({ facingMode: "user" }, scanConfig, onScanSuccess);
-```
-
-#### Html5QrcodeScanner class
-
-```js
-function onScanSuccess(decodedText, decodedResult) {
-    /** Handle success condition. */
-}
-
-let html5QrcodeScanner = new Html5QrcodeScanner(
-    "reader", 
-    { 
-        fps: 10,
-        qrbox: 250,
-        // Use this flag to turn on the feature.
-        useBarCodeDetectorIfSupported: false
-    });
-html5QrcodeScanner.render(onScanSuccess);
-```
+> **Update** This config has now been graduated to `Html5QrcodeConfigs` and deprecated from experimental config. This feature is now enabled by default.
 
 ### performance
 
