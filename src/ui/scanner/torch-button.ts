@@ -118,11 +118,14 @@ export interface TorchButtonOptions {
 /** Helper class for creating Torch UI component. */
 export class TorchButton implements TorchButtonController {
     private readonly torchButton: HTMLButtonElement;
-    private readonly torchController: TorchController;
+    private readonly onTorchActionFailureCallback: OnTorchActionFailureCallback;
+
+    private torchController: TorchController;
     
     private constructor(
         torchCapability: BooleanCameraCapability,
         onTorchActionFailureCallback: OnTorchActionFailureCallback) {
+        this.onTorchActionFailureCallback = onTorchActionFailureCallback;
         this.torchButton
             = BaseUiElementFactory.createElement<HTMLButtonElement>(
             "button", PublicUiElementIdAndClasses.TORCH_BUTTON_ID);
@@ -154,9 +157,16 @@ export class TorchButton implements TorchButtonController {
                 $this.torchButton.classList.add(
                     PublicUiElementIdAndClasses.TORCH_BUTTON_CLASS_TORCH_OFF);
             }
-    });
+        });
 
         parentElement.appendChild(this.torchButton);
+    }
+
+    public updateTorchCapability(torchCapability: BooleanCameraCapability) {
+        this.torchController = new TorchController(
+            torchCapability,
+            /* buttonController= */ this,
+            this.onTorchActionFailureCallback);
     }
 
     /** Returns the torch button. */

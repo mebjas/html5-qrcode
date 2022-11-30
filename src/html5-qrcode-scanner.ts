@@ -778,6 +778,9 @@ export class Html5QrcodeScanner {
                             Html5QrcodeScannerStatus.STATUS_WARNING);
                     }
                 );
+            } else {
+                torchButton.updateTorchCapability(
+                    cameraCapabilities.torchFeature());
             }
             torchButton.show();
         };
