@@ -55,6 +55,7 @@ class Constants extends Html5QrcodeConstants {
     static DEFAULT_WIDTH = 300;
     static DEFAULT_WIDTH_OFFSET = 2;
     static FILE_SCAN_MIN_HEIGHT = 300;
+    static FILE_SCAN_HIDDEN_CANVAS_PADDING = 100;
     static MIN_QR_BOX_SIZE = 50;
     static SHADED_LEFT = 1;
     static SHADED_RIGHT = 2;
@@ -681,28 +682,39 @@ export class Html5Qrcode {
                         /* dHeight= */ config.height);
                 }
 
+                // Hidden canvas should be at-least as big as the image.
+                // This could get really troublesome for large images like 12MP
+                // images or 48MP images captured on phone.
+                let padding = Constants.FILE_SCAN_HIDDEN_CANVAS_PADDING;
+                let hiddenImageWidth = Math.max(inputImage.width, config.width);
+                let hiddenImageHeight = Math.max(inputImage.height, config.height);
+
+                let hiddenCanvasWidth = hiddenImageWidth + 2 * padding;
+                let hiddenCanvasHeight = hiddenImageHeight + 2 * padding;
+
                 // Try harder for file scan.
                 // TODO(minhazav): Fallback to mirroring, 90 degree rotation and
                 //  color inversion.
                 const hiddenCanvas = this.createCanvasElement(
-                    config.width, config.height);
+                    hiddenCanvasWidth, hiddenCanvasHeight);
                 element.appendChild(hiddenCanvas);
                 const context = hiddenCanvas.getContext("2d");
                 if (!context) {
                     throw "Unable to get 2d context from canvas";
                 }
-                context.canvas.width = config.width;
-                context.canvas.height = config.height;
+
+                context.canvas.width = hiddenCanvasWidth;
+                context.canvas.height = hiddenCanvasHeight;
                 context.drawImage(
                     inputImage,
                     /* sx= */ 0,
                     /* sy= */ 0,
                     /* sWidth= */ imageWidth,
                     /* sHeight= */ imageHeight,
-                    /* dx= */ 0,
-                    /* dy= */  0,
-                    /* dWidth= */ config.width,
-                    /* dHeight= */ config.height);
+                    /* dx= */ padding,
+                    /* dy= */  padding,
+                    /* dWidth= */ hiddenImageWidth,
+                    /* dHeight= */ hiddenImageHeight);
                 try {
                     this.qrcode.decodeRobustlyAsync(hiddenCanvas)
                         .then((result) => {

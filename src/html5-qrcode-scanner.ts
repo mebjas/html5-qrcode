@@ -679,6 +679,7 @@ export class Html5QrcodeScanner {
                 return;
             }
 
+            $this.setHeaderMessage(Html5QrcodeScannerStrings.loadingImage());
             $this.html5Qrcode.scanFileV2(file, /* showImage= */ true)
                 .then((html5qrcodeResult: Html5QrcodeResult) => {
                     $this.resetHeaderMessage();
