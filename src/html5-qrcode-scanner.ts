@@ -166,6 +166,7 @@ function toHtml5QrcodeFullConfig(
     };
 }
 
+// End to end scanner library.
 export class Html5QrcodeScanner {
 
     //#region private fields
@@ -533,6 +534,7 @@ export class Html5QrcodeScanner {
         requestPermissionContainer: HTMLDivElement,
         requestPermissionButton?: HTMLButtonElement) {
         const $this = this;
+        $this.showHideScanTypeSwapLink(false);
         $this.setHeaderMessage(
             Html5QrcodeScannerStrings.cameraPermissionRequesting());
 
@@ -547,7 +549,7 @@ export class Html5QrcodeScanner {
             // By this point the user has granted camera permissions.
             $this.persistedDataManager.setHasPermission(
                 /* hasPermission */ true);
-
+            $this.showHideScanTypeSwapLink(true);
             $this.resetHeaderMessage();
             if (cameras && cameras.length > 0) {
                 scpCameraScanRegion.removeChild(requestPermissionContainer);
@@ -575,6 +577,7 @@ export class Html5QrcodeScanner {
             }
             $this.setHeaderMessage(
                 error, Html5QrcodeScannerStatus.STATUS_WARNING);
+            $this.showHideScanTypeSwapLink(true);
         });
     }
 
@@ -676,6 +679,7 @@ export class Html5QrcodeScanner {
                 return;
             }
 
+            $this.setHeaderMessage(Html5QrcodeScannerStrings.loadingImage());
             $this.html5Qrcode.scanFileV2(file, /* showImage= */ true)
                 .then((html5qrcodeResult: Html5QrcodeResult) => {
                     $this.resetHeaderMessage();
@@ -775,6 +779,9 @@ export class Html5QrcodeScanner {
                             Html5QrcodeScannerStatus.STATUS_WARNING);
                     }
                 );
+            } else {
+                torchButton.updateTorchCapability(
+                    cameraCapabilities.torchFeature());
             }
             torchButton.show();
         };

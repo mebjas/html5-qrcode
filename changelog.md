@@ -1,3 +1,9 @@
+### Version 2.3.4
+-    `useBarCodeDetectorIfSupported` defaults to `true` and if supported the library will internally alternate between `BarcodeDetector` and `zxing-js`. Same robustness added for file based scan as well if more than one decoder is supported.
+-    Fixed the UI issue - [Issue#613](https://github.com/mebjas/html5-qrcode/issues/613).
+-    Fix for torch issue - [Issue#634](https://github.com/mebjas/html5-qrcode/issues/634).
+-    In case of `scanFile(..)` APIs, scan at image resolution. Show `Loading image...` while the image is being loaded for rendering. More info at [Issue#612](https://github.com/mebjas/html5-qrcode/issues/612)
+
 ### Version 2.3.3
 Quick fix for - [issue#621](https://github.com/mebjas/html5-qrcode/issues/621). With this zoom & torch is not supported in firefox for now.
 

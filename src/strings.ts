@@ -169,6 +169,10 @@ export class Html5QrcodeScannerStrings {
     public static zoom(): string {
         return "zoom";
     }
+
+    public static loadingImage(): string {
+        return "Loading image...";
+    }
 }
 
 /** Strings used in {@class LibraryInfoDiv} */

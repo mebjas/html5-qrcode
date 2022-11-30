@@ -445,7 +445,7 @@ interface Html5QrcodeConfigs {
    * enable faster native code scanning experience.
    * 
    * Set this flag to true, to enable using {@class BarcodeDetector} if
-   * supported. This is false by default.
+   * supported. This is true by default.
    * 
    * Documentations:
    *  - https://developer.mozilla.org/en-US/docs/Web/API/BarcodeDetector

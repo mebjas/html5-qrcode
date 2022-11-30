@@ -12,7 +12,8 @@ import {
     QrcodeResult,
     Html5QrcodeSupportedFormats,
     Logger,
-    QrcodeDecoderAsync
+    QrcodeDecoderAsync,
+    RobustQrcodeDecoderAsync,
 } from "./core";
 
 import { ZXingHtml5QrcodeDecoder } from "./zxing-html5-qrcode-decoder";
@@ -23,14 +24,16 @@ import { BarcodeDetectorDelegate } from "./native-bar-code-detector";
  * 
  * Currently uses {@class ZXingHtml5QrcodeDecoder}, can be replace with another library.
  */
-export class Html5QrcodeShim implements QrcodeDecoderAsync {
+export class Html5QrcodeShim implements RobustQrcodeDecoderAsync {
     
     private verbose: boolean;
-    private decoder: QrcodeDecoderAsync;
+    private primaryDecoder: QrcodeDecoderAsync;
+    private secondaryDecoder: QrcodeDecoderAsync | undefined;
 
     private readonly EXECUTIONS_TO_REPORT_PERFORMANCE = 100;
     private executions: number = 0;
     private executionResults: Array<number> = [];
+    private wasPrimaryDecoderUsedInLastDecode = false;
 
     public constructor(
         requestedFormats: Array<Html5QrcodeSupportedFormats>,
@@ -42,26 +45,65 @@ export class Html5QrcodeShim implements QrcodeDecoderAsync {
         // Use BarcodeDetector library if enabled by config and is supported.
         if (useBarCodeDetectorIfSupported
                 && BarcodeDetectorDelegate.isSupported()) {
-            this.decoder = new BarcodeDetectorDelegate(
+            this.primaryDecoder = new BarcodeDetectorDelegate(
+                requestedFormats, verbose, logger);
+            // If 'BarcodeDetector' is supported, the library will alternate
+            // between 'BarcodeDetector' and 'zxing-js' to compensate for
+            // quality gaps between the two.
+            this.secondaryDecoder = new ZXingHtml5QrcodeDecoder(
                 requestedFormats, verbose, logger);
         } else {
-            this.decoder = new ZXingHtml5QrcodeDecoder(
+            this.primaryDecoder = new ZXingHtml5QrcodeDecoder(
                 requestedFormats, verbose, logger);
         }
     }
 
     async decodeAsync(canvas: HTMLCanvasElement): Promise<QrcodeResult> {
-        let start = performance.now();
+        let startTime = performance.now();
         try {
-            return await this.decoder.decodeAsync(canvas);
+            return await this.getDecoder().decodeAsync(canvas);
         } finally {
-            if (this.verbose) {
-                let executionTime = performance.now() - start;
-                this.executionResults.push(executionTime);
-                this.executions++;
-                this.possiblyFlushPerformanceReport();
-            }
+            this.possiblyLogPerformance(startTime);
         }
+    }
+
+    async decodeRobustlyAsync(canvas: HTMLCanvasElement)
+        : Promise<QrcodeResult> {
+        let startTime = performance.now();
+        try {
+            return await this.primaryDecoder.decodeAsync(canvas);
+        } catch(error) {
+            if (this.secondaryDecoder) {
+                // Try fallback.
+                return this.secondaryDecoder.decodeAsync(canvas);
+            }
+            throw error;
+        } finally {
+            this.possiblyLogPerformance(startTime);
+        }
+    }
+
+    private getDecoder(): QrcodeDecoderAsync {
+        if (!this.secondaryDecoder) {
+            return this.primaryDecoder;
+        }
+
+        if (this.wasPrimaryDecoderUsedInLastDecode === false) {
+            this.wasPrimaryDecoderUsedInLastDecode = true;
+            return this.primaryDecoder;
+        }
+        this.wasPrimaryDecoderUsedInLastDecode = false;
+        return this.secondaryDecoder;
+    }
+
+    private possiblyLogPerformance(startTime: number) {
+        if (!this.verbose) {
+            return;
+        }
+        let executionTime = performance.now() - startTime;
+        this.executionResults.push(executionTime);
+        this.executions++;
+        this.possiblyFlushPerformanceReport();
     }
 
     // Dumps mean decoding latency to console for last
