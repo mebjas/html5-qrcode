@@ -166,6 +166,7 @@ function toHtml5QrcodeFullConfig(
     };
 }
 
+// End to end scanner library.
 export class Html5QrcodeScanner {
 
     //#region private fields

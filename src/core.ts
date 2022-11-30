@@ -260,6 +260,24 @@ export interface QrcodeDecoderAsync {
     decodeAsync(canvas: HTMLCanvasElement): Promise<QrcodeResult>;
 }
 
+/**
+ * Code robust decoder interface.
+ * 
+ * <p> A robust decoder may sacrifice latency of scanning for scanning quality.
+ * Ideal for file scan kind of operation.
+ */
+export interface RobustQrcodeDecoderAsync extends QrcodeDecoderAsync {
+    /**
+     * Decodes content of the canvas to find a valid QR code or bar code.
+     * 
+     * <p>The method implementation will run the decoder more robustly at the
+     * expense of latency.
+     * 
+     * @param canvas a valid html5 canvas element.
+     */
+    decodeRobustlyAsync(canvas: HTMLCanvasElement): Promise<QrcodeResult>;
+}
+
 /** Interface for logger. */
 export interface Logger {
     log(message: string): void;

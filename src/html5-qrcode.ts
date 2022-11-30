@@ -20,7 +20,7 @@ import {
     Html5QrcodeResultFactory,
     Html5QrcodeErrorFactory,
     Html5QrcodeSupportedFormats,
-    QrcodeDecoderAsync,
+    RobustQrcodeDecoderAsync,
     isValidHtml5QrcodeSupportedFormats,
     Html5QrcodeConstants,
     Html5QrcodeResult,
@@ -87,7 +87,7 @@ export interface Html5QrcodeConfigs {
      * enable faster native code scanning experience.
      * 
      * Set this flag to true, to enable using {@class BarcodeDetector} if
-     * supported. This is false by default.
+     * supported. This is true by default.
      * 
      * Documentations:
      *  - https://developer.mozilla.org/en-US/docs/Web/API/BarcodeDetector
@@ -255,7 +255,7 @@ export class Html5Qrcode {
     private readonly logger: Logger;
     private readonly elementId: string;
     private readonly verbose: boolean;
-    private readonly qrcode: QrcodeDecoderAsync;
+    private readonly qrcode: RobustQrcodeDecoderAsync;
 
     private shouldScan: boolean;
 
@@ -681,6 +681,9 @@ export class Html5Qrcode {
                         /* dHeight= */ config.height);
                 }
 
+                // Try harder for file scan.
+                // TODO(minhazav): Fallback to mirroring, 90 degree rotation and
+                //  color inversion.
                 const hiddenCanvas = this.createCanvasElement(
                     config.width, config.height);
                 element.appendChild(hiddenCanvas);
@@ -701,7 +704,7 @@ export class Html5Qrcode {
                     /* dWidth= */ config.width,
                     /* dHeight= */ config.height);
                 try {
-                    this.qrcode.decodeAsync(hiddenCanvas)
+                    this.qrcode.decodeRobustlyAsync(hiddenCanvas)
                         .then((result) => {
                             resolve(
                                 Html5QrcodeResultFactory.createFromQrcodeResult(
@@ -891,26 +894,27 @@ export class Html5Qrcode {
     /*eslint complexity: ["error", 10]*/
     private getUseBarCodeDetectorIfSupported(
         config: Html5QrcodeConfigs | undefined) : boolean {
+        // Default value is true.
         if (isNullOrUndefined(config)) {
-            return false;
+            return true;
         }
 
         if (!isNullOrUndefined(config!.useBarCodeDetectorIfSupported)) {
             // Default value is false.
-            return config!.useBarCodeDetectorIfSupported === true;
+            return config!.useBarCodeDetectorIfSupported !== false;
         }
 
         if (isNullOrUndefined(config!.experimentalFeatures)) {
-            return false;
+            return true;
         }
 
         let experimentalFeatures = config!.experimentalFeatures!;
         if (isNullOrUndefined(
             experimentalFeatures.useBarCodeDetectorIfSupported)) {
-            return false;
+            return true;
         }
 
-        return experimentalFeatures.useBarCodeDetectorIfSupported === true;
+        return experimentalFeatures.useBarCodeDetectorIfSupported !== false;
     }
 
     /**

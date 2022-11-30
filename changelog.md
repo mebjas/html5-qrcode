@@ -1,3 +1,6 @@
+### Version 2.3.4
+-    `useBarCodeDetectorIfSupported` defaults to `true` and if supported the library will internally alternate between `BarcodeDetector` and `zxing-js`. Same robustness added for file based scan as well if more than one decoder is supported.
+
 ### Version 2.3.3
 Quick fix for - [issue#621](https://github.com/mebjas/html5-qrcode/issues/621). With this zoom & torch is not supported in firefox for now.
 
