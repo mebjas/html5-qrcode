@@ -1020,13 +1020,15 @@ export class Html5QrcodeScanner {
     }
 
     private showHideScanTypeSwapLink(shouldDisplay?: boolean) {
-        if (shouldDisplay !== true) {
-            shouldDisplay = false;
-        }
+        if (this.scanTypeSelector.hasMoreThanOneScanType()) {
+            if (shouldDisplay !== true) {
+                shouldDisplay = false;
+            }
 
-        this.sectionSwapAllowed = shouldDisplay;
-        this.getDashboardSectionSwapLink().style.display
-            = shouldDisplay ? "inline-block" : "none";
+            this.sectionSwapAllowed = shouldDisplay;
+            this.getDashboardSectionSwapLink().style.display
+                = shouldDisplay ? "inline-block" : "none";
+        }
     }
 
     private insertCameraScanImageToScanRegion() {
