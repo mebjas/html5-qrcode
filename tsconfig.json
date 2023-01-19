@@ -5,10 +5,7 @@
         "sourceMap": true,
         "moduleResolution": "Node",
         "declaration": true,
-        "lib": [
-            "es7",
-            "dom"
-        ],
+        "lib": ["DOM", "ES2017", "ES2018"],
 
         // ^ Build the transpiled javascript to transpiled/ dir.
         // Flags to ensure code quality.
