@@ -194,7 +194,7 @@ export class Html5QrcodeScanner {
     private qrCodeScanRegion!: HTMLDivElement;
     private switchScanTypeLink!: HTMLAnchorElement;
     //#endregion
-
+    
     /**
      * Creates instance of this class.
      *
@@ -203,16 +203,46 @@ export class Html5QrcodeScanner {
      * @param verbose - If true, all logs would be printed to console. 
      */
     public constructor(
+        elementId: string,
+        config: Html5QrcodeScannerConfig | undefined,
+        verbose: boolean | undefined);
+
+    /**
+     * Creates instance of this class.
+     *
+     * @param element The HTML DOM element.
+     * @param config Extra configurations to tune the code scanner.
+     * @param verbose - If true, all logs would be printed to console. 
+     */
+    public constructor(
         element: HTMLElement,
         config: Html5QrcodeScannerConfig | undefined,
+        verbose: boolean | undefined);
+        
+    /**
+     * Creates instance of this class.
+     *
+     * @param elementOrId The HTML DOM element or its Id.
+     * @param config Extra configurations to tune the code scanner.
+     * @param verbose - If true, all logs would be printed to console. 
+     */
+    public constructor(
+        elementOrId: HTMLElement | string,
+        config: Html5QrcodeScannerConfig | undefined,
         verbose: boolean | undefined) {
-        this.container = element;
+        if (typeof elementOrId === "string") {
+            this.container = document.getElementById(elementOrId) as HTMLElement;
+            if (!this.container) {
+                throw `HTML Element with id=${elementOrId} not found`;
+            }
+        } else {
+            if (!elementOrId || !(elementOrId instanceof HTMLElement)) {
+                throw `HTML Element is not valid`;
+            }
+            this.container = elementOrId;
+        }
         this.config = this.createConfig(config);
         this.verbose = verbose === true;
-
-        if (!element || !(element instanceof Element)) {
-            throw `HTML Element is not valid`;
-        }
 
         this.scanTypeSelector = new ScanTypeSelector(
             this.config.supportedScanTypes);
