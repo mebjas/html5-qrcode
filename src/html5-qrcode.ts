@@ -254,17 +254,17 @@ export class Html5Qrcode {
 
     //#region Private fields.
     private readonly logger: Logger;
-    private readonly elementId: string;
     private readonly verbose: boolean;
     private readonly qrcode: RobustQrcodeDecoderAsync;
 
     private shouldScan: boolean;
 
+    private element!: HTMLElement;
+    private shadingElement!: HTMLDivElement;
     // Nullable elements
     // TODO(mebjas): Reduce the state-fulness of this mammoth class, by splitting
     // into independent classes for better separation of concerns and reducing
     // error prone nature of a large stateful class.
-    private element: HTMLElement | null = null;
     private canvasElement: HTMLCanvasElement | null = null;
     private scannerPausedUiElement: HTMLDivElement | null = null;
     private hasBorderShaders: boolean | null = null;
@@ -286,7 +286,7 @@ export class Html5Qrcode {
     /**
      * Initialize the code scanner.
      *
-     * @param elementId Id of the HTML element.
+     * @param element the HTML element.
      * @param configOrVerbosityFlag optional, config object of type {@interface
      * Html5QrcodeFullConfig} or a boolean verbosity flag (to maintain backward
      * compatibility). If nothing is passed, default values would be used.
@@ -298,13 +298,13 @@ export class Html5Qrcode {
      * 
      * TODO(mebjas): Deprecate the verbosity boolean flag completely.
      */
-    public constructor(elementId: string, 
+    public constructor(element: HTMLElement,
         configOrVerbosityFlag?: boolean | Html5QrcodeFullConfig | undefined) {
-        if (!document.getElementById(elementId)) {
-            throw `HTML Element with id=${elementId} not found`;
+        if (!element || !(element instanceof Element)) {
+            throw `HTML Element is not valid`;
         }
 
-        this.elementId = elementId;
+        this.element = element;
         this.verbose = false;
         
         let experimentalFeatureConfig : ExperimentalFeaturesConfig | undefined;
@@ -389,13 +389,11 @@ export class Html5Qrcode {
         const areVideoConstraintsEnabled = videoConstraintsAvailableAndValid;
 
         // qr shaded box
-        const element = document.getElementById(this.elementId)!;
-        const rootElementWidth = element.clientWidth
-            ? element.clientWidth : Constants.DEFAULT_WIDTH;
-        element.style.position = "relative";
+        const rootElementWidth = this.element.clientWidth
+            ? this.element.clientWidth : Constants.DEFAULT_WIDTH;
+        this.element.style.position = "relative";
 
         this.shouldScan = true;
-        this.element = element;
 
         const $this = this;
         const toScanningStateChangeTransaction: StateManagerTransaction
@@ -438,6 +436,10 @@ export class Html5Qrcode {
                         .then((renderedCamera) => {
                             $this.renderedCamera = renderedCamera;
                             toScanningStateChangeTransaction.execute();
+                            $this.foreverScan(
+                                internalConfig,
+                                qrCodeSuccessCallback,
+                                qrCodeErrorCallbackInternal!);
                             resolve(/* Void */ null);
                         })
                         .catch((error) => {
@@ -552,9 +554,8 @@ export class Html5Qrcode {
             if (!this.element) {
                 return;
             }
-            let childElement = document.getElementById(Constants.SHADED_REGION_ELEMENT_ID);
-            if (childElement) {
-                this.element.removeChild(childElement);
+            if (this.shadingElement) {
+                this.element.removeChild(this.shadingElement);
             }
          };
 
@@ -647,12 +648,11 @@ export class Html5Qrcode {
             inputImage.onload = () => {
                 const imageWidth = inputImage.width;
                 const imageHeight = inputImage.height;
-                const element = document.getElementById(this.elementId)!;
-                const containerWidth = element.clientWidth
-                    ? element.clientWidth : Constants.DEFAULT_WIDTH;
+                const containerWidth = this.element.clientWidth
+                    ? this.element.clientWidth : Constants.DEFAULT_WIDTH;
                 // No default height anymore.
                 const containerHeight =  Math.max(
-                    element.clientHeight ? element.clientHeight : imageHeight,
+                    this.element.clientHeight ? this.element.clientHeight : imageHeight,
                     Constants.FILE_SCAN_MIN_HEIGHT);
 
                 const config = this.computeCanvasDrawConfig(
@@ -661,7 +661,7 @@ export class Html5Qrcode {
                     const visibleCanvas = this.createCanvasElement(
                         containerWidth, containerHeight, "qr-canvas-visible");
                     visibleCanvas.style.display = "inline-block";
-                    element.appendChild(visibleCanvas);
+                    this.element.appendChild(visibleCanvas);
                     const context = visibleCanvas.getContext("2d");
                     if (!context) {
                         throw "Unable to get 2d context from canvas";
@@ -697,7 +697,7 @@ export class Html5Qrcode {
                 //  color inversion.
                 const hiddenCanvas = this.createCanvasElement(
                     hiddenCanvasWidth, hiddenCanvasHeight);
-                element.appendChild(hiddenCanvas);
+                this.element.appendChild(hiddenCanvas);
                 const context = hiddenCanvas.getContext("2d");
                 if (!context) {
                     throw "Unable to get 2d context from canvas";
@@ -1359,9 +1359,8 @@ export class Html5Qrcode {
         if (this.stateManagerProxy.isScanning()) {
             throw "Cannot clear while scan is ongoing, close it first.";
         }
-        const element = document.getElementById(this.elementId);
-        if (element) {
-            element.innerHTML = "";
+        if (this.element) {
+            this.element.innerHTML = "";
         }
     }
 
@@ -1426,26 +1425,26 @@ export class Html5Qrcode {
         if ((width - qrboxSize.width) < 1 || (height - qrboxSize.height) < 1) {
           return;
         }
-        const shadingElement = document.createElement("div");
-        shadingElement.style.position = "absolute";
+        this.shadingElement = document.createElement("div");
+        this.shadingElement.style.position = "absolute";
 
         const rightLeftBorderSize = (width - qrboxSize.width) / 2;
         const topBottomBorderSize = (height - qrboxSize.height) / 2;
 
-        shadingElement.style.borderLeft
+        this.shadingElement.style.borderLeft
             = `${rightLeftBorderSize}px solid rgba(0, 0, 0, 0.48)`;
-        shadingElement.style.borderRight
+        this.shadingElement.style.borderRight
             = `${rightLeftBorderSize}px solid rgba(0, 0, 0, 0.48)`;
-        shadingElement.style.borderTop
+        this.shadingElement.style.borderTop
             = `${topBottomBorderSize}px solid rgba(0, 0, 0, 0.48)`;
-        shadingElement.style.borderBottom
+        this.shadingElement.style.borderBottom
             = `${topBottomBorderSize}px solid rgba(0, 0, 0, 0.48)`;
-        shadingElement.style.boxSizing = "border-box";
-        shadingElement.style.top = "0px";
-        shadingElement.style.bottom = "0px";
-        shadingElement.style.left = "0px";
-        shadingElement.style.right = "0px";
-        shadingElement.id = `${Constants.SHADED_REGION_ELEMENT_ID}`;
+        this.shadingElement.style.boxSizing = "border-box";
+        this.shadingElement.style.top = "0px";
+        this.shadingElement.style.bottom = "0px";
+        this.shadingElement.style.left = "0px";
+        this.shadingElement.style.right = "0px";
+        this.shadingElement.id = `${Constants.SHADED_REGION_ELEMENT_ID}`;
   
         // Check if div is too small for shadows. As there are two 5px width
         // borders the needs to have a size above 10px.
@@ -1456,7 +1455,7 @@ export class Html5Qrcode {
             const smallSize = 5;
             const largeSize = 40;
             this.insertShaderBorders(
-                shadingElement,
+                this.shadingElement,
                 /* width= */ largeSize, 
                 /* height= */ smallSize,
                 /* top= */ -smallSize,
@@ -1464,7 +1463,7 @@ export class Html5Qrcode {
                 /* side= */ 0,
                 /* isLeft= */ true);
             this.insertShaderBorders(
-                shadingElement,
+                this.shadingElement,
                 /* width= */ largeSize,
                 /* height= */ smallSize,
                 /* top= */ -smallSize,
@@ -1472,7 +1471,7 @@ export class Html5Qrcode {
                 /* side= */ 0,
                 /* isLeft= */ false);
             this.insertShaderBorders(
-                shadingElement,
+                this.shadingElement,
                 /* width= */ largeSize,
                 /* height= */ smallSize,
                 /* top= */ null,
@@ -1480,7 +1479,7 @@ export class Html5Qrcode {
                 /* side= */ 0,
                 /* isLeft= */ true);
             this.insertShaderBorders(
-                shadingElement,
+                this.shadingElement,
                 /* width= */ largeSize,
                 /* height= */ smallSize,
                 /* top= */ null,
@@ -1488,7 +1487,7 @@ export class Html5Qrcode {
                 /* side= */ 0,
                 /* isLeft= */ false);
             this.insertShaderBorders(
-                shadingElement,
+                this.shadingElement,
                 /* width= */ smallSize,
                 /* height= */ largeSize + smallSize,
                 /* top= */ -smallSize,
@@ -1496,7 +1495,7 @@ export class Html5Qrcode {
                 /* side= */ -smallSize,
                 /* isLeft= */ true);
             this.insertShaderBorders(
-                shadingElement,
+                this.shadingElement,
                 /* width= */ smallSize,
                 /* height= */ largeSize + smallSize,
                 /* top= */ null,
@@ -1504,7 +1503,7 @@ export class Html5Qrcode {
                 /* side= */ -smallSize,
                 /* isLeft= */ true);
             this.insertShaderBorders(
-                shadingElement,
+                this.shadingElement,
                 /* width= */ smallSize,
                 /* height= */ largeSize + smallSize,
                 /* top= */ -smallSize,
@@ -1512,7 +1511,7 @@ export class Html5Qrcode {
                 /* side= */ -smallSize,
                 /* isLeft= */ false);
             this.insertShaderBorders(
-                shadingElement,
+                this.shadingElement,
                 /* width= */ smallSize,
                 /* height= */ largeSize + smallSize,
                 /* top= */ null,
@@ -1521,7 +1520,7 @@ export class Html5Qrcode {
                 /* isLeft= */ false);
             this.hasBorderShaders = true;
         }
-        element.append(shadingElement);
+        element.append(this.shadingElement);
     }
 
     private insertShaderBorders(
