@@ -359,6 +359,7 @@ export class Html5QrcodeScanner {
                     // Assuming file based scan was ongoing.
                     this.html5Qrcode.clear();
                     emptyHtmlContainer();
+                    resolve();
                 }
             });
         }
