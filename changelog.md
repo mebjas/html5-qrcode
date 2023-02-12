@@ -1,3 +1,6 @@
+### Version 2.3.6
+-   Fix to minified js, some UI fixes to improve accesibility & SEO.
+
 ### Version 2.3.5
 
 Multiple bug fixes
