@@ -450,9 +450,9 @@ export class Html5QrcodeScanner {
      *  fails otherwise.
      * @throws error if the scanning is not in running state.
      */
-    public applyVideoConstraints(videoConstaints: MediaTrackConstraints)
+    public applyVideoConstraints(videoConstraints: MediaTrackConstraints)
         : Promise<void> {
-        return this.getHtml5QrcodeOrFail().applyVideoConstraints(videoConstaints);
+        return this.getHtml5QrcodeOrFail().applyVideoConstraints(videoConstraints);
     }
     //#endregion
 
