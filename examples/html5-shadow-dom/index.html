@@ -10,7 +10,7 @@
 <script src="/html5-qrcode.min.js"></script>
 <script>
     // Create a class for the element
-    class PopUpInfo extends HTMLElement {
+    class CustomComponent extends HTMLElement {
         constructor() {
             // Always call super first in constructor
             super();
@@ -33,7 +33,7 @@
     }
 
     // Define the new element
-    customElements.define('custom-component', PopUpInfo);
+    customElements.define('custom-component', CustomComponent);
 
     function docReady(fn) {
         // see if DOM is already available

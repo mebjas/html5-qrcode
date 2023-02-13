@@ -295,7 +295,7 @@ Find more information about this at [developers.google.com](https://developers.g
 
 And in JavaScript code initialize the object and attach listener like this:
 ```js
-const html5QrCode = new Html5Qrcode(/* element id */ "reader");
+const html5QrCode = new Html5Qrcode(/* element id or HTML Element*/ "reader");
 // File based scanning
 const fileinput = document.getElementById('qr-input-file');
 fileinput.addEventListener('change', e => {
@@ -580,6 +580,14 @@ class Html5Qrcode {
   constructor(elementId: string, config:  Html5QrcodeFullConfig | undefined);
 
   /**
+   * Initialize QR Code scanner.
+   * 
+   * @param element - The HTML DOM element.
+   * @param verbose - optional configuration object
+   */
+  constructor(element: HTMLElement, config:  Html5QrcodeFullConfig | undefined);
+
+  /**
    * Start scanning QR codes or barcodes for a given camera.
    * 
    * @param cameraIdOrConfig Identifier of the camera, it can either be the
@@ -712,6 +720,18 @@ class Html5QrcodeScanner {
    */
   constructor(
     elementId: string,
+    config: Html5QrcodeScannerConfig | undefined,
+    verbose: boolean | undefined);
+
+  /**
+   * Creates instance of this class.
+   *
+   * @param element The HTML DOM element.
+   * @param config Extra configurations to tune the code scanner.
+   * @param verbose - If true, all logs would be printed to console. 
+   */
+  public constructor(
+    element: HTMLElement,
     config: Html5QrcodeScannerConfig | undefined,
     verbose: boolean | undefined);
 
