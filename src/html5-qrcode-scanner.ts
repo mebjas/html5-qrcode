@@ -291,7 +291,7 @@ export class Html5QrcodeScanner {
             };
 
         if (!this.container) {
-            throw 'HTML Element not found';
+            throw "HTML Element not found";
         }
         this.container.innerHTML = "";
         this.createBasicLayout(this.container!);
@@ -473,7 +473,7 @@ export class Html5QrcodeScanner {
      */
     private validateInputAsHTMLElement(element: HTMLElement): HTMLElement {
         if (!element || !(element instanceof HTMLElement)) {
-            throw 'HTML Element is not valid';
+            throw "HTML Element is not valid";
         }
         return element;
     }
@@ -1119,11 +1119,11 @@ export class Html5QrcodeScanner {
 
     //#region state getters
     private getDashboardSectionId(): string {
-        return 'scanner__dashboard_section';
+        return "scanner__dashboard_section";
     }
 
     private getDashboardSectionCameraScanRegionId(): string {
-        return 'scanner__dashboard_section_csr';
+        return "scanner__dashboard_section_csr";
     }
 
     private getDashboardSectionSwapLinkId(): string {
@@ -1131,15 +1131,15 @@ export class Html5QrcodeScanner {
     }
 
     private getScanRegionId(): string {
-        return 'scanner__scan_region';
+        return "scanner__scan_region";
     }
 
     private getDashboardId(): string {
-        return 'scanner__dashboard';
+        return "scanner__dashboard";
     }
 
     private getHeaderMessageContainerId(): string {
-        return 'scanner__header_message';
+        return "scanner__header_message";
     }
 
     private getCameraPermissionButtonId(): string {
