@@ -5,7 +5,7 @@
     <div id="qr-reader" style="width:500px"></div>
     <div id="qr-reader-results"></div>
 </body>
-<script src="../../minified/html5-qrcode.min.js"></script>
+<script src="/html5-qrcode.min.js"></script>
 <script>
     function docReady(fn) {
         // see if DOM is already available
@@ -17,7 +17,6 @@
             document.addEventListener("DOMContentLoaded", fn);
         }
     }
-
     docReady(function () {
         var resultContainer = document.getElementById('qr-reader-results');
         var lastResult, countResults = 0;
@@ -29,8 +28,9 @@
                 console.log(`Scan result ${decodedText}`, decodedResult);
             }
         }
-        const qrReader = document.getElementById('qr-reader');
-        var html5QrcodeScanner = new Html5QrcodeScanner(qrReader, { fps: 10, qrbox: 250 });
+
+        var html5QrcodeScanner = new Html5QrcodeScanner(
+            "qr-reader", { fps: 10, qrbox: 250 });
         html5QrcodeScanner.render(onScanSuccess);
     });
 </script>

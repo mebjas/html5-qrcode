@@ -1,0 +1,67 @@
+<html>
+
+<head>
+    <title>Html-Qrcode Demo</title>
+
+<body>
+    <h1>This is a Shadow Dom example</h1>
+    <custom-component></custom-component>
+</body>
+<script src="/html5-qrcode.min.js"></script>
+<script>
+    // Create a class for the element
+    class PopUpInfo extends HTMLElement {
+        constructor() {
+            // Always call super first in constructor
+            super();
+
+            // Create a shadow root
+            const shadow = this.attachShadow({ mode: 'open' });
+
+            // Create elements
+            const wrapper = document.createElement('div');
+            const title = document.createElement('h2');
+            title.innerText = 'HTML5 qr-code Scanner with shadow dom components';
+            const idReader = document.createElement('div');
+            idReader.className = 'qr-reader';
+            idReader.style.width = '500px';
+            wrapper.appendChild(title);
+            wrapper.appendChild(idReader);
+            // Attach the created elements to the shadow dom
+            shadow.appendChild(wrapper);
+        }
+    }
+
+    // Define the new element
+    customElements.define('custom-component', PopUpInfo);
+
+    function docReady(fn) {
+        // see if DOM is already available
+        if (document.readyState === "complete"
+            || document.readyState === "interactive") {
+            // call on next available tick
+            setTimeout(fn, 1);
+        } else {
+            document.addEventListener("DOMContentLoaded", fn);
+        }
+    }
+
+    docReady(function () {
+        var lastResult, countResults = 0;
+        function onScanSuccess(decodedText, decodedResult) {
+            if (decodedText !== lastResult) {
+                ++countResults;
+                lastResult = decodedText;
+                // Handle on success condition with the decoded message.
+                console.log(`Scan result ${decodedText}`, decodedResult);
+            }
+        }
+        const myCustomComponent = document.querySelector('custom-component');
+        const childComponentQrReaderElement = myCustomComponent.shadowRoot.querySelector('div.qr-reader')
+        var html5QrCodeScanner = new Html5QrcodeScanner(childComponentQrReaderElement, { fps: 10, qrbox: 250 });
+        html5QrCodeScanner.render(onScanSuccess);
+    });
+</script>
+</head>
+
+</html>
