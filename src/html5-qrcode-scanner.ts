@@ -232,9 +232,9 @@ export class Html5QrcodeScanner {
         config: Html5QrcodeScannerConfig | undefined,
         verbose: boolean | undefined) {
         if (typeof elementOrId === "string") {
-            this.handleInputAsStringId(elementOrId);
+            this.container = this.validateInputAsStringId(elementOrId);
         } else {
-            this.handleInputAsHTMLElement(elementOrId);
+            this.container = this.validateInputAsHTMLElement(elementOrId);
         }
         this.config = this.createConfig(config);
         this.verbose = verbose === true;
@@ -452,18 +452,30 @@ export class Html5QrcodeScanner {
     //#endregion
 
     //#region Private methods
-    private handleInputAsStringId(elementId: string): void {
-        this.container = document.getElementById(elementId) as HTMLElement;
-        if (!this.container) {
+
+    /**
+     * Verifies if the element id is valid and returns the corresponding HTML Element.
+     * @param elementId Id of the HTML element.
+     * @returns a valid HTML Element.
+     */
+    private validateInputAsStringId(elementId: string): HTMLElement {
+        const element = document.getElementById(elementId) as HTMLElement;
+        if (!element) {
             throw `HTML Element with id=${elementId} not found`;
         }
+        return element;
     }
 
-    private handleInputAsHTMLElement(element: HTMLElement): void {
+    /**
+     * Verifies if the parameter is a valid HTML Element and returns it.
+     * @param element The HTML DOM Element.
+     * @returns a valid HTML Element.
+     */
+    private validateInputAsHTMLElement(element: HTMLElement): HTMLElement {
         if (!element || !(element instanceof HTMLElement)) {
             throw 'HTML Element is not valid';
         }
-        this.container = element;
+        return element;
     }
 
     private getHtml5QrcodeOrFail() {
