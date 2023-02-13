@@ -232,15 +232,9 @@ export class Html5QrcodeScanner {
         config: Html5QrcodeScannerConfig | undefined,
         verbose: boolean | undefined) {
         if (typeof elementOrId === "string") {
-            this.container = document.getElementById(elementOrId) as HTMLElement;
-            if (!this.container) {
-                throw `HTML Element with id=${elementOrId} not found`;
-            }
+            this.handleInputAsStringId(elementOrId);
         } else {
-            if (!elementOrId || !(elementOrId instanceof HTMLElement)) {
-                throw `HTML Element is not valid`;
-            }
-            this.container = elementOrId;
+            this.handleInputAsHTMLElement(elementOrId);
         }
         this.config = this.createConfig(config);
         this.verbose = verbose === true;
@@ -297,7 +291,7 @@ export class Html5QrcodeScanner {
             };
 
         if (!this.container) {
-            throw `HTML Element not found`;
+            throw 'HTML Element not found';
         }
         this.container.innerHTML = "";
         this.createBasicLayout(this.container!);
@@ -458,6 +452,20 @@ export class Html5QrcodeScanner {
     //#endregion
 
     //#region Private methods
+    private handleInputAsStringId(elementId: string): void {
+        this.container = document.getElementById(elementId) as HTMLElement;
+        if (!this.container) {
+            throw `HTML Element with id=${elementId} not found`;
+        }
+    }
+
+    private handleInputAsHTMLElement(element: HTMLElement): void {
+        if (!element || !(element instanceof HTMLElement)) {
+            throw 'HTML Element is not valid';
+        }
+        this.container = element;
+    }
+
     private getHtml5QrcodeOrFail() {
         if (!this.html5Qrcode) {
             throw "Code scanner not initialized.";
@@ -1099,11 +1107,11 @@ export class Html5QrcodeScanner {
 
     //#region state getters
     private getDashboardSectionId(): string {
-        return `scanner__dashboard_section`;
+        return 'scanner__dashboard_section';
     }
 
     private getDashboardSectionCameraScanRegionId(): string {
-        return `scanner__dashboard_section_csr`;
+        return 'scanner__dashboard_section_csr';
     }
 
     private getDashboardSectionSwapLinkId(): string {
@@ -1111,15 +1119,15 @@ export class Html5QrcodeScanner {
     }
 
     private getScanRegionId(): string {
-        return `scanner__scan_region`;
+        return 'scanner__scan_region';
     }
 
     private getDashboardId(): string {
-        return `scanner__dashboard`;
+        return 'scanner__dashboard';
     }
 
     private getHeaderMessageContainerId(): string {
-        return `scanner__header_message`;
+        return 'scanner__header_message';
     }
 
     private getCameraPermissionButtonId(): string {

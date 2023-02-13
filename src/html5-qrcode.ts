@@ -301,7 +301,7 @@ export class Html5Qrcode {
     public constructor(element: HTMLElement,
         configOrVerbosityFlag?: boolean | Html5QrcodeFullConfig | undefined) {
         if (!element || !(element instanceof Element)) {
-            throw `HTML Element is not valid`;
+            throw "HTML Element is not valid";
         }
 
         this.element = element;
