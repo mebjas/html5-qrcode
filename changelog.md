@@ -1,3 +1,6 @@
+### Version 2.3.7
+-   Fix QR code scanning error.
+
 ### Version 2.3.6
 -   Fix to minified js, some UI fixes to improve accessibility & SEO.
 
