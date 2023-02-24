@@ -35,15 +35,17 @@ export class ScannerElement extends LitElement {
       console.warn(`Code scan error = ${errorMessage}`, error);
     };
 
+    const config = {
+      fps: 10,
+      qrbox: {
+        width: 350,
+        height: 250,
+      },
+    };
+
     const html5QrcodeScanner = new Html5QrcodeScanner(
       this.reader,
-      {
-        fps: 10,
-        qrbox: {
-          width: 350,
-          height: 250,
-        },
-      },
+      config,
       false
     );
 
