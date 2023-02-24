@@ -4,8 +4,8 @@ import { query } from 'lit-element';
 import { Html5QrcodeError, Html5QrcodeResult } from 'html5-qrcode/esm/core';
 import { Html5QrcodeScanner } from 'html5-qrcode';
 
-@customElement('scanner-element')
-export class ScannerElement extends LitElement {
+@customElement('qrcode-scanner')
+export class QRCodeScanner extends LitElement {
   static styles = [
     css`
       :host {
@@ -55,6 +55,6 @@ export class ScannerElement extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'scanner-element': ScannerElement;
+    'qrcode-scanner': QRCodeScanner;
   }
 }
