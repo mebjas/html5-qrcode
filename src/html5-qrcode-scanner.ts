@@ -960,8 +960,9 @@ export class Html5QrcodeScanner {
         switchContainer.style.textAlign = "center";
         this.switchScanTypeLink
             = BaseUiElementFactory.createElement<HTMLAnchorElement>(
-                "a", this.getDashboardSectionSwapLinkId());
+                "span", this.getDashboardSectionSwapLinkId());
         this.switchScanTypeLink.style.textDecoration = "underline";
+        this.switchScanTypeLink.style.cursor = "pointer";
         this.switchScanTypeLink.innerText
             = ScanTypeSelector.isCameraScanType(this.currentScanType)
                 ? TEXT_IF_CAMERA_SCAN_SELECTED : TEXT_IF_FILE_SCAN_SELECTED;
@@ -1093,6 +1094,7 @@ export class Html5QrcodeScanner {
         this.cameraScanImage.width = 64;
         this.cameraScanImage.style.opacity = "0.8";
         this.cameraScanImage.src = ASSET_CAMERA_SCAN;
+        this.cameraScanImage.alt = Html5QrcodeScannerStrings.cameraScanAltText();
     }
 
     private insertFileScanImageToScanRegion() {
@@ -1111,6 +1113,7 @@ export class Html5QrcodeScanner {
         this.fileScanImage.width = 64;
         this.fileScanImage.style.opacity = "0.8";
         this.fileScanImage.src = ASSET_FILE_SCAN;
+        this.fileScanImage.alt = Html5QrcodeScannerStrings.fileScanAltText();
     }
 
     private clearScanRegion() {

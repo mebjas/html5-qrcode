@@ -173,6 +173,14 @@ export class Html5QrcodeScannerStrings {
     public static loadingImage(): string {
         return "Loading image...";
     }
+
+    public static cameraScanAltText(): string {
+        return "Camera based scan";
+    }
+
+    public static fileScanAltText(): string {
+        return "Fule based scan";
+    }
 }
 
 /** Strings used in {@class LibraryInfoDiv} */

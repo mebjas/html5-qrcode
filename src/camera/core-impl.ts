@@ -186,7 +186,7 @@ class RenderedCameraImpl implements RenderedCamera {
 
         this.surface.addEventListener("playing", onVideoStart);
         this.surface.srcObject = this.mediaStream;
-        return this.surface.play();
+        this.surface.play();
     }
 
     static async create(
@@ -205,7 +205,7 @@ class RenderedCameraImpl implements RenderedCamera {
                 aspectRatioConstraint);
         }
 
-        await renderedCamera.setupSurface();
+       renderedCamera.setupSurface();
         return renderedCamera;
     }
 
