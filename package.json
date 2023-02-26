@@ -27,7 +27,7 @@
     "build:umd": "./scripts/build-webpack.sh",
     "build:umd_windows": ".\\scripts\\build-webpack.bat",
     "build:copy": "cp README.md dist && cp package.json dist && cp LICENSE dist && cp -R src dist/src",
-    "build:copy_windows": "copy README.md dist && copy package.json dist && copy LICENSE dist && xcopy .\\src .\\dist\\src",
+    "build:copy_windows": "copy README.md dist && copy package.json dist && copy LICENSE dist && xcopy .\\src .\\dist\\src /S /I /Y",
     "release": "npm run build && cd dist && npm publish"
   },
   "repository": {
