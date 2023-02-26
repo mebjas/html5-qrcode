@@ -1,3 +1,17 @@
+### Version 2.3.7
+-   Fix QR code scanning error.
+
+### Version 2.3.6
+-   Fix to minified js, some UI fixes to improve accessibility & SEO.
+
+### Version 2.3.5
+
+Multiple bug fixes
+-   Missing `resolve()` in `Html5QrcodeScanner` fixed in [PR#168](https://github.com/mebjas/html5-qrcode/pull/684) by [itsUndefined](https://github.com/itsUndefined).
+-   Fixed uncaught type error issue in [PR#671](https://github.com/mebjas/html5-qrcode/pull/671) by [zolfariot](https://github.com/zolfariot).
+-   Add sync issue in `RenderedCameraImpl` in [PR#648](https://github.com/mebjas/html5-qrcode/pull/648) by [pholawat-tle](https://github.com/pholawat-tle).
+
+
 ### Version 2.3.4
 -    `useBarCodeDetectorIfSupported` defaults to `true` and if supported the library will internally alternate between `BarcodeDetector` and `zxing-js`. Same robustness added for file based scan as well if more than one decoder is supported.
 -    Fixed the UI issue - [Issue#613](https://github.com/mebjas/html5-qrcode/issues/613).
