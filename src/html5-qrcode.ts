@@ -434,10 +434,6 @@ export class Html5Qrcode {
                         .then((renderedCamera) => {
                             $this.renderedCamera = renderedCamera;
                             toScanningStateChangeTransaction.execute();
-                            $this.foreverScan(
-                                internalConfig,
-                                qrCodeSuccessCallback,
-                                qrCodeErrorCallbackInternal!);
                             resolve(/* Void */ null);
                         })
                         .catch((error) => {
