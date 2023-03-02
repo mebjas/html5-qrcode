@@ -5,7 +5,7 @@ import { ScanTypeSelector } from "../../../src/ui/scanner/scan-type-selector";
 
 describe("ScanTypeSelector#getDefaultScanType()", () => {
     it("Camera + File returns camera", () => {
-        let selector = new ScanTypeSelector([
+        const selector = new ScanTypeSelector([
             Html5QrcodeScanType.SCAN_TYPE_CAMERA,
             Html5QrcodeScanType.SCAN_TYPE_FILE]);
         expect(selector.getDefaultScanType()).to.equal(
@@ -13,7 +13,7 @@ describe("ScanTypeSelector#getDefaultScanType()", () => {
     });
 
     it("File + Camera returns camera", () => {
-        let selector = new ScanTypeSelector([
+        const selector = new ScanTypeSelector([
             Html5QrcodeScanType.SCAN_TYPE_FILE,
             Html5QrcodeScanType.SCAN_TYPE_CAMERA]);
         expect(selector.getDefaultScanType()).to.equal(
@@ -21,14 +21,14 @@ describe("ScanTypeSelector#getDefaultScanType()", () => {
     });
 
     it("Camera returns camera", () => {
-        let selector = new ScanTypeSelector([
+        const selector = new ScanTypeSelector([
             Html5QrcodeScanType.SCAN_TYPE_CAMERA]);
         expect(selector.getDefaultScanType()).to.equal(
             Html5QrcodeScanType.SCAN_TYPE_CAMERA);
     });
 
     it("File returns camera", () => {
-        let selector = new ScanTypeSelector([
+        const selector = new ScanTypeSelector([
             Html5QrcodeScanType.SCAN_TYPE_FILE]);
         expect(selector.getDefaultScanType()).to.equal(
             Html5QrcodeScanType.SCAN_TYPE_FILE);
@@ -73,13 +73,13 @@ describe("ScanTypeSelector#isCameraScanRequired()", () => {
     });
 
     it("Camera only set - returns true", () => {
-        let selector = new ScanTypeSelector([
+        const selector = new ScanTypeSelector([
             Html5QrcodeScanType.SCAN_TYPE_CAMERA]);
         expect(selector.isCameraScanRequired()).to.be.true;
     });
 
     it("File only set - returns false", () => {
-        let selector = new ScanTypeSelector([
+        const selector = new ScanTypeSelector([
             Html5QrcodeScanType.SCAN_TYPE_FILE]);
         expect(selector.isCameraScanRequired()).to.be.false;
     });

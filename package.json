@@ -14,7 +14,7 @@
     "test:build": "tsc --build tsconfig.test.json",
     "test:run_windows": ".\\scripts\\test-run.bat",
     "test:run": "./scripts/test-run.sh",
-    "lint": "eslint src",
+    "lint": "eslint .",
     "lint-md": "remark .",
     "clean": "rm -Rf ./lib/* ./build/* ./meta/bundlesize/* ./meta/coverage/* ./.rpt2_cache  ./dist/* ./src/*.d.ts",
     "prebuild": "npm run clean",

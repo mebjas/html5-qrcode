@@ -5,7 +5,7 @@ import { CameraSelectionUi } from "../../../src/ui/scanner/camera-selection-ui";
 import { PublicUiElementIdAndClasses } from "../../../src/ui/scanner/base";
 
 function createCameraList(count: number): Array<CameraDevice> {
-    let cameras: Array<CameraDevice> = [];
+    const cameras: Array<CameraDevice> = [];
     for (let i = 0; i < count; ++i) {
         cameras.push({id: `camera-${i}`, label: `camera-${i}-label`});
     }
@@ -27,11 +27,11 @@ describe("CameraSelectionUi#create()", () => {
     });
 
     it("Multiple cameras, creates the camera selection", () => {
-        let numCameras = 3;
-        let cameras = createCameraList(numCameras);
-        let cameraSelectUi = CameraSelectionUi.create(parentElement!, cameras);
+        const numCameras = 3;
+        const cameras = createCameraList(numCameras);
+        const cameraSelectUi = CameraSelectionUi.create(parentElement!, cameras);
 
-        let selection = document.getElementById(
+        const selection = document.getElementById(
             PublicUiElementIdAndClasses.CAMERA_SELECTION_SELECT_ID);
 
         expect(selection).to.be.instanceOf(HTMLSelectElement);
@@ -41,11 +41,11 @@ describe("CameraSelectionUi#create()", () => {
 
     it("Single cameras, creates the camera selection", () => {
         parentElement!.innerHTML = "";
-        let numCameras = 1;
-        let cameras = createCameraList(numCameras);
-        let cameraSelectUi = CameraSelectionUi.create(parentElement!, cameras);
+        const numCameras = 1;
+        const cameras = createCameraList(numCameras);
+        const cameraSelectUi = CameraSelectionUi.create(parentElement!, cameras);
 
-        let selection = document.getElementById(
+        const selection = document.getElementById(
             PublicUiElementIdAndClasses.CAMERA_SELECTION_SELECT_ID);
 
         expect(selection).to.be.instanceOf(HTMLSelectElement);
@@ -54,10 +54,10 @@ describe("CameraSelectionUi#create()", () => {
     });
 
     it("No cameras, fails", () => {
-        let numCameras = 0;
-        let cameras = createCameraList(numCameras);
+        const numCameras = 0;
+        const cameras = createCameraList(numCameras);
         expect(() => {
-            let _ = CameraSelectionUi.create(parentElement!, cameras);
+            const _ = CameraSelectionUi.create(parentElement!, cameras);
         }).to.throw();   
     });
 });
@@ -77,9 +77,9 @@ describe("CameraSelectionUi#enable() & disable()", () => {
     });
 
     it("enable(), enables", () => {
-        let numCameras = 3;
-        let cameras = createCameraList(numCameras);
-        let cameraSelectUi = CameraSelectionUi.create(parentElement!, cameras);
+        const numCameras = 3;
+        const cameras = createCameraList(numCameras);
+        const cameraSelectUi = CameraSelectionUi.create(parentElement!, cameras);
 
         cameraSelectUi.enable();
         expect(cameraSelectUi.isDisabled()).to.be.false;
@@ -90,9 +90,9 @@ describe("CameraSelectionUi#enable() & disable()", () => {
     });
 
     it("disable(), disables", () => {
-        let numCameras = 3;
-        let cameras = createCameraList(numCameras);
-        let cameraSelectUi = CameraSelectionUi.create(parentElement!, cameras);
+        const numCameras = 3;
+        const cameras = createCameraList(numCameras);
+        const cameraSelectUi = CameraSelectionUi.create(parentElement!, cameras);
 
         cameraSelectUi.disable();
         expect(cameraSelectUi.isDisabled()).to.be.true;
@@ -118,9 +118,9 @@ describe("CameraSelectionUi setting and getting values", () => {
     });
 
     it("setValue sets value if present else fails", () => {
-        let numCameras = 3;
-        let cameras = createCameraList(numCameras);
-        let cameraSelectUi = CameraSelectionUi.create(parentElement!, cameras);
+        const numCameras = 3;
+        const cameras = createCameraList(numCameras);
+        const cameraSelectUi = CameraSelectionUi.create(parentElement!, cameras);
 
         // First camera is default.
         expect(cameraSelectUi.getValue()).eq(cameras[0].id);
@@ -134,9 +134,9 @@ describe("CameraSelectionUi setting and getting values", () => {
     });
 
     it("hasValue() returns true for valid case else fails", () => {
-        let numCameras = 3;
-        let cameras = createCameraList(numCameras);
-        let cameraSelectUi = CameraSelectionUi.create(parentElement!, cameras);
+        const numCameras = 3;
+        const cameras = createCameraList(numCameras);
+        const cameraSelectUi = CameraSelectionUi.create(parentElement!, cameras);
 
         expect(cameraSelectUi.hasValue(cameras[1].id)).to.be.true;
         expect(cameraSelectUi.hasValue("random string")).to.be.false;
