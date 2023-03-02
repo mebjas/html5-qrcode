@@ -82,7 +82,7 @@ export enum Html5QrcodeScanType {
  * Constants used in QR code library.
  */
 export class Html5QrcodeConstants {
-    static GITHUB_PROJECT_URL: string
+    static GITHUB_PROJECT_URL
         = "https://github.com/mebjas/html5-qrcode";
     static SCAN_DEFAULT_FPS = 2;
     static DEFAULT_DISABLE_FLIP = false;
@@ -190,7 +190,7 @@ export interface Html5QrcodeResult {
  */
 export class Html5QrcodeResultFactory {
     static createFromText(decodedText: string): Html5QrcodeResult {
-        let qrcodeResult = {
+        const qrcodeResult = {
             text: decodedText
         };
 

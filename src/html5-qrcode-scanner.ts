@@ -507,7 +507,7 @@ export class Html5QrcodeScanner {
         header.style.margin = "0px";
         dashboard.appendChild(header);
 
-        let libraryInfo = new LibraryInfoContainer();
+        const libraryInfo = new LibraryInfoContainer();
         libraryInfo.renderInto(header);
 
         const headerMessageContainer = document.createElement("div");
@@ -668,10 +668,10 @@ export class Html5QrcodeScanner {
     }
 
     private renderFileScanUi(parent: HTMLDivElement) {
-        let showOnRender = ScanTypeSelector.isFileScanType(
+        const showOnRender = ScanTypeSelector.isFileScanType(
             this.currentScanType);
         const $this = this;
-        let onFileSelected: OnFileSelected = (file: File) => {
+        const onFileSelected: OnFileSelected = (file: File) => {
             if (!$this.html5Qrcode) {
                 throw "html5Qrcode not defined";
             }
@@ -707,11 +707,11 @@ export class Html5QrcodeScanner {
         scpCameraScanRegion.style.textAlign = "center";
 
         // Hide by default.
-        let cameraZoomUi: CameraZoomUi = CameraZoomUi.create(
+        const cameraZoomUi: CameraZoomUi = CameraZoomUi.create(
             scpCameraScanRegion, /* renderOnCreate= */ false);
         const renderCameraZoomUiIfSupported
             = (cameraCapabilities: CameraCapabilities) => {
-            let zoomCapability = cameraCapabilities.zoomFeature();
+            const zoomCapability = cameraCapabilities.zoomFeature();
             if (!zoomCapability.isSupported()) {
                 return;
             }
@@ -735,7 +735,7 @@ export class Html5QrcodeScanner {
             cameraZoomUi.show();
         };
 
-        let cameraSelectUi: CameraSelectionUi = CameraSelectionUi.create(
+        const cameraSelectUi: CameraSelectionUi = CameraSelectionUi.create(
             scpCameraScanRegion, cameras);
 
         // Camera Action Buttons.
@@ -969,7 +969,7 @@ export class Html5QrcodeScanner {
                 if (hasPermissions) {
                     // Start feed.
                     // Assuming at this point the permission button exists.
-                    let permissionButton = document.getElementById(
+                    const permissionButton = document.getElementById(
                         $this.getCameraPermissionButtonId());
                     if (!permissionButton) {
                         this.logger.logError(

@@ -75,7 +75,7 @@ class LibraryInfoIcon {
     private infoIcon: HTMLImageElement;
     private onTapIn: OnClickListener0;
     private onTapOut: OnClickListener0;
-    private isShowingInfoIcon: boolean = true;
+    private isShowingInfoIcon = true;
 
     constructor(onTapIn: OnClickListener0, onTapOut: OnClickListener0) {
         this.onTapIn = onTapIn;

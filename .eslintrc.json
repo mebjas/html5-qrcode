@@ -1,14 +1,13 @@
 {
   "extends": [
     "eslint:recommended",
-    "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended"
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/eslint-recommended"
   ],
-  "root": true,
   "parser": "@typescript-eslint/parser",
-  "plugins": [],
-  "parserOptions": {
-    "sourceType": "module"
-  },
-  "rules": {}
+  "plugins": ["@typescript-eslint"],
+  "rules": {
+    "@typescript-eslint/no-this-alias": "warn",
+    "@typescript-eslint/no-empty-function": "warn"
+  }
 }

@@ -107,7 +107,7 @@ export class ZXingHtml5QrcodeDecoder implements QrcodeDecoderAsync {
         const binaryBitmap
             = new ZXing.BinaryBitmap(
                 new ZXing.HybridBinarizer(luminanceSource));
-        let result = zxingDecoder.decode(binaryBitmap);
+        const result = zxingDecoder.decode(binaryBitmap);
         return {
             text: result.text,
             format: QrcodeResultFormat.create(
@@ -117,7 +117,7 @@ export class ZXingHtml5QrcodeDecoder implements QrcodeDecoderAsync {
     }
 
     private createReverseFormatMap(): Map<any, Html5QrcodeSupportedFormats> {
-        let result = new Map();
+        const result = new Map();
         this.formatMap.forEach(
             (value: any, key: Html5QrcodeSupportedFormats, _) => {
             result.set(value, key);
@@ -136,7 +136,7 @@ export class ZXingHtml5QrcodeDecoder implements QrcodeDecoderAsync {
     private createZXingFormats(
         requestedFormats: Array<Html5QrcodeSupportedFormats>):
         Array<any> {
-            let zxingFormats = [];
+            const zxingFormats = [];
             for (const requestedFormat of requestedFormats) {
                 if (this.formatMap.has(requestedFormat)) {
                     zxingFormats.push(

@@ -122,7 +122,7 @@ export class CameraSelectionUi {
     public static create(
         parentElement: HTMLElement,
         cameras: Array<CameraDevice>): CameraSelectionUi {
-        let cameraSelectUi = new CameraSelectionUi(cameras);
+        const cameraSelectUi = new CameraSelectionUi(cameras);
         cameraSelectUi.render(parentElement);
         return cameraSelectUi;
     }

@@ -139,7 +139,7 @@ interface BarcodeDetectorResult {
         // not the best. As of now, we are returning just the largest code
         // found. In future it'd be desriable to return mutli codes if supported
         // and found.
-        let largestBarcode = this.selectLargestBarcode(barcodes);
+        const largestBarcode = this.selectLargestBarcode(barcodes);
         return {
             text: largestBarcode.rawValue,
             format: QrcodeResultFormat.create(
@@ -152,8 +152,8 @@ interface BarcodeDetectorResult {
         : BarcodeDetectorResult {
         let largestBarcode: BarcodeDetectorResult | null = null;
         let maxArea = 0;
-        for (let barcode of barcodes) {
-            let area = barcode.boundingBox.width * barcode.boundingBox.height;
+        for (const barcode of barcodes) {
+            const area = barcode.boundingBox.width * barcode.boundingBox.height;
             if (area > maxArea) {
                 maxArea = area;
                 largestBarcode = barcode;
@@ -168,7 +168,7 @@ interface BarcodeDetectorResult {
     private createBarcodeDetectorFormats(
         requestedFormats: Array<Html5QrcodeSupportedFormats>):
         BarcodeDetectorConfig {
-            let formats: Array<string> = [];
+            const formats: Array<string> = [];
             for (const requestedFormat of requestedFormats) {
                 if (this.formatMap.has(requestedFormat)) {
                     formats.push(
@@ -190,7 +190,7 @@ interface BarcodeDetectorResult {
     }
 
     private createReverseFormatMap(): Map<string, Html5QrcodeSupportedFormats> {
-        let result = new Map();
+        const result = new Map();
         this.formatMap.forEach(
             (value: string, key: Html5QrcodeSupportedFormats, _) => {
             result.set(value, key);

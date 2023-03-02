@@ -34,7 +34,7 @@ class TorchController {
     private readonly onTorchActionFailureCallback: OnTorchActionFailureCallback;
     
     // Mutable states.
-    private isTorchOn: boolean = false;
+    private isTorchOn = false;
 
     constructor(
         torchCapability: BooleanCameraCapability,
@@ -60,7 +60,7 @@ class TorchController {
      */
     public async flipState(): Promise<void> {
         this.buttonController.disable();
-        let isTorchOnExpected = !this.isTorchOn;
+        const isTorchOnExpected = !this.isTorchOn;
         try {
             await this.torchCapability.apply(isTorchOnExpected);
             this.updateUiBasedOnLatestSettings(
@@ -143,7 +143,7 @@ export class TorchButton implements TorchButtonController {
         this.torchButton.style.display = torchButtonOptions.display;
         this.torchButton.style.marginLeft = torchButtonOptions.marginLeft;
 
-        let $this = this;
+        const $this = this;
         this.torchButton.addEventListener("click", async (_) => {
             await $this.torchController.flipState();
             if ($this.torchController.isTorchEnabled()) {
@@ -219,7 +219,7 @@ export class TorchButton implements TorchButtonController {
         torchButtonOptions: TorchButtonOptions,
         onTorchActionFailureCallback: OnTorchActionFailureCallback)
         : TorchButton {
-        let button = new TorchButton(
+        const button = new TorchButton(
             torchCapability, onTorchActionFailureCallback);
         button.render(parentElement, torchButtonOptions);
         return button;

@@ -44,16 +44,16 @@ abstract class AbstractCameraCapability<T> implements CameraCapability<T> {
     }
 
     public apply(value: T): Promise<void> {
-        let constraint: any = {};
+        const constraint: any = {};
         constraint[this.name] = value;
-        let constraints = { advanced: [ constraint ] };
+        const constraints = { advanced: [ constraint ] };
         return this.track.applyConstraints(constraints);
     }
 
     public value(): T | null {
-        let settings: any = this.track.getSettings();
+        const settings: any = this.track.getSettings();
         if (this.name in settings) {
-            let settingValue = settings[this.name];
+            const settingValue = settings[this.name];
             return settingValue;
         }
 
@@ -79,16 +79,16 @@ abstract class AbstractRangeCameraCapability extends AbstractCameraCapability<nu
     }
 
     public apply(value: number): Promise<void> {
-        let constraint: any = {};
+        const constraint: any = {};
         constraint[this.name] = value;
-        let constraints = {advanced: [ constraint ]};
+        const constraints = {advanced: [ constraint ]};
         return this.track.applyConstraints(constraints);
     }
 
     private getCapabilities(): RangeValue {
         this.failIfNotSupported();
-        let capabilities: any = this.track.getCapabilities();
-        let capability: any = capabilities[this.name];
+        const capabilities: any = this.track.getCapabilities();
+        const capability: any = capabilities[this.name];
         return {
             min: capability.min,
             max: capability.max,
@@ -142,7 +142,7 @@ class RenderedCameraImpl implements RenderedCamera {
     private readonly surface: HTMLVideoElement;
     private readonly callbacks: RenderingCallbacks;
 
-    private isClosed: boolean = false;
+    private isClosed = false;
 
     private constructor(
         parentElement: HTMLElement,
@@ -177,7 +177,7 @@ class RenderedCameraImpl implements RenderedCamera {
             throw "RenderedCameraImpl video surface onerror() called";
         };
 
-        let onVideoStart = () => {
+        const onVideoStart = () => {
             const videoWidth = this.surface.clientWidth;
             const videoHeight = this.surface.clientHeight;
             this.callbacks.onRenderSurfaceReady(videoWidth, videoHeight);
@@ -195,10 +195,10 @@ class RenderedCameraImpl implements RenderedCamera {
         options: CameraRenderingOptions,
         callbacks: RenderingCallbacks)
         : Promise<RenderedCamera> {
-        let renderedCamera = new RenderedCameraImpl(
+        const renderedCamera = new RenderedCameraImpl(
             parentElement, mediaStream, callbacks);
         if (options.aspectRatio) {
-            let aspectRatioConstraint = {
+            const aspectRatioConstraint = {
                 aspectRatio: options.aspectRatio!
             };
             await renderedCamera.getFirstTrackOrFail().applyConstraints(
@@ -233,7 +233,7 @@ class RenderedCameraImpl implements RenderedCamera {
 
     public resume(onResumeCallback: () => void): void {
         this.failIfClosed();
-        let $this = this;
+        const $this = this;
 
         const onVideoResume = () => {
             // Transition after 200ms to avoid the previous canvas frame being
@@ -279,11 +279,11 @@ class RenderedCameraImpl implements RenderedCamera {
             return Promise.resolve();
         }
 
-        let $this = this;
+        const $this = this;
         return new Promise((resolve, _) => {
-            let tracks = $this.mediaStream.getVideoTracks();
+            const tracks = $this.mediaStream.getVideoTracks();
             const tracksToClose = tracks.length;
-            var tracksClosed = 0;
+            let tracksClosed = 0;
             $this.mediaStream.getVideoTracks().forEach((videoTrack) => {
                 $this.mediaStream.removeTrack(videoTrack);
                 videoTrack.stop();
@@ -328,12 +328,12 @@ export class CameraImpl implements Camera {
         if (!navigator.mediaDevices) {
             throw "navigator.mediaDevices not supported";
         }
-        let constraints: MediaStreamConstraints = {
+        const constraints: MediaStreamConstraints = {
             audio: false,
             video: videoConstraints
         };
 
-        let mediaStream = await navigator.mediaDevices.getUserMedia(
+        const mediaStream = await navigator.mediaDevices.getUserMedia(
             constraints);
         return new CameraImpl(mediaStream);
     }

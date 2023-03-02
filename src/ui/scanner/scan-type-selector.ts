@@ -73,7 +73,7 @@ export class ScanTypeSelector {
         }
 
         // Fail if more than expected number of values exist.
-        let maxExpectedValues
+        const maxExpectedValues
             = Html5QrcodeConstants.DEFAULT_SUPPORTED_SCAN_TYPE.length;
         if (supportedScanTypes.length > maxExpectedValues) {
             throw `Max ${maxExpectedValues} values expected for `
