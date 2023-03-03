@@ -13,7 +13,7 @@ function createCameraList(count: number): Array<CameraDevice> {
 }
 
 describe("CameraSelectionUi#create()", () => {
-    let parentElement: HTMLDivElement | undefined;
+    let parentElement: HTMLDivElement;
 
     before(() => {
         parentElement = document.createElement("div");
@@ -21,15 +21,14 @@ describe("CameraSelectionUi#create()", () => {
     });
 
     after(() => {
-        document.body.removeChild(parentElement!);
-        parentElement!.innerHTML = "";
-        parentElement = undefined;
+        document.body.removeChild(parentElement);
+        parentElement.innerHTML = "";
     });
 
     it("Multiple cameras, creates the camera selection", () => {
         const numCameras = 3;
         const cameras = createCameraList(numCameras);
-        const cameraSelectUi = CameraSelectionUi.create(parentElement!, cameras);
+        const cameraSelectUi = CameraSelectionUi.create(parentElement, cameras);
 
         const selection = document.getElementById(
             PublicUiElementIdAndClasses.CAMERA_SELECTION_SELECT_ID);
@@ -40,10 +39,10 @@ describe("CameraSelectionUi#create()", () => {
     });
 
     it("Single cameras, creates the camera selection", () => {
-        parentElement!.innerHTML = "";
+        parentElement.innerHTML = "";
         const numCameras = 1;
         const cameras = createCameraList(numCameras);
-        const cameraSelectUi = CameraSelectionUi.create(parentElement!, cameras);
+        const cameraSelectUi = CameraSelectionUi.create(parentElement, cameras);
 
         const selection = document.getElementById(
             PublicUiElementIdAndClasses.CAMERA_SELECTION_SELECT_ID);
@@ -57,13 +56,13 @@ describe("CameraSelectionUi#create()", () => {
         const numCameras = 0;
         const cameras = createCameraList(numCameras);
         expect(() => {
-            const _ = CameraSelectionUi.create(parentElement!, cameras);
+            const _ = CameraSelectionUi.create(parentElement, cameras);
         }).to.throw();   
     });
 });
 
 describe("CameraSelectionUi#enable() & disable()", () => {
-    let parentElement: HTMLDivElement | undefined;
+    let parentElement: HTMLDivElement;
 
     before(() => {
         parentElement = document.createElement("div");
@@ -71,15 +70,14 @@ describe("CameraSelectionUi#enable() & disable()", () => {
     });
 
     after(() => {
-        document.body.removeChild(parentElement!);
-        parentElement!.innerHTML = "";
-        parentElement = undefined;
+        document.body.removeChild(parentElement);
+        parentElement.innerHTML = "";
     });
 
     it("enable(), enables", () => {
         const numCameras = 3;
         const cameras = createCameraList(numCameras);
-        const cameraSelectUi = CameraSelectionUi.create(parentElement!, cameras);
+        const cameraSelectUi = CameraSelectionUi.create(parentElement, cameras);
 
         cameraSelectUi.enable();
         expect(cameraSelectUi.isDisabled()).to.be.false;
@@ -92,7 +90,7 @@ describe("CameraSelectionUi#enable() & disable()", () => {
     it("disable(), disables", () => {
         const numCameras = 3;
         const cameras = createCameraList(numCameras);
-        const cameraSelectUi = CameraSelectionUi.create(parentElement!, cameras);
+        const cameraSelectUi = CameraSelectionUi.create(parentElement, cameras);
 
         cameraSelectUi.disable();
         expect(cameraSelectUi.isDisabled()).to.be.true;
@@ -104,7 +102,7 @@ describe("CameraSelectionUi#enable() & disable()", () => {
 });
 
 describe("CameraSelectionUi setting and getting values", () => {
-    let parentElement: HTMLDivElement | undefined;
+    let parentElement: HTMLDivElement;
 
     before(() => {
         parentElement = document.createElement("div");
@@ -112,15 +110,14 @@ describe("CameraSelectionUi setting and getting values", () => {
     });
 
     after(() => {
-        document.body.removeChild(parentElement!);
-        parentElement!.innerHTML = "";
-        parentElement = undefined;
+        document.body.removeChild(parentElement);
+        parentElement.innerHTML = "";
     });
 
     it("setValue sets value if present else fails", () => {
         const numCameras = 3;
         const cameras = createCameraList(numCameras);
-        const cameraSelectUi = CameraSelectionUi.create(parentElement!, cameras);
+        const cameraSelectUi = CameraSelectionUi.create(parentElement, cameras);
 
         // First camera is default.
         expect(cameraSelectUi.getValue()).eq(cameras[0].id);
@@ -136,7 +133,7 @@ describe("CameraSelectionUi setting and getting values", () => {
     it("hasValue() returns true for valid case else fails", () => {
         const numCameras = 3;
         const cameras = createCameraList(numCameras);
-        const cameraSelectUi = CameraSelectionUi.create(parentElement!, cameras);
+        const cameraSelectUi = CameraSelectionUi.create(parentElement, cameras);
 
         expect(cameraSelectUi.hasValue(cameras[1].id)).to.be.true;
         expect(cameraSelectUi.hasValue("random string")).to.be.false;

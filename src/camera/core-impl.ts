@@ -270,19 +270,18 @@ class RenderedCameraImpl implements RenderedCamera {
             return Promise.resolve();
         }
 
-        const $this = this;
         return new Promise((resolve, _) => {
-            const tracks = $this.mediaStream.getVideoTracks();
+            const tracks = this.mediaStream.getVideoTracks();
             const tracksToClose = tracks.length;
             let tracksClosed = 0;
-            $this.mediaStream.getVideoTracks().forEach((videoTrack) => {
-                $this.mediaStream.removeTrack(videoTrack);
+            this.mediaStream.getVideoTracks().forEach((videoTrack) => {
+                this.mediaStream.removeTrack(videoTrack);
                 videoTrack.stop();
                 ++tracksClosed;
     
                 if (tracksClosed >= tracksToClose) {
-                    $this.isClosed = true;
-                    $this.parentElement.removeChild($this.surface);
+                    this.isClosed = true;
+                    this.parentElement.removeChild(this.surface);
                     resolve();
                 }
             });

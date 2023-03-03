@@ -63,10 +63,8 @@ export class CameraZoomUi {
         this.rangeText.innerText = `${this.rangeInput.value}x ${zoomString}`;
         this.rangeText.style.marginRight = "10px";
 
-        // Bind values.
-        const $this = this;
-        this.rangeInput.addEventListener("input", () => $this.onValueChange());
-        this.rangeInput.addEventListener("change", () => $this.onValueChange());
+        this.rangeInput.addEventListener("input", () => this.onValueChange());
+        this.rangeInput.addEventListener("change", () => this.onValueChange());
 
         this.zoomElementContainer.appendChild(this.rangeInput);
         this.zoomElementContainer.appendChild(this.rangeText);

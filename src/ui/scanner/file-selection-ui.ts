@@ -62,20 +62,19 @@ export class FileSelectionUi {
         this.fileScanInput.style.display = "none";
         fileScanLabel.appendChild(this.fileScanInput);
         
-        const $this = this;
         /*eslint complexity: ["error", 5]*/
         this.fileScanInput.addEventListener("change", (e: Event) => {
             if (e == null || e.target == null) {
                 return;
             }
             const target: HTMLInputElement = e.target as HTMLInputElement;
-            if (target.files && target.files.length === 0) {
+            if (!target.files || target.files.length === 0) {
                 return;
             }
-            const fileList: FileList = target.files!;
-            const file: File = fileList[0];
+            const fileList = target.files;
+            const file = fileList[0];
             const fileName = file.name;
-            $this.setImageNameToButton(fileName);
+            this.setImageNameToButton(fileName);
 
             onFileSelected(file);
         });
@@ -84,37 +83,37 @@ export class FileSelectionUi {
         const dragAndDropMessage = this.createDragAndDropMessage();
         this.fileBasedScanRegion.appendChild(dragAndDropMessage);
 
-        this.fileBasedScanRegion.addEventListener("dragenter", function(event) {
-            $this.fileBasedScanRegion.style.border
-                = $this.fileBasedScanRegionActiveBorder();
+        this.fileBasedScanRegion.addEventListener("dragenter", (event) => {
+            this.fileBasedScanRegion.style.border
+                = this.fileBasedScanRegionActiveBorder();
 
             event.stopPropagation();
             event.preventDefault();
         });
 
-        this.fileBasedScanRegion.addEventListener("dragleave", function(event) {
-            $this.fileBasedScanRegion.style.border
-                = $this.fileBasedScanRegionDefaultBorder();
+        this.fileBasedScanRegion.addEventListener("dragleave", (event) => {
+            this.fileBasedScanRegion.style.border
+                = this.fileBasedScanRegionDefaultBorder();
 
             event.stopPropagation();
             event.preventDefault();
         });
 
-        this.fileBasedScanRegion.addEventListener("dragover", function(event) {
-            $this.fileBasedScanRegion.style.border
-                = $this.fileBasedScanRegionActiveBorder();
+        this.fileBasedScanRegion.addEventListener("dragover", (event) => {
+            this.fileBasedScanRegion.style.border
+                = this.fileBasedScanRegionActiveBorder();
 
             event.stopPropagation();
             event.preventDefault();
         });
 
         /*eslint complexity: ["error", 10]*/
-        this.fileBasedScanRegion.addEventListener("drop", function(event) {
+        this.fileBasedScanRegion.addEventListener("drop", (event) => {
             event.stopPropagation();
             event.preventDefault();
 
-            $this.fileBasedScanRegion.style.border
-                = $this.fileBasedScanRegionDefaultBorder();
+            this.fileBasedScanRegion.style.border
+                = this.fileBasedScanRegionDefaultBorder();
 
             const dataTransfer = event.dataTransfer;
             if (dataTransfer) {
@@ -137,7 +136,7 @@ export class FileSelectionUi {
 
                     isAnyFileImage = true;
                     const fileName = file.name;
-                    $this.setImageNameToButton(fileName);
+                    this.setImageNameToButton(fileName);
 
                     onFileSelected(file);
                     dragAndDropMessage.innerText

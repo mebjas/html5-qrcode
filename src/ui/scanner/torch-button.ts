@@ -143,18 +143,17 @@ export class TorchButton implements TorchButtonController {
         this.torchButton.style.display = torchButtonOptions.display;
         this.torchButton.style.marginLeft = torchButtonOptions.marginLeft;
 
-        const $this = this;
-        this.torchButton.addEventListener("click", async (_) => {
-            await $this.torchController.flipState();
-            if ($this.torchController.isTorchEnabled()) {
-                $this.torchButton.classList.remove(
+        this.torchButton.addEventListener("click", async () => {
+            await this.torchController.flipState();
+            if (this.torchController.isTorchEnabled()) {
+                this.torchButton.classList.remove(
                     PublicUiElementIdAndClasses.TORCH_BUTTON_CLASS_TORCH_OFF);
-                $this.torchButton.classList.add(
+                this.torchButton.classList.add(
                     PublicUiElementIdAndClasses.TORCH_BUTTON_CLASS_TORCH_ON);  
             } else {
-                $this.torchButton.classList.remove(
+                this.torchButton.classList.remove(
                     PublicUiElementIdAndClasses.TORCH_BUTTON_CLASS_TORCH_ON);
-                $this.torchButton.classList.add(
+                this.torchButton.classList.add(
                     PublicUiElementIdAndClasses.TORCH_BUTTON_CLASS_TORCH_OFF);
             }
         });

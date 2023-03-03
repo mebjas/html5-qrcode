@@ -18,6 +18,7 @@ export class CameraRetriever {
         }
         
         // Using deprecated api to support really old browsers.
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const mst = <any>MediaStreamTrack;
         if (MediaStreamTrack && mst.getSources) {
             return CameraRetriever.getCamerasFromMediaStreamTrack();

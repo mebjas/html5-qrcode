@@ -4,7 +4,7 @@ import { CameraZoomUi } from "../../../src/ui/scanner/camera-zoom-ui";
 import { PublicUiElementIdAndClasses } from "../../../src/ui/scanner/base";
 
 describe("CameraZoomUi#create()", () => {
-    let parentElement: HTMLDivElement | undefined;
+    let parentElement: HTMLDivElement;
 
     before(() => {
         parentElement = document.createElement("div");
@@ -12,13 +12,12 @@ describe("CameraZoomUi#create()", () => {
     });
 
     after(() => {
-        document.body.removeChild(parentElement!);
-        parentElement = undefined;
+        document.body.removeChild(parentElement);
     });
 
     it("creates the button element", () => {
         const renderOnCreate = true;
-        const unusedUi = CameraZoomUi.create(parentElement!, renderOnCreate);
+        CameraZoomUi.create(parentElement, renderOnCreate);
 
         const slider = document.getElementById(
             PublicUiElementIdAndClasses.ZOOM_SLIDER_ID);
@@ -28,11 +27,10 @@ describe("CameraZoomUi#create()", () => {
 });
 
 describe("CameraZoomUi#setValues()", () => {
-    let parentElement: HTMLDivElement | undefined;
+    let parentElement: HTMLDivElement;
     const renderOnCreate = true;
     const minValue = 1;
     const maxValue = 10;
-    const defaultValue = 5;
     const step = 0.5;
 
     before(() => {
@@ -41,14 +39,13 @@ describe("CameraZoomUi#setValues()", () => {
     });
 
     after(() => {
-        document.body.removeChild(parentElement!);
-        parentElement = undefined;
+        document.body.removeChild(parentElement);
     });
 
     it("setValues sets the val", () => {
-        const cameraZoomUi = CameraZoomUi.create(parentElement!, renderOnCreate);
+        const cameraZoomUi = CameraZoomUi.create(parentElement, renderOnCreate);
         const slider = document.getElementById(
-            PublicUiElementIdAndClasses.ZOOM_SLIDER_ID)! as HTMLInputElement;
+            PublicUiElementIdAndClasses.ZOOM_SLIDER_ID) as HTMLInputElement;
 
         expect(slider.min).eq("1");
         expect(slider.max).eq("5");
