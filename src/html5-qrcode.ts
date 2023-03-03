@@ -1096,12 +1096,13 @@ export class Html5Qrcode {
     // TODO(mebjas): Convert this to a standard message viewer.
     private createScannerPausedUiElement(rootElement: HTMLElement) {
         const scannerPausedUiElement = document.createElement("div");
-        scannerPausedUiElement.innerText = "Scanner paused";
+        scannerPausedUiElement.innerText = Html5QrcodeStrings.scannerPaused();
         scannerPausedUiElement.style.display = "none";
         scannerPausedUiElement.style.position = "absolute";
         scannerPausedUiElement.style.top = "0px";
         scannerPausedUiElement.style.zIndex = "1";
-        scannerPausedUiElement.style.background = "yellow";
+        scannerPausedUiElement.style.background = "rgba(9, 9, 9, 0.46)";
+        scannerPausedUiElement.style.color = "#FFECEC";
         scannerPausedUiElement.style.textAlign = "center";
         scannerPausedUiElement.style.width = "100%";
         rootElement.appendChild(scannerPausedUiElement);

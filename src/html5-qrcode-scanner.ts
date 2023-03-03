@@ -493,7 +493,6 @@ export class Html5QrcodeScanner {
     }
 
     private setupInitialDashboard(dashboard: HTMLElement) {
-        const $this = this;
         this.createSection(dashboard);
         this.createSectionControlPanel();
         if (this.scanTypeSelector.hasMoreThanOneScanType()) {
@@ -636,7 +635,6 @@ export class Html5QrcodeScanner {
     }
 
     private createSectionControlPanel() {
-        const $this = this;
         const section = document.getElementById(this.getDashboardSectionId())!;
         const sectionControlPanel = document.createElement("div");
         section.appendChild(sectionControlPanel);
