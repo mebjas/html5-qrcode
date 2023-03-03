@@ -72,9 +72,9 @@ We are working continuously on adding support for more and more platforms. If yo
 ### Framework support
 The library can be easily used with several other frameworks, I have been adding examples for a few of them and would continue to add more.
 
-|<img src="https://scanapp.org/assets/github_assets/html5.png" width="30px">| <img src="https://scanapp.org/assets/github_assets/vuejs.png" width="30px">|<img src="https://scanapp.org/assets/github_assets/electron.png" width="30px"> | <img src="https://scanapp.org/assets/github_assets/react.svg" width="30px"> | <img src="https://seeklogo.com/images/L/lit-logo-6B43868CDC-seeklogo.com.png" height="30px">
-| -------- | -------- | -------- | -------- | -------- |
-| [Html5](./examples/html5) | [VueJs](./examples/vuejs) | [ElectronJs](./examples/electron) | [React](https://github.com/scanapp-org/html5-qrcode-react) | [Lit](./examples/lit)
+|<img src="https://scanapp.org/assets/github_assets/html5.png" width="30px">| <img src="https://scanapp.org/assets/github_assets/vuejs.png" width="30px">|<img src="https://scanapp.org/assets/github_assets/electron.png" width="30px"> | <img src="https://scanapp.org/assets/github_assets/react.svg" width="30px"> | <img src="https://seeklogo.com/images/L/lit-logo-6B43868CDC-seeklogo.com.png" height="30px"> | <img src="https://pbs.twimg.com/profile_images/1511434207079407618/AwzUxnVf_400x400.png" height="30px">
+| -------- | -------- | -------- | -------- | -------- | -------- |
+| [Html5](./examples/html5) | [VueJs](./examples/vuejs) | [ElectronJs](./examples/electron) | [React](https://github.com/scanapp-org/html5-qrcode-react) | [Lit](./examples/lit) | [Shadow DOM](./examples/html5-shadow-dom)
 
 ### Supported Code formats
 Code scanning is dependent on [Zxing-js](https://github.com/zxing-js/library) library. We will be working on top of it to add support for more types of code scanning. If you feel a certain type of code would be helpful to have, please file a feature request.
@@ -297,7 +297,7 @@ Find more information about this at [developers.google.com](https://developers.g
 
 And in JavaScript code initialize the object and attach listener like this:
 ```js
-const html5QrCode = new Html5Qrcode(/* element id or HTML Element*/ "reader");
+const html5QrCode = new Html5Qrcode(/* element id */ "reader");
 // File based scanning
 const fileinput = document.getElementById('qr-input-file');
 fileinput.addEventListener('change', e => {
@@ -324,6 +324,12 @@ fileinput.addEventListener('change', e => {
 // type `QrcodeResult` (check interface in src/core.ts) which contains the
 // decoded text, code format, code bounds, etc.
 // Eventually, this beta API will be migrated to the public API.
+```
+
+You can create the scanner instance by sending directly the HTML Element to the constructor as well:
+```js
+const readerElement = document.querySelector('div#reader');
+const html5QrCode = new Html5Qrcode(readerElement);
 ```
 
 > Note that inline scanning and file-based scanning are mutually exclusive at the moment. This means you can only use one of them at a time. I'll soon be adding support for the option to have both if the requirement comes in. If you want to use both, use `html5QrCode#clear()` method to clear the canvas.
@@ -576,18 +582,10 @@ class Html5Qrcode {
   /**
    * Initialize QR Code scanner.
    * 
-   * @param elementId - Id of the HTML element.
+   * @param elementOrElementId - The HTML DOM element or Id of the HTML element.
    * @param verbose - optional configuration object
    */
-  constructor(elementId: string, config:  Html5QrcodeFullConfig | undefined);
-
-  /**
-   * Initialize QR Code scanner.
-   * 
-   * @param element - The HTML DOM element.
-   * @param verbose - optional configuration object
-   */
-  constructor(element: HTMLElement, config:  Html5QrcodeFullConfig | undefined);
+  constructor(elementOrElementId: string | HTMLElement, config: Html5QrcodeFullConfig | undefined);
 
   /**
    * Start scanning QR codes or barcodes for a given camera.
@@ -716,24 +714,12 @@ class Html5QrcodeScanner {
   /**
    * Creates an instance of this class.
    *
-   * @param elementId Id of the HTML element.
+   * @param elementOrElementId - The HTML DOM element or Id of the HTML element.
    * @param config Extra configurations to tune the code scanner.
    * @param verbose - If true, all logs would be printed to console. 
    */
   constructor(
-    elementId: string,
-    config: Html5QrcodeScannerConfig | undefined,
-    verbose: boolean | undefined);
-
-  /**
-   * Creates instance of this class.
-   *
-   * @param element The HTML DOM element.
-   * @param config Extra configurations to tune the code scanner.
-   * @param verbose - If true, all logs would be printed to console. 
-   */
-  public constructor(
-    element: HTMLElement,
+    elementOrElementId: string | HTMLElement,
     config: Html5QrcodeScannerConfig | undefined,
     verbose: boolean | undefined);
 
