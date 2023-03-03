@@ -44,20 +44,16 @@ abstract class AbstractCameraCapability<T> implements CameraCapability<T> {
     }
 
     public apply(value: T): Promise<void> {
-        const constraint: any = {};
+        const constraint: {[key: string]: T} = {};
         constraint[this.name] = value;
         const constraints = { advanced: [ constraint ] };
         return this.track.applyConstraints(constraints);
     }
 
     public value(): T | null {
-        const settings: any = this.track.getSettings();
-        if (this.name in settings) {
-            const settingValue = settings[this.name];
-            return settingValue;
-        }
-
-        return null;
+        const settings = this.track.getSettings() as {[key: string]: T};
+        const settingValue = settings[this.name as keyof MediaTrackSettings];
+        return settingValue || null;
     }
 }
 
@@ -79,7 +75,7 @@ abstract class AbstractRangeCameraCapability extends AbstractCameraCapability<nu
     }
 
     public apply(value: number): Promise<void> {
-        const constraint: any = {};
+        const constraint: {[key: string]: number} = {};
         constraint[this.name] = value;
         const constraints = {advanced: [ constraint ]};
         return this.track.applyConstraints(constraints);
@@ -87,13 +83,9 @@ abstract class AbstractRangeCameraCapability extends AbstractCameraCapability<nu
 
     private getCapabilities(): RangeValue {
         this.failIfNotSupported();
-        const capabilities: any = this.track.getCapabilities();
-        const capability: any = capabilities[this.name];
-        return {
-            min: capability.min,
-            max: capability.max,
-            step: capability.step,
-        };
+        const capabilities = this.track.getCapabilities();
+        const capability = capabilities[this.name as keyof MediaTrackCapabilities];
+        return capability as RangeValue;
     }
 
     private failIfNotSupported() {
@@ -233,13 +225,12 @@ class RenderedCameraImpl implements RenderedCamera {
 
     public resume(onResumeCallback: () => void): void {
         this.failIfClosed();
-        const $this = this;
 
         const onVideoResume = () => {
             // Transition after 200ms to avoid the previous canvas frame being
             // re-scanned.
             setTimeout(onResumeCallback, 200);
-            $this.surface.removeEventListener("playing", onVideoResume);
+            this.surface.removeEventListener("playing", onVideoResume);
         };
 
         this.surface.addEventListener("playing", onVideoResume);

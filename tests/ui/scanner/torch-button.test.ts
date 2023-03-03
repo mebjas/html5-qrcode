@@ -27,8 +27,8 @@ class FakeTorchCapability implements BooleanCameraCapability {
 }
 
 describe("TorchButton#create()", () => {
-    let parentElement: HTMLDivElement | undefined;
-    let torchCapability: FakeTorchCapability | undefined;
+    let parentElement: HTMLDivElement;
+    let torchCapability: FakeTorchCapability;
     let noOpFailureCallback: (_: string) => { /* no op. */ };
     const options = { display: "inline-block", marginLeft: "10px" };
 
@@ -39,14 +39,12 @@ describe("TorchButton#create()", () => {
     });
 
     after(() => {
-        document.body.removeChild(parentElement!);
-        parentElement = undefined;
-        torchCapability = undefined;
+        document.body.removeChild(parentElement);
     });
 
     it("create() creates instance", () => {
-        const button = TorchButton.create(
-            parentElement!, torchCapability!, options, noOpFailureCallback);
+        TorchButton.create(
+            parentElement, torchCapability, options, noOpFailureCallback);
 
         const torchButton = document.getElementById(
             PublicUiElementIdAndClasses.TORCH_BUTTON_ID);
@@ -56,7 +54,7 @@ describe("TorchButton#create()", () => {
 
     it("create() creates instance, getTorchButton() returns button.", () => {
         const button = TorchButton.create(
-            parentElement!, torchCapability!, options, noOpFailureCallback);
+            parentElement, torchCapability, options, noOpFailureCallback);
         const torchButton = button.getTorchButton();
 
         expect(torchButton).to.be.instanceOf(HTMLButtonElement);
@@ -64,7 +62,7 @@ describe("TorchButton#create()", () => {
 
     it("show() & hide() works.", () => {
         const button = TorchButton.create(
-            parentElement!, torchCapability!, options, noOpFailureCallback);
+            parentElement, torchCapability, options, noOpFailureCallback);
         const torchButton = button.getTorchButton();
         expect(torchButton.style.display).eq("inline-block");
 
@@ -78,7 +76,7 @@ describe("TorchButton#create()", () => {
     it("created with hidden torchButtonOptions, button is hidden.", () => {
         const options = { display: "none", marginLeft: "10px" };
         const button = TorchButton.create(
-            parentElement!, torchCapability!, options, noOpFailureCallback);
+            parentElement, torchCapability, options, noOpFailureCallback);
         const torchButton = button.getTorchButton();
 
         expect(torchButton.style.display).eq("none");
@@ -86,7 +84,7 @@ describe("TorchButton#create()", () => {
 
     it("disable() & enable() works.", () => {
         const button = TorchButton.create(
-            parentElement!, torchCapability!, options, noOpFailureCallback);
+            parentElement, torchCapability, options, noOpFailureCallback);
         const torchButton = button.getTorchButton();
 
         button.disable();
@@ -99,7 +97,7 @@ describe("TorchButton#create()", () => {
     it("setText() sets the text.", () => {
         const text = "custom text";
         const button = TorchButton.create(
-            parentElement!, torchCapability!, options, noOpFailureCallback);
+            parentElement, torchCapability, options, noOpFailureCallback);
 
         button.setText(text);
         
@@ -110,7 +108,7 @@ describe("TorchButton#create()", () => {
     it("reset() resets the text.", () => {
         const text = "custom text";
         const button = TorchButton.create(
-            parentElement!, torchCapability!, options, noOpFailureCallback);
+            parentElement, torchCapability, options, noOpFailureCallback);
         button.setText(text);
 
         button.reset();

@@ -8,8 +8,8 @@ import { PublicUiElementIdAndClasses } from "../../../src/ui/scanner/base";
 
 describe("FileSelectionUi#constructor()", () => {
 
-    let parentElement: HTMLDivElement | undefined;
-    const noOpFileSelected: OnFileSelected = (_) => {};
+    let parentElement: HTMLDivElement;
+    const noOpFileSelected: OnFileSelected = () => null;
 
     before(() => {
         parentElement = document.createElement("div");
@@ -17,13 +17,12 @@ describe("FileSelectionUi#constructor()", () => {
     });
 
     after(() => {
-        document.body.removeChild(parentElement!);
-        parentElement = undefined;
+        document.body.removeChild(parentElement);
     });
 
     it("Have expected public elements", () => {
-        const fileSelectionUi = FileSelectionUi.create(
-            parentElement!, /* showOnRender= */ false, noOpFileSelected);
+        FileSelectionUi.create(
+            parentElement, /* showOnRender= */ false, noOpFileSelected);
 
         const fileButton = document.getElementById(
             PublicUiElementIdAndClasses.FILE_SELECTION_BUTTON_ID);
@@ -34,7 +33,7 @@ describe("FileSelectionUi#constructor()", () => {
     it("Hidden if showOnRender is false", () => {
         const showOnRender = false;
         const fileSelectionUi = FileSelectionUi.create(
-            parentElement!, showOnRender, noOpFileSelected);
+            parentElement, showOnRender, noOpFileSelected);
 
         expect(fileSelectionUi.isShowing()).to.be.false;
     });
@@ -42,15 +41,15 @@ describe("FileSelectionUi#constructor()", () => {
     it("Not Hidden if showOnRender is true", () => {
         const showOnRender = true;
         const fileSelectionUi = FileSelectionUi.create(
-            parentElement!, showOnRender, noOpFileSelected);
+            parentElement, showOnRender, noOpFileSelected);
 
         expect(fileSelectionUi.isShowing()).to.be.true;
     });
 });
 
 describe("FileSelectionUi#hide()", () => {
-    let parentElement: HTMLDivElement | undefined;
-    const noOpFileSelected: OnFileSelected = (_) => {};
+    let parentElement: HTMLDivElement;
+    const noOpFileSelected: OnFileSelected = () => null;
 
     before(() => {
         parentElement = document.createElement("div");
@@ -58,14 +57,13 @@ describe("FileSelectionUi#hide()", () => {
     });
 
     after(() => {
-        document.body.removeChild(parentElement!);
-        parentElement = undefined;
+        document.body.removeChild(parentElement);
     });
 
     it("Hide the scan region, when showing earlier", () => {
         const showOnRender = true;
         const fileSelectionUi = FileSelectionUi.create(
-            parentElement!,showOnRender, noOpFileSelected);
+            parentElement, showOnRender, noOpFileSelected);
         
         expect(fileSelectionUi.isShowing()).to.be.true;
 
@@ -78,7 +76,7 @@ describe("FileSelectionUi#hide()", () => {
     it("Hide the scan region, when hidden earlier", () => {
         const showOnRender = false;
         const fileSelectionUi = FileSelectionUi.create(
-            parentElement!,showOnRender, noOpFileSelected);
+            parentElement,showOnRender, noOpFileSelected);
         
         expect(fileSelectionUi.isShowing()).to.be.false;
 
@@ -90,8 +88,8 @@ describe("FileSelectionUi#hide()", () => {
 });
 
 describe("FileSelectionUi#show()", () => {
-    let parentElement: HTMLDivElement | undefined;
-    const noOpFileSelected: OnFileSelected = (_) => {};
+    let parentElement: HTMLDivElement;
+    const noOpFileSelected: OnFileSelected = () => null;
 
     before(() => {
         parentElement = document.createElement("div");
@@ -99,14 +97,13 @@ describe("FileSelectionUi#show()", () => {
     });
 
     after(() => {
-        document.body.removeChild(parentElement!);
-        parentElement = undefined;
+        document.body.removeChild(parentElement);
     });
 
     it("Show the scan region, when not showing earlier", () => {
         const showOnRender = false;
         const fileSelectionUi = FileSelectionUi.create(
-            parentElement!,showOnRender, noOpFileSelected);
+            parentElement, showOnRender, noOpFileSelected);
         
         expect(fileSelectionUi.isShowing()).to.be.false;
 
@@ -119,7 +116,7 @@ describe("FileSelectionUi#show()", () => {
     it("Show the scan region, when showing earlier", () => {
         const showOnRender = true;
         const fileSelectionUi = FileSelectionUi.create(
-            parentElement!,showOnRender, noOpFileSelected);
+            parentElement, showOnRender, noOpFileSelected);
         
         expect(fileSelectionUi.isShowing()).to.be.true;
 
