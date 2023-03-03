@@ -17,7 +17,7 @@ class PersistedDataFactory {
     static createDefault(): PersistedData {
         return {
             hasPermission: false,
-            lastUsedCameraId: ''
+            lastUsedCameraId: ""
         };
     }
 }
@@ -55,7 +55,7 @@ export class PersistedDataManager {
     }
 
     public resetLastUsedCameraId() {
-        this.data.lastUsedCameraId = '';
+        this.data.lastUsedCameraId = "";
         this.flush();
     }
 
