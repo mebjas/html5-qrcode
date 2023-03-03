@@ -34,8 +34,10 @@ Supports two kinds of APIs
 | -- | -- |
 | _Demo at [scanapp.org](https://scanapp.org)_ | _Demo at [qrcode.minhazav.dev](https://qrcode.minhazav.dev) - **Scanning different types of codes**_ |
 
-## Notice
-**UX/UXD/UXR help wanted**: We are looking to improve user experience of this code scanning library — if you are interested in making this experience better for both developers and end users, please share your ideas, thoughts, inputs in [this discussion](https://github.com/mebjas/html5-qrcode/discussions/213)
+## We need your help!
+
+![image](https://user-images.githubusercontent.com/3007365/222830114-e5bcca15-bf8a-434e-9f48-339e82a0a4ef.png)
+Help incentivise feature development, bug fixing by supporting the sponsorhip goals of this project. See [list of sponsered feature requests here](https://github.com/mebjas/html5-qrcode/wiki/Feature-request-sponsorship-goals#feature-requests).
 
 ## Supported platforms
 We are working continuously on adding support for more and more platforms. If you find a platform or a browser where the library is not working, please feel free to file an issue. Check the [demo link](https://blog.minhazav.dev/research/html5-qrcode.html) to test it out.
@@ -1048,7 +1050,9 @@ This project would not be possible without all of our fantastic contributors and
 <a href="https://github.com/bujjivadu"><img src="https://github.com/bujjivadu.png" width="40px" alt="bujjivadu" /></a>
 <!-- sponsors -->
 
-And huge thanks to following organizations for non monitery sponsorships
+Help incentivise feature development, bug fixing by supporting the sponsorhip goals of this project. See [list of sponsered feature requests here](https://github.com/mebjas/html5-qrcode/wiki/Feature-request-sponsorship-goals#feature-requests).
+
+Also, huge thanks to following organizations for non monitery sponsorships
 
 <!-- sponsors -->
 <div>
