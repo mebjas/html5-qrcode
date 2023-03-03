@@ -56,7 +56,7 @@ describe("CameraSelectionUi#create()", () => {
         const numCameras = 0;
         const cameras = createCameraList(numCameras);
         expect(() => {
-            const _ = CameraSelectionUi.create(parentElement, cameras);
+            CameraSelectionUi.create(parentElement, cameras);
         }).to.throw();   
     });
 });

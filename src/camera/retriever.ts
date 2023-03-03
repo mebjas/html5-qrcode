@@ -87,6 +87,7 @@ export class CameraRetriever {
                 resolve(results);
             }
 
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const mst = <any>MediaStreamTrack;
             mst.getSources(callback);
         });

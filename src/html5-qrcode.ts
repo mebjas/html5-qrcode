@@ -308,7 +308,8 @@ export class Html5Qrcode {
         this.verbose = false;
         
         let experimentalFeatureConfig : ExperimentalFeaturesConfig | undefined;
-        let configObject: Html5QrcodeFullConfig | undefined;
+        let configObject = undefined;
+
         if (typeof configOrVerbosityFlag == "boolean") {
             this.verbose = configOrVerbosityFlag === true;
         } else if (configOrVerbosityFlag) {
@@ -905,28 +906,28 @@ export class Html5Qrcode {
      */
     /*eslint complexity: ["error", 10]*/
     private getUseBarCodeDetectorIfSupported(
-        config: Html5QrcodeConfigs | undefined) : boolean {
+        config: Html5QrcodeConfigs = {}) : boolean {
         // Default value is true.
         if (isNullOrUndefined(config)) {
             return true;
         }
 
-        if (!isNullOrUndefined(config!.useBarCodeDetectorIfSupported)) {
+        if (!isNullOrUndefined(config.useBarCodeDetectorIfSupported)) {
             // Default value is false.
-            return config!.useBarCodeDetectorIfSupported !== false;
+            return config?.useBarCodeDetectorIfSupported !== false;
         }
 
-        if (isNullOrUndefined(config!.experimentalFeatures)) {
+        if (isNullOrUndefined(config.experimentalFeatures)) {
             return true;
         }
 
-        const experimentalFeatures = config!.experimentalFeatures!;
+        const experimentalFeatures = config.experimentalFeatures;
         if (isNullOrUndefined(
-            experimentalFeatures.useBarCodeDetectorIfSupported)) {
+            experimentalFeatures?.useBarCodeDetectorIfSupported)) {
             return true;
         }
 
-        return experimentalFeatures.useBarCodeDetectorIfSupported !== false;
+        return experimentalFeatures?.useBarCodeDetectorIfSupported !== false;
     }
 
     /**
