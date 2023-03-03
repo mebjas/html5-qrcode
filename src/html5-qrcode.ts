@@ -561,7 +561,7 @@ export class Html5Qrcode {
             this.renderedCamera = null;
 
             if (this.element) {
-                this.element.removeChild(this.canvasElement!);
+                this.element.removeChild(this.canvasElement as Node);
                 this.canvasElement = null;
             }
 

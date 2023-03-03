@@ -681,14 +681,14 @@ export class Html5QrcodeScanner {
             this.html5Qrcode.scanFileV2(file, /* showImage= */ true)
                 .then((html5qrcodeResult: Html5QrcodeResult) => {
                     this.resetHeaderMessage();
-                    this.qrCodeSuccessCallback!(
+                    this.qrCodeSuccessCallback?.(
                         html5qrcodeResult.decodedText,
                         html5qrcodeResult);
                 })
                 .catch((error) => {
                     this.setHeaderMessage(
                         error, Html5QrcodeScannerStatus.STATUS_WARNING);
-                    this.qrCodeErrorCallback!(
+                    this.qrCodeErrorCallback?.(
                         error, Html5QrcodeErrorFactory.createFrom(error));
                 });
         };
@@ -885,7 +885,7 @@ export class Html5QrcodeScanner {
         });
 
         if (this.persistedDataManager.getLastUsedCameraId()) {
-            const cameraId = this.persistedDataManager.getLastUsedCameraId()!;
+            const cameraId = this.persistedDataManager.getLastUsedCameraId();
             if (cameraSelectUi.hasValue(cameraId)) {
                 cameraSelectUi.setValue(cameraId);
                 cameraActionStartButton.click();
@@ -1041,7 +1041,7 @@ export class Html5QrcodeScanner {
         this.cameraScanImage = new Image;
         this.cameraScanImage.onload = () => {
             qrCodeScanRegion.innerHTML = "<br>";
-            qrCodeScanRegion.appendChild(this.cameraScanImage!);
+            qrCodeScanRegion.appendChild(this.cameraScanImage as Node);
         }
         this.cameraScanImage.width = 64;
         this.cameraScanImage.style.opacity = "0.8";
