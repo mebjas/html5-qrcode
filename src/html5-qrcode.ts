@@ -308,7 +308,9 @@ export class Html5Qrcode {
         this.verbose = false;
         
         let experimentalFeatureConfig : ExperimentalFeaturesConfig | undefined;
-        let configObject = undefined;
+        let configObject: Html5QrcodeFullConfig = {
+            verbose: false
+        };
 
         if (typeof configOrVerbosityFlag == "boolean") {
             this.verbose = configOrVerbosityFlag === true;
@@ -368,7 +370,7 @@ export class Html5Qrcode {
             qrCodeErrorCallbackInternal = qrCodeErrorCallback;
         } else {
             qrCodeErrorCallbackInternal
-                = this.verbose ? this.logger.log : () => {};
+                = this.verbose ? this.logger.log : () => null;
         }
 
         const internalConfig = InternalHtml5QrcodeConfig.create(
@@ -914,7 +916,7 @@ export class Html5Qrcode {
 
         if (!isNullOrUndefined(config.useBarCodeDetectorIfSupported)) {
             // Default value is false.
-            return config?.useBarCodeDetectorIfSupported !== false;
+            return config.useBarCodeDetectorIfSupported !== false;
         }
 
         if (isNullOrUndefined(config.experimentalFeatures)) {

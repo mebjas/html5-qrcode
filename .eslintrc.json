@@ -7,6 +7,7 @@
   "parser": "@typescript-eslint/parser",
   "plugins": ["@typescript-eslint"],
   "ignorePatterns": [
+    "dist/**/*.js", 
     "examples/**/*.js", 
     "examples/**/*.ts",
     "minified/**/*.js",
@@ -16,7 +17,6 @@
     "webpack.config.js"
   ],
   "rules": {
-    "@typescript-eslint/no-this-alias": "warn",
-    "@typescript-eslint/no-empty-function": "warn"
+    "@typescript-eslint/no-this-alias": "warn"
   }
 }
