@@ -21,7 +21,7 @@ export interface CameraCapability<T> {
   apply(value: T): Promise<void>;
 
   /** Returns current value of this capability. */
-  value(): T | null;
+  value(): T;
 }
 
 /** Capability of the camera that has range. */

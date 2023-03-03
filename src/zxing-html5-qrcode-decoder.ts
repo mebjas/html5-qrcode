@@ -119,7 +119,7 @@ export class ZXingHtml5QrcodeDecoder implements QrcodeDecoderAsync {
     private createReverseFormatMap(): Map<any, Html5QrcodeSupportedFormats> {
         const result = new Map();
         this.formatMap.forEach(
-            (value: any, key: Html5QrcodeSupportedFormats, _) => {
+            (value: any, key: Html5QrcodeSupportedFormats) => {
             result.set(value, key);
         });
         return result;

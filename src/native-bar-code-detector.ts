@@ -192,7 +192,7 @@ interface BarcodeDetectorResult {
     private createReverseFormatMap(): Map<string, Html5QrcodeSupportedFormats> {
         const result = new Map();
         this.formatMap.forEach(
-            (value: string, key: Html5QrcodeSupportedFormats, _) => {
+            (value: string, key: Html5QrcodeSupportedFormats) => {
             result.set(value, key);
         });
         return result;

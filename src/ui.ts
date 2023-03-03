@@ -96,9 +96,9 @@ class LibraryInfoIcon {
         this.infoIcon.style.width = "16px";
         this.infoIcon.style.height = "16px";
 
-        this.infoIcon.onmouseover = (_) => this.onHoverIn();
-        this.infoIcon.onmouseout = (_) => this.onHoverOut();
-        this.infoIcon.onclick = (_) => this.onClick();
+        this.infoIcon.onmouseover = () => this.onHoverIn();
+        this.infoIcon.onmouseout = () => this.onHoverOut();
+        this.infoIcon.onclick = () => this.onClick();
 
         parent.appendChild(this.infoIcon);
     }

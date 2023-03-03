@@ -64,8 +64,8 @@ class TorchController {
         try {
             await this.torchCapability.apply(isTorchOnExpected);
             this.updateUiBasedOnLatestSettings(
-                this.torchCapability.value()!, isTorchOnExpected);
-        } catch (error) {
+                this.torchCapability.value(), isTorchOnExpected);
+        } catch (error: unknown) {
             this.propagateFailure(isTorchOnExpected, error);
             this.buttonController.enable();
         }
@@ -89,7 +89,7 @@ class TorchController {
     }
 
     private propagateFailure(
-        isTorchOnExpected: boolean, error?: any) {
+        isTorchOnExpected: boolean, error?: unknown) {
         let errorMessage = isTorchOnExpected
             ? Html5QrcodeScannerStrings.torchOnFailedMessage()
             : Html5QrcodeScannerStrings.torchOffFailedMessage();

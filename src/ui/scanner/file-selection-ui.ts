@@ -49,7 +49,7 @@ export class FileSelectionUi {
         this.setInitialValueToButton();
 
         // Bind click events with the label element.
-        this.fileSelectionButton.addEventListener("click", (_) => {
+        this.fileSelectionButton.addEventListener("click", () => {
             fileScanLabel.click();
         });
         fileScanLabel.append(this.fileSelectionButton);

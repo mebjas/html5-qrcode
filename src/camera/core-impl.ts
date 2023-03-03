@@ -50,10 +50,10 @@ abstract class AbstractCameraCapability<T> implements CameraCapability<T> {
         return this.track.applyConstraints(constraints);
     }
 
-    public value(): T | null {
+    public value(): T {
         const settings = this.track.getSettings() as {[key: string]: T};
         const settingValue = settings[this.name as keyof MediaTrackSettings];
-        return settingValue || null;
+        return settingValue;
     }
 }
 
@@ -156,7 +156,7 @@ class RenderedCameraImpl implements RenderedCamera {
         videoElement.style.display = "block";
         videoElement.muted = true;
         videoElement.setAttribute("muted", "true");
-        (<any>videoElement).playsInline = true;
+        videoElement.playsInline = true;
         return videoElement;
     }
 
@@ -191,7 +191,7 @@ class RenderedCameraImpl implements RenderedCamera {
             parentElement, mediaStream, callbacks);
         if (options.aspectRatio) {
             const aspectRatioConstraint = {
-                aspectRatio: options.aspectRatio!
+                aspectRatio: options.aspectRatio
             };
             await renderedCamera.getFirstTrackOrFail().applyConstraints(
                 aspectRatioConstraint);
@@ -270,7 +270,7 @@ class RenderedCameraImpl implements RenderedCamera {
             return Promise.resolve();
         }
 
-        return new Promise((resolve, _) => {
+        return new Promise((resolve) => {
             const tracks = this.mediaStream.getVideoTracks();
             const tracksToClose = tracks.length;
             let tracksClosed = 0;

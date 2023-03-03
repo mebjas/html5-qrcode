@@ -393,21 +393,18 @@ export class Html5Qrcode {
 
         // qr shaded box
         const element = document.getElementById(this.elementId)!;
-        const rootElementWidth = element.clientWidth
-            ? element.clientWidth : Constants.DEFAULT_WIDTH;
         element.style.position = "relative";
 
         this.shouldScan = true;
         this.element = element;
 
-        const $this = this;
         const toScanningStateChangeTransaction: StateManagerTransaction
             = this.stateManagerProxy.startTransition(
                 Html5QrcodeScannerState.SCANNING);
         return new Promise((resolve, reject) => {
             const videoConstraints = areVideoConstraintsEnabled
                     ? internalConfig.videoConstraints
-                    : $this.createVideoConstraints(cameraIdOrConfig);
+                    : this.createVideoConstraints(cameraIdOrConfig);
             if (!videoConstraints) {
                 toScanningStateChangeTransaction.cancel();
                 reject("videoConstraints should be defined");
@@ -421,11 +418,11 @@ export class Html5Qrcode {
 
             const renderingCallbacks: RenderingCallbacks = {
                 onRenderSurfaceReady: (viewfinderWidth, viewfinderHeight) => {
-                    $this.setupUi(
+                    this.setupUi(
                         viewfinderWidth, viewfinderHeight, internalConfig);
 
-                    $this.isScanning = true;
-                    $this.foreverScan(
+                    this.isScanning = true;
+                    this.foreverScan(
                         internalConfig,
                         qrCodeSuccessCallback,
                         qrCodeErrorCallbackInternal!);
@@ -439,7 +436,7 @@ export class Html5Qrcode {
                     return camera.render(
                         this.element!, cameraRenderingOptions, renderingCallbacks)
                         .then((renderedCamera) => {
-                            $this.renderedCamera = renderedCamera;
+                            this.renderedCamera = renderedCamera;
                             toScanningStateChangeTransaction.execute();
                             resolve(/* Void */ null);
                         })
@@ -451,7 +448,7 @@ export class Html5Qrcode {
                     toScanningStateChangeTransaction.cancel();
                     reject(Html5QrcodeStrings.errorGettingUserMedia(error));
                 });
-            }).catch((_) => {
+            }).catch(() => {
                 toScanningStateChangeTransaction.cancel();
                 reject(Html5QrcodeStrings.cameraStreamingNotSupported());
             });
@@ -505,11 +502,10 @@ export class Html5Qrcode {
             throw "renderedCamera doesn't exist while trying resume()";
         }
 
-        const $this = this;
         const transitionToScanning = () => {
-            $this.stateManagerProxy.directTransition(
+            this.stateManagerProxy.directTransition(
                 Html5QrcodeScannerState.SCANNING);
-            $this.hidePausedState();
+            this.hidePausedState();
         }
 
         if (!this.renderedCamera.isPaused()) {
@@ -561,26 +557,25 @@ export class Html5Qrcode {
             }
          };
 
-        const $this = this;
         return this.renderedCamera!.close().then(() => {
-            $this.renderedCamera = null;
+            this.renderedCamera = null;
 
-            if ($this.element) {
-                $this.element.removeChild($this.canvasElement!);
-                $this.canvasElement = null;
+            if (this.element) {
+                this.element.removeChild(this.canvasElement!);
+                this.canvasElement = null;
             }
 
             removeQrRegion();
-            if ($this.qrRegion) {
-                $this.qrRegion = null;
+            if (this.qrRegion) {
+                this.qrRegion = null;
             }
-            if ($this.context) {
-                $this.context = null;
+            if (this.context) {
+                this.context = null;
             }
 
             toStoppedStateTransaction.execute();
-            $this.hidePausedState();
-            $this.isScanning = false;
+            this.hidePausedState();
+            this.isScanning = false;
             return Promise.resolve();
         });
     }

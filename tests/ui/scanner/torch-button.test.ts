@@ -17,7 +17,7 @@ class FakeTorchCapability implements BooleanCameraCapability {
         return Promise.resolve();
     }
 
-    value(): boolean | null {
+    value(): boolean {
         return this.capabilityValue;
     }
 

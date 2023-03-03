@@ -73,7 +73,7 @@ export class CameraRetriever {
 
     private static getCamerasFromMediaStreamTrack()
         : Promise<Array<CameraDevice>> {  
-        return new Promise((resolve, _) => {
+        return new Promise((resolve) => {
             const callback = (sourceInfos: Array<any>) => {
                 const results: Array<CameraDevice> = [];
                 for (const sourceInfo of sourceInfos) {
