@@ -1,11 +1,11 @@
 # html5-qrcode with HTML Element
 
-### Include the js library in your project
+## Include the js library in your project
 ```html
 <script src="https://unpkg.com/html5-qrcode"></script>
 ```
 
-### Create the component in JavaScript
+## Create the component in JavaScript
 ```js
 class CustomComponent extends HTMLElement {
     constructor() {
