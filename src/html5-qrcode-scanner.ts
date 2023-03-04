@@ -181,8 +181,8 @@ export class Html5QrcodeScanner {
 
     // Initially null fields.
     private html5Qrcode!: Html5Qrcode;
-    private qrCodeSuccessCallback: QrcodeSuccessCallback | undefined;
-    private qrCodeErrorCallback: QrcodeErrorCallback | undefined;
+    private qrCodeSuccessCallback!: QrcodeSuccessCallback;
+    private qrCodeErrorCallback!: QrcodeErrorCallback;
     private lastMatchFound: string | null = null;
     private cameraScanImage: HTMLImageElement | null = null;
     private fileScanImage: HTMLImageElement | null = null;
@@ -681,14 +681,14 @@ export class Html5QrcodeScanner {
             this.html5Qrcode.scanFileV2(file, /* showImage= */ true)
                 .then((html5qrcodeResult: Html5QrcodeResult) => {
                     this.resetHeaderMessage();
-                    this.qrCodeSuccessCallback?.(
+                    this.qrCodeSuccessCallback(
                         html5qrcodeResult.decodedText,
                         html5qrcodeResult);
                 })
                 .catch((error) => {
                     this.setHeaderMessage(
                         error, Html5QrcodeScannerStatus.STATUS_WARNING);
-                    this.qrCodeErrorCallback?.(
+                    this.qrCodeErrorCallback(
                         error, Html5QrcodeErrorFactory.createFrom(error));
                 });
         };
@@ -885,8 +885,8 @@ export class Html5QrcodeScanner {
         });
 
         if (this.persistedDataManager.getLastUsedCameraId()) {
-            const cameraId = this.persistedDataManager.getLastUsedCameraId()!;
-            if (cameraSelectUi.hasValue(cameraId)) {
+            const cameraId = this.persistedDataManager.getLastUsedCameraId();
+            if (cameraId && cameraSelectUi.hasValue(cameraId)) {
                 cameraSelectUi.setValue(cameraId);
                 cameraActionStartButton.click();
             } else {
