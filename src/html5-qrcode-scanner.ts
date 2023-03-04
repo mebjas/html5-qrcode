@@ -816,7 +816,7 @@ export class Html5QrcodeScanner {
             const cameraId = cameraSelectUi.getValue();
             this.persistedDataManager.setLastUsedCameraId(cameraId);
 
-            this.html5Qrcode?.start(
+            this.html5Qrcode!.start(
                 cameraId,
                 toHtml5QrcodeCameraScanConfig(this.config),
                 this.qrCodeSuccessCallback,
@@ -885,7 +885,7 @@ export class Html5QrcodeScanner {
         });
 
         if (this.persistedDataManager.getLastUsedCameraId()) {
-            const cameraId = this.persistedDataManager.getLastUsedCameraId();
+            const cameraId = this.persistedDataManager.getLastUsedCameraId()!;
             if (cameraSelectUi.hasValue(cameraId)) {
                 cameraSelectUi.setValue(cameraId);
                 cameraActionStartButton.click();

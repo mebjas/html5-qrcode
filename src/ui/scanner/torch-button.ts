@@ -64,7 +64,7 @@ class TorchController {
         try {
             await this.torchCapability.apply(isTorchOnExpected);
             this.updateUiBasedOnLatestSettings(
-                this.torchCapability.value(), isTorchOnExpected);
+                this.torchCapability.value()!, isTorchOnExpected);
         } catch (error: unknown) {
             this.propagateFailure(isTorchOnExpected, error);
             this.buttonController.enable();

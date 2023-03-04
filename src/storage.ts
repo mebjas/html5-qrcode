@@ -10,7 +10,7 @@
 
 interface PersistedData {
     hasPermission: boolean;
-    lastUsedCameraId: string;
+    lastUsedCameraId: string | null;
 }
 
 class PersistedDataFactory {
@@ -40,7 +40,7 @@ export class PersistedDataManager {
         return this.data.hasPermission;
     }
 
-    public getLastUsedCameraId(): string {
+    public getLastUsedCameraId(): string | null {
         return this.data.lastUsedCameraId;
     }
 
@@ -55,7 +55,7 @@ export class PersistedDataManager {
     }
 
     public resetLastUsedCameraId() {
-        this.data.lastUsedCameraId = "";
+        this.data.lastUsedCameraId = null;
         this.flush();
     }
 
