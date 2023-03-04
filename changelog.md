@@ -1,3 +1,7 @@
+### Version 2.3.8
+ - `Scanner Paused` color tone changes.
+ - Misc code refactor.
+
 ### Version 2.3.7
 -   Fix QR code scanning error.
 
