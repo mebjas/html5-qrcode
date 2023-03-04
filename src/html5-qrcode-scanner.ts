@@ -179,8 +179,8 @@ export class Html5QrcodeScanner {
     private scanTypeSelector: ScanTypeSelector;
     private logger: Logger;
 
-    // Initally null fields.
-    private html5Qrcode: Html5Qrcode | undefined;
+    // Initially null fields.
+    private html5Qrcode!: Html5Qrcode;
     private qrCodeSuccessCallback: QrcodeSuccessCallback | undefined;
     private qrCodeErrorCallback: QrcodeErrorCallback | undefined;
     private lastMatchFound: string | null = null;
@@ -427,7 +427,7 @@ export class Html5QrcodeScanner {
         if (!this.html5Qrcode) {
             throw "Code scanner not initialized.";
         }
-        return this.html5Qrcode!;
+        return this.html5Qrcode;
     }
 
     private createConfig(config: Html5QrcodeScannerConfig | undefined)
@@ -816,7 +816,7 @@ export class Html5QrcodeScanner {
             const cameraId = cameraSelectUi.getValue();
             this.persistedDataManager.setLastUsedCameraId(cameraId);
 
-            this.html5Qrcode!.start(
+            this.html5Qrcode.start(
                 cameraId,
                 toHtml5QrcodeCameraScanConfig(this.config),
                 this.qrCodeSuccessCallback,
@@ -827,7 +827,7 @@ export class Html5QrcodeScanner {
                     resetCameraActionStartButton(/* shouldShow= */ false);
 
                     const cameraCapabilities
-                        = this.html5Qrcode?.getRunningTrackCameraCapabilities();
+                        = this.html5Qrcode.getRunningTrackCameraCapabilities();
 
                     // Show torch button if needed.
                     if (this.config.showTorchButtonIfSupported === true) {

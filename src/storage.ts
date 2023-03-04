@@ -17,7 +17,7 @@ class PersistedDataFactory {
     static createDefault(): PersistedData {
         return {
             hasPermission: false,
-            lastUsedCameraId: ""
+            lastUsedCameraId: null
         };
     }
 }
