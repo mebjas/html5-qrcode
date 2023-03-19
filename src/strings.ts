@@ -41,6 +41,10 @@ export class Html5QrcodeStrings {
         return "Camera access is only supported in secure context like https "
         + "or localhost.";
     }
+
+    public static scannerPaused(): string {
+        return "Scanner paused";
+    }
 }
 
 /**
