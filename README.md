@@ -39,6 +39,8 @@ Supports two kinds of APIs
 ![image](https://user-images.githubusercontent.com/3007365/222830114-e5bcca15-bf8a-434e-9f48-339e82a0a4ef.png)
 Help incentivise feature development, bug fixing by supporting the sponsorhip goals of this project. See [list of sponsered feature requests here](https://github.com/mebjas/html5-qrcode/wiki/Feature-request-sponsorship-goals#feature-requests).
 
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/L3L84G0C8)
+
 ## Supported platforms
 We are working continuously on adding support for more and more platforms. If you find a platform or a browser where the library is not working, please feel free to file an issue. Check the [demo link](https://blog.minhazav.dev/research/html5-qrcode.html) to test it out.
 
