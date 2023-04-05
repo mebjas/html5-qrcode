@@ -10,7 +10,4 @@ call webpack
 :: make classes global to be backwards compatible.
 type scripts\webpack_append_data.min.js >> dist\html5-qrcode.min.js
 
-copy dist\html5-qrcode.min.js minified\html5-qrcode.min.js
-
-ECHO Copied the webpack script to minified/..
 ECHO Webpack building done.

@@ -1,6 +1,7 @@
 {
     "extends": "./tsconfig.json",
-        "compilerOptions": {
+    "compilerOptions": {
+        "lib": ["DOM", "ES2017", "ES2018"],
         "module": "es2015",
         "target": "es2015",
         "outDir": "dist/es2015"

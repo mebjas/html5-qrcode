@@ -86,7 +86,7 @@ enum Html5QrcodeScannerStatus {
 /**
  * Interface for controlling different aspects of {@class Html5QrcodeScanner}.
  */
-interface Html5QrcodeScannerConfig
+export interface Html5QrcodeScannerConfig
     extends Html5QrcodeCameraScanConfig, Html5QrcodeConfigs {
 
     /**
@@ -359,6 +359,7 @@ export class Html5QrcodeScanner {
                     // Assuming file based scan was ongoing.
                     this.html5Qrcode.clear();
                     emptyHtmlContainer();
+                    resolve();
                 }
             });
         }
@@ -492,7 +493,6 @@ export class Html5QrcodeScanner {
     }
 
     private setupInitialDashboard(dashboard: HTMLElement) {
-        const $this = this;
         this.createSection(dashboard);
         this.createSectionControlPanel();
         if (this.scanTypeSelector.hasMoreThanOneScanType()) {
@@ -635,7 +635,6 @@ export class Html5QrcodeScanner {
     }
 
     private createSectionControlPanel() {
-        const $this = this;
         const section = document.getElementById(this.getDashboardSectionId())!;
         const sectionControlPanel = document.createElement("div");
         section.appendChild(sectionControlPanel);
@@ -905,13 +904,15 @@ export class Html5QrcodeScanner {
         const TEXT_IF_FILE_SCAN_SELECTED
             = Html5QrcodeScannerStrings.textIfFileScanSelected();
 
+        // TODO(minhaz): Export this as an UI element.
         const section = document.getElementById(this.getDashboardSectionId())!;
         const switchContainer = document.createElement("div");
         switchContainer.style.textAlign = "center";
         const switchScanTypeLink
             = BaseUiElementFactory.createElement<HTMLAnchorElement>(
-                "a", this.getDashboardSectionSwapLinkId());
+                "span", this.getDashboardSectionSwapLinkId());
         switchScanTypeLink.style.textDecoration = "underline";
+        switchScanTypeLink.style.cursor = "pointer";
         switchScanTypeLink.innerText
             = ScanTypeSelector.isCameraScanType(this.currentScanType)
             ? TEXT_IF_CAMERA_SCAN_SELECTED : TEXT_IF_FILE_SCAN_SELECTED;
@@ -1050,6 +1051,7 @@ export class Html5QrcodeScanner {
         this.cameraScanImage.width = 64;
         this.cameraScanImage.style.opacity = "0.8";
         this.cameraScanImage.src = ASSET_CAMERA_SCAN;
+        this.cameraScanImage.alt = Html5QrcodeScannerStrings.cameraScanAltText();
     }
 
     private insertFileScanImageToScanRegion() {
@@ -1071,6 +1073,7 @@ export class Html5QrcodeScanner {
         this.fileScanImage.width = 64;
         this.fileScanImage.style.opacity = "0.8";
         this.fileScanImage.src = ASSET_FILE_SCAN;
+        this.fileScanImage.alt = Html5QrcodeScannerStrings.fileScanAltText();
     }
 
     private clearScanRegion() {
