@@ -36,7 +36,7 @@ export class FileSelectionUi {
             = showOnRender ? "block" : "none";
         parentElement.appendChild(this.fileBasedScanRegion);
 
-        let fileScanLabel = document.createElement("label");
+        const fileScanLabel = document.createElement("label");
         fileScanLabel.setAttribute("for", this.getFileScanInputId());
         fileScanLabel.style.display = "inline-block";
 
@@ -49,7 +49,7 @@ export class FileSelectionUi {
         this.setInitialValueToButton();
 
         // Bind click events with the label element.
-        this.fileSelectionButton.addEventListener("click", (_) => {
+        this.fileSelectionButton.addEventListener("click", () => {
             fileScanLabel.click();
         });
         fileScanLabel.append(this.fileSelectionButton);
@@ -62,73 +62,72 @@ export class FileSelectionUi {
         this.fileScanInput.style.display = "none";
         fileScanLabel.appendChild(this.fileScanInput);
         
-        let $this = this;
         /*eslint complexity: ["error", 5]*/
         this.fileScanInput.addEventListener("change", (e: Event) => {
             if (e == null || e.target == null) {
                 return;
             }
-            let target: HTMLInputElement = e.target as HTMLInputElement;
-            if (target.files && target.files.length === 0) {
+            const target: HTMLInputElement = e.target as HTMLInputElement;
+            if (!target.files || target.files.length === 0) {
                 return;
             }
-            let fileList: FileList = target.files!;
-            const file: File = fileList[0];
-            let fileName = file.name;
-            $this.setImageNameToButton(fileName);
+            const fileList = target.files;
+            const file = fileList[0];
+            const fileName = file.name;
+            this.setImageNameToButton(fileName);
 
             onFileSelected(file);
         });
 
         // Render drag and drop label
-        let dragAndDropMessage = this.createDragAndDropMessage();
+        const dragAndDropMessage = this.createDragAndDropMessage();
         this.fileBasedScanRegion.appendChild(dragAndDropMessage);
 
-        this.fileBasedScanRegion.addEventListener("dragenter", function(event) {
-            $this.fileBasedScanRegion.style.border
-                = $this.fileBasedScanRegionActiveBorder();
+        this.fileBasedScanRegion.addEventListener("dragenter", (event) => {
+            this.fileBasedScanRegion.style.border
+                = this.fileBasedScanRegionActiveBorder();
 
             event.stopPropagation();
             event.preventDefault();
         });
 
-        this.fileBasedScanRegion.addEventListener("dragleave", function(event) {
-            $this.fileBasedScanRegion.style.border
-                = $this.fileBasedScanRegionDefaultBorder();
+        this.fileBasedScanRegion.addEventListener("dragleave", (event) => {
+            this.fileBasedScanRegion.style.border
+                = this.fileBasedScanRegionDefaultBorder();
 
             event.stopPropagation();
             event.preventDefault();
         });
 
-        this.fileBasedScanRegion.addEventListener("dragover", function(event) {
-            $this.fileBasedScanRegion.style.border
-                = $this.fileBasedScanRegionActiveBorder();
+        this.fileBasedScanRegion.addEventListener("dragover", (event) => {
+            this.fileBasedScanRegion.style.border
+                = this.fileBasedScanRegionActiveBorder();
 
             event.stopPropagation();
             event.preventDefault();
         });
 
         /*eslint complexity: ["error", 10]*/
-        this.fileBasedScanRegion.addEventListener("drop", function(event) {
+        this.fileBasedScanRegion.addEventListener("drop", (event) => {
             event.stopPropagation();
             event.preventDefault();
 
-            $this.fileBasedScanRegion.style.border
-                = $this.fileBasedScanRegionDefaultBorder();
+            this.fileBasedScanRegion.style.border
+                = this.fileBasedScanRegionDefaultBorder();
 
-            var dataTransfer = event.dataTransfer;
+            const dataTransfer = event.dataTransfer;
             if (dataTransfer) {
-                let files = dataTransfer.files;
+                const files = dataTransfer.files;
                 if (!files || files.length === 0) {
                     return;
                 }
                 let isAnyFileImage = false;
                 for (let i = 0; i < files.length; ++i) {
-                    let file = files.item(i);
+                    const file = files.item(i);
                     if (!file) {
                         continue;
                     }
-                    let imageType = /image.*/;
+                    const imageType = /image.*/;
 
                     // Only process images.
                     if (!file.type.match(imageType)) {
@@ -136,8 +135,8 @@ export class FileSelectionUi {
                     }
 
                     isAnyFileImage = true;
-                    let fileName = file.name;
-                    $this.setImageNameToButton(fileName);
+                    const fileName = file.name;
+                    this.setImageNameToButton(fileName);
 
                     onFileSelected(file);
                     dragAndDropMessage.innerText
@@ -183,7 +182,7 @@ export class FileSelectionUi {
 
     //#region private APIs
     private createFileBasedScanRegion(): HTMLDivElement {
-        let fileBasedScanRegion = document.createElement("div");
+        const fileBasedScanRegion = document.createElement("div");
         fileBasedScanRegion.style.textAlign = "center";
         fileBasedScanRegion.style.margin = "auto";
         fileBasedScanRegion.style.width = "80%";
@@ -205,7 +204,7 @@ export class FileSelectionUi {
     }
 
     private createDragAndDropMessage(): HTMLDivElement {
-        let dragAndDropMessage = document.createElement("div");
+        const dragAndDropMessage = document.createElement("div");
         dragAndDropMessage.innerText
             = Html5QrcodeScannerStrings.dragAndDropMessage();
         dragAndDropMessage.style.fontWeight = "400";
@@ -218,20 +217,20 @@ export class FileSelectionUi {
             // Strip first 8
             // Strip last 8
             // Add 4 dots
-            let start8Chars = imageFileName.substring(0, 8);
-            let length = imageFileName.length;
-            let last8Chars = imageFileName.substring(length - 8, length);
+            const start8Chars = imageFileName.substring(0, 8);
+            const length = imageFileName.length;
+            const last8Chars = imageFileName.substring(length - 8, length);
             imageFileName = `${start8Chars}....${last8Chars}`;
         }
 
-        let newText = Html5QrcodeScannerStrings.fileSelectionChooseAnother()
+        const newText = Html5QrcodeScannerStrings.fileSelectionChooseAnother()
             + " - "
             + imageFileName;
         this.fileSelectionButton.innerText = newText;
     }
 
     private setInitialValueToButton() {
-        let initialText = Html5QrcodeScannerStrings.fileSelectionChooseImage()
+        const initialText = Html5QrcodeScannerStrings.fileSelectionChooseImage()
             + " - "
             + Html5QrcodeScannerStrings.fileSelectionNoImageSelected();
         this.fileSelectionButton.innerText = initialText;
@@ -256,7 +255,7 @@ export class FileSelectionUi {
         parentElement: HTMLDivElement,
         showOnRender: boolean,
         onFileSelected: OnFileSelected): FileSelectionUi {
-        let button = new FileSelectionUi(
+        const button = new FileSelectionUi(
             parentElement, showOnRender, onFileSelected);
         return button;
     }

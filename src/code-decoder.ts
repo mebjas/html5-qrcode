@@ -31,7 +31,7 @@ export class Html5QrcodeShim implements RobustQrcodeDecoderAsync {
     private secondaryDecoder: QrcodeDecoderAsync | undefined;
 
     private readonly EXECUTIONS_TO_REPORT_PERFORMANCE = 100;
-    private executions: number = 0;
+    private executions = 0;
     private executionResults: Array<number> = [];
     private wasPrimaryDecoderUsedInLastDecode = false;
 
@@ -59,7 +59,7 @@ export class Html5QrcodeShim implements RobustQrcodeDecoderAsync {
     }
 
     async decodeAsync(canvas: HTMLCanvasElement): Promise<QrcodeResult> {
-        let startTime = performance.now();
+        const startTime = performance.now();
         try {
             return await this.getDecoder().decodeAsync(canvas);
         } finally {
@@ -69,7 +69,7 @@ export class Html5QrcodeShim implements RobustQrcodeDecoderAsync {
 
     async decodeRobustlyAsync(canvas: HTMLCanvasElement)
         : Promise<QrcodeResult> {
-        let startTime = performance.now();
+        const startTime = performance.now();
         try {
             return await this.primaryDecoder.decodeAsync(canvas);
         } catch(error) {
@@ -100,7 +100,7 @@ export class Html5QrcodeShim implements RobustQrcodeDecoderAsync {
         if (!this.verbose) {
             return;
         }
-        let executionTime = performance.now() - startTime;
+        const executionTime = performance.now() - startTime;
         this.executionResults.push(executionTime);
         this.executions++;
         this.possiblyFlushPerformanceReport();
@@ -114,11 +114,11 @@ export class Html5QrcodeShim implements RobustQrcodeDecoderAsync {
             return;
         }
 
-        let sum:number = 0;
-        for (let executionTime of this.executionResults) {
+        let sum = 0;
+        for (const executionTime of this.executionResults) {
             sum += executionTime;
         }
-        let mean = sum / this.executionResults.length;
+        const mean = sum / this.executionResults.length;
         // eslint-disable-next-line no-console
         console.log(`${mean} ms for ${this.executionResults.length} last runs.`);
         this.executions = 0;

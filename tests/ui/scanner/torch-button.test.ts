@@ -17,7 +17,7 @@ class FakeTorchCapability implements BooleanCameraCapability {
         return Promise.resolve();
     }
 
-    value(): boolean | null {
+    value(): boolean {
         return this.capabilityValue;
     }
 
@@ -27,10 +27,10 @@ class FakeTorchCapability implements BooleanCameraCapability {
 }
 
 describe("TorchButton#create()", () => {
-    let parentElement: HTMLDivElement | undefined;
-    let torchCapability: FakeTorchCapability | undefined;
+    let parentElement: HTMLDivElement;
+    let torchCapability: FakeTorchCapability;
     let noOpFailureCallback: (_: string) => { /* no op. */ };
-    let options = { display: "inline-block", marginLeft: "10px" };
+    const options = { display: "inline-block", marginLeft: "10px" };
 
     before(() => {
         parentElement = document.createElement("div");
@@ -39,33 +39,31 @@ describe("TorchButton#create()", () => {
     });
 
     after(() => {
-        document.body.removeChild(parentElement!);
-        parentElement = undefined;
-        torchCapability = undefined;
+        document.body.removeChild(parentElement);
     });
 
     it("create() creates instance", () => {
-        let button = TorchButton.create(
-            parentElement!, torchCapability!, options, noOpFailureCallback);
+        TorchButton.create(
+            parentElement, torchCapability, options, noOpFailureCallback);
 
-        let torchButton = document.getElementById(
+        const torchButton = document.getElementById(
             PublicUiElementIdAndClasses.TORCH_BUTTON_ID);
 
         expect(torchButton).to.be.instanceOf(HTMLButtonElement);
     });
 
     it("create() creates instance, getTorchButton() returns button.", () => {
-        let button = TorchButton.create(
-            parentElement!, torchCapability!, options, noOpFailureCallback);
-        let torchButton = button.getTorchButton();
+        const button = TorchButton.create(
+            parentElement, torchCapability, options, noOpFailureCallback);
+        const torchButton = button.getTorchButton();
 
         expect(torchButton).to.be.instanceOf(HTMLButtonElement);
     });
 
     it("show() & hide() works.", () => {
-        let button = TorchButton.create(
-            parentElement!, torchCapability!, options, noOpFailureCallback);
-        let torchButton = button.getTorchButton();
+        const button = TorchButton.create(
+            parentElement, torchCapability, options, noOpFailureCallback);
+        const torchButton = button.getTorchButton();
         expect(torchButton.style.display).eq("inline-block");
 
         button.hide();
@@ -76,18 +74,18 @@ describe("TorchButton#create()", () => {
     });
 
     it("created with hidden torchButtonOptions, button is hidden.", () => {
-        let options = { display: "none", marginLeft: "10px" };
-        let button = TorchButton.create(
-            parentElement!, torchCapability!, options, noOpFailureCallback);
-        let torchButton = button.getTorchButton();
+        const options = { display: "none", marginLeft: "10px" };
+        const button = TorchButton.create(
+            parentElement, torchCapability, options, noOpFailureCallback);
+        const torchButton = button.getTorchButton();
 
         expect(torchButton.style.display).eq("none");
     });
 
     it("disable() & enable() works.", () => {
-        let button = TorchButton.create(
-            parentElement!, torchCapability!, options, noOpFailureCallback);
-        let torchButton = button.getTorchButton();
+        const button = TorchButton.create(
+            parentElement, torchCapability, options, noOpFailureCallback);
+        const torchButton = button.getTorchButton();
 
         button.disable();
         expect(torchButton.disabled).to.be.true;
@@ -97,25 +95,25 @@ describe("TorchButton#create()", () => {
     });
 
     it("setText() sets the text.", () => {
-        let text = "custom text";
-        let button = TorchButton.create(
-            parentElement!, torchCapability!, options, noOpFailureCallback);
+        const text = "custom text";
+        const button = TorchButton.create(
+            parentElement, torchCapability, options, noOpFailureCallback);
 
         button.setText(text);
         
-        let torchButton = button.getTorchButton();
+        const torchButton = button.getTorchButton();
         expect(torchButton.innerText).eq(text);
     });
 
     it("reset() resets the text.", () => {
-        let text = "custom text";
-        let button = TorchButton.create(
-            parentElement!, torchCapability!, options, noOpFailureCallback);
+        const text = "custom text";
+        const button = TorchButton.create(
+            parentElement, torchCapability, options, noOpFailureCallback);
         button.setText(text);
 
         button.reset();
         
-        let torchButton = button.getTorchButton();
+        const torchButton = button.getTorchButton();
         expect(torchButton.innerText).not.eq(text);
     });
 });

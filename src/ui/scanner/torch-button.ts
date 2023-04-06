@@ -34,7 +34,7 @@ class TorchController {
     private readonly onTorchActionFailureCallback: OnTorchActionFailureCallback;
     
     // Mutable states.
-    private isTorchOn: boolean = false;
+    private isTorchOn = false;
 
     constructor(
         torchCapability: BooleanCameraCapability,
@@ -60,12 +60,12 @@ class TorchController {
      */
     public async flipState(): Promise<void> {
         this.buttonController.disable();
-        let isTorchOnExpected = !this.isTorchOn;
+        const isTorchOnExpected = !this.isTorchOn;
         try {
             await this.torchCapability.apply(isTorchOnExpected);
             this.updateUiBasedOnLatestSettings(
                 this.torchCapability.value()!, isTorchOnExpected);
-        } catch (error) {
+        } catch (error: unknown) {
             this.propagateFailure(isTorchOnExpected, error);
             this.buttonController.enable();
         }
@@ -89,7 +89,7 @@ class TorchController {
     }
 
     private propagateFailure(
-        isTorchOnExpected: boolean, error?: any) {
+        isTorchOnExpected: boolean, error?: unknown) {
         let errorMessage = isTorchOnExpected
             ? Html5QrcodeScannerStrings.torchOnFailedMessage()
             : Html5QrcodeScannerStrings.torchOffFailedMessage();
@@ -143,18 +143,17 @@ export class TorchButton implements TorchButtonController {
         this.torchButton.style.display = torchButtonOptions.display;
         this.torchButton.style.marginLeft = torchButtonOptions.marginLeft;
 
-        let $this = this;
-        this.torchButton.addEventListener("click", async (_) => {
-            await $this.torchController.flipState();
-            if ($this.torchController.isTorchEnabled()) {
-                $this.torchButton.classList.remove(
+        this.torchButton.addEventListener("click", async () => {
+            await this.torchController.flipState();
+            if (this.torchController.isTorchEnabled()) {
+                this.torchButton.classList.remove(
                     PublicUiElementIdAndClasses.TORCH_BUTTON_CLASS_TORCH_OFF);
-                $this.torchButton.classList.add(
+                this.torchButton.classList.add(
                     PublicUiElementIdAndClasses.TORCH_BUTTON_CLASS_TORCH_ON);  
             } else {
-                $this.torchButton.classList.remove(
+                this.torchButton.classList.remove(
                     PublicUiElementIdAndClasses.TORCH_BUTTON_CLASS_TORCH_ON);
-                $this.torchButton.classList.add(
+                this.torchButton.classList.add(
                     PublicUiElementIdAndClasses.TORCH_BUTTON_CLASS_TORCH_OFF);
             }
         });
@@ -219,7 +218,7 @@ export class TorchButton implements TorchButtonController {
         torchButtonOptions: TorchButtonOptions,
         onTorchActionFailureCallback: OnTorchActionFailureCallback)
         : TorchButton {
-        let button = new TorchButton(
+        const button = new TorchButton(
             torchCapability, onTorchActionFailureCallback);
         button.render(parentElement, torchButtonOptions);
         return button;

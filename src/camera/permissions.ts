@@ -20,7 +20,7 @@
       // TODO(mebjas): Use Permissions Query API, once support is widespread.
       // https://developer.mozilla.org/en-US/docs/Web/API/Permissions/query
   
-      let devices = await navigator.mediaDevices.enumerateDevices();
+      const devices = await navigator.mediaDevices.enumerateDevices();
       for (const device of devices) {
         // Hacky way to check if camera permissions are granted. Device
         // labels are only set in case user has granted permissions.

@@ -70,7 +70,7 @@ export class BaseUiElementFactory {
     public static createElement<Type extends HTMLElement>(
         elementType: string, elementId: string): Type {
 
-        let element: Type = <Type>(document.createElement(elementType));
+        const element: Type = <Type>(document.createElement(elementType));
         element.id = elementId;
         element.classList.add(PublicUiElementIdAndClasses.ALL_ELEMENT_CLASS);
         if (elementType === "button") {

@@ -37,7 +37,7 @@ export interface RangeCameraCapability extends CameraCapability<number> {
 }
 
 /** Capability of camera that is boolean in nature. */
-export interface BooleanCameraCapability extends CameraCapability<boolean> {}  
+export type BooleanCameraCapability = CameraCapability<boolean>  
 
 /** Class exposing different capabilities of camera. */
 export interface CameraCapabilities {

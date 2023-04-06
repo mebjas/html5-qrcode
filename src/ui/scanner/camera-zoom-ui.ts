@@ -59,21 +59,19 @@ export class CameraZoomUi {
         this.rangeInput.style.outline = "none";
         this.rangeInput.style.opacity = "0.7";
 
-        let zoomString = Html5QrcodeScannerStrings.zoom();
+        const zoomString = Html5QrcodeScannerStrings.zoom();
         this.rangeText.innerText = `${this.rangeInput.value}x ${zoomString}`;
         this.rangeText.style.marginRight = "10px";
 
-        // Bind values.
-        let $this = this;
-        this.rangeInput.addEventListener("input", () => $this.onValueChange());
-        this.rangeInput.addEventListener("change", () => $this.onValueChange());
+        this.rangeInput.addEventListener("input", () => this.onValueChange());
+        this.rangeInput.addEventListener("change", () => this.onValueChange());
 
         this.zoomElementContainer.appendChild(this.rangeInput);
         this.zoomElementContainer.appendChild(this.rangeText);
     }
 
     private onValueChange() {
-        let zoomString = Html5QrcodeScannerStrings.zoom();
+        const zoomString = Html5QrcodeScannerStrings.zoom();
         this.rangeText.innerText = `${this.rangeInput.value}x ${zoomString}`;
         if (this.onChangeCallback) {
             this.onChangeCallback(parseFloat(this.rangeInput.value));
@@ -119,7 +117,7 @@ export class CameraZoomUi {
     public static create(
         parentElement: HTMLElement,
         renderOnCreate: boolean): CameraZoomUi {
-        let cameraZoomUi = new CameraZoomUi();
+        const cameraZoomUi = new CameraZoomUi();
         cameraZoomUi.render(parentElement, renderOnCreate);
         return cameraZoomUi;
     }

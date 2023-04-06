@@ -25,10 +25,10 @@ class PersistedDataFactory {
 export class PersistedDataManager {
 
     private data: PersistedData = PersistedDataFactory.createDefault();
-    private static LOCAL_STORAGE_KEY: string = "HTML5_QRCODE_DATA";
+    private static LOCAL_STORAGE_KEY = "HTML5_QRCODE_DATA";
 
     constructor() {
-        let data = localStorage.getItem(PersistedDataManager.LOCAL_STORAGE_KEY);
+        const data = localStorage.getItem(PersistedDataManager.LOCAL_STORAGE_KEY);
         if (!data) {
             this.reset();
         } else {

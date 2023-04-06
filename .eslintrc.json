@@ -1,0 +1,18 @@
+{
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/eslint-recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
+  "ignorePatterns": [
+    "dist/**/*",
+    "examples/**/*", 
+    "minified/**/*",
+    "scripts/**/*",
+    "third_party/**/*",
+    "webpack.config.js"
+  ],
+  "rules": {}
+}

@@ -281,7 +281,7 @@ export class Html5Qrcode {
     public stateManagerProxy: StateManagerProxy;
 
     // TODO(mebjas): deprecate this.
-    public isScanning: boolean = false;
+    public isScanning = false;
 
     /**
      * Initialize the code scanner.
@@ -308,7 +308,10 @@ export class Html5Qrcode {
         this.verbose = false;
         
         let experimentalFeatureConfig : ExperimentalFeaturesConfig | undefined;
-        let configObject: Html5QrcodeFullConfig | undefined;
+        let configObject: Html5QrcodeFullConfig = {
+            verbose: false
+        };
+
         if (typeof configOrVerbosityFlag == "boolean") {
             this.verbose = configOrVerbosityFlag === true;
         } else if (configOrVerbosityFlag) {
@@ -367,7 +370,7 @@ export class Html5Qrcode {
             qrCodeErrorCallbackInternal = qrCodeErrorCallback;
         } else {
             qrCodeErrorCallbackInternal
-                = this.verbose ? this.logger.log : () => {};
+                = this.verbose ? this.logger.log : () => null;
         }
 
         const internalConfig = InternalHtml5QrcodeConfig.create(
@@ -390,39 +393,36 @@ export class Html5Qrcode {
 
         // qr shaded box
         const element = document.getElementById(this.elementId)!;
-        const rootElementWidth = element.clientWidth
-            ? element.clientWidth : Constants.DEFAULT_WIDTH;
         element.style.position = "relative";
 
         this.shouldScan = true;
         this.element = element;
 
-        const $this = this;
         const toScanningStateChangeTransaction: StateManagerTransaction
             = this.stateManagerProxy.startTransition(
                 Html5QrcodeScannerState.SCANNING);
         return new Promise((resolve, reject) => {
             const videoConstraints = areVideoConstraintsEnabled
                     ? internalConfig.videoConstraints
-                    : $this.createVideoConstraints(cameraIdOrConfig);
+                    : this.createVideoConstraints(cameraIdOrConfig);
             if (!videoConstraints) {
                 toScanningStateChangeTransaction.cancel();
                 reject("videoConstraints should be defined");
                 return;
             }
 
-            let cameraRenderingOptions: CameraRenderingOptions = {};
+            const cameraRenderingOptions: CameraRenderingOptions = {};
             if (!areVideoConstraintsEnabled || internalConfig.aspectRatio) {
                 cameraRenderingOptions.aspectRatio = internalConfig.aspectRatio;
             }
 
-            let renderingCallbacks: RenderingCallbacks = {
+            const renderingCallbacks: RenderingCallbacks = {
                 onRenderSurfaceReady: (viewfinderWidth, viewfinderHeight) => {
-                    $this.setupUi(
+                    this.setupUi(
                         viewfinderWidth, viewfinderHeight, internalConfig);
 
-                    $this.isScanning = true;
-                    $this.foreverScan(
+                    this.isScanning = true;
+                    this.foreverScan(
                         internalConfig,
                         qrCodeSuccessCallback,
                         qrCodeErrorCallbackInternal!);
@@ -436,7 +436,7 @@ export class Html5Qrcode {
                     return camera.render(
                         this.element!, cameraRenderingOptions, renderingCallbacks)
                         .then((renderedCamera) => {
-                            $this.renderedCamera = renderedCamera;
+                            this.renderedCamera = renderedCamera;
                             toScanningStateChangeTransaction.execute();
                             resolve(/* Void */ null);
                         })
@@ -448,7 +448,7 @@ export class Html5Qrcode {
                     toScanningStateChangeTransaction.cancel();
                     reject(Html5QrcodeStrings.errorGettingUserMedia(error));
                 });
-            }).catch((_) => {
+            }).catch(() => {
                 toScanningStateChangeTransaction.cancel();
                 reject(Html5QrcodeStrings.cameraStreamingNotSupported());
             });
@@ -502,11 +502,10 @@ export class Html5Qrcode {
             throw "renderedCamera doesn't exist while trying resume()";
         }
 
-        const $this = this;
         const transitionToScanning = () => {
-            $this.stateManagerProxy.directTransition(
+            this.stateManagerProxy.directTransition(
                 Html5QrcodeScannerState.SCANNING);
-            $this.hidePausedState();
+            this.hidePausedState();
         }
 
         if (!this.renderedCamera.isPaused()) {
@@ -552,32 +551,31 @@ export class Html5Qrcode {
             if (!this.element) {
                 return;
             }
-            let childElement = document.getElementById(Constants.SHADED_REGION_ELEMENT_ID);
+            const childElement = document.getElementById(Constants.SHADED_REGION_ELEMENT_ID);
             if (childElement) {
                 this.element.removeChild(childElement);
             }
          };
 
-        let $this = this;
         return this.renderedCamera!.close().then(() => {
-            $this.renderedCamera = null;
+            this.renderedCamera = null;
 
-            if ($this.element) {
-                $this.element.removeChild($this.canvasElement!);
-                $this.canvasElement = null;
+            if (this.element) {
+                this.element.removeChild(this.canvasElement as Node);
+                this.canvasElement = null;
             }
 
             removeQrRegion();
-            if ($this.qrRegion) {
-                $this.qrRegion = null;
+            if (this.qrRegion) {
+                this.qrRegion = null;
             }
-            if ($this.context) {
-                $this.context = null;
+            if (this.context) {
+                this.context = null;
             }
 
             toStoppedStateTransaction.execute();
-            $this.hidePausedState();
-            $this.isScanning = false;
+            this.hidePausedState();
+            this.isScanning = false;
             return Promise.resolve();
         });
     }
@@ -685,12 +683,12 @@ export class Html5Qrcode {
                 // Hidden canvas should be at-least as big as the image.
                 // This could get really troublesome for large images like 12MP
                 // images or 48MP images captured on phone.
-                let padding = Constants.FILE_SCAN_HIDDEN_CANVAS_PADDING;
-                let hiddenImageWidth = Math.max(inputImage.width, config.width);
-                let hiddenImageHeight = Math.max(inputImage.height, config.height);
+                const padding = Constants.FILE_SCAN_HIDDEN_CANVAS_PADDING;
+                const hiddenImageWidth = Math.max(inputImage.width, config.width);
+                const hiddenImageHeight = Math.max(inputImage.height, config.height);
 
-                let hiddenCanvasWidth = hiddenImageWidth + 2 * padding;
-                let hiddenCanvasHeight = hiddenImageHeight + 2 * padding;
+                const hiddenCanvasWidth = hiddenImageWidth + 2 * padding;
+                const hiddenCanvasHeight = hiddenImageHeight + 2 * padding;
 
                 // Try harder for file scan.
                 // TODO(minhazav): Fallback to mirroring, 90 degree rotation and
@@ -905,28 +903,28 @@ export class Html5Qrcode {
      */
     /*eslint complexity: ["error", 10]*/
     private getUseBarCodeDetectorIfSupported(
-        config: Html5QrcodeConfigs | undefined) : boolean {
+        config: Html5QrcodeConfigs = {}) : boolean {
         // Default value is true.
         if (isNullOrUndefined(config)) {
             return true;
         }
 
-        if (!isNullOrUndefined(config!.useBarCodeDetectorIfSupported)) {
+        if (!isNullOrUndefined(config.useBarCodeDetectorIfSupported)) {
             // Default value is false.
-            return config!.useBarCodeDetectorIfSupported !== false;
+            return config.useBarCodeDetectorIfSupported !== false;
         }
 
-        if (isNullOrUndefined(config!.experimentalFeatures)) {
+        if (isNullOrUndefined(config.experimentalFeatures)) {
             return true;
         }
 
-        let experimentalFeatures = config!.experimentalFeatures!;
+        const experimentalFeatures = config.experimentalFeatures;
         if (isNullOrUndefined(
-            experimentalFeatures.useBarCodeDetectorIfSupported)) {
+            experimentalFeatures?.useBarCodeDetectorIfSupported)) {
             return true;
         }
 
-        return experimentalFeatures.useBarCodeDetectorIfSupported !== false;
+        return experimentalFeatures?.useBarCodeDetectorIfSupported !== false;
     }
 
     /**
@@ -938,7 +936,7 @@ export class Html5Qrcode {
         internalConfig: InternalHtml5QrcodeConfig) {
         const qrboxSize = internalConfig.qrbox!;
         this.validateQrboxConfig(qrboxSize);
-        let qrDimensions = this.toQrdimensions(
+        const qrDimensions = this.toQrdimensions(
             viewfinderWidth, viewfinderHeight, qrboxSize);
 
         const validateMinSize = (size: number) => {
@@ -1044,7 +1042,7 @@ export class Html5Qrcode {
             {width: viewfinderWidth, height: viewfinderHeight}: internalConfig.qrbox!;
 
         this.validateQrboxConfig(qrboxSize);
-        let qrDimensions = this.toQrdimensions(viewfinderWidth, viewfinderHeight, qrboxSize);
+        const qrDimensions = this.toQrdimensions(viewfinderWidth, viewfinderHeight, qrboxSize);
         if (qrDimensions.height > viewfinderHeight) {
             this.logger.warn("[Html5Qrcode] config.qrbox has height that is"
                 + "greater than the height of the video stream. Shading will be"
@@ -1135,7 +1133,7 @@ export class Html5Qrcode {
             return true;
         }).catch((error) => {
             this.possiblyUpdateShaders(/* qrMatch= */ false);
-            let errorMessage = Html5QrcodeStrings.codeParseError(error);
+            const errorMessage = Html5QrcodeStrings.codeParseError(error);
             qrCodeErrorCallback(
                 errorMessage, Html5QrcodeErrorFactory.createFrom(errorMessage));
             return false;
@@ -1217,6 +1215,7 @@ export class Html5Qrcode {
             });
     }
 
+    // eslint-disable-next-line complexity
     private createVideoConstraints(
         cameraIdOrConfig: Html5QrcodeIdentifier)
             : MediaTrackConstraints | undefined {

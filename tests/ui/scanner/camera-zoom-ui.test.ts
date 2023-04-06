@@ -4,7 +4,7 @@ import { CameraZoomUi } from "../../../src/ui/scanner/camera-zoom-ui";
 import { PublicUiElementIdAndClasses } from "../../../src/ui/scanner/base";
 
 describe("CameraZoomUi#create()", () => {
-    let parentElement: HTMLDivElement | undefined;
+    let parentElement: HTMLDivElement;
 
     before(() => {
         parentElement = document.createElement("div");
@@ -12,15 +12,14 @@ describe("CameraZoomUi#create()", () => {
     });
 
     after(() => {
-        document.body.removeChild(parentElement!);
-        parentElement = undefined;
+        document.body.removeChild(parentElement);
     });
 
     it("creates the button element", () => {
-        let renderOnCreate = true;
-        let unusedUi = CameraZoomUi.create(parentElement!, renderOnCreate);
+        const renderOnCreate = true;
+        CameraZoomUi.create(parentElement, renderOnCreate);
 
-        let slider = document.getElementById(
+        const slider = document.getElementById(
             PublicUiElementIdAndClasses.ZOOM_SLIDER_ID);
 
         expect(slider).to.be.instanceOf(HTMLInputElement);
@@ -28,12 +27,11 @@ describe("CameraZoomUi#create()", () => {
 });
 
 describe("CameraZoomUi#setValues()", () => {
-    let parentElement: HTMLDivElement | undefined;
-    let renderOnCreate = true;
-    let minValue = 1;
-    let maxValue = 10;
-    let defaultValue = 5;
-    let step = 0.5;
+    let parentElement: HTMLDivElement;
+    const renderOnCreate = true;
+    const minValue = 1;
+    const maxValue = 10;
+    const step = 0.5;
 
     before(() => {
         parentElement = document.createElement("div");
@@ -41,21 +39,20 @@ describe("CameraZoomUi#setValues()", () => {
     });
 
     after(() => {
-        document.body.removeChild(parentElement!);
-        parentElement = undefined;
+        document.body.removeChild(parentElement);
     });
 
     it("setValues sets the val", () => {
-        let cameraZoomUi = CameraZoomUi.create(parentElement!, renderOnCreate);
-        let slider = document.getElementById(
-            PublicUiElementIdAndClasses.ZOOM_SLIDER_ID)! as HTMLInputElement;
+        const cameraZoomUi = CameraZoomUi.create(parentElement, renderOnCreate);
+        const slider = document.getElementById(
+            PublicUiElementIdAndClasses.ZOOM_SLIDER_ID) as HTMLInputElement;
 
         expect(slider.min).eq("1");
         expect(slider.max).eq("5");
         expect(slider.value).eq("1");
         expect(slider.step).eq("0.1");
 
-        let defaultValue = 5;
+        const defaultValue = 5;
         cameraZoomUi.setValues(minValue, maxValue, defaultValue, step);
 
         expect(slider.min).eq(minValue.toString());

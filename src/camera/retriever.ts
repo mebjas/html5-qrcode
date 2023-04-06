@@ -18,7 +18,8 @@ export class CameraRetriever {
         }
         
         // Using deprecated api to support really old browsers.
-        var mst = <any>MediaStreamTrack;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const mst = <any>MediaStreamTrack;
         if (MediaStreamTrack && mst.getSources) {
             return CameraRetriever.getCamerasFromMediaStreamTrack();
         }
@@ -54,10 +55,10 @@ export class CameraRetriever {
             }
         };
         // This should trigger the permission flow if required.
-        let mediaStream = await navigator.mediaDevices.getUserMedia(
+        const mediaStream = await navigator.mediaDevices.getUserMedia(
             { audio: false, video: true });
-        let devices = await navigator.mediaDevices.enumerateDevices();
-        let results: Array<CameraDevice> = [];
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const results: Array<CameraDevice> = [];
         for (const device of devices) {
             if (device.kind === "videoinput") {
                 results.push({
@@ -72,7 +73,7 @@ export class CameraRetriever {
 
     private static getCamerasFromMediaStreamTrack()
         : Promise<Array<CameraDevice>> {  
-        return new Promise((resolve, _) => {
+        return new Promise((resolve) => {
             const callback = (sourceInfos: Array<any>) => {
                 const results: Array<CameraDevice> = [];
                 for (const sourceInfo of sourceInfos) {
@@ -86,7 +87,8 @@ export class CameraRetriever {
                 resolve(results);
             }
 
-            var mst = <any>MediaStreamTrack;
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const mst = <any>MediaStreamTrack;
             mst.getSources(callback);
         });
     }

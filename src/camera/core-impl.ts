@@ -44,20 +44,16 @@ abstract class AbstractCameraCapability<T> implements CameraCapability<T> {
     }
 
     public apply(value: T): Promise<void> {
-        let constraint: any = {};
+        const constraint: {[key: string]: T} = {};
         constraint[this.name] = value;
-        let constraints = { advanced: [ constraint ] };
+        const constraints = { advanced: [ constraint ] };
         return this.track.applyConstraints(constraints);
     }
 
-    public value(): T | null {
-        let settings: any = this.track.getSettings();
-        if (this.name in settings) {
-            let settingValue = settings[this.name];
-            return settingValue;
-        }
-
-        return null;
+    public value(): T {
+        const settings = this.track.getSettings() as {[key: string]: T};
+        const settingValue = settings[this.name as keyof MediaTrackSettings];
+        return settingValue;
     }
 }
 
@@ -79,21 +75,17 @@ abstract class AbstractRangeCameraCapability extends AbstractCameraCapability<nu
     }
 
     public apply(value: number): Promise<void> {
-        let constraint: any = {};
+        const constraint: {[key: string]: number} = {};
         constraint[this.name] = value;
-        let constraints = {advanced: [ constraint ]};
+        const constraints = {advanced: [ constraint ]};
         return this.track.applyConstraints(constraints);
     }
 
     private getCapabilities(): RangeValue {
         this.failIfNotSupported();
-        let capabilities: any = this.track.getCapabilities();
-        let capability: any = capabilities[this.name];
-        return {
-            min: capability.min,
-            max: capability.max,
-            step: capability.step,
-        };
+        const capabilities = this.track.getCapabilities();
+        const capability = capabilities[this.name as keyof MediaTrackCapabilities];
+        return capability as RangeValue;
     }
 
     private failIfNotSupported() {
@@ -142,7 +134,7 @@ class RenderedCameraImpl implements RenderedCamera {
     private readonly surface: HTMLVideoElement;
     private readonly callbacks: RenderingCallbacks;
 
-    private isClosed: boolean = false;
+    private isClosed = false;
 
     private constructor(
         parentElement: HTMLElement,
@@ -164,7 +156,7 @@ class RenderedCameraImpl implements RenderedCamera {
         videoElement.style.display = "block";
         videoElement.muted = true;
         videoElement.setAttribute("muted", "true");
-        (<any>videoElement).playsInline = true;
+        videoElement.playsInline = true;
         return videoElement;
     }
 
@@ -177,7 +169,7 @@ class RenderedCameraImpl implements RenderedCamera {
             throw "RenderedCameraImpl video surface onerror() called";
         };
 
-        let onVideoStart = () => {
+        const onVideoStart = () => {
             const videoWidth = this.surface.clientWidth;
             const videoHeight = this.surface.clientHeight;
             this.callbacks.onRenderSurfaceReady(videoWidth, videoHeight);
@@ -195,11 +187,11 @@ class RenderedCameraImpl implements RenderedCamera {
         options: CameraRenderingOptions,
         callbacks: RenderingCallbacks)
         : Promise<RenderedCamera> {
-        let renderedCamera = new RenderedCameraImpl(
+        const renderedCamera = new RenderedCameraImpl(
             parentElement, mediaStream, callbacks);
         if (options.aspectRatio) {
-            let aspectRatioConstraint = {
-                aspectRatio: options.aspectRatio!
+            const aspectRatioConstraint = {
+                aspectRatio: options.aspectRatio
             };
             await renderedCamera.getFirstTrackOrFail().applyConstraints(
                 aspectRatioConstraint);
@@ -233,13 +225,12 @@ class RenderedCameraImpl implements RenderedCamera {
 
     public resume(onResumeCallback: () => void): void {
         this.failIfClosed();
-        let $this = this;
 
         const onVideoResume = () => {
             // Transition after 200ms to avoid the previous canvas frame being
             // re-scanned.
             setTimeout(onResumeCallback, 200);
-            $this.surface.removeEventListener("playing", onVideoResume);
+            this.surface.removeEventListener("playing", onVideoResume);
         };
 
         this.surface.addEventListener("playing", onVideoResume);
@@ -279,19 +270,18 @@ class RenderedCameraImpl implements RenderedCamera {
             return Promise.resolve();
         }
 
-        let $this = this;
-        return new Promise((resolve, _) => {
-            let tracks = $this.mediaStream.getVideoTracks();
+        return new Promise((resolve) => {
+            const tracks = this.mediaStream.getVideoTracks();
             const tracksToClose = tracks.length;
-            var tracksClosed = 0;
-            $this.mediaStream.getVideoTracks().forEach((videoTrack) => {
-                $this.mediaStream.removeTrack(videoTrack);
+            let tracksClosed = 0;
+            this.mediaStream.getVideoTracks().forEach((videoTrack) => {
+                this.mediaStream.removeTrack(videoTrack);
                 videoTrack.stop();
                 ++tracksClosed;
     
                 if (tracksClosed >= tracksToClose) {
-                    $this.isClosed = true;
-                    $this.parentElement.removeChild($this.surface);
+                    this.isClosed = true;
+                    this.parentElement.removeChild(this.surface);
                     resolve();
                 }
             });
@@ -328,12 +318,12 @@ export class CameraImpl implements Camera {
         if (!navigator.mediaDevices) {
             throw "navigator.mediaDevices not supported";
         }
-        let constraints: MediaStreamConstraints = {
+        const constraints: MediaStreamConstraints = {
             audio: false,
             video: videoConstraints
         };
 
-        let mediaStream = await navigator.mediaDevices.getUserMedia(
+        const mediaStream = await navigator.mediaDevices.getUserMedia(
             constraints);
         return new CameraImpl(mediaStream);
     }
