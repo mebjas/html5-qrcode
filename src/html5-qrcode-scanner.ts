@@ -86,7 +86,7 @@ enum Html5QrcodeScannerStatus {
 /**
  * Interface for controlling different aspects of {@class Html5QrcodeScanner}.
  */
-interface Html5QrcodeScannerConfig
+export interface Html5QrcodeScannerConfig
     extends Html5QrcodeCameraScanConfig, Html5QrcodeConfigs {
 
     /**
