@@ -30,7 +30,7 @@ Supports two kinds of APIs
 
 ![GitHub all releases](https://img.shields.io/github/downloads/mebjas/html5-qrcode/total?label=Github%20downloads&style=for-the-badge) [![npm](https://img.shields.io/npm/dw/html5-qrcode?label=npm%20downloads&style=for-the-badge)](https://www.npmjs.com/package/html5-qrcode) [![](https://img.shields.io/badge/Medium-12100E?style=for-the-badge&logo=medium&logoColor=white)](https://bit.ly/3CZiASv)
 
-| <img src="https://scanapp.org/assets/github_assets/pixel6pro-optimised.gif" width="180px"> | <img src="https://scanapp.org/assets/github_assets/pixel4_barcode_480.gif" width="180px">|
+| <img src="https://scanapp.org/assets/github_assets/pixel6pro-optimised.gif" width="180px" /> | <img src="https://scanapp.org/assets/github_assets/pixel4_barcode_480.gif" width="180px" />|
 | -- | -- |
 | _Demo at [scanapp.org](https://scanapp.org)_ | _Demo at [qrcode.minhazav.dev](https://qrcode.minhazav.dev) - **Scanning different types of codes**_ |
 
@@ -52,7 +52,7 @@ We are working continuously on adding support for more and more platforms. If yo
 
 | <img src="https://scanapp.org/assets/github_assets/browsers/firefox_48x48.png" alt="Firefox" width="24px" height="24px" /><br/>Firefox | <img src="https://scanapp.org/assets/github_assets/browsers/chrome_48x48.png" alt="Chrome" width="24px" height="24px" /><br/>Chrome | <img src="https://scanapp.org/assets/github_assets/browsers/safari_48x48.png" alt="Safari" width="24px" height="24px" /><br/>Safari | <img src="https://scanapp.org/assets/github_assets/browsers/opera_48x48.png" alt="Opera" width="24px" height="24px" /><br/>Opera | <img src="https://scanapp.org/assets/github_assets/browsers/edge_48x48.png" alt="Edge" width="24px" height="24px" /><br/> Edge
 | --------- | --------- | --------- | --------- | ------- |
-|![](https://scanapp.org/assets/github_assets/done.png)| ![](https://scanapp.org/assets/github_assets/done.png)| ![](https://scanapp.org/assets/github_assets/done.png)| ![](assets/done.png) | ![](assets/done.png)
+|![](https://scanapp.org/assets/github_assets/done.png)| ![](https://scanapp.org/assets/github_assets/done.png)| ![](https://scanapp.org/assets/github_assets/done.png)| ![](https://scanapp.org/assets/github_assets/done.png) | ![](https://scanapp.org/assets/github_assets/done.png)
 
 ### Android
 
@@ -74,7 +74,7 @@ We are working continuously on adding support for more and more platforms. If yo
 ### Framework support
 The library can be easily used with several other frameworks, I have been adding examples for a few of them and would continue to add more.
 
-|<img src="https://scanapp.org/assets/github_assets/html5.png" width="30px">| <img src="https://scanapp.org/assets/github_assets/vuejs.png" width="30px">|<img src="https://scanapp.org/assets/github_assets/electron.png" width="30px"> | <img src="https://scanapp.org/assets/github_assets/react.svg" width="30px"> | <img src="https://seeklogo.com/images/L/lit-logo-6B43868CDC-seeklogo.com.png" height="30px">
+|<img src="https://scanapp.org/assets/github_assets/html5.png" width="30px" />| <img src="https://scanapp.org/assets/github_assets/vuejs.png" width="30px" />|<img src="https://scanapp.org/assets/github_assets/electron.png" width="30px" /> | <img src="https://scanapp.org/assets/github_assets/react.svg" width="30px" /> | <img src="https://seeklogo.com/images/L/lit-logo-6B43868CDC-seeklogo.com.png" width="30px" />
 | -------- | -------- | -------- | -------- | -------- |
 | [Html5](./examples/html5) | [VueJs](./examples/vuejs) | [ElectronJs](./examples/electron) | [React](https://github.com/scanapp-org/html5-qrcode-react) | [Lit](./examples/lit)
 
@@ -83,21 +83,21 @@ Code scanning is dependent on [Zxing-js](https://github.com/zxing-js/library) li
 
 | Code | Example |
 | ---- | ----- |
-| QR Code | <img src="https://scanapp.org/assets/github_assets/qr-code.png" width="200px"> |
-| AZTEC | <img src="https://scanapp.org/assets/github_assets/aztec.png" > |
-| CODE_39|  <img src="https://scanapp.org/assets/github_assets/code_39.gif" > |
-| CODE_93| <img src="https://scanapp.org/assets/github_assets/code_93.gif" >|
-| CODE_128| <img src="https://scanapp.org/assets/github_assets/code_128.gif" >|
-| ITF| <img src="https://scanapp.org/assets/github_assets/itf.png" >|
-| EAN_13|<img src="https://scanapp.org/assets/github_assets/ean13.jpeg" > |
-| EAN_8| <img src="https://scanapp.org/assets/github_assets/ean8.jpeg" >|
-| PDF_417| <img src="https://scanapp.org/assets/github_assets/pdf417.png" >|
-| UPC_A| <img src="https://scanapp.org/assets/github_assets/upca.jpeg" >|
-| UPC_E| <img src="https://scanapp.org/assets/github_assets/upce.jpeg" >|
-| DATA_MATRIX|<img src="https://scanapp.org/assets/github_assets/datamatrix.png" > |
-| MAXICODE*| <img src="https://scanapp.org/assets/github_assets/maxicode.gif" > |
-| RSS_14*| <img src="https://scanapp.org/assets/github_assets/rss14.gif" >|
-| RSS_EXPANDED*|<img src="https://scanapp.org/assets/github_assets/rssexpanded.gif" > |
+| QR Code | <img src="https://scanapp.org/assets/github_assets/qr-code.png" width="200px" /> |
+| AZTEC | <img src="https://scanapp.org/assets/github_assets/aztec.png" /> |
+| CODE_39|  <img src="https://scanapp.org/assets/github_assets/code_39.gif" /> |
+| CODE_93| <img src="https://scanapp.org/assets/github_assets/code_93.gif" />|
+| CODE_128| <img src="https://scanapp.org/assets/github_assets/code_128.gif" />|
+| ITF| <img src="https://scanapp.org/assets/github_assets/itf.png" />|
+| EAN_13|<img src="https://scanapp.org/assets/github_assets/ean13.jpeg" /> |
+| EAN_8| <img src="https://scanapp.org/assets/github_assets/ean8.jpeg" />|
+| PDF_417| <img src="https://scanapp.org/assets/github_assets/pdf417.png" />|
+| UPC_A| <img src="https://scanapp.org/assets/github_assets/upca.jpeg" />|
+| UPC_E| <img src="https://scanapp.org/assets/github_assets/upce.jpeg" />|
+| DATA_MATRIX|<img src="https://scanapp.org/assets/github_assets/datamatrix.png" /> |
+| MAXICODE*| <img src="https://scanapp.org/assets/github_assets/maxicode.gif" /> |
+| RSS_14*| <img src="https://scanapp.org/assets/github_assets/rss14.gif" />|
+| RSS_EXPANDED*|<img src="https://scanapp.org/assets/github_assets/rssexpanded.gif" /> |
 
 > *Formats are not supported by our experimental integration with native
 > BarcodeDetector API integration ([Read more](/experimental.md)).
@@ -275,7 +275,7 @@ html5QrCode.stop().then((ignore) => {
 #### For QR Code scanning using local files or inbuilt camera on Smartphones
 | Selector in Android | Selector in IOS|
 |------|-------|
-| Taken on Pixel 3, Google Chrome<br><img src="https://scanapp.org/assets/github_assets/selector_android.png" width="300px"> |  Taken on iPhone 7, Google Chrome<br><img src="https://scanapp.org/assets/github_assets/selector_iphone.jpg" width="300px"> |
+| Taken on Pixel 3, Google Chrome<br /><img src="https://scanapp.org/assets/github_assets/selector_android.png" width="300px"> |  Taken on iPhone 7, Google Chrome<br /><img src="https://scanapp.org/assets/github_assets/selector_iphone.jpg" width="300px"> |
 
 You can alternatively leverage QR Code scanning for local files on the device or default camera on the device. It works similar to inline QR Code scanning.
 
@@ -331,7 +331,7 @@ fileinput.addEventListener('change', e => {
 > Note that inline scanning and file-based scanning are mutually exclusive at the moment. This means you can only use one of them at a time. I'll soon be adding support for the option to have both if the requirement comes in. If you want to use both, use `html5QrCode#clear()` method to clear the canvas.
 
 ## Demo
-<img src="https://scanapp.org/assets/github_assets/qr-code.png" width="200px"><br>
+<img src="https://scanapp.org/assets/github_assets/qr-code.png" width="200px"><br />
 _Scan this image or visit [blog.minhazav.dev/research/html5-qrcode.html](https://blog.minhazav.dev/research/html5-qrcode.html)_
 
 ### For more information
@@ -342,7 +342,7 @@ Check these articles on how to use this library:
 -   [HTML5 QR Code scanning with JavaScript — Support for scanning the local file and using default camera added (v1.0.5)](https://blog.minhazav.dev/HTML5-QR-Code-scanning-support-for-local-file-and-default-camera/)
 
 ## Screenshots
-![screenshot](https://scanapp.org/assets/github_assets/screen.gif)<br>
+![screenshot](https://scanapp.org/assets/github_assets/screen.gif)<br />
 _Figure: Screenshot from Google Chrome running on MacBook Pro_
 
 ## Documentation
@@ -826,7 +826,7 @@ A.K.A frame per second, the default value for this is 2, but it can be increased
 #### `qrbox` — `QrDimensions` or `QrDimensionFunction` (Optional), Example = `{ width: 250, height: 250 }`
 Use this property to limit the region of the viewfinder you want to use for scanning. The rest of the viewfinder would be shaded. For example, by passing config `{ qrbox : { width: 250, height: 250 } }`, the screen will look like:
 
-<img src="https://scanapp.org/assets/github_assets/screen.gif">
+<img src="https://scanapp.org/assets/github_assets/screen.gif" />
 
 This can be used to set a rectangular scanning area with config like:
 
@@ -871,7 +871,7 @@ By default, the scanner can scan for horizontally flipped QR Codes. This also en
 Here's an example of a normal and mirrored QR Code
 | Normal QR Code | Mirrored QR Code |
 | ----- | ---- |
-| <img src="https://scanapp.org/assets/github_assets/qr-code.png" width="200px"> | <img src="https://scanapp.org/assets/github_assets/qr-code-flipped.png" width="200px"><br> |
+| <img src="https://scanapp.org/assets/github_assets/qr-code.png" width="200px" /> | <img src="https://scanapp.org/assets/github_assets/qr-code-flipped.png" width="200px" /><br /> |
 
 #### `rememberLastUsedCamera` — Boolean (Optional), default = true
 If `true` the last camera used by the user and weather or not permission was granted would be remembered in the local storage. If the user has previously granted permissions — the request permission option in the UI will be skipped and the last selected camera would be launched automatically for scanning.
@@ -1047,7 +1047,7 @@ This project would not be possible without all of our fantastic contributors and
 **Sponsor the project for priortising feature requests / bugs relevant to you**. (Depends on scope of ask and bandwidth of the contributors).
 
 <!-- sponsors -->
-<a href="https://github.com/webauthor"><img src="https://github.com/webauthor.png" width="40px" alt="webauthor@"></a>
+<a href="https://github.com/webauthor"><img src="https://github.com/webauthor.png" width="40px" alt="webauthor@" /></a>
 <a href="https://github.com/ben-gy"><img src="https://github.com/ben-gy.png" width="40px" alt="ben-gy" /></a>
 <a href="https://github.com/bujjivadu"><img src="https://github.com/bujjivadu.png" width="40px" alt="bujjivadu" /></a>
 <!-- sponsors -->
@@ -1066,4 +1066,4 @@ Also, huge thanks to following organizations for non monitery sponsorships
 <!-- sponsors -->
 
 ## Credits
-The decoder used for the QR code reading is from `Zxing-js` https://github.com/zxing-js/library<br>
+The decoder used for the QR code reading is from `Zxing-js` https://github.com/zxing-js/library<br />
