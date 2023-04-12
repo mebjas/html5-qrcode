@@ -1,6 +1,8 @@
 ### Version 2.3.8
- - `Scanner Paused` color tone changes.
- - Misc code refactor.
+ -   `Scanner Paused` color tone changes.
+ -   Misc code refactor.
+ -   Backwards compatibility improvement by [bilal-elchami@](https://github.com/bilal-elchami) in [PR#700](https://github.com/mebjas/html5-qrcode/pull/700).
+
 
 ### Version 2.3.7
 -   Fix QR code scanning error.

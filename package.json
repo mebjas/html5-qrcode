@@ -1,6 +1,6 @@
 {
   "name": "html5-qrcode",
-  "version": "2.3.7",
+  "version": "2.3.8",
   "description": "A cross platform HTML5 QR Code & bar code scanner",
   "main": "./cjs/index.js",
   "module": "./esm/index.js",
@@ -27,9 +27,11 @@
     "build:umd": "./scripts/build-webpack.sh",
     "build:umd_windows": ".\\scripts\\build-webpack.bat",
     "build:copy": "cp README.md dist && cp package.json dist && cp LICENSE dist && cp -R src dist/src",
-    "build:copy_windows": "copy README.md dist && copy package.json dist && copy LICENSE dist && xcopy .\\src .\\dist\\src /S /I /Y",
+    "build:copy_windows": "copy README.md dist && copy package.json dist && copy LICENSE dist",
+    "internal_release": "npm run build && cp dist/html5-qrcode.min.js minified/html5-qrcode.min.js",
     "release": "npm run build && cp dist/html5-qrcode.min.js minified/html5-qrcode.min.js && cd dist && npm publish",
-    "release_windows": "npm run build && cp dist\\html5-qrcode.min.js minified\\html5-qrcode.min.js && cd dist && npm publish"
+    "release_windows": "npm run build && cp dist\\html5-qrcode.min.js minified\\html5-qrcode.min.js && cd dist && npm publish",
+    "doc_gen": "npx typedoc --excludePrivate src/index.ts"
   },
   "repository": {
     "type": "git",
@@ -60,6 +62,7 @@
     "@types/mocha": "^9.0.0",
     "babel-minify": "^0.5.1",
     "chai": "^4.3.4",
+    "docusaurus-plugin-typedoc": "^0.18.0",
     "expose-loader": "^2.0.0",
     "jsdom": "20.0.2",
     "jsdom-global": "3.0.2",
@@ -72,6 +75,8 @@
     "ts-loader": "^9.1.2",
     "ts-node": "^10.4.0",
     "tsconfig-paths": "^3.12.0",
+    "typedoc": "^0.23.28",
+    "typedoc-plugin-markdown": "^3.14.0",
     "typescript": "^4.3.2",
     "typings": "^2.1.1",
     "webpack": "^5.37.0",
