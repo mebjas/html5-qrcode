@@ -17,3 +17,4 @@ export { Html5QrcodeScanner } from "./html5-qrcode-scanner";
 export { Html5QrcodeSupportedFormats } from "./core";
 export { Html5QrcodeScannerState } from "./state-manager";
 export { Html5QrcodeScanType } from "./core";
+export { setTranslations } from './strings';

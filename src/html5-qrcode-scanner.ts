@@ -2,9 +2,9 @@
  * @fileoverview
  * Complete Scanner build on top of {@link Html5Qrcode}.
  * - Decode QR Code using web cam or smartphone camera
- * 
+ *
  * @author mebjas <minhazav@gmail.com>
- * 
+ *
  * The word "QR Code" is registered trademark of DENSO WAVE INCORPORATED
  * http://www.denso-wave.com/qrcode/faqpatent-e.html
  */
@@ -33,9 +33,7 @@ import {
     Html5QrcodeFullConfig,
 } from "./html5-qrcode";
 
-import {
-    Html5QrcodeScannerStrings,
-} from "./strings";
+import { t } from "./strings";
 
 import {
     ASSET_FILE_SCAN,
@@ -94,14 +92,14 @@ interface Html5QrcodeScannerConfig
      * were previously granted and what camera was last used. If the permissions
      * is already granted for "camera", QR code scanning will automatically
      * start for previously used camera.
-     * 
+     *
      * Note: default value is {@code true}.
      */
     rememberLastUsedCamera?: boolean | undefined;
 
     /**
      * Sets the desired scan types to be supported in the scanner.
-     * 
+     *
      *  - Not setting a value will follow the default order supported by
      *      library.
      *  - First value would be used as the default value. Example:
@@ -119,7 +117,7 @@ interface Html5QrcodeScannerConfig
     /**
      * If {@code true} the rendered UI will have button to turn flash on or off
      * based on device + browser support.
-     * 
+     *
      * Note: default value is {@code false}.
      */
     showTorchButtonIfSupported?: boolean | undefined;
@@ -127,18 +125,18 @@ interface Html5QrcodeScannerConfig
     /**
      * If {@code true} the rendered UI will have slider to zoom camera based on
      * device + browser support.
-     * 
+     *
      * Note: default value is {@code false}.
-     * 
+     *
      * TODO(minhazav): Document this API, currently hidden.
      */
     showZoomSliderIfSupported?: boolean | undefined;
 
     /**
      * Default zoom value if supported.
-     * 
+     *
      * Note: default value is 1x.
-     * 
+     *
      * TODO(minhazav): Document this API, currently hidden.
      */
     defaultZoomValueIfSupported?: number | undefined;
@@ -194,7 +192,7 @@ export class Html5QrcodeScanner {
      *
      * @param elementId Id of the HTML element.
      * @param config Extra configurations to tune the code scanner.
-     * @param verbose - If true, all logs would be printed to console. 
+     * @param verbose - If true, all logs would be printed to console.
      */
     public constructor(
         elementId: string,
@@ -223,7 +221,7 @@ export class Html5QrcodeScanner {
 
     /**
      * Renders the User Interface.
-     * 
+     *
      * @param qrCodeSuccessCallback Callback called when an instance of a QR
      * code or any other supported bar code is found.
      * @param qrCodeErrorCallback optional, callback called in cases where no
@@ -246,7 +244,7 @@ export class Html5QrcodeScanner {
 
                 this.lastMatchFound = decodedText;
                 this.setHeaderMessage(
-                    Html5QrcodeScannerStrings.lastMatch(decodedText),
+                    t('scanner.lastMatch', { decodedText }),
                     Html5QrcodeScannerStatus.STATUS_SUCCESS);
             }
         };
@@ -273,13 +271,13 @@ export class Html5QrcodeScanner {
     //#region State related public APIs
     /**
      * Pauses the ongoing scan.
-     * 
+     *
      * Notes:
      * -   Should only be called if camera scan is ongoing.
-     * 
+     *
      * @param shouldPauseVideo (Optional, default = false) If {@code true}
      * the video will be paused.
-     * 
+     *
      * @throws error if method is called when scanner is not in scanning state.
      */
     public pause(shouldPauseVideo?: boolean) {
@@ -289,19 +287,19 @@ export class Html5QrcodeScanner {
 
         this.getHtml5QrcodeOrFail().pause(shouldPauseVideo);
     }
-    
+
     /**
      * Resumes the paused scan.
-     * 
+     *
      * If the video was previously paused by setting {@code shouldPauseVideo}
      * to {@code true} in {@link Html5QrcodeScanner#pause(shouldPauseVideo)},
      * calling this method will resume the video.
-     * 
+     *
      * Notes:
      * -   Should only be called if camera scan is ongoing.
      * -   With this caller will start getting results in success and error
      * callbacks.
-     * 
+     *
      * @throws error if method is called when scanner is not in paused state.
      */
     public resume() {
@@ -319,7 +317,7 @@ export class Html5QrcodeScanner {
 
     /**
      * Removes the QR Code scanner UI.
-     * 
+     *
      * @returns Promise which succeeds if the cleanup is complete successfully,
      *  fails otherwise.
      */
@@ -371,11 +369,11 @@ export class Html5QrcodeScanner {
     //#region Beta APIs to modify running stream state.
     /**
      * Returns the capabilities of the running video track.
-     * 
+     *
      * Read more: https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/getConstraints
-     * 
+     *
      * Note: Should only be called if {@code Html5QrcodeScanner#getState()}
-     *   returns {@code Html5QrcodeScannerState#SCANNING} or 
+     *   returns {@code Html5QrcodeScannerState#SCANNING} or
      *   {@code Html5QrcodeScannerState#PAUSED}.
      *
      * @returns the capabilities of a running video track.
@@ -388,11 +386,11 @@ export class Html5QrcodeScanner {
     /**
      * Returns the object containing the current values of each constrainable
      * property of the running video track.
-     * 
+     *
      * Read more: https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/getSettings
-     * 
+     *
      * Note: Should only be called if {@code Html5QrcodeScanner#getState()}
-     *   returns {@code Html5QrcodeScannerState#SCANNING} or 
+     *   returns {@code Html5QrcodeScannerState#SCANNING} or
      *   {@code Html5QrcodeScannerState#PAUSED}.
      *
      * @returns the supported settings of the running video track.
@@ -406,7 +404,7 @@ export class Html5QrcodeScanner {
      * Apply a video constraints on running video track from camera.
      *
      * Note: Should only be called if {@code Html5QrcodeScanner#getState()}
-     *   returns {@code Html5QrcodeScannerState#SCANNING} or 
+     *   returns {@code Html5QrcodeScannerState#SCANNING} or
      *   {@code Html5QrcodeScannerState#PAUSED}.
      *
      * @param {MediaTrackConstraints} specifies a variety of video or camera
@@ -536,7 +534,7 @@ export class Html5QrcodeScanner {
         const $this = this;
         $this.showHideScanTypeSwapLink(false);
         $this.setHeaderMessage(
-            Html5QrcodeScannerStrings.cameraPermissionRequesting());
+            t('scanner.cameraPermissionRequesting'));
 
         const createPermissionButtonIfNotExists = () => {
             if (!requestPermissionButton) {
@@ -556,14 +554,14 @@ export class Html5QrcodeScanner {
                 $this.renderCameraSelection(cameras);
             } else {
                 $this.setHeaderMessage(
-                    Html5QrcodeScannerStrings.noCameraFound(),
+                    t('scanner.noCameraFound'),
                     Html5QrcodeScannerStatus.STATUS_WARNING);
                 createPermissionButtonIfNotExists();
             }
         }).catch((error) => {
             $this.persistedDataManager.setHasPermission(
                 /* hasPermission */ false);
-            
+
             if (requestPermissionButton) {
                 requestPermissionButton.disabled = false;
             } else {
@@ -589,7 +587,7 @@ export class Html5QrcodeScanner {
             .createElement<HTMLButtonElement>(
                 "button", this.getCameraPermissionButtonId());
         requestPermissionButton.innerText
-            = Html5QrcodeScannerStrings.cameraPermissionTitle();
+            = t('scanner.cameraPermissionTitle');
 
         requestPermissionButton.addEventListener("click", function () {
             requestPermissionButton.disabled = true;
@@ -678,7 +676,7 @@ export class Html5QrcodeScanner {
                 return;
             }
 
-            $this.setHeaderMessage(Html5QrcodeScannerStrings.loadingImage());
+            $this.setHeaderMessage(t('scanner.loadingImage'));
             $this.html5Qrcode.scanFileV2(file, /* showImage= */ true)
                 .then((html5qrcodeResult: Html5QrcodeResult) => {
                     $this.resetHeaderMessage();
@@ -742,14 +740,14 @@ export class Html5QrcodeScanner {
             = BaseUiElementFactory.createElement<HTMLButtonElement>(
                 "button", PublicUiElementIdAndClasses.CAMERA_START_BUTTON_ID);
         cameraActionStartButton.innerText
-            = Html5QrcodeScannerStrings.scanButtonStartScanningText();
+            = t('scanner.scanButtonStartScanningText');
         cameraActionContainer.appendChild(cameraActionStartButton);
 
         const cameraActionStopButton
             = BaseUiElementFactory.createElement<HTMLButtonElement>(
                 "button", PublicUiElementIdAndClasses.CAMERA_STOP_BUTTON_ID);
         cameraActionStopButton.innerText
-            = Html5QrcodeScannerStrings.scanButtonStopScanningText();
+            = t('scanner.scanButtonStopScanningText');
         cameraActionStopButton.style.display = "none";
         cameraActionStopButton.disabled = true;
         cameraActionContainer.appendChild(cameraActionStopButton);
@@ -792,8 +790,7 @@ export class Html5QrcodeScanner {
                 cameraActionStartButton.style.display = "none";
             }
             cameraActionStartButton.innerText
-                = Html5QrcodeScannerStrings
-                    .scanButtonStartScanningText();
+                = t('scanner.scanButtonStartScanningText');
             cameraActionStartButton.style.opacity = "1";
             cameraActionStartButton.disabled = false;
             if (shouldShow) {
@@ -804,7 +801,7 @@ export class Html5QrcodeScanner {
         cameraActionStartButton.addEventListener("click", (_) => {
             // Update the UI.
             cameraActionStartButton.innerText
-                = Html5QrcodeScannerStrings.scanButtonScanningStarting();
+                = t('scanner.scanButtonScanningStarting');
             cameraSelectUi.disable();
             cameraActionStartButton.disabled = true;
             cameraActionStartButton.style.opacity = "0.5";
@@ -812,7 +809,7 @@ export class Html5QrcodeScanner {
             if (this.scanTypeSelector.hasMoreThanOneScanType()) {
                 $this.showHideScanTypeSwapLink(false);
             }
-            $this.resetHeaderMessage();            
+            $this.resetHeaderMessage();
 
             // Attempt starting the camera.
             const cameraId = cameraSelectUi.getValue();
@@ -866,7 +863,7 @@ export class Html5QrcodeScanner {
                     if(this.scanTypeSelector.hasMoreThanOneScanType()) {
                         $this.showHideScanTypeSwapLink(true);
                     }
-                    
+
                     cameraSelectUi.enable();
                     cameraActionStartButton.disabled = false;
                     cameraActionStopButton.style.display = "none";
@@ -900,9 +897,9 @@ export class Html5QrcodeScanner {
     private createSectionSwap() {
         const $this = this;
         const TEXT_IF_CAMERA_SCAN_SELECTED
-            = Html5QrcodeScannerStrings.textIfCameraScanSelected();
+            = t('scanner.textIfCameraScanSelected');
         const TEXT_IF_FILE_SCAN_SELECTED
-            = Html5QrcodeScannerStrings.textIfFileScanSelected();
+            = t('scanner.textIfFileScanSelected');
 
         // TODO(minhaz): Export this as an UI element.
         const section = document.getElementById(this.getDashboardSectionId())!;
@@ -930,7 +927,7 @@ export class Html5QrcodeScanner {
             $this.resetHeaderMessage();
             $this.fileSelectionUi!.resetValue();
             $this.sectionSwapAllowed = false;
-            
+
             if (ScanTypeSelector.isCameraScanType($this.currentScanType)) {
                 // Swap to file based scanning.
                 $this.clearScanRegion();
@@ -1051,7 +1048,7 @@ export class Html5QrcodeScanner {
         this.cameraScanImage.width = 64;
         this.cameraScanImage.style.opacity = "0.8";
         this.cameraScanImage.src = ASSET_CAMERA_SCAN;
-        this.cameraScanImage.alt = Html5QrcodeScannerStrings.cameraScanAltText();
+        this.cameraScanImage.alt = t('scanner.cameraScanAltText');
     }
 
     private insertFileScanImageToScanRegion() {
@@ -1073,7 +1070,7 @@ export class Html5QrcodeScanner {
         this.fileScanImage.width = 64;
         this.fileScanImage.style.opacity = "0.8";
         this.fileScanImage.src = ASSET_FILE_SCAN;
-        this.fileScanImage.alt = Html5QrcodeScannerStrings.fileScanAltText();
+        this.fileScanImage.alt = t('scanner.fileScanAltText');
     }
 
     private clearScanRegion() {
