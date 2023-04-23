@@ -1,15 +1,15 @@
 /**
  * @fileoverview
  * File for torch related UI components and handling.
- * 
+ *
  * @author mebjas <minhazav@gmail.com>
- * 
+ *
  * The word "QR Code" is registered trademark of DENSO WAVE INCORPORATED
  * http://www.denso-wave.com/qrcode/faqpatent-e.html
  */
 
 import { BooleanCameraCapability } from "../../camera/core";
-import { Html5QrcodeScannerStrings } from "../../strings";
+import { t } from "../../strings";
 import {
     BaseUiElementFactory,
     PublicUiElementIdAndClasses
@@ -32,7 +32,7 @@ class TorchController {
     private readonly torchCapability: BooleanCameraCapability;
     private readonly buttonController: TorchButtonController;
     private readonly onTorchActionFailureCallback: OnTorchActionFailureCallback;
-    
+
     // Mutable states.
     private isTorchOn: boolean = false;
 
@@ -52,10 +52,10 @@ class TorchController {
 
     /**
      * Flips the state of the torch.
-     * 
+     *
      * <p> Turns torch On if current state is Off and vice-versa.
      * <p> Modifies the UI state accordingly.
-     * 
+     *
      * @returns Promise that finishes when the async action is done.
      */
     public async flipState(): Promise<void> {
@@ -77,8 +77,8 @@ class TorchController {
         if (isTorchOn === isTorchOnExpected) {
             // Action succeeded, flip the state.
             this.buttonController.setText(isTorchOnExpected
-                    ? Html5QrcodeScannerStrings.torchOffButton()
-                    : Html5QrcodeScannerStrings.torchOnButton());
+                    ? t('scanner.torchOffButton')
+                    : t('scanner.torchOnButton'));
             this.isTorchOn = isTorchOnExpected;
         } else {
             // Torch didn't get set as expected.
@@ -91,8 +91,8 @@ class TorchController {
     private propagateFailure(
         isTorchOnExpected: boolean, error?: any) {
         let errorMessage = isTorchOnExpected
-            ? Html5QrcodeScannerStrings.torchOnFailedMessage()
-            : Html5QrcodeScannerStrings.torchOffFailedMessage();
+            ? t('scanner.torchOnFailedMessage')
+            : t('scanner.torchOffFailedMessage');
         if (error) {
             errorMessage += "; Error = " + error;
         }
@@ -101,7 +101,7 @@ class TorchController {
 
     /**
      * Resets the state.
-     * 
+     *
      * <p>Note: Doesn't turn off the torch implicitly.
      */
     public reset() {
@@ -121,7 +121,7 @@ export class TorchButton implements TorchButtonController {
     private readonly onTorchActionFailureCallback: OnTorchActionFailureCallback;
 
     private torchController: TorchController;
-    
+
     private constructor(
         torchCapability: BooleanCameraCapability,
         onTorchActionFailureCallback: OnTorchActionFailureCallback) {
@@ -139,7 +139,7 @@ export class TorchButton implements TorchButtonController {
     private render(
         parentElement: HTMLElement, torchButtonOptions: TorchButtonOptions) {
         this.torchButton.innerText
-            = Html5QrcodeScannerStrings.torchOnButton();
+            = t('scanner.torchOnButton');
         this.torchButton.style.display = torchButtonOptions.display;
         this.torchButton.style.marginLeft = torchButtonOptions.marginLeft;
 
@@ -150,7 +150,7 @@ export class TorchButton implements TorchButtonController {
                 $this.torchButton.classList.remove(
                     PublicUiElementIdAndClasses.TORCH_BUTTON_CLASS_TORCH_OFF);
                 $this.torchButton.classList.add(
-                    PublicUiElementIdAndClasses.TORCH_BUTTON_CLASS_TORCH_ON);  
+                    PublicUiElementIdAndClasses.TORCH_BUTTON_CLASS_TORCH_ON);
             } else {
                 $this.torchButton.classList.remove(
                     PublicUiElementIdAndClasses.TORCH_BUTTON_CLASS_TORCH_ON);
@@ -196,17 +196,17 @@ export class TorchButton implements TorchButtonController {
 
     /**
      * Resets the state.
-     * 
+     *
      * <p>Note: Doesn't turn off the torch implicitly.
      */
     public reset() {
-        this.torchButton.innerText = Html5QrcodeScannerStrings.torchOnButton();
+        this.torchButton.innerText = t('scanner.torchOnButton');
         this.torchController.reset();
     }
 
     /**
      * Factory method for creating torch button.
-     * 
+     *
      * @param parentElement parent HTML element to render torch button into
      * @param torchCapability torch capability of the camera
      * @param torchButtonOptions options for creating torch
