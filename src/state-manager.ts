@@ -84,14 +84,16 @@ class StateManagerImpl implements StateManager, StateManagerTransaction {
         * QrCodeStateCallback}
         */
     constructor(qrCodeStateCallback?: QrCodeStateCallback | undefined) {
-        this.qrCodeStateCallback = qrCodeStateCallback
+        this.qrCodeStateCallback = qrCodeStateCallback;
     }
 
     public directTransition(newState: Html5QrcodeScannerState) {
         this.failIfTransitionOngoing();
         this.validateTransition(newState);
         this.state = newState;
-        if (this.qrCodeStateCallback) this.qrCodeStateCallback(newState)
+        if (this.qrCodeStateCallback) {
+            this.qrCodeStateCallback(newState);
+        }
     }
 
     public startTransition(newState: Html5QrcodeScannerState): StateManagerTransaction {
