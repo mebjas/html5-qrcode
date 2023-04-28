@@ -8,6 +8,8 @@
  * http://www.denso-wave.com/qrcode/faqpatent-e.html
  */
 
+import { Html5QrcodeScannerState } from "./state-manager";
+
 /**
  * Code formats supported by this library.
  */
@@ -249,6 +251,13 @@ export type QrcodeSuccessCallback
  */
 export type QrcodeErrorCallback
     = (errorMessage: string, error: Html5QrcodeError) => void;
+
+/**
+ * Type for a callback for scanner state transition.
+ */
+export type QrCodeStateCallback
+    = (currentState: Html5QrcodeScannerState) => void;
+
 
 /** Code decoder interface. */
 export interface QrcodeDecoderAsync {

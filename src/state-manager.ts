@@ -5,6 +5,8 @@
  * @author mebjas <minhazav@gmail.com>
  */
 
+import { QrCodeStateCallback } from "./core";
+
 /** Different states of scanner */
 export enum Html5QrcodeScannerState {
     // Invalid internal state, do not set to this state.
@@ -73,10 +75,23 @@ class StateManagerImpl implements StateManager, StateManagerTransaction {
     private onGoingTransactionNewState: Html5QrcodeScannerState
         = Html5QrcodeScannerState.UNKNOWN;
 
+    private qrCodeStateCallback: QrCodeStateCallback | undefined;
+
+    /**
+     * Initialize the state manager.
+     *
+     * @param configOrVerbosityFlag optional, state transition callback {@link
+        * QrCodeStateCallback}
+        */
+    constructor(qrCodeStateCallback?: QrCodeStateCallback | undefined) {
+        this.qrCodeStateCallback = qrCodeStateCallback
+    }
+
     public directTransition(newState: Html5QrcodeScannerState) {
         this.failIfTransitionOngoing();
         this.validateTransition(newState);
         this.state = newState;
+        if (this.qrCodeStateCallback) this.qrCodeStateCallback(newState)
     }
 
     public startTransition(newState: Html5QrcodeScannerState): StateManagerTransaction {
@@ -187,7 +202,7 @@ export class StateManagerProxy {
  * Factory for creating instance of {@class StateManagerProxy}.
  */
  export class StateManagerFactory {
-    public static create(): StateManagerProxy {
-        return new StateManagerProxy(new StateManagerImpl());
+    public static create(qrCodeStateCallback?: QrCodeStateCallback | undefined): StateManagerProxy {
+        return new StateManagerProxy(new StateManagerImpl(qrCodeStateCallback));
     }
 }

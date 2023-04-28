@@ -26,7 +26,8 @@ import {
     Html5QrcodeResult,
     isNullOrUndefined,
     QrDimensions,
-    QrDimensionFunction
+    QrDimensionFunction,
+    QrCodeStateCallback
 } from "./core";
 import { Html5QrcodeStrings } from "./strings";
 import { VideoConstraintsUtil } from "./utils";
@@ -309,7 +310,7 @@ export class Html5Qrcode {
      * TODO(mebjas): Deprecate the verbosity boolean flag completely.
      */
     public constructor(elementId: string, 
-        configOrVerbosityFlag?: boolean | Html5QrcodeFullConfig | undefined) {
+        configOrVerbosityFlag?: boolean | Html5QrcodeFullConfig | undefined, qrCodeStateCallback?: QrCodeStateCallback | undefined,) {
         if (!document.getElementById(elementId)) {
             throw `HTML Element with id=${elementId} not found`;
         }
@@ -336,7 +337,7 @@ export class Html5Qrcode {
 
         this.foreverScanTimeout;
         this.shouldScan = true;
-        this.stateManagerProxy = StateManagerFactory.create();
+        this.stateManagerProxy = StateManagerFactory.create(qrCodeStateCallback);
     }
 
     //#region start()
