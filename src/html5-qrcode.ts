@@ -317,7 +317,7 @@ export class Html5Qrcode {
 
         this.elementId = elementId;
         this.verbose = false;
-        
+
         let experimentalFeatureConfig : ExperimentalFeaturesConfig | undefined;
         let configObject: Html5QrcodeFullConfig | undefined;
         if (typeof configOrVerbosityFlag == "boolean") {
@@ -327,7 +327,7 @@ export class Html5Qrcode {
             this.verbose = configObject.verbose === true;
             experimentalFeatureConfig = configObject.experimentalFeatures;
         }
-
+        
         this.logger = new BaseLoggger(this.verbose);
         this.qrcode = new Html5QrcodeShim(
             this.getSupportedFormats(configOrVerbosityFlag),
@@ -1579,7 +1579,7 @@ export class Html5Qrcode {
             elem.style.top = `${top}px`;
         }
         if (bottom !== null) {
-          elem.style.bottom = `${bottom}px`;
+            elem.style.bottom = `${bottom}px`;
         }
         if (isLeft) {
           elem.style.left = `${side}px`;
