@@ -1235,12 +1235,12 @@ export class Html5Qrcode {
                         this.flippedScan = false;
                     }
                     // previous scan failed, flipped scan failed, try to invert colors
-                    if (this.context!.filter === 'none' && this.flippedScan === false) {
-                        this.context!.filter = 'invert(1)';
+                    if (this.context!.filter === "none" && this.flippedScan === false) {
+                        this.context!.filter = "invert(1)";
                     } else {
                         // restore initial filter value
-                        if (this.context!.filter === 'invert(1)' && this.flippedScan === false) {
-                            this.context!.filter = 'none';
+                        if (this.context!.filter === "invert(1)" && this.flippedScan === false) {
+                            this.context!.filter = "none";
                         }
                     }
                     triggerNextScan();
