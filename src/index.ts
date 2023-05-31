@@ -30,3 +30,6 @@ export {
     CameraCapabilities,
     CameraDevice
 } from "./camera/core";
+
+export * from "./strings";
+export * from "./ui";
