@@ -72,7 +72,7 @@ class Constants extends Html5QrcodeConstants {
 export interface Html5QrcodeConfigs {
     /**
      * Array of formats to support of type {@link Html5QrcodeSupportedFormats}.
-     * 
+     *
      * All invalid values would be ignored. If null or underfined all supported
      * formats will be used for scanning. Unless you want to limit the scan to
      * only certain formats or want to improve performance, you should not set
@@ -84,10 +84,10 @@ export interface Html5QrcodeConfigs {
      * {@link BarcodeDetector} is being implemented by browsers at the moment.
      * It has very limited browser support but as it gets available it could
      * enable faster native code scanning experience.
-     * 
+     *
      * Set this flag to true, to enable using {@link BarcodeDetector} if
      * supported. This is true by default.
-     * 
+     *
      * Documentations:
      *  - https://developer.mozilla.org/en-US/docs/Web/API/BarcodeDetector
      *  - https://web.dev/shape-detection/#barcodedetector
@@ -96,7 +96,7 @@ export interface Html5QrcodeConfigs {
 
     /**
      * Config for experimental features.
-     * 
+     *
      * Everything is false by default.
      */
     experimentalFeatures?: ExperimentalFeaturesConfig | undefined;
@@ -104,7 +104,7 @@ export interface Html5QrcodeConfigs {
 
 /**
  * Interface for full configuration of {@link Html5Qrcode}.
- * 
+ *
  * Notes: Ideally we don't need to have two interfaces for this purpose, but
  * since the public APIs before version 2.0.8 allowed passing a boolean verbose
  * flag to constructor we need to allow users to pass Html5QrcodeFullConfig or
@@ -132,7 +132,7 @@ export interface Html5QrcodeCameraScanConfig {
      * Optional, edge size, dimension or calculator function for QR scanning
      * box, the value or computed value should be smaller than the width and
      * height of the full region.
-     * 
+     *
      * This would make the scanner look like this:
      *          ----------------------
      *          |********************|
@@ -143,12 +143,12 @@ export interface Html5QrcodeCameraScanConfig {
      *          |********************|
      *          |********************|
      *          ----------------------
-     * 
+     *
      * Instance of {@link QrDimensions} can be passed to construct a non
      * square rendering of scanner box. You can also pass in a function of type
      * {@link QrDimensionFunction} that takes in the width and height of the
      * video stream and return QR box size of type {@link QrDimensions}.
-     * 
+     *
      * If this value is not set, no shaded QR box will be rendered and the
      * scanner will scan the entire area of video stream.
      */
@@ -185,7 +185,7 @@ export interface Html5QrcodeCameraScanConfig {
 /**
  * Internal implementation of {@link Html5QrcodeConfig} with util & factory
  * methods.
- * 
+ *
  * @hidden
  */
 class InternalHtml5QrcodeConfig implements Html5QrcodeCameraScanConfig {
@@ -234,7 +234,7 @@ class InternalHtml5QrcodeConfig implements Html5QrcodeCameraScanConfig {
 
     /**
      * Create instance of {@link Html5QrcodeCameraScanConfig}.
-     * 
+     *
      * Create configuration by merging default and input settings.
      */
     static create(config: Html5QrcodeCameraScanConfig | undefined, logger: Logger)
@@ -253,9 +253,9 @@ interface QrcodeRegionBounds {
 
 /**
  * Low level APIs for building web based QR and Barcode Scanner.
- * 
+ *
  * Supports APIs for camera as well as file based scanning.
- * 
+ *
  * Depending of the configuration, the class will help render code
  * scanning UI on the provided parent HTML container.
  */
@@ -268,6 +268,7 @@ export class Html5Qrcode {
     private readonly qrcode: RobustQrcodeDecoderAsync;
 
     private shouldScan: boolean;
+    private flippedScan: boolean;
 
     // Nullable elements
     // TODO(mebjas): Reduce the state-fulness of this mammoth class, by splitting
@@ -302,13 +303,13 @@ export class Html5Qrcode {
      * compatibility). If nothing is passed, default values would be used.
      * If a boolean value is used, it'll be used to set verbosity. Pass a
      * config value to configure the Html5Qrcode scanner as per needs.
-     * 
+     *
      * Use of `configOrVerbosityFlag` as a boolean value is being
      * deprecated since version 2.0.7.
-     * 
+     *
      * TODO(mebjas): Deprecate the verbosity boolean flag completely.
      */
-    public constructor(elementId: string, 
+    public constructor(elementId: string,
         configOrVerbosityFlag?: boolean | Html5QrcodeFullConfig | undefined) {
         if (!document.getElementById(elementId)) {
             throw `HTML Element with id=${elementId} not found`;
@@ -316,7 +317,7 @@ export class Html5Qrcode {
 
         this.elementId = elementId;
         this.verbose = false;
-        
+
         let experimentalFeatureConfig : ExperimentalFeaturesConfig | undefined;
         let configObject: Html5QrcodeFullConfig | undefined;
         if (typeof configOrVerbosityFlag == "boolean") {
@@ -326,7 +327,7 @@ export class Html5Qrcode {
             this.verbose = configObject.verbose === true;
             experimentalFeatureConfig = configObject.experimentalFeatures;
         }
-        
+
         this.logger = new BaseLoggger(this.verbose);
         this.qrcode = new Html5QrcodeShim(
             this.getSupportedFormats(configOrVerbosityFlag),
@@ -336,13 +337,14 @@ export class Html5Qrcode {
 
         this.foreverScanTimeout;
         this.shouldScan = true;
+        this.flippedScan = false;
         this.stateManagerProxy = StateManagerFactory.create();
     }
 
     //#region start()
     /**
      * Start scanning QR codes or bar codes for a given camera.
-     * 
+     *
      * @param cameraIdOrConfig Identifier of the camera, it can either be the
      *  camera id retrieved from {@link Html5Qrcode#getCameras()} method or
      *  object with facing mode constraint.
@@ -351,7 +353,7 @@ export class Html5Qrcode {
      * code or any other supported bar code is found.
      * @param qrCodeErrorCallback Callback called in cases where no instance of
      * QR code or any other supported bar code is found.
-     * 
+     *
      * @returns Promise for starting the scan. The Promise can fail if the user
      * doesn't grant permission or some API is not supported by the browser.
      */
@@ -469,10 +471,10 @@ export class Html5Qrcode {
     //#region Other state related public APIs
     /**
      * Pauses the ongoing scan.
-     * 
+     *
      * @param shouldPauseVideo (Optional, default = false) If true the
      * video will be paused.
-     * 
+     *
      * @throws error if method is called when scanner is not in scanning state.
      */
     public pause(shouldPauseVideo?: boolean) {
@@ -493,14 +495,14 @@ export class Html5Qrcode {
 
     /**
      * Resumes the paused scan.
-     * 
+     *
      * If the video was previously paused by setting `shouldPauseVideo``
      * to `true` in {@link Html5Qrcode#pause(shouldPauseVideo)}, calling
      * this method will resume the video.
-     * 
+     *
      * Note: with this caller will start getting results in success and error
      * callbacks.
-     * 
+     *
      * @throws error if method is called when scanner is not in paused state.
      */
     public resume() {
@@ -628,7 +630,7 @@ export class Html5Qrcode {
      *
      * @returns Promise which resolves with result of type
      * {@link Html5QrcodeResult}.
-     * 
+     *
      * @beta This is a WIP method, it's available as a public method but not
      * documented.
      * TODO(mebjas): Replace scanFile with ScanFileV2
@@ -757,7 +759,7 @@ export class Html5Qrcode {
         this.clearElement();
     }
 
-    /** 
+    /**
      * Returns list of {@link CameraDevice} supported by the device.
      *
      * @returns array of camera devices on success.
@@ -768,9 +770,9 @@ export class Html5Qrcode {
 
     /**
      * Returns the capabilities of the running video track.
-     * 
+     *
      * Read more: https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/getConstraints
-     * 
+     *
      * Important:
      *  1. Must be called only if the camera based scanning is in progress.
      *
@@ -784,9 +786,9 @@ export class Html5Qrcode {
     /**
      * Returns the object containing the current values of each constrainable
      * property of the running video track.
-     * 
+     *
      * Read more: https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/getSettings
-     * 
+     *
      * Important:
      *  1. Must be called only if the camera based scanning is in progress.
      *
@@ -800,9 +802,9 @@ export class Html5Qrcode {
 
     /**
      * Returns {@link CameraCapabilities} of the running video track.
-     * 
+     *
      * TODO(minhazav): Document this API, currently hidden.
-     * 
+     *
      * @returns capabilities of the running camera.
      * @throws error if the scanning is not in running state.
      */
@@ -853,10 +855,10 @@ export class Html5Qrcode {
      * compatibility). If nothing is passed, default values would be used.
      * If a boolean value is used, it'll be used to set verbosity. Pass a
      * config value to configure the Html5Qrcode scanner as per needs.
-     * 
+     *
      * Use of `configOrVerbosityFlag` as a boolean value is being
      * deprecated since version 2.0.7.
-     * 
+     *
      * TODO(mebjas): Deprecate the verbosity boolean flag completely.
      */
     private getSupportedFormats(
@@ -882,7 +884,7 @@ export class Html5Qrcode {
             Html5QrcodeSupportedFormats.UPC_EAN_EXTENSION,
         ];
 
-        if (!configOrVerbosityFlag 
+        if (!configOrVerbosityFlag
             || typeof configOrVerbosityFlag == "boolean") {
             return allFormats;
         }
@@ -969,9 +971,9 @@ export class Html5Qrcode {
         /**
          * The 'config.qrbox.width' shall be overriden if it's larger than the
          * width of the root element.
-         * 
+         *
          * Based on the verbosity settings, this will be logged to the logger.
-         * 
+         *
          * @param configWidth the width of qrbox set by users in the config.
          */
         const correctWidthBasedOnRootElementSize = (configWidth: number) => {
@@ -996,7 +998,7 @@ export class Html5Qrcode {
 
     /**
      * Validates if the `qrboxSize` is a valid value.
-     * 
+     *
      * It's expected to be either a number or of type {@link QrDimensions}.
      */
     private validateQrboxConfig(
@@ -1058,7 +1060,7 @@ export class Html5Qrcode {
 
         // If `qrbox` size is not set, it will default to the dimensions of the
         // viewfinder.
-        const qrboxSize = isNullOrUndefined(internalConfig.qrbox) ? 
+        const qrboxSize = isNullOrUndefined(internalConfig.qrbox) ?
             {width: viewfinderWidth, height: viewfinderHeight}: internalConfig.qrbox!;
 
         this.validateQrboxConfig(qrboxSize);
@@ -1068,7 +1070,7 @@ export class Html5Qrcode {
                 + "greater than the height of the video stream. Shading will be"
                 + " ignored");
         }
- 
+
         const shouldShadingBeApplied
             = internalConfig.isShadedBoxEnabled()
                 && qrDimensions.height <= viewfinderHeight;
@@ -1082,7 +1084,7 @@ export class Html5Qrcode {
         const qrRegion = shouldShadingBeApplied
             ? this.getShadedRegionBounds(viewfinderWidth, viewfinderHeight, qrDimensions)
             : defaultQrRegion;
- 
+
         const canvasElement = this.createCanvasElement(
             qrRegion.width, qrRegion.height);
         // Tell user agent that this canvas will be read frequently.
@@ -1104,7 +1106,7 @@ export class Html5Qrcode {
         }
 
         this.createScannerPausedUiElement(this.element!);
- 
+
         // Update local states
         this.qrRegion = qrRegion;
         this.context = context;
@@ -1126,7 +1128,7 @@ export class Html5Qrcode {
         rootElement.appendChild(scannerPausedUiElement);
         this.scannerPausedUiElement = scannerPausedUiElement;
     }
- 
+
      /**
      * Scans current context using the qrcode library.
      *
@@ -1217,14 +1219,31 @@ export class Html5Qrcode {
         // TODO(mebjas): Move this logic to decoding library.
         this.scanContext(qrCodeSuccessCallback, qrCodeErrorCallback)
             .then((isSuccessfull) => {
-                // Previous scan failed and disableFlip is off.
-                if (!isSuccessfull && internalConfig.disableFlip !== true) {
-                    this.context!.translate(this.context!.canvas.width, 0);
-                    this.context!.scale(-1, 1);
-                    this.scanContext(qrCodeSuccessCallback, qrCodeErrorCallback)
-                        .finally(() => {
-                            triggerNextScan();
-                        });
+                // Previous scan failed
+                if (!isSuccessfull) {
+                    // disableFlip is off and is not flipped
+                    if (internalConfig.disableFlip !== true && this.flippedScan === false) {
+                        this.context!.translate(this.context!.canvas.width, 0);
+                        this.context!.scale(-1, 1);
+                        this.flippedScan = true;
+                    } else {
+                        // disableFlip is off
+                        if (internalConfig.disableFlip !== true) {
+                            this.context!.translate(this.context!.canvas.width, 0);
+                            this.context!.scale(-1, 1);
+                        }
+                        this.flippedScan = false;
+                    }
+                    // previous scan failed, flipped scan failed, try to invert colors
+                    if (this.context!.filter === "none" && this.flippedScan === false) {
+                        this.context!.filter = "invert(1)";
+                    } else {
+                        // restore initial filter value
+                        if (this.context!.filter === "invert(1)" && this.flippedScan === false) {
+                            this.context!.filter = "none";
+                        }
+                    }
+                    triggerNextScan();
                 } else {
                     triggerNextScan();
                 }
@@ -1465,10 +1484,10 @@ export class Html5Qrcode {
         shadingElement.style.left = "0px";
         shadingElement.style.right = "0px";
         shadingElement.id = `${Constants.SHADED_REGION_ELEMENT_ID}`;
-  
+
         // Check if div is too small for shadows. As there are two 5px width
         // borders the needs to have a size above 10px.
-        if ((width - qrboxSize.width) < 11 
+        if ((width - qrboxSize.width) < 11
             || (height - qrboxSize.height) < 11) {
           this.hasBorderShaders = false;
         } else {
@@ -1476,7 +1495,7 @@ export class Html5Qrcode {
             const largeSize = 40;
             this.insertShaderBorders(
                 shadingElement,
-                /* width= */ largeSize, 
+                /* width= */ largeSize,
                 /* height= */ smallSize,
                 /* top= */ -smallSize,
                 /* bottom= */ null,
