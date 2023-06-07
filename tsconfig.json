@@ -6,6 +6,7 @@
         "moduleResolution": "Node",
         "declaration": true,
         "lib": ["DOM", "ES2017", "ES2018"],
+        "skipLibCheck": true,
 
         // ^ Build the transpiled javascript to transpiled/ dir.
         // Flags to ensure code quality.

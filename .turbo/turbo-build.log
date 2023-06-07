@@ -1,0 +1,38 @@
+$ npm run clean
+
+> html5-qrcode@2.3.8 clean
+> rm -Rf ./lib/* ./build/* ./meta/bundlesize/* ./meta/coverage/* ./.rpt2_cache  ./dist/* ./src/*.d.ts
+
+$ npm run build:es2015 && npm run build:esm && npm run build:esnext && npm run build:cjs && npm run build:umd && npm run build:typing && npm run build:copy
+
+> html5-qrcode@2.3.8 build:es2015
+> tsc --build tsconfig.lib-es2015.json
+
+
+> html5-qrcode@2.3.8 build:esm
+> tsc --build tsconfig.lib-esm.json
+
+
+> html5-qrcode@2.3.8 build:esnext
+> tsc --build tsconfig.lib-esm.json
+
+
+> html5-qrcode@2.3.8 build:cjs
+> tsc --build tsconfig.lib-cjs.json
+
+
+> html5-qrcode@2.3.8 build:umd
+> ./scripts/build-webpack.sh
+
+Initiating webpack build sequence.
+/Users/andras/.nvm/versions/node/v16.20.0/bin/node: --openssl-legacy-provider is not allowed in NODE_OPTIONS
+Webpack building done.
+
+> html5-qrcode@2.3.8 build:typing
+> tsc --emitDeclarationOnly --outDir ./dist
+
+
+> html5-qrcode@2.3.8 build:copy
+> cp README.md dist && cp package.json dist && cp LICENSE dist && cp -R src dist/src
+
+$ cp -R ./third_party ./dist/third_party

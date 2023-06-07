@@ -1,0 +1,112 @@
+$ npm run-script test:build && npm run-script test:run
+
+> html5-qrcode@2.3.8 test:build
+> tsc --build tsconfig.test.json
+
+
+> html5-qrcode@2.3.8 test:run
+> ./scripts/test-run.sh
+
+Initiating test script.
+Missing baseUrl in compilerOptions. tsconfig-paths will be skipped
+
+
+  isValidHtml5QrcodeSupportedFormats function
+    ✔ should return true for supported formats
+    ✔ should return false for unsupported formats
+
+  QrcodeResultFormat class
+    ✔ toString() should return correct string value
+
+  Html5QrcodeResultFactory class
+    ✔ createFromText has result and decodedText
+    ✔ createFromQrcodeResult has result and decodedText
+
+  Html5QrcodeErrorFactory class
+    ✔ createFrom() creates corresponding error object
+
+  isNullOrUndefined function
+    ✔ obj is null, undefined, returns true
+    ✔ obj is defined, returns true
+
+  clip function
+    ✔ in range, returns the value
+    ✔ below min, returns the min value
+    ✔ above max, return the max value
+
+  BaseUiElementFactory#createElement()
+    ✔ Creates requested element - Button
+    ✔ Creates requested element - Select
+    ✔ Creates element with expected ID
+    ✔ Creates element with common class
+    ✔ Creates button element with button type attribute
+    ✔ Creates select element without type attribute
+
+  CameraSelectionUi#create()
+    ✔ Multiple cameras, creates the camera selection
+    ✔ Single cameras, creates the camera selection
+    ✔ No cameras, fails
+
+  CameraSelectionUi#enable() & disable()
+    ✔ enable(), enables
+    ✔ disable(), disables
+
+  CameraSelectionUi setting and getting values
+    ✔ setValue sets value if present else fails
+    ✔ hasValue() returns true for valid case else fails
+
+  CameraZoomUi#create()
+    ✔ creates the button element
+
+  CameraZoomUi#setValues()
+    ✔ setValues sets the val
+
+  FileSelectionUi#constructor()
+    ✔ Have expected public elements
+    ✔ Hidden if showOnRender is false
+    ✔ Not Hidden if showOnRender is true
+
+  FileSelectionUi#hide()
+    ✔ Hide the scan region, when showing earlier
+    ✔ Hide the scan region, when hidden earlier
+
+  FileSelectionUi#show()
+    ✔ Show the scan region, when not showing earlier
+    ✔ Show the scan region, when showing earlier
+
+  ScanTypeSelector#getDefaultScanType()
+    ✔ Camera + File returns camera
+    ✔ File + Camera returns camera
+    ✔ Camera returns camera
+    ✔ File returns camera
+
+  ScanTypeSelector#hasMoreThanOneScanType()
+    ✔ Both values set - returns true
+    ✔ Single value set - returns true
+
+  ScanTypeSelector#isCameraScanRequired()
+    ✔ Both values set - returns true
+    ✔ Camera only set - returns true
+    ✔ File only set - returns false
+
+  ScanTypeSelector#isCameraScanType()
+    ✔ Camera passed - returns true
+    ✔ File passed - returns false
+
+  ScanTypeSelector#isFileScanType()
+    ✔ Camera passed - returns false
+    ✔ File passed - returns true
+
+  TorchButton#create()
+    ✔ create() creates instance
+    ✔ create() creates instance, getTorchButton() returns button.
+    ✔ show() & hide() works.
+    ✔ created with hidden torchButtonOptions, button is hidden.
+    ✔ disable() & enable() works.
+    ✔ setText() sets the text.
+    ✔ reset() resets the text.
+
+
+  53 passing (37ms)
+
+Cleaning up test artifacts
