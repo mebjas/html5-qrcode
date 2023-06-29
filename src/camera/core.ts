@@ -1,5 +1,5 @@
 /**
- * @fileoverview
+ * @module
  * Core Camera interfaces. 
  * 
  * @author mebjas <minhazav@gmail.com>

@@ -1,5 +1,5 @@
 /**
- * @fileoverview
+ * @module
  * HTML5 QR code & barcode scanning library.
  * - Decode QR Code.
  * - Decode different kinds of barcodes.
@@ -48,8 +48,6 @@ import {
     Html5QrcodeScannerState
 } from "./state-manager";
 
-type Html5QrcodeIdentifier = string | MediaTrackConstraints;
-
 class Constants extends Html5QrcodeConstants {
     //#region static constants
     static DEFAULT_WIDTH = 300;
@@ -69,11 +67,11 @@ class Constants extends Html5QrcodeConstants {
 }
 
 /**
- * Interface for configuring {@class Html5Qrcode} class instance.
+ * Interface for configuring {@link Html5Qrcode} class instance.
  */
 export interface Html5QrcodeConfigs {
     /**
-     * Array of formats to support of type {@type Html5QrcodeSupportedFormats}.
+     * Array of formats to support of type {@link Html5QrcodeSupportedFormats}.
      * 
      * All invalid values would be ignored. If null or underfined all supported
      * formats will be used for scanning. Unless you want to limit the scan to
@@ -83,11 +81,11 @@ export interface Html5QrcodeConfigs {
     formatsToSupport?: Array<Html5QrcodeSupportedFormats> | undefined;
 
     /**
-     * {@class BarcodeDetector} is being implemented by browsers at the moment.
+     * {@link BarcodeDetector} is being implemented by browsers at the moment.
      * It has very limited browser support but as it gets available it could
      * enable faster native code scanning experience.
      * 
-     * Set this flag to true, to enable using {@class BarcodeDetector} if
+     * Set this flag to true, to enable using {@link BarcodeDetector} if
      * supported. This is true by default.
      * 
      * Documentations:
@@ -105,7 +103,7 @@ export interface Html5QrcodeConfigs {
 }
 
 /**
- * Interface for full configuration of {@class Html5Qrcode}.
+ * Interface for full configuration of {@link Html5Qrcode}.
  * 
  * Notes: Ideally we don't need to have two interfaces for this purpose, but
  * since the public APIs before version 2.0.8 allowed passing a boolean verbose
@@ -125,8 +123,8 @@ export interface Html5QrcodeFullConfig extends Html5QrcodeConfigs {
  */
 export interface Html5QrcodeCameraScanConfig {
     /**
-     * Optional, Expected framerate of qr code scanning. example { fps: 2 } means the
-     * scanning would be done every 500 ms.
+     * Optional, Expected framerate of qr code scanning. example `{ fps: 2 }` means the
+     * scanning would be done every `500 ms`.
      */
     fps: number | undefined;
 
@@ -146,10 +144,10 @@ export interface Html5QrcodeCameraScanConfig {
      *          |********************|
      *          ----------------------
      * 
-     * Instance of {@interface QrDimensions} can be passed to construct a non
+     * Instance of {@link QrDimensions} can be passed to construct a non
      * square rendering of scanner box. You can also pass in a function of type
-     * {@type QrDimensionFunction} that takes in the width and height of the
-     * video stream and return QR box size of type {@interface QrDimensions}.
+     * {@link QrDimensionFunction} that takes in the width and height of the
+     * video stream and return QR box size of type {@link QrDimensions}.
      * 
      * If this value is not set, no shaded QR box will be rendered and the
      * scanner will scan the entire area of video stream.
@@ -164,7 +162,7 @@ export interface Html5QrcodeCameraScanConfig {
     aspectRatio?: number | undefined;
 
     /**
-     * Optional, if {@code true} flipped QR Code won't be scanned. Only use this
+     * Optional, if `true` flipped QR Code won't be scanned. Only use this
      * if you are sure the camera cannot give mirrored feed if you are facing
      * performance constraints.
      */
@@ -175,7 +173,7 @@ export interface Html5QrcodeCameraScanConfig {
      *
      * Important: When passed this will override other parameters like
      * 'cameraIdOrConfig' or configurations like 'aspectRatio'.
-     * 'videoConstraints' should be of type {@code MediaTrackConstraints} as
+     * 'videoConstraints' should be of type {@link MediaTrackConstraints} as
      * defined in
      * https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints
      * and is used to specify a variety of video or camera controls like:
@@ -185,8 +183,10 @@ export interface Html5QrcodeCameraScanConfig {
 }
 
 /**
- * Internal implementation of {@interface Html5QrcodeConfig} with util & factory
+ * Internal implementation of {@link Html5QrcodeConfig} with util & factory
  * methods.
+ * 
+ * @hidden
  */
 class InternalHtml5QrcodeConfig implements Html5QrcodeCameraScanConfig {
 
@@ -233,7 +233,7 @@ class InternalHtml5QrcodeConfig implements Html5QrcodeCameraScanConfig {
     }
 
     /**
-     * Create instance of {@interface Html5QrcodeCameraScanConfig}.
+     * Create instance of {@link Html5QrcodeCameraScanConfig}.
      * 
      * Create configuration by merging default and input settings.
      */
@@ -243,6 +243,7 @@ class InternalHtml5QrcodeConfig implements Html5QrcodeCameraScanConfig {
     }
 }
 
+/** @hidden */
 interface QrcodeRegionBounds {
     x: number,
     y: number,
@@ -250,6 +251,14 @@ interface QrcodeRegionBounds {
     height: number
 }
 
+/**
+ * Low level APIs for building web based QR and Barcode Scanner.
+ * 
+ * Supports APIs for camera as well as file based scanning.
+ * 
+ * Depending of the configuration, the class will help render code
+ * scanning UI on the provided parent HTML container.
+ */
 export class Html5Qrcode {
 
     //#region Private fields.
@@ -278,22 +287,23 @@ export class Html5Qrcode {
     private lastScanImageFile: string | null = null;
     //#endregion
 
-    public stateManagerProxy: StateManagerProxy;
+    private stateManagerProxy: StateManagerProxy;
 
     // TODO(mebjas): deprecate this.
+    /** @hidden */
     public isScanning: boolean = false;
 
     /**
      * Initialize the code scanner.
      *
      * @param element the HTML element.
-     * @param configOrVerbosityFlag optional, config object of type {@interface
+     * @param configOrVerbosityFlag optional, config object of type {@link
      * Html5QrcodeFullConfig} or a boolean verbosity flag (to maintain backward
      * compatibility). If nothing is passed, default values would be used.
      * If a boolean value is used, it'll be used to set verbosity. Pass a
      * config value to configure the Html5Qrcode scanner as per needs.
      * 
-     * Use of {@code configOrVerbosityFlag} as a boolean value is being
+     * Use of `configOrVerbosityFlag` as a boolean value is being
      * deprecated since version 2.0.7.
      * 
      * TODO(mebjas): Deprecate the verbosity boolean flag completely.
@@ -334,7 +344,7 @@ export class Html5Qrcode {
      * Start scanning QR codes or bar codes for a given camera.
      * 
      * @param cameraIdOrConfig Identifier of the camera, it can either be the
-     *  camera id retrieved from {@code Html5Qrcode#getCameras()} method or
+     *  camera id retrieved from {@link Html5Qrcode#getCameras()} method or
      *  object with facing mode constraint.
      * @param configuration Extra configurations to tune the code scanner.
      * @param qrCodeSuccessCallback Callback called when an instance of a QR
@@ -346,7 +356,7 @@ export class Html5Qrcode {
      * doesn't grant permission or some API is not supported by the browser.
      */
     public start(
-        cameraIdOrConfig: Html5QrcodeIdentifier,
+        cameraIdOrConfig: string | MediaTrackConstraints,
         configuration: Html5QrcodeCameraScanConfig | undefined,
         qrCodeSuccessCallback: QrcodeSuccessCallback | undefined,
         qrCodeErrorCallback: QrcodeErrorCallback | undefined,
@@ -456,7 +466,7 @@ export class Html5Qrcode {
     /**
      * Pauses the ongoing scan.
      * 
-     * @param shouldPauseVideo (Optional, default = false) If {@code true} the
+     * @param shouldPauseVideo (Optional, default = false) If true the
      * video will be paused.
      * 
      * @throws error if method is called when scanner is not in scanning state.
@@ -480,8 +490,8 @@ export class Html5Qrcode {
     /**
      * Resumes the paused scan.
      * 
-     * If the video was previously paused by setting {@code shouldPauseVideo}
-     * to {@code true} in {@link Html5Qrcode#pause(shouldPauseVideo)}, calling
+     * If the video was previously paused by setting `shouldPauseVideo``
+     * to `true` in {@link Html5Qrcode#pause(shouldPauseVideo)}, calling
      * this method will resume the video.
      * 
      * Note: with this caller will start getting results in success and error
@@ -518,7 +528,7 @@ export class Html5Qrcode {
     /**
      * Gets state of the camera scan.
      *
-     * @returns state of type {@enum ScannerState}.
+     * @returns state of type {@link ScannerState}.
      */
     public getState(): Html5QrcodeScannerState {
         return this.stateManagerProxy.getState();
@@ -602,7 +612,7 @@ export class Html5Qrcode {
     }
 
     /**
-     * Scans an Image File for QR Code & returns {@code Html5QrcodeResult}.
+     * Scans an Image File for QR Code & returns {@link Html5QrcodeResult}.
      *
      * This feature is mutually exclusive to camera-based scanning, you should
      * call stop() if the camera-based scanning was ongoing.
@@ -612,7 +622,7 @@ export class Html5Qrcode {
      * element.
      *
      * @returns Promise which resolves with result of type
-     * {@code Html5QrcodeResult}.
+     * {@link Html5QrcodeResult}.
      * 
      * @beta This is a WIP method, it's available as a public method but not
      * documented.
@@ -741,7 +751,11 @@ export class Html5Qrcode {
         this.clearElement();
     }
 
-    /** Returns list of {@link CameraDevice} supported by the device. */
+    /** 
+     * Returns list of {@link CameraDevice} supported by the device.
+     *
+     * @returns array of camera devices on success.
+     */
     public static getCameras(): Promise<Array<CameraDevice>> {
         return CameraRetriever.retrieve();
     }
@@ -754,6 +768,7 @@ export class Html5Qrcode {
      * Important:
      *  1. Must be called only if the camera based scanning is in progress.
      *
+     * @returns capabilities of the running camera.
      * @throws error if the scanning is not in running state.
      */
     public getRunningTrackCapabilities(): MediaTrackCapabilities {
@@ -769,6 +784,8 @@ export class Html5Qrcode {
      * Important:
      *  1. Must be called only if the camera based scanning is in progress.
      *
+     * @returns settings of the running media track.
+     *
      * @throws error if the scanning is not in running state.
      */
     public getRunningTrackSettings(): MediaTrackSettings {
@@ -779,7 +796,8 @@ export class Html5Qrcode {
      * Returns {@link CameraCapabilities} of the running video track.
      * 
      * TODO(minhazav): Document this API, currently hidden.
-     *
+     * 
+     * @returns capabilities of the running camera.
      * @throws error if the scanning is not in running state.
      */
     public getRunningTrackCameraCapabilities(): CameraCapabilities {
@@ -824,13 +842,13 @@ export class Html5Qrcode {
 
     /**
      * Construct list of supported formats and returns based on input args.
-     * @param configOrVerbosityFlag optional, config object of type {@interface
+     * `configOrVerbosityFlag` optional, config object of type {@link
      * Html5QrcodeFullConfig} or a boolean verbosity flag (to maintain backward
      * compatibility). If nothing is passed, default values would be used.
      * If a boolean value is used, it'll be used to set verbosity. Pass a
      * config value to configure the Html5Qrcode scanner as per needs.
      * 
-     * Use of {@code configOrVerbosityFlag} as a boolean value is being
+     * Use of `configOrVerbosityFlag` as a boolean value is being
      * deprecated since version 2.0.7.
      * 
      * TODO(mebjas): Deprecate the verbosity boolean flag completely.
@@ -894,7 +912,7 @@ export class Html5Qrcode {
     }
 
     /**
-     * Returns {@code true} if {@code useBarCodeDetectorIfSupported} is
+     * Returns `true` if `useBarCodeDetectorIfSupported` is
      * enabled in the config.
      */
     /*eslint complexity: ["error", 10]*/
@@ -971,9 +989,9 @@ export class Html5Qrcode {
     }
 
     /**
-     * Validates if the {@param qrboxSize} is a valid value.
+     * Validates if the `qrboxSize` is a valid value.
      * 
-     * It's expected to be either a number or of type {@interface QrDimensions}.
+     * It's expected to be either a number or of type {@link QrDimensions}.
      */
     private validateQrboxConfig(
         qrboxSize: number | QrDimensions | QrDimensionFunction) {
@@ -994,8 +1012,8 @@ export class Html5Qrcode {
     }
 
     /**
-     * Possibly converts {@param qrboxSize} to an object of type
-     * {@interface QrDimensions}.
+     * Possibly converts `qrboxSize` to an object of type
+     * {@link QrDimensions}.
      */
     private toQrdimensions(
         viewfinderWidth: number,
@@ -1212,7 +1230,7 @@ export class Html5Qrcode {
     }
 
     private createVideoConstraints(
-        cameraIdOrConfig: Html5QrcodeIdentifier)
+        cameraIdOrConfig: MediaTrackConstraints)
         : MediaTrackConstraints | undefined {
         if (typeof cameraIdOrConfig == "string") {
             // If it's a string it should be camera device Id.

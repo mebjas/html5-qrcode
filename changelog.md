@@ -1,6 +1,20 @@
 ### Version 2.3.8
- - `Scanner Paused` color tone changes.
- - Misc code refactor.
+ -   `Scanner Paused` color tone changes.
+ -   Misc code refactor.
+ -   Backwards compatibility improvement by [bilal-elchami@](https://github.com/bilal-elchami) in [PR#700](https://github.com/mebjas/html5-qrcode/pull/700).
+ -   Documentation generated and moved to [scanapp.org/html5-qrcode-docs](https://scanapp.org/html5-qrcode-docs/)
+ -   `Html5QrcodeScannerConfig` exported, thanks to [PR#728](https://github.com/mebjas/html5-qrcode/pull/728) by [seyfer@](https://github.com/seyfer).
+ -   `LitExample` added, thanks to [PR#704](https://github.com/mebjas/html5-qrcode/pull/704) by [kusigit@](https://github.com/kusigit).
+
+**Sponsors**
+Huge thanks to supporters of the mission who sponsored the project (See [Leaderboard](https://ko-fi.com/minhazav/leaderboard)).
+
+-   Jari
+-   Dave from Gravity Wiz
+
+
+See the [sponsorship page](https://ko-fi.com/minhazav) at ko-fi.
+
 
 ### Version 2.3.7
 -   Fix QR code scanning error.
