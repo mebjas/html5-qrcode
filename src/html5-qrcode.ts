@@ -1230,7 +1230,7 @@ export class Html5Qrcode {
     }
 
     private createVideoConstraints(
-        cameraIdOrConfig: MediaTrackConstraints)
+        cameraIdOrConfig: string | MediaTrackConstraints)
         : MediaTrackConstraints | undefined {
         if (typeof cameraIdOrConfig == "string") {
             // If it's a string it should be camera device Id.
