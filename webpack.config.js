@@ -1,4 +1,6 @@
 const path = require("path");
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
+
 
 module.exports = {
     // bundling mode
@@ -7,13 +9,13 @@ module.exports = {
     entry: "./src/index.ts",
     // output bundles (location)
     output: {
-        path: path.resolve( __dirname, "dist" ),
+        path: path.resolve(__dirname, "dist"),
         filename: "html5-qrcode.min.js",
         library: "__Html5QrcodeLibrary__",
     },
     // file resolutions
     resolve: {
-        extensions: [ ".ts", ".js" ],
+        extensions: [".ts", ".js"],
     },
     target: "web",
     module: {
@@ -28,5 +30,10 @@ module.exports = {
     optimization: {
         minimize: true,
         usedExports: true
-    }
+    },
+    plugins: [
+        new BundleAnalyzerPlugin({
+            analyzerMode: "static"
+        })
+    ]
 };
