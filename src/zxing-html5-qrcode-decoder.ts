@@ -112,7 +112,8 @@ export class ZXingHtml5QrcodeDecoder implements QrcodeDecoderAsync {
             text: result.text,
             format: QrcodeResultFormat.create(
                 this.toHtml5QrcodeSupportedFormats(result.format)),
-                debugData: this.createDebugData()
+            debugData: this.createDebugData(),
+            rawBytes: result.resultMetadata.get(2)[0]
         };
     }
 
