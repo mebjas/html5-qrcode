@@ -1380,7 +1380,7 @@ export class Html5Qrcode {
         }
         const element = document.getElementById(this.elementId);
         if (element) {
-            element.innerHTML = "";
+            element.textContent = "";
         }
     }
 
