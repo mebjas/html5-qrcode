@@ -217,12 +217,14 @@ class RenderedCameraImpl implements RenderedCamera {
 
     private getFirstTrackOrFail(): MediaStreamTrack {
         this.failIfClosed();
+        
+        const firstTrack = this.mediaStream.getVideoTracks()[0];
 
-        if (this.mediaStream.getVideoTracks().length === 0) {
+        if (firstTrack === undefined) {
             throw "No video tracks found";
         }
 
-        return this.mediaStream.getVideoTracks()[0];
+        return firstTrack;
     }
 
     //#region Public APIs.
