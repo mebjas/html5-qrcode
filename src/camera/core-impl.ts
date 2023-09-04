@@ -220,7 +220,7 @@ class RenderedCameraImpl implements RenderedCamera {
         
         const firstTrack = this.mediaStream.getVideoTracks()[0];
 
-        if (firstTrack === undefined) {
+        if (!firstTrack) {
             throw "No video tracks found";
         }
 
