@@ -1,5 +1,8 @@
 # Html5-QRCode 
 
+> **Important** The project is in maintenance mode until further notice. The author shall not be able to make any bug fixes or improvements for the time-being. Pull requests also won't be merged for the timebeing. If you have a fork you can maintain - please share the details to minhazav@gmail.com. I am happy to advertise them here!
+> Ok to use the project as is. Example: [scanapp.org](https://scanapp.org).
+
 ## Lightweight & cross platform QR Code and Bar code scanning library for the web
 
 Use this lightweight library to easily / quickly integrate QR code, bar code, and other common code scanning capabilities to your web application.
