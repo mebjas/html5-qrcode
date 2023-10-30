@@ -36,7 +36,7 @@ jobs:
               echo "No version found in the commit message"
               exit 1
             fi
-            TAG_NAME="[RELEASE:${VERSION}]"
+            TAG_NAME="${VERSION}"
           fi
           shopt -s extglob
           rm -rf !(dist)
