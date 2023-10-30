@@ -473,17 +473,27 @@ export class Html5Qrcode {
      * @param shouldPauseVideo (Optional, default = false) If true the
      * video will be paused.
      * 
+     * @param showPausedBanner (Optional, default = false) If true a
+     * paused banner will be displayed on top of video.
+     * 
      * @throws error if method is called when scanner is not in scanning state.
      */
-    public pause(shouldPauseVideo?: boolean) {
+    public pause(shouldPauseVideo?: boolean, showPausedBanner?: boolean) {
         if (!this.stateManagerProxy.isStrictlyScanning()) {
             throw "Cannot pause, scanner is not scanning.";
         }
         this.stateManagerProxy.directTransition(Html5QrcodeScannerState.PAUSED);
-        this.showPausedState();
 
         if (isNullOrUndefined(shouldPauseVideo) || shouldPauseVideo !== true) {
             shouldPauseVideo = false;
+        }
+
+        if (isNullOrUndefined(showPausedBanner) || showPausedBanner !== true) {
+            showPausedBanner = false;
+        }
+
+        if(showPausedBanner) {
+            this.showPausedState();
         }
 
         if (shouldPauseVideo && this.renderedCamera) {
