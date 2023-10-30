@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+        matrix:
+          node-version: [18.x]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm install
+      - name: Build package
+        run: |
+          npm run-script build
+      - name: Create Tag
+        if: contains(github.event.head_commit.message, '[BUILD]')
+        run: |
+          shopt -s extglob
+          rm -rf !(dist)
+          shopt -s dotglob
+          mv dist/* .
+          rm -rf dist
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add -A
+          git commit -m "Updated tag contents"
+          git tag -fa ${{ github.run_id }} -m "Generated tag from GitHub Actions"
+          git push origin --tags
