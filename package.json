@@ -1,6 +1,6 @@
 {
   "name": "@pier-wallet/html5-qrcode",
-  "version": "2.3.9-pierfork.2",
+  "version": "2.3.9",
   "description": "A cross platform HTML5 QR Code & bar code scanner",
   "main": "./cjs/index.js",
   "module": "./esm/index.js",
