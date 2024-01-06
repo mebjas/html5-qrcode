@@ -175,6 +175,9 @@ export interface QrcodeResult {
 
     /** Data class for QR code result used for debugging. */
     debugData?: QrcodeResultDebugData;
+
+    /** Contains the rawBytes without QrCode header/footer. */
+    rawBytes?: Uint8Array;
 }
 
 /**
