@@ -1,0 +1,47 @@
+name: Bug Report
+description: Create a report to help us improve.
+title: "<Bug Report>"
+labels: []
+body:
+- type: textarea
+  attributes:
+    label: Describe the bug
+    description: A clear and concise description of what the bug is.
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: To Reproduce.
+    description: Steps to reproduce the behavior. Go to '...' --> Click on '....' -->  Scroll down to '....' --> See error.
+  validations:
+    required: false
+- type: textarea
+  attributes:
+    label: Expected behavior
+    description: A clear and concise description of what you expected to happen.
+  validations:
+    required: false
+- type: textarea
+  attributes:
+    label: Screenshots.
+    description: If applicable, add screenshots to help explain your problem.
+  validations:
+    required: false
+- type: textarea
+  attributes:
+    label: Environment (please complete the following information about Desktop).
+    description: OS [e.g. iOS] --> Browser [e.g. chrome, safari] --> Version [e.g. 22]
+  validations:
+    required: false 
+- type: textarea
+  attributes:
+    label: Environment (please complete the following information about Smartphone).
+    description: Device [e.g. iPhone6] --> OS [e.g. iOS8.1] --> Browser [e.g. stock browser, safari] --> Version [e.g. 22].
+  validations:
+    required: false     
+- type: textarea
+  attributes:
+    label: Additional context.
+    description: Add any other context about the problem here.
+  validations:
+    required: false      
