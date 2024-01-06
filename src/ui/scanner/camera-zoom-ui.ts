@@ -1,9 +1,9 @@
 /**
  * @fileoverview
  * File for camera zooming UI.
- * 
+ *
  * @author mebjas <minhazav@gmail.com>
- * 
+ *
  * The word "QR Code" is registered trademark of DENSO WAVE INCORPORATED
  * http://www.denso-wave.com/qrcode/faqpatent-e.html
  */
@@ -13,7 +13,7 @@
     PublicUiElementIdAndClasses
 } from "./base";
 
-import { Html5QrcodeScannerStrings } from "../../strings";
+import { t } from "../../strings";
 
 /** Callback when zoom value changes with the slider UI. */
 export type OnCameraZoomValueChangeCallback = (zoomValue: number) => void;
@@ -59,7 +59,7 @@ export class CameraZoomUi {
         this.rangeInput.style.outline = "none";
         this.rangeInput.style.opacity = "0.7";
 
-        let zoomString = Html5QrcodeScannerStrings.zoom();
+        let zoomString = t('scanner.zoom');
         this.rangeText.innerText = `${this.rangeInput.value}x ${zoomString}`;
         this.rangeText.style.marginRight = "10px";
 
@@ -73,7 +73,7 @@ export class CameraZoomUi {
     }
 
     private onValueChange() {
-        let zoomString = Html5QrcodeScannerStrings.zoom();
+        let zoomString = t('scanner.zoom');
         this.rangeText.innerText = `${this.rangeInput.value}x ${zoomString}`;
         if (this.onChangeCallback) {
             this.onChangeCallback(parseFloat(this.rangeInput.value));
@@ -113,7 +113,7 @@ export class CameraZoomUi {
     //#endregion
 
     /**
-     * Creates and renders the zoom slider if {@code renderOnCreate} is 
+     * Creates and renders the zoom slider if {@code renderOnCreate} is
      * {@code true}.
      */
     public static create(

@@ -1,7 +1,7 @@
 /**
  * @fileoverview
  * All structured UI classes.
- * 
+ *
  * TODO(mebjas): Migrate all UI components to modular UI classes so they are
  * easy to improve.
  * TODO(mebjas): Add tests for all UI components.
@@ -10,7 +10,7 @@
 
 import { ASSET_CLOSE_ICON_16PX, ASSET_INFO_ICON_16PX } from "./image-assets";
 
-import { LibraryInfoStrings } from "./strings";
+import { t } from "./strings";
 
 type OnClickListener0 = () => void;
 
@@ -38,7 +38,7 @@ class LibraryInfoDiv {
         this.infoDiv.style.fontWeight = "400";
         this.infoDiv.style.color = "white";
 
-        this.infoDiv.innerText = LibraryInfoStrings.poweredBy();
+        this.infoDiv.innerText = t('libraryInfo.poweredBy');
         const projectLink = document.createElement("a");
         projectLink.innerText = "ScanApp";
         projectLink.href = "https://scanapp.org";
@@ -52,7 +52,7 @@ class LibraryInfoDiv {
         this.infoDiv.appendChild(breakElemSecond);
 
         const reportIssueLink = document.createElement("a");
-        reportIssueLink.innerText = LibraryInfoStrings.reportIssues();
+        reportIssueLink.innerText = t('libraryInfo.reportIssues');
         reportIssueLink.href = "https://github.com/mebjas/html5-qrcode/issues";
         reportIssueLink.target = "new";
         reportIssueLink.style.color = "white";
@@ -83,7 +83,7 @@ class LibraryInfoIcon {
 
         this.infoIcon = document.createElement("img");
     }
-    
+
     public renderInto(parent: HTMLElement) {
         this.infoIcon.alt = "Info icon";
         this.infoIcon.src = ASSET_INFO_ICON_16PX;
@@ -143,7 +143,7 @@ export class LibraryInfoContainer {
             this.infoDiv.hide();
         });
     }
-    
+
     public renderInto(parent: HTMLElement) {
         this.infoDiv.renderInto(parent);
         this.infoIcon.renderInto(parent);
