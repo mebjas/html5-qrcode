@@ -1,5 +1,11 @@
 # Html5-QRCode 
 
+## Important - Looking for new owners for this project.
+
+If interested, please reach out at `minhazav@gmail.com`.
+
+## Html5-QRCode 
+
 > **Important** The project is in maintenance mode until further notice. The author shall not be able to make any bug fixes or improvements for the time-being. Pull requests also won't be merged for the timebeing. If you have a fork you can maintain - please share the details to minhazav@gmail.com. I am happy to advertise them here!
 > Ok to use the project as is. Example: [scanapp.org](https://scanapp.org).
 
