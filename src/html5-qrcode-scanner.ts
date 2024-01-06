@@ -272,7 +272,7 @@ export class Html5QrcodeScanner {
         if (!container) {
             throw `HTML Element with id=${this.elementId} not found`;
         }
-        container.innerHTML = "";
+        container.textContent = "";
         this.createBasicLayout(container!);
         this.html5Qrcode = new Html5Qrcode(
             this.getScanRegionId(),
@@ -336,7 +336,7 @@ export class Html5QrcodeScanner {
         const emptyHtmlContainer = () => {
             const mainContainer = document.getElementById(this.elementId);
             if (mainContainer) {
-                mainContainer.innerHTML = "";
+                mainContainer.textContent = "";
                 this.resetBasicLayout(mainContainer);
             }
         }
@@ -1047,15 +1047,15 @@ export class Html5QrcodeScanner {
             this.getScanRegionId())!;
 
         if (this.cameraScanImage) {
-            qrCodeScanRegion.innerHTML = "<br>";
-            qrCodeScanRegion.appendChild(this.cameraScanImage);
+            const br = document.createElement("br");
+            qrCodeScanRegion.replaceChildren(br, this.cameraScanImage);
             return;
         }
 
         this.cameraScanImage = new Image;
         this.cameraScanImage.onload = (_) => {
-            qrCodeScanRegion.innerHTML = "<br>";
-            qrCodeScanRegion.appendChild($this.cameraScanImage!);
+            const br = document.createElement("br");
+            qrCodeScanRegion.replaceChildren(br, $this.cameraScanImage!);
         }
         this.cameraScanImage.width = 64;
         this.cameraScanImage.style.opacity = "0.8";
@@ -1069,15 +1069,15 @@ export class Html5QrcodeScanner {
             this.getScanRegionId())!;
 
         if (this.fileScanImage) {
-            qrCodeScanRegion.innerHTML = "<br>";
-            qrCodeScanRegion.appendChild(this.fileScanImage);
+            const br = document.createElement("br");
+            qrCodeScanRegion.replaceChildren(br, this.fileScanImage);
             return;
         }
 
         this.fileScanImage = new Image;
         this.fileScanImage.onload = (_) => {
-            qrCodeScanRegion.innerHTML = "<br>";
-            qrCodeScanRegion.appendChild($this.fileScanImage!);
+            const br = document.createElement("br");
+            qrCodeScanRegion.replaceChildren(br, $this.fileScanImage!);
         }
         this.fileScanImage.width = 64;
         this.fileScanImage.style.opacity = "0.8";
@@ -1088,7 +1088,7 @@ export class Html5QrcodeScanner {
     private clearScanRegion() {
         const qrCodeScanRegion = document.getElementById(
             this.getScanRegionId())!;
-        qrCodeScanRegion.innerHTML = "";
+        qrCodeScanRegion.textContent = "";
     }
 
     //#region state getters
