@@ -30,7 +30,7 @@
     "build:copy_windows": "copy README.md dist && copy package.json dist && copy LICENSE dist",
     "internal_release": "npm run build && cp dist/html5-qrcode.min.js minified/html5-qrcode.min.js",
     "release": "npm run build && cp dist/html5-qrcode.min.js minified/html5-qrcode.min.js && cd dist && npm publish",
-    "release_windows": "npm run build && cp dist\\html5-qrcode.min.js minified\\html5-qrcode.min.js && cd dist && npm publish",
+    "release_windows": "npm run build-windows && cp dist\\html5-qrcode.min.js minified\\html5-qrcode.min.js && cd dist && npm publish",
     "doc_gen": "npx typedoc --excludePrivate src/index.ts"
   },
   "repository": {
