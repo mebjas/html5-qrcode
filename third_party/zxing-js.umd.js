@@ -2794,7 +2794,11 @@
         }
     }
 
-    var __awaiter = ((globalThis || global || self || window || undefined) && (globalThis || global || self || window || undefined).__awaiter) || function (thisArg, _arguments, P, generator) {
+    const g = (typeof globalThis !== 'undefined') ? globalThis :
+    (typeof global !== 'undefined') ? global :
+    (typeof self !== 'undefined') ? self :
+    (typeof window !== 'undefined') ? window : {};
+    var __awaiter = (g.__awaiter) || function (thisArg, _arguments, P, generator) {
         function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
         return new (P || (P = Promise))(function (resolve, reject) {
             function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
