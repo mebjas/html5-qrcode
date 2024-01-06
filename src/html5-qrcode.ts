@@ -1204,7 +1204,7 @@ export class Html5Qrcode {
             /* dy= */  0,
             /* dWidth= */ this.qrRegion.width,
             /* dHeight= */ this.qrRegion.height);
-
+        this.context!.filter = 'invert(100%)'; // <-- Thx to [thk-root](https://github.com/thk-root)
         const triggerNextScan = () => {
             this.foreverScanTimeout = setTimeout(() => {
                 this.foreverScan(
