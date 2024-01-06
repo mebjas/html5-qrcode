@@ -15,9 +15,9 @@ import {
 
 /** Util class to help with scan type selection in scanner class. */
 export class ScanTypeSelector {
-    private supportedScanTypes: Array<Html5QrcodeScanType>;
+    private supportedScanTypes: readonly [Html5QrcodeScanType, ...Array<Html5QrcodeScanType>];
 
-    constructor(supportedScanTypes?: Array<Html5QrcodeScanType> | []) {
+    constructor(supportedScanTypes?: ReadonlyArray<Html5QrcodeScanType> | []) {
         this.supportedScanTypes = this.validateAndReturnScanTypes(
             supportedScanTypes);
     }
@@ -65,8 +65,8 @@ export class ScanTypeSelector {
      * Fails early if the config values is incorrectly set.
      */
     private validateAndReturnScanTypes(
-        supportedScanTypes?:Array<Html5QrcodeScanType>):
-        Array<Html5QrcodeScanType> {
+        supportedScanTypes?:ReadonlyArray<Html5QrcodeScanType>):
+        readonly [Html5QrcodeScanType, ...Array<Html5QrcodeScanType>] {
         // If not set, use the default values and order.
         if (!supportedScanTypes || supportedScanTypes.length === 0) {
             return Html5QrcodeConstants.DEFAULT_SUPPORTED_SCAN_TYPE;
@@ -88,7 +88,7 @@ export class ScanTypeSelector {
             }
         }
 
-        return supportedScanTypes;
+        return supportedScanTypes as [Html5QrcodeScanType, ...Array<Html5QrcodeScanType>];
     }
     //#endregion
 }

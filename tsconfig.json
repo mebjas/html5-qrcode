@@ -11,6 +11,7 @@
         // Flags to ensure code quality.
         "strict": true,
         "noImplicitReturns": true,
+        "noUncheckedIndexedAccess": true,
         "noUnusedParameters": true,
         "experimentalDecorators": true,
         "removeComments": true,

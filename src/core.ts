@@ -89,7 +89,7 @@ export class Html5QrcodeConstants {
     static DEFAULT_REMEMBER_LAST_CAMERA_USED = true;
     static DEFAULT_SUPPORTED_SCAN_TYPE = [
         Html5QrcodeScanType.SCAN_TYPE_CAMERA,
-        Html5QrcodeScanType.SCAN_TYPE_FILE];
+        Html5QrcodeScanType.SCAN_TYPE_FILE] as const;
 }
 
 /** Defines dimension for QR Code Scanner. */
