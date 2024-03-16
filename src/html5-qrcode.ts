@@ -268,6 +268,8 @@ export class Html5Qrcode {
     private readonly qrcode: RobustQrcodeDecoderAsync;
 
     private shouldScan: boolean;
+    private flippedScan: boolean;
+    private invertedScan: boolean;  
 
     // Nullable elements
     // TODO(mebjas): Reduce the state-fulness of this mammoth class, by splitting
@@ -316,7 +318,7 @@ export class Html5Qrcode {
 
         this.elementId = elementId;
         this.verbose = false;
-        
+
         let experimentalFeatureConfig : ExperimentalFeaturesConfig | undefined;
         let configObject: Html5QrcodeFullConfig | undefined;
         if (typeof configOrVerbosityFlag == "boolean") {
@@ -336,6 +338,8 @@ export class Html5Qrcode {
 
         this.foreverScanTimeout;
         this.shouldScan = true;
+        this.flippedScan = false;
+        this.invertedScan = false;
         this.stateManagerProxy = StateManagerFactory.create();
     }
 
@@ -1211,20 +1215,37 @@ export class Html5Qrcode {
                     internalConfig, qrCodeSuccessCallback, qrCodeErrorCallback);
             }, this.getTimeoutFps(internalConfig.fps));
         };
-
+        if(this.context) {
+            // apply invert function that replace this.context.filter = 'invert(X)'
+            this.context = this.invert(this.context, (this.invertedScan) ? '1' : '0');
+        }
         // Try scanning normal frame and in case of failure, scan
         // the inverted context if not explictly disabled.
         // TODO(mebjas): Move this logic to decoding library.
         this.scanContext(qrCodeSuccessCallback, qrCodeErrorCallback)
             .then((isSuccessfull) => {
-                // Previous scan failed and disableFlip is off.
-                if (!isSuccessfull && internalConfig.disableFlip !== true) {
-                    this.context!.translate(this.context!.canvas.width, 0);
-                    this.context!.scale(-1, 1);
-                    this.scanContext(qrCodeSuccessCallback, qrCodeErrorCallback)
-                        .finally(() => {
-                            triggerNextScan();
-                        });
+                // Previous scan failed
+                if (!isSuccessfull) {
+                    // disableFlip is off and is not flipped
+                    if (internalConfig.disableFlip !== true && this.flippedScan === false) {
+                        this.context!.translate(this.context!.canvas.width, 0);
+                        this.context!.scale(-1, 1);
+                        this.flippedScan = true;
+                    } else {
+                        // disableFlip is off
+                        if (internalConfig.disableFlip !== true) {
+                            this.context!.translate(this.context!.canvas.width, 0);
+                            this.context!.scale(-1, 1);
+                        }
+                        this.flippedScan = false;
+                    }
+                    // previous scan failed, check if next time I shouldapply invert function with amount parameter set to 1 or 0
+                    if (this.invertedScan === false && this.flippedScan === false) {
+                        this.invertedScan = true;
+                    } else if (this.invertedScan === true && this.flippedScan === false) {
+                        this.invertedScan = false;
+                    }
+                    triggerNextScan();
                 } else {
                     triggerNextScan();
                 }
@@ -1330,6 +1351,69 @@ export class Html5Qrcode {
         const type = (typeof cameraIdOrConfig);
         throw `Invalid type of 'cameraIdOrConfig' = ${type}`;
     }
+
+    /**
+     * Method that replace CanvasRenderingContext2D.filter that is not supported from Safari
+     * https://github.com/davidenke/context-filter-polyfill/blob/main/src/filters/invert.filter.ts
+     * @param context
+     * @param amount from 0 to 1
+     */
+    private invert(
+        context: CanvasRenderingContext2D,
+        amount: any = '0'
+    ) {
+        amount = this.normalizeNumberPercentage(amount);
+        // do not manipulate without proper amount
+        if (amount <= 0) {
+          return context;
+        }
+        // a maximum of 100%
+        if (amount > 1) {
+          amount = 1;
+        }
+        const { height, width } = context.canvas;
+        const imageData = context.getImageData(0, 0, width, height);
+        const { data } = imageData;
+        const { length } = data;
+
+        // in rgba world, every
+        // n * 4 + 0 is red,
+        // n * 4 + 1 green and
+        // n * 4 + 2 is blue
+        // the fourth can be skipped as it's the alpha channel
+        for (let i = 0; i < length; i += 4) {
+            data[i + 0] = Math.abs(data[i + 0] - 255 * amount);
+            data[i + 1] = Math.abs(data[i + 1] - 255 * amount);
+            data[i + 2] = Math.abs(data[i + 2] - 255 * amount);
+        }
+
+        // set back image data to context
+        context.putImageData(imageData, 0, 0);
+
+        // return the context itself
+        return context;
+    }
+
+    /**
+     * filter options are often represented as number-percentage,
+     * means that they'll be percentages like `50%` or floating
+     * in-between 0 and 1 like `.5`, so we normalize them.
+     * https://developer.mozilla.org/en-US/docs/Web/CSS/filter#number-percentage
+     * https://github.com/davidenke/context-filter-polyfill/blob/main/src/utils/filter.utils.ts
+     * @param percentage 
+     * @returns 
+     */
+    private normalizeNumberPercentage(
+        percentage: string
+    ) {
+        let normalized = parseFloat(percentage);
+        // check for percentages and divide by a hundred
+        if (/%\s*?$/i.test(percentage)) {
+          normalized /= 100;
+        }
+        return normalized;
+    }
+    
     //#endregion
 
     //#region Documented private methods for file based scanner.
