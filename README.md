@@ -1,4 +1,4 @@
-# Html5-QRCode 
+# [Html5-QRCode ](https://github.com/aFarkas/html5shiv/pull/245)
 
 ## Important - Looking for new owners for this project.
 
