@@ -179,7 +179,7 @@ function toHtml5QrcodeFullConfig(
 export class Html5QrcodeScanner {
 
     //#region private fields
-    private elementId: string;
+    private element: HTMLElement;
     private config: Html5QrcodeScannerConfig;
     private verbose: boolean;
     private currentScanType: Html5QrcodeScanType;
@@ -201,21 +201,24 @@ export class Html5QrcodeScanner {
     /**
      * Creates instance of this class.
      *
-     * @param elementId Id of the HTML element.
+     * @param element HTMLElement or string Id of the HTML element.
      * @param config Extra configurations to tune the code scanner.
      * @param verbose - If true, all logs would be printed to console. 
      */
     public constructor(
-        elementId: string,
+        element: HTMLElement | string,
         config: Html5QrcodeScannerConfig | undefined,
         verbose: boolean | undefined) {
-        this.elementId = elementId;
+        if (typeof element === 'string') {
+            const el = document.getElementById(element)
+            if (el === null) throw `HTML Element with id=${element} not found`
+            this.element = el
+        } else {
+            if (!element.id) element.id = 'html5-qrcode-scanner'
+            this.element = element
+        }
         this.config = this.createConfig(config);
         this.verbose = verbose === true;
-
-        if (!document.getElementById(elementId)) {
-            throw `HTML Element with id=${elementId} not found`;
-        }
 
         this.scanTypeSelector = new ScanTypeSelector(
             this.config.supportedScanTypes);
@@ -268,12 +271,8 @@ export class Html5QrcodeScanner {
             }
         };
 
-        const container = document.getElementById(this.elementId);
-        if (!container) {
-            throw `HTML Element with id=${this.elementId} not found`;
-        }
-        container.innerHTML = "";
-        this.createBasicLayout(container!);
+        this.element.innerHTML = "";
+        this.createBasicLayout(this.element);
         this.html5Qrcode = new Html5Qrcode(
             this.getScanRegionId(),
             toHtml5QrcodeFullConfig(this.config, this.verbose));
@@ -334,10 +333,9 @@ export class Html5QrcodeScanner {
      */
     public clear(): Promise<void> {
         const emptyHtmlContainer = () => {
-            const mainContainer = document.getElementById(this.elementId);
-            if (mainContainer) {
-                mainContainer.innerHTML = "";
-                this.resetBasicLayout(mainContainer);
+            if (this.element) {
+                this.element.innerHTML = "";
+                this.resetBasicLayout(this.element);
             }
         }
 
@@ -1093,11 +1091,11 @@ export class Html5QrcodeScanner {
 
     //#region state getters
     private getDashboardSectionId(): string {
-        return `${this.elementId}__dashboard_section`;
+        return `${this.element.id}__dashboard_section`;
     }
 
     private getDashboardSectionCameraScanRegionId(): string {
-        return `${this.elementId}__dashboard_section_csr`;
+        return `${this.element.id}__dashboard_section_csr`;
     }
 
     private getDashboardSectionSwapLinkId(): string {
@@ -1105,15 +1103,15 @@ export class Html5QrcodeScanner {
     }
 
     private getScanRegionId(): string {
-        return `${this.elementId}__scan_region`;
+        return `${this.element.id}__scan_region`;
     }
 
     private getDashboardId(): string {
-        return `${this.elementId}__dashboard`;
+        return `${this.element.id}__dashboard`;
     }
 
     private getHeaderMessageContainerId(): string {
-        return `${this.elementId}__header_message`;
+        return `${this.element.id}__header_message`;
     }
 
     private getCameraPermissionButtonId(): string {

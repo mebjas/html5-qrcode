@@ -263,17 +263,16 @@ export class Html5Qrcode {
 
     //#region Private fields.
     private readonly logger: Logger;
-    private readonly elementId: string;
     private readonly verbose: boolean;
     private readonly qrcode: RobustQrcodeDecoderAsync;
 
+    private element: HTMLElement;
     private shouldScan: boolean;
 
     // Nullable elements
     // TODO(mebjas): Reduce the state-fulness of this mammoth class, by splitting
     // into independent classes for better separation of concerns and reducing
     // error prone nature of a large stateful class.
-    private element: HTMLElement | null = null;
     private canvasElement: HTMLCanvasElement | null = null;
     private scannerPausedUiElement: HTMLDivElement | null = null;
     private hasBorderShaders: boolean | null = null;
@@ -296,7 +295,7 @@ export class Html5Qrcode {
     /**
      * Initialize the code scanner.
      *
-     * @param elementId Id of the HTML element.
+     * @param element HTMLElement or string Id of the HTML element.
      * @param configOrVerbosityFlag optional, config object of type {@link
      * Html5QrcodeFullConfig} or a boolean verbosity flag (to maintain backward
      * compatibility). If nothing is passed, default values would be used.
@@ -308,13 +307,15 @@ export class Html5Qrcode {
      * 
      * TODO(mebjas): Deprecate the verbosity boolean flag completely.
      */
-    public constructor(elementId: string, 
+    public constructor(element: HTMLElement | string, 
         configOrVerbosityFlag?: boolean | Html5QrcodeFullConfig | undefined) {
-        if (!document.getElementById(elementId)) {
-            throw `HTML Element with id=${elementId} not found`;
+        if (typeof element === 'string') {
+            const el = document.getElementById(element)
+            if (el === null) throw `HTML Element with id=${element} not found`
+            this.element = el
+        } else {
+            this.element = element
         }
-
-        this.elementId = elementId;
         this.verbose = false;
         
         let experimentalFeatureConfig : ExperimentalFeaturesConfig | undefined;
@@ -399,13 +400,11 @@ export class Html5Qrcode {
         const areVideoConstraintsEnabled = videoConstraintsAvailableAndValid;
 
         // qr shaded box
-        const element = document.getElementById(this.elementId)!;
-        const rootElementWidth = element.clientWidth
-            ? element.clientWidth : Constants.DEFAULT_WIDTH;
-        element.style.position = "relative";
+        const rootElementWidth = this.element.clientWidth
+            ? this.element.clientWidth : Constants.DEFAULT_WIDTH;
+        this.element.style.position = "relative";
 
         this.shouldScan = true;
-        this.element = element;
 
         const $this = this;
         const toScanningStateChangeTransaction: StateManagerTransaction
@@ -657,12 +656,11 @@ export class Html5Qrcode {
             inputImage.onload = () => {
                 const imageWidth = inputImage.width;
                 const imageHeight = inputImage.height;
-                const element = document.getElementById(this.elementId)!;
-                const containerWidth = element.clientWidth
-                    ? element.clientWidth : Constants.DEFAULT_WIDTH;
+                const containerWidth = this.element.clientWidth
+                    ? this.element.clientWidth : Constants.DEFAULT_WIDTH;
                 // No default height anymore.
                 const containerHeight =  Math.max(
-                    element.clientHeight ? element.clientHeight : imageHeight,
+                    this.element.clientHeight ? this.element.clientHeight : imageHeight,
                     Constants.FILE_SCAN_MIN_HEIGHT);
 
                 const config = this.computeCanvasDrawConfig(
@@ -671,7 +669,7 @@ export class Html5Qrcode {
                     const visibleCanvas = this.createCanvasElement(
                         containerWidth, containerHeight, "qr-canvas-visible");
                     visibleCanvas.style.display = "inline-block";
-                    element.appendChild(visibleCanvas);
+                    this.element.appendChild(visibleCanvas);
                     const context = visibleCanvas.getContext("2d");
                     if (!context) {
                         throw "Unable to get 2d context from canvas";
@@ -707,7 +705,7 @@ export class Html5Qrcode {
                 //  color inversion.
                 const hiddenCanvas = this.createCanvasElement(
                     hiddenCanvasWidth, hiddenCanvasHeight);
-                element.appendChild(hiddenCanvas);
+                this.element.appendChild(hiddenCanvas);
                 const context = hiddenCanvas.getContext("2d");
                 if (!context) {
                     throw "Unable to get 2d context from canvas";
@@ -1378,9 +1376,8 @@ export class Html5Qrcode {
         if (this.stateManagerProxy.isScanning()) {
             throw "Cannot clear while scan is ongoing, close it first.";
         }
-        const element = document.getElementById(this.elementId);
-        if (element) {
-            element.innerHTML = "";
+        if (this.element) {
+            this.element.innerHTML = "";
         }
     }
 
