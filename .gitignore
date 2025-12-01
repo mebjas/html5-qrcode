@@ -7,3 +7,8 @@ src/*.d.ts
 src/*/*.d.ts
 src/*/*/*.d.ts
 docs/
+output/
+lib/
+build/
+meta/
+.rpt2_cache

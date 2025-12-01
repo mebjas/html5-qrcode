@@ -196,6 +196,10 @@ export class Html5QrcodeScanner {
     private cameraScanImage: HTMLImageElement | null = null;
     private fileScanImage: HTMLImageElement | null = null;
     private fileSelectionUi: FileSelectionUi | null = null;
+    
+    // State tracking for preventing duplicate initialization
+    private isRendered: boolean = false;
+    private unloadListener: () => void = () => {};
     //#endregion
 
     /**
@@ -241,6 +245,17 @@ export class Html5QrcodeScanner {
     public render(
         qrCodeSuccessCallback: QrcodeSuccessCallback,
         qrCodeErrorCallback: QrcodeErrorCallback | undefined) {
+        
+        // Prevent duplicate initialization
+        if (this.isRendered) {
+            if (this.verbose) {
+                this.logger.logError(
+                    "Html5QrcodeScanner already rendered. " +
+                    "Clear() the previous instance before rendering a new one.");
+            }
+            return;
+        }
+        
         this.lastMatchFound = null;
 
         // Add wrapper to success callback.
@@ -277,6 +292,10 @@ export class Html5QrcodeScanner {
         this.html5Qrcode = new Html5Qrcode(
             this.getScanRegionId(),
             toHtml5QrcodeFullConfig(this.config, this.verbose));
+        
+        // Mark as rendered and setup automatic cleanup
+        this.isRendered = true;
+        this.setupAutomaticCleanup();
     }
 
     //#region State related public APIs
@@ -341,39 +360,104 @@ export class Html5QrcodeScanner {
             }
         }
 
+        const resetState = () => {
+            // Reset all state to allow re-initialization
+            this.isRendered = false;
+            this.html5Qrcode = undefined;
+            this.qrCodeSuccessCallback = undefined;
+            this.qrCodeErrorCallback = undefined;
+            this.lastMatchFound = null;
+            this.cameraScanImage = null;
+            this.fileScanImage = null;
+            this.fileSelectionUi = null;
+            
+            // Remove automatic cleanup listener
+            this.removeAutomaticCleanup();
+        };
+
         if (this.html5Qrcode) {
             return new Promise((resolve, reject) => {
                 if (!this.html5Qrcode) {
+                    resetState();
                     resolve();
                     return;
                 }
                 if (this.html5Qrcode.isScanning) {
                     this.html5Qrcode.stop().then((_) => {
                         if (!this.html5Qrcode) {
+                            resetState();
                             resolve();
                             return;
                         }
 
                         this.html5Qrcode.clear();
                         emptyHtmlContainer();
+                        resetState();
                         resolve();
                     }).catch((error) => {
                         if (this.verbose) {
                             this.logger.logError(
                                 "Unable to stop qrcode scanner", error);
                         }
+                        resetState();
                         reject(error);
                     });
                 } else {
                     // Assuming file based scan was ongoing.
                     this.html5Qrcode.clear();
                     emptyHtmlContainer();
+                    resetState();
                     resolve();
                 }
             });
         }
 
+        resetState();
         return Promise.resolve();
+    }
+
+    /**
+     * Setup automatic cleanup on page unload to prevent duplicate initialization
+     * on page navigation.
+     * 
+     * @private
+     */
+    private setupAutomaticCleanup() {
+        const $this = this;
+        this.unloadListener = () => {
+            if ($this.isRendered) {
+                if ($this.verbose) {
+                    $this.logger.logError(
+                        "Page unload detected, automatically cleaning up QR scanner");
+                }
+                $this.clear().catch((error) => {
+                    if ($this.verbose) {
+                        $this.logger.logError(
+                            "Error during automatic cleanup", error);
+                    }
+                });
+            }
+        };
+        
+        // Listen for page unload events to automatically clean up
+        window.addEventListener('beforeunload', this.unloadListener);
+        window.addEventListener('unload', this.unloadListener);
+        
+        // Also listen for navigation events that might not trigger unload
+        window.addEventListener('pagehide', this.unloadListener);
+    }
+
+    /**
+     * Remove automatic cleanup listeners.
+     * 
+     * @private
+     */
+    private removeAutomaticCleanup() {
+        if (this.unloadListener) {
+            window.removeEventListener('beforeunload', this.unloadListener);
+            window.removeEventListener('unload', this.unloadListener);
+            window.removeEventListener('pagehide', this.unloadListener);
+        }
     }
     //#endregion
 

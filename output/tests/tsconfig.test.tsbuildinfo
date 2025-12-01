@@ -1,0 +1,1 @@
+{"root":["../../src/index.ts","../../tests/core.test.ts","../../tests/ui/scanner/base.test.ts","../../tests/ui/scanner/camera-selection-ui.test.ts","../../tests/ui/scanner/camera-zoom-ui.test.ts","../../tests/ui/scanner/file-selection-ui.test.ts","../../tests/ui/scanner/scan-type-selector.test.ts","../../tests/ui/scanner/torch-button.test.ts"],"errors":true,"version":"5.8.3"}
