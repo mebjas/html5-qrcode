@@ -187,6 +187,7 @@ export class Html5QrcodeScanner {
     private persistedDataManager: PersistedDataManager;
     private scanTypeSelector: ScanTypeSelector;
     private logger: Logger;
+    private isCleared = false;
 
     // Initally null fields.
     private html5Qrcode: Html5Qrcode | undefined;
@@ -241,6 +242,7 @@ export class Html5QrcodeScanner {
     public render(
         qrCodeSuccessCallback: QrcodeSuccessCallback,
         qrCodeErrorCallback: QrcodeErrorCallback | undefined) {
+        this.isCleared = false;
         this.lastMatchFound = null;
 
         // Add wrapper to success callback.
@@ -333,6 +335,8 @@ export class Html5QrcodeScanner {
      *  fails otherwise.
      */
     public clear(): Promise<void> {
+        this.isCleared = true;
+        
         const emptyHtmlContainer = () => {
             const mainContainer = document.getElementById(this.elementId);
             if (mainContainer) {
@@ -555,6 +559,9 @@ export class Html5QrcodeScanner {
         }
 
         Html5Qrcode.getCameras().then((cameras) => {
+            if ($this.isCleared) {
+                return;
+            }
             // By this point the user has granted camera permissions.
             $this.persistedDataManager.setHasPermission(
                 /* hasPermission */ true);
@@ -621,6 +628,9 @@ export class Html5QrcodeScanner {
             && this.persistedDataManager.hasCameraPermissions()) {
             CameraPermissions.hasPermissions().then(
                 (hasPermissions: boolean) => {
+                if ($this.isCleared) {
+                    return;
+                }
                 if (hasPermissions) {
                     $this.createCameraListUi(
                         scpCameraScanRegion, requestPermissionContainer);
@@ -974,6 +984,9 @@ export class Html5QrcodeScanner {
             CameraPermissions.hasPermissions().then(
                 (hasPermissions: boolean) => {
                 if (hasPermissions) {
+                    if ($this.isCleared) {
+                        return;
+                    }
                     // Start feed.
                     // Assuming at this point the permission button exists.
                     let permissionButton = document.getElementById(
