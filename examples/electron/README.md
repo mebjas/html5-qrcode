@@ -22,9 +22,17 @@ function onScanSuccess(decodedText, decodedResult) {
     // Handle on success condition with the decoded message.
     console.log(`Scan result ${decodedText}`, decodedResult);
 }
+
+function onScanFailure(error) {
+    // Handle scan failure, usually better to ignore and keep scanning.
+    // console.warn(`Code scan error = ${error}`);
+}
+
 var html5QrcodeScanner = new Html5QrcodeScanner(
-    "reader", { fps: 10, qrbox: 250 });
-html5QrcodeScanner.render(onScanSuccess);
+    "reader", 
+    { fps: 10, qrbox: {width: 250, height: 250} },
+    /* verbose= */ false);
+html5QrcodeScanner.render(onScanSuccess, onScanFailure);
 ```
 
 ## Run the app

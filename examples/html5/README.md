@@ -23,10 +23,18 @@ function onScanSuccess(decodedText, decodedResult) {
         lastResult = decodedText;
         // Handle on success condition with the decoded message.
         console.log(`Scan result ${decodedText}`, decodedResult);
+        resultContainer.innerHTML = `<div>Scan result: ${decodedText}</div>`;
     }
 }
 
+function onScanFailure(error) {
+    // Handle scan failure, usually better to ignore and keep scanning.
+    // console.warn(`Code scan error = ${error}`);
+}
+
 var html5QrcodeScanner = new Html5QrcodeScanner(
-    "qr-reader", { fps: 10, qrbox: 250 });
-html5QrcodeScanner.render(onScanSuccess);
+    "qr-reader", 
+    { fps: 10, qrbox: {width: 250, height: 250} },
+    /* verbose= */ false);
+html5QrcodeScanner.render(onScanSuccess, onScanFailure);
 ```
