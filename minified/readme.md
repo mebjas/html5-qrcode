@@ -10,6 +10,8 @@ Its not recommended to use the minified script from this directory directly. The
 #### Using directly in browser without any loader
 If you are not using any loader, you can get the latest UMD javascript code in production from [https://unpkg.com/html5-qrcode](https://unpkg.com/html5-qrcode).
 
+> **⚠️ Important**: Always use HTTPS URLs when loading from CDN to avoid mixed content errors on HTTPS websites.
+
 ```js
 <script src="https://unpkg.com/html5-qrcode" type="text/javascript">
 ```

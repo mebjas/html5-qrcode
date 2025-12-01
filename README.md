@@ -137,6 +137,20 @@ Supports:
 
 Find detailed guidelines on how to use this library on [scanapp.org/html5-qrcode-docs](https://scanapp.org/html5-qrcode-docs/docs/intro).
 
+### Quick CDN usage
+
+> **Important Note on HTTPS**: When using this library via CDN on HTTPS websites, always ensure you use the HTTPS version of the CDN URL to avoid mixed content errors.
+
+```html
+<!-- ✅ Correct: HTTPS URL -->
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+
+<!-- ❌ Incorrect: HTTP URL (will cause mixed content errors on HTTPS sites) -->
+<script src="http://unpkg.com/html5-qrcode" type="text/javascript"></script>
+```
+
+If you encounter a "Mixed Content" error, ensure you're using `https://` instead of `http://` in your script tag.
+
 ## Demo
 <img src="https://scanapp.org/assets/github_assets/qr-code.png" width="200px"><br />
 _Scan this image or visit [blog.minhazav.dev/research/html5-qrcode.html](https://blog.minhazav.dev/research/html5-qrcode.html)_

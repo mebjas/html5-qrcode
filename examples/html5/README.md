@@ -5,6 +5,8 @@
 <script src="https://unpkg.com/html5-qrcode"></script>
 ```
 
+> **Note**: Always use `https://` when loading from CDN to avoid mixed content errors on HTTPS websites.
+
 ## Add a placeholder in html
 ```html
 <div id="qr-reader" style="width:500px"></div>
