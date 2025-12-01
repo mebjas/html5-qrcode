@@ -1143,6 +1143,7 @@ export class Html5Qrcode {
             return Promise.resolve(false);
         }
 
+        // Try fast decoding first for performance
         return this.qrcode.decodeAsync(this.canvasElement!)
         .then((result) => {
             qrCodeSuccessCallback(
@@ -1151,12 +1152,25 @@ export class Html5Qrcode {
                     result));
             this.possiblyUpdateShaders(/* qrMatch= */ true);
             return true;
-        }).catch((error) => {
-            this.possiblyUpdateShaders(/* qrMatch= */ false);
-            let errorMessage = Html5QrcodeStrings.codeParseError(error);
-            qrCodeErrorCallback(
-                errorMessage, Html5QrcodeErrorFactory.createFrom(errorMessage));
-            return false;
+        }).catch((_error) => {
+            // Fast decoding failed, try robust decoding as fallback
+            // This helps with challenging conditions like mobile photography
+            return this.qrcode.decodeRobustlyAsync(this.canvasElement!)
+            .then((result) => {
+                qrCodeSuccessCallback(
+                    result.text,
+                    Html5QrcodeResultFactory.createFromQrcodeResult(
+                        result));
+                this.possiblyUpdateShaders(/* qrMatch= */ true);
+                return true;
+            }).catch((robustError) => {
+                // Both fast and robust decoding failed
+                this.possiblyUpdateShaders(/* qrMatch= */ false);
+                let errorMessage = Html5QrcodeStrings.codeParseError(robustError);
+                qrCodeErrorCallback(
+                    errorMessage, Html5QrcodeErrorFactory.createFrom(errorMessage));
+                return false;
+            });
         });
     }
 
