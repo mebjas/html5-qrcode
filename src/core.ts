@@ -147,12 +147,44 @@ export interface QrcodeResultDebugData {
     decoderName?: string;
 }
 
+/** types of metadata that can exist in a result */
+export enum ResultMetadataType {
+    OTHER = 0,
+    ORIENTATION = 1,
+    BYTE_SEGMENTS = 2,
+    ERROR_CORRECTION_LEVEL = 3,
+    ISSUE_NUMBER = 4,
+    SUGGESTED_PRICE = 5,
+    POSSIBLE_COUNTRY = 6,
+    UPC_EAN_EXTENSION = 7,
+    PDF417_EXTRA_METADATA = 8,
+    STRUCTURED_APPEND_SEQUENCE = 9,
+    STRUCTURED_APPEND_PARITY = 10
+}
+
+/** metadata for a result, basically a `Map` but with specific key/value pairs */
+export interface ResultMetadata {
+    get (key: ResultMetadataType.OTHER): unknown | undefined;
+    get (key: ResultMetadataType.ORIENTATION): number | undefined;
+    get (key: ResultMetadataType.BYTE_SEGMENTS): Uint8Array[] | undefined;
+    get (key: ResultMetadataType.ERROR_CORRECTION_LEVEL): unknown;
+    get (key: ResultMetadataType.ISSUE_NUMBER): number | undefined;
+    get (key: ResultMetadataType.SUGGESTED_PRICE): string | undefined;
+    get (key: ResultMetadataType.POSSIBLE_COUNTRY): string | undefined;
+    get (key: ResultMetadataType.UPC_EAN_EXTENSION): unknown | undefined;
+    get (key: ResultMetadataType.PDF417_EXTRA_METADATA): unknown | undefined;
+    get (key: ResultMetadataType.STRUCTURED_APPEND_SEQUENCE): unknown | undefined;
+    get (key: ResultMetadataType.STRUCTURED_APPEND_PARITY): unknown | undefined;
+}
+
 /**
  * Detailed scan result.
  */
 export interface QrcodeResult {
     /** Decoded text. */
     text: string;
+
+    metadata?: ResultMetadata;
 
     /** Format that was successfully scanned. */
     format?: QrcodeResultFormat,

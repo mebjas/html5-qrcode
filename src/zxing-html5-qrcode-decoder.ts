@@ -110,6 +110,7 @@ export class ZXingHtml5QrcodeDecoder implements QrcodeDecoderAsync {
         let result = zxingDecoder.decode(binaryBitmap);
         return {
             text: result.text,
+            metadata: result.getResultMetadata(),
             format: QrcodeResultFormat.create(
                 this.toHtml5QrcodeSupportedFormats(result.format)),
                 debugData: this.createDebugData()
