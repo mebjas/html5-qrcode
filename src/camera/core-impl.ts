@@ -164,6 +164,7 @@ class RenderedCameraImpl implements RenderedCamera {
         videoElement.style.display = "block";
         videoElement.muted = true;
         videoElement.setAttribute("muted", "true");
+        videoElement.setAttribute("disablePictureInPicture", "true");
         (<any>videoElement).playsInline = true;
         return videoElement;
     }
