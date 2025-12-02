@@ -22,7 +22,7 @@ describe("CameraSelectionUi#create()", () => {
 
     after(() => {
         document.body.removeChild(parentElement!);
-        parentElement!.innerHTML = "";
+        parentElement!.textContent = "";
         parentElement = undefined;
     });
 
@@ -40,7 +40,7 @@ describe("CameraSelectionUi#create()", () => {
     });
 
     it("Single cameras, creates the camera selection", () => {
-        parentElement!.innerHTML = "";
+        parentElement!.textContent = "";
         let numCameras = 1;
         let cameras = createCameraList(numCameras);
         let cameraSelectUi = CameraSelectionUi.create(parentElement!, cameras);
@@ -58,7 +58,7 @@ describe("CameraSelectionUi#create()", () => {
         let cameras = createCameraList(numCameras);
         expect(() => {
             let _ = CameraSelectionUi.create(parentElement!, cameras);
-        }).to.throw();   
+        }).to.throw();
     });
 });
 
@@ -72,7 +72,7 @@ describe("CameraSelectionUi#enable() & disable()", () => {
 
     after(() => {
         document.body.removeChild(parentElement!);
-        parentElement!.innerHTML = "";
+        parentElement!.textContent = "";
         parentElement = undefined;
     });
 
@@ -113,7 +113,7 @@ describe("CameraSelectionUi setting and getting values", () => {
 
     after(() => {
         document.body.removeChild(parentElement!);
-        parentElement!.innerHTML = "";
+        parentElement!.textContent = "";
         parentElement = undefined;
     });
 
