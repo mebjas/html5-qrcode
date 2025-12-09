@@ -10,7 +10,7 @@
  * http://www.denso-wave.com/qrcode/faqpatent-e.html
  */
 
-import * as ZXing from "../third_party/zxing-js.umd";
+import * as ZXing from "@zxing/library";
 
 import {
     QrcodeResult,
@@ -100,8 +100,8 @@ export class ZXingHtml5QrcodeDecoder implements QrcodeDecoderAsync {
         // Recreating a new instance per scan doesn't lead to performance issues
         // and temporarily mitigates this issue.
         // TODO(mebjas): Properly fix this issue in ZXing library.
-        const zxingDecoder = new ZXing.MultiFormatReader(
-            this.verbose, this.hints);
+        const zxingDecoder = new ZXing.MultiFormatReader();
+        zxingDecoder.setHints(this.hints);
         const luminanceSource
             = new ZXing.HTMLCanvasElementLuminanceSource(canvas);
         const binaryBitmap
@@ -109,9 +109,9 @@ export class ZXingHtml5QrcodeDecoder implements QrcodeDecoderAsync {
                 new ZXing.HybridBinarizer(luminanceSource));
         let result = zxingDecoder.decode(binaryBitmap);
         return {
-            text: result.text,
+            text: result.getText(),
             format: QrcodeResultFormat.create(
-                this.toHtml5QrcodeSupportedFormats(result.format)),
+                this.toHtml5QrcodeSupportedFormats(result.getBarcodeFormat())),
                 debugData: this.createDebugData()
         };
     }
