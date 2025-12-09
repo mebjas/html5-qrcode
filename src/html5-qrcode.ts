@@ -72,7 +72,7 @@ class Constants extends Html5QrcodeConstants {
 export interface Html5QrcodeConfigs {
     /**
      * Array of formats to support of type {@link Html5QrcodeSupportedFormats}.
-     * 
+     *
      * All invalid values would be ignored. If null or underfined all supported
      * formats will be used for scanning. Unless you want to limit the scan to
      * only certain formats or want to improve performance, you should not set
@@ -84,10 +84,10 @@ export interface Html5QrcodeConfigs {
      * {@link BarcodeDetector} is being implemented by browsers at the moment.
      * It has very limited browser support but as it gets available it could
      * enable faster native code scanning experience.
-     * 
+     *
      * Set this flag to true, to enable using {@link BarcodeDetector} if
      * supported. This is true by default.
-     * 
+     *
      * Documentations:
      *  - https://developer.mozilla.org/en-US/docs/Web/API/BarcodeDetector
      *  - https://web.dev/shape-detection/#barcodedetector
@@ -96,10 +96,21 @@ export interface Html5QrcodeConfigs {
 
     /**
      * Config for experimental features.
-     * 
+     *
      * Everything is false by default.
      */
     experimentalFeatures?: ExperimentalFeaturesConfig | undefined;
+
+    /**
+     * If true, removes GS1 Application Identifier prefixes like "]C1" from
+     * Code 128 barcode results. This prefix is added by ZXing when a Code 128
+     * barcode starts with FNC1 character (GS1-128 format).
+     *
+     * Default: true (removes the prefix)
+     *
+     * Example: With this enabled, "]C1010123456789" becomes "010123456789"
+     */
+    removeGS1Prefix?: boolean | undefined;
 }
 
 /**
@@ -331,6 +342,7 @@ export class Html5Qrcode {
         this.qrcode = new Html5QrcodeShim(
             this.getSupportedFormats(configOrVerbosityFlag),
             this.getUseBarCodeDetectorIfSupported(configObject),
+            this.getRemoveGS1Prefix(configObject),
             this.verbose,
             this.logger);
 
@@ -945,6 +957,20 @@ export class Html5Qrcode {
         }
 
         return experimentalFeatures.useBarCodeDetectorIfSupported !== false;
+    }
+
+    private getRemoveGS1Prefix(
+        config: Html5QrcodeConfigs | undefined) : boolean {
+        // Default value is true.
+        if (isNullOrUndefined(config)) {
+            return true;
+        }
+
+        if (isNullOrUndefined(config!.removeGS1Prefix)) {
+            return true;
+        }
+
+        return config!.removeGS1Prefix !== false;
     }
 
     /**

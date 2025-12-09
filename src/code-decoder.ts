@@ -25,7 +25,7 @@ import { BarcodeDetectorDelegate } from "./native-bar-code-detector";
  * Currently uses {@class ZXingHtml5QrcodeDecoder}, can be replace with another library.
  */
 export class Html5QrcodeShim implements RobustQrcodeDecoderAsync {
-    
+
     private verbose: boolean;
     private primaryDecoder: QrcodeDecoderAsync;
     private secondaryDecoder: QrcodeDecoderAsync | undefined;
@@ -38,6 +38,7 @@ export class Html5QrcodeShim implements RobustQrcodeDecoderAsync {
     public constructor(
         requestedFormats: Array<Html5QrcodeSupportedFormats>,
         useBarCodeDetectorIfSupported: boolean,
+        removeGS1Prefix: boolean,
         verbose: boolean,
         logger: Logger) {
         this.verbose = verbose;
@@ -51,10 +52,10 @@ export class Html5QrcodeShim implements RobustQrcodeDecoderAsync {
             // between 'BarcodeDetector' and 'zxing-js' to compensate for
             // quality gaps between the two.
             this.secondaryDecoder = new ZXingHtml5QrcodeDecoder(
-                requestedFormats, verbose, logger);
+                requestedFormats, removeGS1Prefix, verbose, logger);
         } else {
             this.primaryDecoder = new ZXingHtml5QrcodeDecoder(
-                requestedFormats, verbose, logger);
+                requestedFormats, removeGS1Prefix, verbose, logger);
         }
     }
 

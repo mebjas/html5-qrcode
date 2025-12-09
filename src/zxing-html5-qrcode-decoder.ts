@@ -60,16 +60,19 @@ export class ZXingHtml5QrcodeDecoder implements QrcodeDecoderAsync {
         = this.createReverseFormatMap();
 
     private hints: Map<any, any>;
+    private removeGS1Prefix: boolean;
     private verbose: boolean;
     private logger: Logger;
 
     public constructor(
         requestedFormats: Array<Html5QrcodeSupportedFormats>,
+        removeGS1Prefix: boolean,
         verbose: boolean,
         logger: Logger) {
         if (!ZXing) {
             throw "Use html5qrcode.min.js without edit, ZXing not found.";
         }
+        this.removeGS1Prefix = removeGS1Prefix;
         this.verbose = verbose;
         this.logger = logger;
 
@@ -108,8 +111,15 @@ export class ZXingHtml5QrcodeDecoder implements QrcodeDecoderAsync {
             = new ZXing.BinaryBitmap(
                 new ZXing.HybridBinarizer(luminanceSource));
         let result = zxingDecoder.decode(binaryBitmap);
+        let decodedText = result.getText();
+
+        // Remove GS1 prefix if enabled (e.g., ]C1, ]C0, ]C2, etc.)
+        if (this.removeGS1Prefix) {
+            decodedText = this.stripGS1Prefix(decodedText);
+        }
+
         return {
-            text: result.getText(),
+            text: decodedText,
             format: QrcodeResultFormat.create(
                 this.toHtml5QrcodeSupportedFormats(result.getBarcodeFormat())),
                 debugData: this.createDebugData()
@@ -151,5 +161,23 @@ export class ZXingHtml5QrcodeDecoder implements QrcodeDecoderAsync {
 
     private createDebugData(): QrcodeResultDebugData {
         return { decoderName: "zxing-js" };
+    }
+
+    /**
+     * Removes GS1 Application Identifier prefixes from barcode text.
+     * GS1 prefixes follow the pattern ]XY where X is a letter and Y is a digit.
+     * Common examples: ]C1 (GS1-128), ]C0, ]C2, ]d1, ]d2, ]e0, etc.
+     *
+     * @param text The decoded barcode text
+     * @returns The text with GS1 prefix removed if present
+     */
+    private stripGS1Prefix(text: string): string {
+        // GS1 Application Identifiers start with ] followed by a letter and digit
+        // Pattern: ]XY where X is a letter (a-z, A-Z) and Y is a digit (0-9)
+        const gs1PrefixPattern = /^\][a-zA-Z]\d/;
+        if (gs1PrefixPattern.test(text)) {
+            return text.substring(3); // Remove the first 3 characters (e.g., ]C1)
+        }
+        return text;
     }
 }
