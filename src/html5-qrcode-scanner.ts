@@ -999,7 +999,9 @@ export class Html5QrcodeScanner {
     private resetHeaderMessage() {
         const messageDiv = document.getElementById(
             this.getHeaderMessageContainerId())!;
-        messageDiv.style.display = "none";
+        if(messageDiv){
+            messageDiv.style.display = "none";
+        }
     }
 
     private setHeaderMessage(
