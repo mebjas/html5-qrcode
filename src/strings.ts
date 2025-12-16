@@ -183,7 +183,7 @@ export class Html5QrcodeScannerStrings {
     }
 
     public static fileScanAltText(): string {
-        return "Fule based scan";
+        return "File based scan";
     }
 }
 
