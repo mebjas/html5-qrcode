@@ -69,11 +69,10 @@ export class FileSelectionUi {
                 return;
             }
             let target: HTMLInputElement = e.target as HTMLInputElement;
-            if (target.files && target.files.length === 0) {
+            const file = target.files?.[0];
+            if (!file) {
                 return;
             }
-            let fileList: FileList = target.files!;
-            const file: File = fileList[0];
             let fileName = file.name;
             $this.setImageNameToButton(fileName);
 

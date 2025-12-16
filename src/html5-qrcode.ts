@@ -1259,12 +1259,12 @@ export class Html5Qrcode {
             };
 
             const keys = Object.keys(cameraIdOrConfig);
-            if (keys.length !== 1) {
+            const key = keys[0];
+            if (!key) {
                 throw "'cameraIdOrConfig' object should have exactly 1 key,"
                     + ` if passed as an object, found ${keys.length} keys`;
             }
 
-            const key:string = Object.keys(cameraIdOrConfig)[0];
             if (key !== facingModeKey && key !== deviceIdKey) {
                 throw `Only '${facingModeKey}' and '${deviceIdKey}' `
                     + " are supported for 'cameraIdOrConfig'";
