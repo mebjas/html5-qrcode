@@ -1,0 +1,42 @@
+name: Question
+description: Ask a question about html5-qrcode library to the authors
+title: "<Question>"
+labels: [Stackoverflow-Question]
+
+body:
+- type: textarea
+  attributes:
+    label: Describe the Question.
+    description: A clear and concise description of what the question is.
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Link to stackoverflow.
+    description: Please raise this question in [stackoverflow.com](https://stackoverflow.com/questions/ask) for faster answer and add the link here.
+  validations:
+    required: false
+- type: textarea
+  attributes:
+    label: Context about your web application.
+    description: Where are you using this and how. It'd be helpful if you provide your usage code example.
+  validations:
+    required: false
+- type: textarea
+  attributes:
+    label: Put your code here.
+    description: Code example here
+  validations:
+    required: false
+- type: textarea
+  attributes:
+    label: Environment (please complete the following information).
+    description: Device [e.g. iPhone6], OS [e.g. iOS], Browser [e.g. chrome, safari], Version [e.g. 22]
+  validations:
+    required: true    
+- type: textarea
+  attributes:
+    label: Description
+    description: Add any other context about the problem here.
+  validations:
+    required: false               
