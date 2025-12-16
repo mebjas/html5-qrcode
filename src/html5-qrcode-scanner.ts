@@ -722,6 +722,9 @@ export class Html5QrcodeScanner {
             if (!zoomCapability.isSupported()) {
                 return;
             }
+            if(!zoomCapability.step()){
+                return;
+            }
 
             // Supported.
             cameraZoomUi.setOnCameraZoomValueChangeCallback((zoomValue) => {
