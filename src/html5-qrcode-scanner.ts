@@ -12,6 +12,7 @@ import {
     Html5QrcodeConstants,
     Html5QrcodeScanType,
     QrcodeSuccessCallback,
+    StartErrorCallback,
     QrcodeErrorCallback,
     Html5QrcodeResult,
     Html5QrcodeError,
@@ -196,6 +197,11 @@ export class Html5QrcodeScanner {
     private cameraScanImage: HTMLImageElement | null = null;
     private fileScanImage: HTMLImageElement | null = null;
     private fileSelectionUi: FileSelectionUi | null = null;
+
+    public startErrorCallback: StartErrorCallback;
+    public torchButtonErrorCallback: StartErrorCallback;
+    public getCamaraErrorCallback: StartErrorCallback;
+    public clickListenerErrorCallback: StartErrorCallback;
     //#endregion
 
     /**
@@ -228,6 +234,17 @@ export class Html5QrcodeScanner {
         if (config!.rememberLastUsedCamera !== true) {
             this.persistedDataManager.reset();
         }
+        const $this = this;
+
+        const warnUserViaHeader : StartErrorCallback = (error) => {
+               $this.setHeaderMessage(
+                   error.toString(), Html5QrcodeScannerStatus.STATUS_WARNING);
+            };
+
+        this.startErrorCallback = warnUserViaHeader;
+        this.torchButtonErrorCallback = warnUserViaHeader;
+        this.getCamaraErrorCallback = warnUserViaHeader;
+        this.clickListenerErrorCallback = warnUserViaHeader;
     }
 
     /**
@@ -584,8 +601,7 @@ export class Html5QrcodeScanner {
                 // time.
                 createPermissionButtonIfNotExists();
             }
-            $this.setHeaderMessage(
-                error, Html5QrcodeScannerStatus.STATUS_WARNING);
+            $this.getCamaraErrorCallback(error);
             $this.showHideScanTypeSwapLink(true);
         });
     }
@@ -765,6 +781,7 @@ export class Html5QrcodeScanner {
 
         // Optional torch button support.
         let torchButton: TorchButton;
+
         const createAndShowTorchButtonIfSupported
             = (cameraCapabilities: CameraCapabilities) => {
             if (!cameraCapabilities.torchFeature().isSupported()) {
@@ -782,9 +799,7 @@ export class Html5QrcodeScanner {
                     { display: "none", marginLeft: "5px" },
                     // Callback in case of torch action failure.
                     (errorMessage) => {
-                        $this.setHeaderMessage(
-                            errorMessage,
-                            Html5QrcodeScannerStatus.STATUS_WARNING);
+                        $this.torchButtonErrorCallback(Html5QrcodeErrorFactory.createFrom(errorMessage));
                     }
                 );
             } else {
@@ -853,8 +868,7 @@ export class Html5QrcodeScanner {
                     $this.showHideScanTypeSwapLink(true);
                     cameraSelectUi.enable();
                     resetCameraActionStartButton(/* shouldShow= */ true);
-                    $this.setHeaderMessage(
-                        error, Html5QrcodeScannerStatus.STATUS_WARNING);
+                    $this.startErrorCallback(error);
                 });
         });
 
@@ -890,8 +904,7 @@ export class Html5QrcodeScanner {
                     $this.insertCameraScanImageToScanRegion();
                 }).catch((error) => {
                     cameraActionStopButton.disabled = false;
-                    $this.setHeaderMessage(
-                        error, Html5QrcodeScannerStatus.STATUS_WARNING);
+                    $this.clickListenerErrorCallback(error);
                 });
         });
 
@@ -996,13 +1009,14 @@ export class Html5QrcodeScanner {
         }
     }
 
-    private resetHeaderMessage() {
+    public resetHeaderMessage() {
         const messageDiv = document.getElementById(
             this.getHeaderMessageContainerId())!;
         messageDiv.style.display = "none";
     }
 
-    private setHeaderMessage(
+    /*eslint complexity: ["error", 5]*/
+    public setHeaderMessage(
         messageText: string, scannerStatus?: Html5QrcodeScannerStatus) {
         if (!scannerStatus) {
             scannerStatus = Html5QrcodeScannerStatus.STATUS_DEFAULT;
