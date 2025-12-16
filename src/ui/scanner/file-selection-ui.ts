@@ -1,14 +1,14 @@
 /**
  * @fileoverview
  * File for file selection UI handling.
- * 
+ *
  * @author mebjas <minhazav@gmail.com>
- * 
+ *
  * The word "QR Code" is registered trademark of DENSO WAVE INCORPORATED
  * http://www.denso-wave.com/qrcode/faqpatent-e.html
  */
 
-import {Html5QrcodeScannerStrings} from "../../strings";
+import { t } from "../../strings";
 import {
     BaseUiElementFactory,
     PublicUiElementIdAndClasses
@@ -41,7 +41,7 @@ export class FileSelectionUi {
         fileScanLabel.style.display = "inline-block";
 
         this.fileBasedScanRegion.appendChild(fileScanLabel);
-        
+
         this.fileSelectionButton
             = BaseUiElementFactory.createElement<HTMLButtonElement>(
                 "button",
@@ -61,7 +61,7 @@ export class FileSelectionUi {
         this.fileScanInput.accept = "image/*";
         this.fileScanInput.style.display = "none";
         fileScanLabel.appendChild(this.fileScanInput);
-        
+
         let $this = this;
         /*eslint complexity: ["error", 5]*/
         this.fileScanInput.addEventListener("change", (e: Event) => {
@@ -141,15 +141,14 @@ export class FileSelectionUi {
 
                     onFileSelected(file);
                     dragAndDropMessage.innerText
-                        = Html5QrcodeScannerStrings.dragAndDropMessage();
+                        = t('scanner.dragAndDropMessage');
                     break;
                 }
-                
+
                 // None of the files were images.
                 if (!isAnyFileImage) {
                     dragAndDropMessage.innerText
-                        = Html5QrcodeScannerStrings
-                            .dragAndDropMessageOnlyImages();
+                        = t('scanner.dragAndDropMessageOnlyImages');
                 }
             }
 
@@ -207,7 +206,7 @@ export class FileSelectionUi {
     private createDragAndDropMessage(): HTMLDivElement {
         let dragAndDropMessage = document.createElement("div");
         dragAndDropMessage.innerText
-            = Html5QrcodeScannerStrings.dragAndDropMessage();
+            = t('scanner.dragAndDropMessage');
         dragAndDropMessage.style.fontWeight = "400";
         return dragAndDropMessage;
     }
@@ -224,16 +223,16 @@ export class FileSelectionUi {
             imageFileName = `${start8Chars}....${last8Chars}`;
         }
 
-        let newText = Html5QrcodeScannerStrings.fileSelectionChooseAnother()
+        let newText = t('scanner.fileSelectionChooseAnother')
             + " - "
             + imageFileName;
         this.fileSelectionButton.innerText = newText;
     }
 
     private setInitialValueToButton() {
-        let initialText = Html5QrcodeScannerStrings.fileSelectionChooseImage()
+        let initialText = t('scanner.fileSelectionChooseImage')
             + " - "
-            + Html5QrcodeScannerStrings.fileSelectionNoImageSelected();
+            + t('scanner.fileSelectionNoImageSelected');
         this.fileSelectionButton.innerText = initialText;
     }
 
@@ -244,12 +243,12 @@ export class FileSelectionUi {
 
     /**
      * Creates a file selection UI and renders.
-     * 
+     *
      * @param parentElement parent div element to render the UI to.
      * @param showOnRender if {@code true}, the UI will be shown upon render
      *  else hidden.
      * @param onFileSelected callback to be called when file selection changes.
-     * 
+     *
      * @returns Instance of {@code FileSelectionUi}.
      */
     public static create(
@@ -260,4 +259,4 @@ export class FileSelectionUi {
             parentElement, showOnRender, onFileSelected);
         return button;
     }
-} 
+}

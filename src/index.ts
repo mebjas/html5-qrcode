@@ -26,7 +26,8 @@ export {
 } from "./core";
 export { Html5QrcodeScannerState } from "./state-manager";
 export { Html5QrcodeScanType } from "./core";
-export { 
+export {
     CameraCapabilities,
     CameraDevice
 } from "./camera/core";
+export { setTranslations } from './strings';

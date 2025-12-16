@@ -1,9 +1,9 @@
 /**
  * @fileoverview
  * File for camera selection UI.
- * 
+ *
  * @author mebjas <minhazav@gmail.com>
- * 
+ *
  * The word "QR Code" is registered trademark of DENSO WAVE INCORPORATED
  * http://www.denso-wave.com/qrcode/faqpatent-e.html
  */
@@ -13,9 +13,7 @@ import {
     BaseUiElementFactory,
     PublicUiElementIdAndClasses
 } from "./base";
-import {
-    Html5QrcodeScannerStrings
-} from "../../strings";
+import { t } from "../../strings";
 
 /** Class for rendering and handling camera selection UI. */
 export class CameraSelectionUi {
@@ -30,7 +28,7 @@ export class CameraSelectionUi {
             "select",
             PublicUiElementIdAndClasses.CAMERA_SELECTION_SELECT_ID);
         this.cameras = cameras;
-        this.options = [];        
+        this.options = [];
     }
 
     /*eslint complexity: ["error", 10]*/
@@ -47,7 +45,7 @@ export class CameraSelectionUi {
             cameraSelectionContainer.style.display = "none";
         } else {
             // Otherwise, show the number of cameras found as well.
-            const selectCameraString = Html5QrcodeScannerStrings.selectCamera();
+            const selectCameraString = t('scanner.selectCamera');
             cameraSelectionContainer.innerText
                 = `${selectCameraString} (${this.cameras.length})  `;
         }
@@ -61,7 +59,7 @@ export class CameraSelectionUi {
             // camera label with a count.
             if (!name || name === "") {
                 name = [
-                    Html5QrcodeScannerStrings.anonymousCameraPrefix(),
+                    t('scanner.anonymousCameraPrefix'),
                     anonymousCameraId++
                     ].join(" ");
             }

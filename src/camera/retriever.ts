@@ -1,12 +1,12 @@
 /**
  * @fileoverview
  * Libraries associated with retrieving cameras.
- * 
+ *
  * @author mebjas <minhazav@gmail.com>
  */
 
 import { CameraDevice } from "./core";
-import { Html5QrcodeStrings } from "../strings";
+import { t } from "../strings";
 
 /** Class for retrieving cameras on the device. */
 export class CameraRetriever {
@@ -16,7 +16,7 @@ export class CameraRetriever {
         if (navigator.mediaDevices) {
             return CameraRetriever.getCamerasFromMediaDevices();
         }
-        
+
         // Using deprecated api to support really old browsers.
         var mst = <any>MediaStreamTrack;
         if (MediaStreamTrack && mst.getSources) {
@@ -28,9 +28,9 @@ export class CameraRetriever {
 
     private static rejectWithError(): Promise<Array<CameraDevice>> {
         // This can potentially happen if the page is loaded without SSL.
-        let errorMessage = Html5QrcodeStrings.unableToQuerySupportedDevices();
+        let errorMessage = t('common.unableToQuerySupportedDevices');
         if (!CameraRetriever.isHttpsOrLocalhost()) {
-            errorMessage = Html5QrcodeStrings.insecureContextCameraQueryError();
+            errorMessage = t('common.insecureContextCameraQueryError');
         }
         return Promise.reject(errorMessage);
     }
@@ -71,7 +71,7 @@ export class CameraRetriever {
     }
 
     private static getCamerasFromMediaStreamTrack()
-        : Promise<Array<CameraDevice>> {  
+        : Promise<Array<CameraDevice>> {
         return new Promise((resolve, _) => {
             const callback = (sourceInfos: Array<any>) => {
                 const results: Array<CameraDevice> = [];
