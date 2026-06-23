@@ -2,6 +2,8 @@
 
 Cross-platform library for scanning QR codes, barcodes, and other common symbologies in the browser.
 
+[Try live demo in your browser](https://tpwar.ru/qr/)
+
 This fork is actively maintained and decodes images with [zxing-wasm](https://github.com/Sec-ant/zxing-wasm). The original [html5-qrcode](https://github.com/mebjas/html5-qrcode) project is no longer maintained.
 
 ## Install
