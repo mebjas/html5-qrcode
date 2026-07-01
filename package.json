@@ -18,7 +18,7 @@
     "clean": "rm -Rf ./lib/* ./build/* ./meta/bundlesize/* ./meta/coverage/* ./.rpt2_cache  ./dist/* ./src/*.d.ts",
     "prebuild": "npm run clean",
     "postbuild": "cp -R ./third_party ./dist/third_party",
-    "build": "npm run build:es2015 && npm run build:esm && npm run build:esnext && npm run build:cjs && npm run build:umd && npm run build:typing && npm run build:copy",
+    "build": "npm run build:es2015 && npm run build:esm && npm run build:esnext && npm run build:cjs && npm run build:umd && npm run build:typing && npm run build:copy && npm run build:fix-sourcemaps",
     "build:es2015": "tsc --build tsconfig.lib-es2015.json",
     "build:esm": "tsc --build tsconfig.lib-esm.json",
     "build:esnext": "tsc --build tsconfig.lib-esm.json",
@@ -31,7 +31,8 @@
     "internal_release": "npm run build && cp dist/html5-qrcode.min.js minified/html5-qrcode.min.js",
     "release": "npm run build && cp dist/html5-qrcode.min.js minified/html5-qrcode.min.js && cd dist && npm publish",
     "release_windows": "npm run build && cp dist\\html5-qrcode.min.js minified\\html5-qrcode.min.js && cd dist && npm publish",
-    "doc_gen": "npx typedoc --excludePrivate src/index.ts"
+    "doc_gen": "npx typedoc --excludePrivate src/index.ts",
+    "build:fix-sourcemaps": "node scripts/fix-published-sourcemaps.js"
   },
   "repository": {
     "type": "git",
