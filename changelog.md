@@ -1,3 +1,6 @@
+### Version 2.4.0
+-   Decoding now uses [zxing-wasm](https://github.com/Sec-ant/zxing-wasm) instead of the previous JavaScript ZXing port.
+
 ### Version 2.3.8
  -   `Scanner Paused` color tone changes.
  -   Misc code refactor.
