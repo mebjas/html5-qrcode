@@ -30,3 +30,8 @@ export {
     CameraCapabilities,
     CameraDevice
 } from "./camera/core";
+export {
+    ZxingWasmConfig,
+    ZxingWasmLoadMode,
+} from "./zxing-wasm-config";
+export { configureZxingWasm } from "./zxing-wasm-init";

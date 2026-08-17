@@ -162,6 +162,7 @@ function toHtml5QrcodeFullConfig(
         formatsToSupport: config.formatsToSupport,
         useBarCodeDetectorIfSupported: config.useBarCodeDetectorIfSupported,
         experimentalFeatures: config.experimentalFeatures,
+        zxingWasm: config.zxingWasm,
         verbose: verbose
     };
 }

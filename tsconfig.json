@@ -16,6 +16,7 @@
         "removeComments": true,
         "preserveConstEnums": true,
         "noImplicitAny": true,
+        "skipLibCheck": true,
 
         // Allow javascript source to be built
         "allowJs": true

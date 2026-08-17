@@ -10,11 +10,13 @@ Its not recommended to use the minified script from this directory directly. The
 #### Using directly in browser without any loader
 If you are not using any loader, you can get the latest UMD javascript code in production from [https://unpkg.com/html5-qrcode](https://unpkg.com/html5-qrcode).
 
-```js
-<script src="https://unpkg.com/html5-qrcode" type="text/javascript">
+```html
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 ```
 
-> In case you installed the plugin using npm but still use javascript without any module loader, you can get the minified script in node_modules/html5-qrcode/html5-qrcode.min.js
+> In case you installed the plugin using npm but still use javascript without any module loader, you can get the minified script in `node_modules/@taluks/html5-qrcode/html5-qrcode.min.js`.
+
+**ZXing WASM:** By default the library loads `zxing_reader.wasm` from jsDelivr (CDN). For offline use, place `zxing_reader.wasm` (included in this folder) next to `html5-qrcode.min.js` and pass `zxingWasm: { loadMode: "sameDirectory" }` in the scanner config. See the main [README](../README.md#zxing-wasm-loading-zxingwasm).
 
 #### Using with module loaders
 Include the script with

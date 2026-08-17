@@ -7,13 +7,13 @@ module.exports = {
     entry: "./src/index.ts",
     // output bundles (location)
     output: {
-        path: path.resolve( __dirname, "dist" ),
+        path: path.resolve(__dirname, "dist"),
         filename: "html5-qrcode.min.js",
         library: "__Html5QrcodeLibrary__",
     },
     // file resolutions
     resolve: {
-        extensions: [ ".ts", ".js" ],
+        extensions: [".ts", ".js"],
     },
     target: "web",
     module: {
@@ -23,10 +23,10 @@ module.exports = {
                 use: "ts-loader",
                 exclude: /node_modules/,
             },
-        ]
+        ],
     },
     optimization: {
         minimize: true,
-        usedExports: true
-    }
+        usedExports: true,
+    },
 };

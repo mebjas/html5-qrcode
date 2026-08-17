@@ -31,6 +31,7 @@ import {
 import { Html5QrcodeStrings } from "./strings";
 import { VideoConstraintsUtil } from "./utils";
 import { Html5QrcodeShim } from "./code-decoder";
+import { ZxingWasmConfig } from "./zxing-wasm-config";
 import { CameraFactory } from "./camera/factories";
 import {
     CameraDevice,
@@ -100,6 +101,18 @@ export interface Html5QrcodeConfigs {
      * Everything is false by default.
      */
     experimentalFeatures?: ExperimentalFeaturesConfig | undefined;
+
+    /**
+     * How to load the zxing-wasm reader binary (`zxing_reader.wasm`).
+     *
+     * - Default: {@link ZxingWasmLoadMode.CDN} (jsDelivr, no extra files).
+     * - {@link ZxingWasmLoadMode.SAME_DIRECTORY}: place `zxing_reader.wasm` next to
+     *   `html5-qrcode.min.js` (copied by the build into `dist/` / `minified/`).
+     * - {@link ZxingWasmLoadMode.CUSTOM}: set {@link ZxingWasmConfig.wasmUrl}.
+     *
+     * You can also call {@link configureZxingWasm} before creating a scanner.
+     */
+    zxingWasm?: ZxingWasmConfig | undefined;
 }
 
 /**
@@ -332,7 +345,8 @@ export class Html5Qrcode {
             this.getSupportedFormats(configOrVerbosityFlag),
             this.getUseBarCodeDetectorIfSupported(configObject),
             this.verbose,
-            this.logger);
+            this.logger,
+            this.getZxingWasmConfig(configObject));
 
         this.foreverScanTimeout;
         this.shouldScan = true;
@@ -740,8 +754,6 @@ export class Html5Qrcode {
 
             inputImage.onerror = reject;
             inputImage.onabort = reject;
-            inputImage.onstalled = reject;
-            inputImage.onsuspend = reject;
             inputImage.src = URL.createObjectURL(imageFile);
         });
     }
@@ -945,6 +957,14 @@ export class Html5Qrcode {
         }
 
         return experimentalFeatures.useBarCodeDetectorIfSupported !== false;
+    }
+
+    private getZxingWasmConfig(
+        config: Html5QrcodeConfigs | undefined): ZxingWasmConfig | undefined {
+        if (isNullOrUndefined(config)) {
+            return undefined;
+        }
+        return config!.zxingWasm;
     }
 
     /**
