@@ -16,6 +16,10 @@
         "removeComments": true,
         "preserveConstEnums": true,
         "noImplicitAny": true,
+        // @zxing/library@0.23 declaration files use TS 5.7's generic
+        // Uint8Array, which this repo's TS 4.3 cannot check. Skip checking
+        // of all .d.ts files (library types only; our source is unaffected).
+        "skipLibCheck": true,
 
         // Allow javascript source to be built
         "allowJs": true

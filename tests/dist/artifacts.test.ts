@@ -83,10 +83,9 @@ describe("dist/cjs (per-file output)", () => {
     });
 });
 
-describe("dist/third_party/zxing-js.umd.js (minified vendored ZXing)", () => {
-    it("preserves the export surface and enum values", () => {
-        const zxing = require(
-            path.join(distDir, "third_party", "zxing-js.umd.js"));
+describe("@zxing/library (external dependency)", () => {
+    it("exposes the decoder surface html5-qrcode relies on", () => {
+        const zxing = require("@zxing/library");
         for (const name of [
             "MultiFormatReader",
             "HTMLCanvasElementLuminanceSource",

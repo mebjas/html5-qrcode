@@ -18,7 +18,7 @@
     "./*": "./*"
   },
   "scripts": {
-    "build-windows": "npm run build:es2015 && npm run build:esm && npm run build:esnext && npm run build:cjs && npm run build:bundle_windows && npm run build:vendor && npm run build:typing && npm run build:copy_windows",
+    "build-windows": "npm run build:es2015 && npm run build:esm && npm run build:esnext && npm run build:cjs && npm run build:bundle_windows && npm run build:typing && npm run build:copy_windows",
     "test": "npm run-script test:build && npm run-script test:run",
     "test_windows": "npm run-script test:build && npm run-script test:run_windows",
     "test:all": "npm run build && npm run-script test && npm run-script test:dist",
@@ -30,7 +30,7 @@
     "lint-md": "remark .",
     "clean": "rm -Rf ./lib/* ./build/* ./meta/bundlesize/* ./meta/coverage/* ./.rpt2_cache  ./dist/* ./src/*.d.ts",
     "prebuild": "npm run clean",
-    "build": "npm run build:es2015 && npm run build:esm && npm run build:esnext && npm run build:cjs && npm run build:bundle && npm run build:vendor && npm run build:typing && npm run build:copy",
+    "build": "npm run build:es2015 && npm run build:esm && npm run build:esnext && npm run build:cjs && npm run build:bundle && npm run build:typing && npm run build:copy",
     "build:es2015": "tsc --build tsconfig.lib-es2015.json",
     "build:esm": "tsc --build tsconfig.lib-esm.json",
     "build:esnext": "tsc --build tsconfig.lib-esnext.json",
@@ -38,7 +38,6 @@
     "build:typing": "tsc --emitDeclarationOnly --outDir ./dist",
     "build:bundle": "./scripts/build-webpack.sh",
     "build:bundle_windows": ".\\scripts\\build-webpack.bat",
-    "build:vendor": "node scripts/build-third-party.js",
     "build:copy": "cp README.md dist && cp package.json dist && cp LICENSE dist && cp -R src dist/src",
     "build:copy_windows": "copy README.md dist && copy package.json dist && copy LICENSE dist",
     "internal_release": "npm run build && cp dist/html5-qrcode.min.js minified/html5-qrcode.min.js",
@@ -103,5 +102,8 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "dependencies": {
+    "@zxing/library": "^0.23.0"
   }
 }
