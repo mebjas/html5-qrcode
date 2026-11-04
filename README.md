@@ -354,10 +354,16 @@ Some experimental features include:
 
 2.  Run `npm install` to install all dependencies.
 
-3.  Run `npm run-script build` to build JavaScript output. The output JavaScript distribution is built to [/dist/html5-qrcode.min.js](./dist/html5-qrcode.min.js). If you are developing on Windows OS, run `npm run-script build-windows`.
+3.  Run `npm run-script build` to build JavaScript output. The build produces:
+    -   [/dist/html5-qrcode.min.js](./dist/html5-qrcode.min.js) - minified UMD-style bundle with `window` globals for backwards compatibility.
+    -   [/dist/html5-qrcode.esm.min.js](./dist/html5-qrcode.esm.min.js) - minified single-file ESM bundle.
+    -   Per-file `dist/cjs`, `dist/esm`, `dist/es2015` and `dist/esnext` trees (the vendored ZXing dependency is minified into `dist/third_party`).
+
+    If you are developing on Windows OS, run `npm run-script build-windows`.
 
 4.  Testing
-    -   Run `npm test`
+    -   Run `npm test` for unit tests.
+    -   Run `npm run-script test:dist` after a build to verify the built distribution artifacts (or `npm run-script test:all` for build + all tests).
     -   Run the tests before sending a pull request, all tests should run.
     -   Please add tests for new behaviors sent in PR.
 
