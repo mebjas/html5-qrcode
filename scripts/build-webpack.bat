@@ -1,5 +1,5 @@
 @ECHO OFF
-:: This is a build script for webpack/UMD based build.
+:: This is a build script for webpack based builds (UMD + ESM bundles).
 
 ECHO Initiating webpack build sequence.
 

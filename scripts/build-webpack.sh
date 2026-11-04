@@ -2,8 +2,6 @@
 ## Build Script
 echo 'Initiating webpack build sequence.'
 
-export NODE_OPTIONS=--openssl-legacy-provider
-
 webpack
 
 ## Script copied to dist/html5-qrcode.min.js

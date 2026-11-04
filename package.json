@@ -5,27 +5,39 @@
   "main": "./cjs/index.js",
   "module": "./esm/index.js",
   "typings": "./esm/index.d.ts",
-  "esnext": "./es2015/index.js",
+  "esnext": "./esnext/index.js",
   "unpkg": "./html5-qrcode.min.js",
+  "exports": {
+    ".": {
+      "types": "./esm/index.d.ts",
+      "import": "./html5-qrcode.esm.min.js",
+      "require": "./cjs/index.js",
+      "default": "./html5-qrcode.esm.min.js"
+    },
+    "./package.json": "./package.json",
+    "./*": "./*"
+  },
   "scripts": {
-    "build-windows": "npm run build:es2015 && npm run build:esm && npm run build:esnext && npm run build:cjs && npm run build:umd_windows && npm run build:typing && npm run build:copy_windows",
+    "build-windows": "npm run build:es2015 && npm run build:esm && npm run build:esnext && npm run build:cjs && npm run build:bundle_windows && npm run build:typing && npm run build:copy_windows",
     "test": "npm run-script test:build && npm run-script test:run",
     "test_windows": "npm run-script test:build && npm run-script test:run_windows",
+    "test:all": "npm run build && npm run-script test && npm run-script test:dist",
     "test:build": "tsc --build tsconfig.test.json",
     "test:run_windows": ".\\scripts\\test-run.bat",
     "test:run": "./scripts/test-run.sh",
+    "test:dist": "./scripts/test-dist-run.sh",
+    "test:dist_windows": ".\\scripts\\test-dist-run.bat",
     "lint-md": "remark .",
     "clean": "rm -Rf ./lib/* ./build/* ./meta/bundlesize/* ./meta/coverage/* ./.rpt2_cache  ./dist/* ./src/*.d.ts",
     "prebuild": "npm run clean",
-    "postbuild": "cp -R ./third_party ./dist/third_party",
-    "build": "npm run build:es2015 && npm run build:esm && npm run build:esnext && npm run build:cjs && npm run build:umd && npm run build:typing && npm run build:copy",
+    "build": "npm run build:es2015 && npm run build:esm && npm run build:esnext && npm run build:cjs && npm run build:bundle && npm run build:typing && npm run build:copy",
     "build:es2015": "tsc --build tsconfig.lib-es2015.json",
     "build:esm": "tsc --build tsconfig.lib-esm.json",
-    "build:esnext": "tsc --build tsconfig.lib-esm.json",
+    "build:esnext": "tsc --build tsconfig.lib-esnext.json",
     "build:cjs": "tsc --build tsconfig.lib-cjs.json",
     "build:typing": "tsc --emitDeclarationOnly --outDir ./dist",
-    "build:umd": "./scripts/build-webpack.sh",
-    "build:umd_windows": ".\\scripts\\build-webpack.bat",
+    "build:bundle": "./scripts/build-webpack.sh",
+    "build:bundle_windows": ".\\scripts\\build-webpack.bat",
     "build:copy": "cp README.md dist && cp package.json dist && cp LICENSE dist && cp -R src dist/src",
     "build:copy_windows": "copy README.md dist && copy package.json dist && copy LICENSE dist",
     "internal_release": "npm run build && cp dist/html5-qrcode.min.js minified/html5-qrcode.min.js",
@@ -72,6 +84,7 @@
     "remark-cli": "^9.0.0",
     "remark-preset-lint-recommended": "^5.0.0",
     "rewire": "^5.0.0",
+    "terser": "^5.51.2",
     "ts-loader": "^9.1.2",
     "ts-node": "^10.4.0",
     "tsconfig-paths": "^3.12.0",
@@ -89,5 +102,8 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "dependencies": {
+    "@zxing/library": "^0.23.0"
   }
 }

@@ -332,7 +332,8 @@ export class Html5Qrcode {
             this.getSupportedFormats(configOrVerbosityFlag),
             this.getUseBarCodeDetectorIfSupported(configObject),
             this.verbose,
-            this.logger);
+            this.logger,
+            this.hasExplicitFormatsToSupport(configOrVerbosityFlag));
 
         this.foreverScanTimeout;
         this.shouldScan = true;
@@ -859,6 +860,18 @@ export class Html5Qrcode {
      * 
      * TODO(mebjas): Deprecate the verbosity boolean flag completely.
      */
+    /**
+     * Returns true if the caller explicitly passed `formatsToSupport` in a
+     * config object (as opposed to falling back to the default all-formats
+     * list). Used to gate formats that upstream ZXing flags as unstable.
+     */
+    private hasExplicitFormatsToSupport(
+        configOrVerbosityFlag: boolean | Html5QrcodeFullConfig | undefined)
+        : boolean {
+        return typeof configOrVerbosityFlag === "object"
+            && configOrVerbosityFlag.formatsToSupport !== undefined;
+    }
+
     private getSupportedFormats(
         configOrVerbosityFlag: boolean | Html5QrcodeFullConfig | undefined)
         : Array<Html5QrcodeSupportedFormats> {

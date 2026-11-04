@@ -2,7 +2,7 @@
 node_modules/
 package-lock.json
 .vscode/
-dist/
+/dist/
 src/*.d.ts
 src/*/*.d.ts
 src/*/*/*.d.ts
